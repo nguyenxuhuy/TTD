@@ -1,0 +1,109 @@
+﻿$PBExportHeader$gf_readmoney_eng.srf
+global type gf_readmoney_eng from function_object
+end type
+
+forward prototypes
+global function string gf_readmoney_eng (string as_money, string vs_cur_code)
+end prototypes
+
+global function string gf_readmoney_eng (string as_money, string vs_cur_code);/*********************************************
+Hàm đọc tiền ngoại tê
+̣vs_cur_code: Mã loại tiền, dùng để lấy đúng theo tên từng
+loại tiền
+**********************************************/
+c_string	lc_string
+boolean lb_negative
+string		las_unit[], ls_mega[],las_numbers[], ls_number, ls_point,result,pre_money, post_money,ls_curname, ls_curname_min,ls_tmp
+int			li_cnd,li_count,idx_dot,li_find
+
+if upper(vs_cur_code) = 'VNĐ' or upper(vs_cur_code) = 'VND' then return gf_readmoney(as_money)
+as_money = trim(as_money)
+if pos(as_money,'-') = 1 then
+	lb_negative = true
+else
+	lb_negative = false
+end if
+idx_dot = pos(as_money, ".", 1)
+if idx_dot  > 0  then
+	if lb_negative = true then 
+		pre_money = mid(as_money,2, idx_dot - 2)
+	else
+		pre_money = left(as_money, idx_dot - 1)
+	end if
+	post_money = mid(as_money, idx_dot +1, len(as_money) - idx_dot )
+else
+	if lb_negative = true then 
+		pre_money = right(as_money, len(as_money)-1)
+	else
+		pre_money = as_money
+	end if
+	post_money=''
+end if
+
+li_find = pos(pre_money, ",", 1)
+do while li_find <> 0 
+      pre_money = left(pre_money, li_find - 1) + right(pre_money, len(pre_money) - li_find)
+      li_find = pos(pre_money, ",", li_find + 1)
+loop
+if not match(pre_money, "^[0-9]+$") then
+      messagebox("Notice", "You enter a value invalid")
+      return ""
+end if
+if len(pre_money) > 15 then
+     messagebox("Notice", "Money is so large")
+     return ""
+end if
+if long(pre_money) = 0 then
+     result = 'none'
+     return result
+end if
+
+ls_mega[1] = ' hundred '
+ls_mega[2] = ' thousand '
+ls_mega[3] = ' million '
+ls_mega[4] = ' billion '
+
+ls_number = right(pre_money,3)
+Do While len(ls_number) > 0
+	li_cnd ++
+	choose case len(ls_number)
+		case 3
+			ls_tmp =  lc_string.f_readnumber_eng( integer(left(ls_number,1)),vs_cur_code) + ls_mega[1]
+			ls_tmp +=  lc_string.f_readnumber_eng( integer(right(ls_number,2)),vs_cur_code)
+			las_unit[upperbound(las_unit)+1] = ls_tmp
+		case else
+			las_unit[upperbound(las_unit)+1] = lc_string.f_readnumber_eng( integer(ls_number),vs_cur_code)
+	end choose
+	if len(pre_money) <= 3 then
+		ls_number = ''
+	elseif len(pre_money) > 3 and len(pre_money) <= 6 then 
+		ls_number = left(pre_money,len(pre_money) - (3 * li_cnd))
+	elseif len(pre_money) > 6  then
+		ls_number = right(left(pre_money,len(pre_money) - (3 * li_cnd)),3)
+	end if
+Loop
+
+if len(post_money) > 0 then
+	ls_point = +' and '+  lc_string.f_readnumber_eng(integer(post_money),vs_cur_code) + ' ' + lc_string.f_get_cur_name( vs_cur_code, true)
+end if
+
+choose case upperbound(las_unit)
+	case 1
+		ls_tmp = las_unit[1]
+		return las_unit[1] + ls_point
+	case 2
+		ls_tmp = las_unit[2] + ls_mega[2] + las_unit[1]  + ' ' + lc_string.f_get_cur_name( vs_cur_code, false) + ls_point
+		return ls_tmp
+	case 3
+		ls_tmp = las_unit[3] + ls_mega[3] + las_unit[2] + ls_mega[2] + las_unit[1]  + ' ' + lc_string.f_get_cur_name( vs_cur_code, false) + ls_point
+		return ls_tmp
+	case 4
+		ls_tmp = las_unit[4] + ls_mega[4] + las_unit[3] + ls_mega[3] + las_unit[2] + ls_mega[2] + las_unit[1]  + ' ' + lc_string.f_get_cur_name( vs_cur_code, false) + ls_point
+		return ls_tmp
+	case 5
+		ls_tmp = las_unit[5] + ls_mega[5] + las_unit[4] + ls_mega[4] + las_unit[3] + ls_mega[3] + las_unit[2] + ls_mega[2] + las_unit[1]  + ' ' + lc_string.f_get_cur_name( vs_cur_code, false) + ls_point
+		return ls_tmp
+end choose
+return 'none'
+end function
+

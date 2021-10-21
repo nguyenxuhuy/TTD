@@ -1,0 +1,25 @@
+﻿$PBExportHeader$f_get_weeknumber.srf
+global type f_get_weeknumber from function_object
+end type
+
+forward prototypes
+global function integer f_get_weeknumber (datetime vd_date)
+end prototypes
+
+global function integer f_get_weeknumber (datetime vd_date);/*--------------------------------------------------------------------
+         Khởi tạo: Út
+             Ngày : 20-07-2009
+		----------------------------------------------------------		 
+ Nội dung xử lý: Trả về tuần thứ mấy trong năm của một ngày bất kỳ
+    Giá trị trả về: Sô nguyên.
+	 				> 0  nếu tính ra số tuần của ngày nhập vào.
+					*Null nếu một trong số các biến truyền vào là null
+--------------------------------------------------------------------
+Sửa:none
+
+--------------------------------------------------------------------*/
+c_datetime lcd_datetime
+return lcd_datetime.f_weeknumber(date(vd_date))
+
+end function
+

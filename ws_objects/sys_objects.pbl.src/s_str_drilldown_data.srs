@@ -1,0 +1,9 @@
+﻿$PBExportHeader$s_str_drilldown_data.srs
+global type s_str_drilldown_data from structure
+	string		s_drilldown_object
+	string		s_drilldown_obj_dwo[]
+	string		s_drilldown_obj_column[]
+	s_str_data		str_data[]
+	any		aa_data[]
+end type
+

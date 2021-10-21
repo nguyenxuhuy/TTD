@@ -1,0 +1,58 @@
+﻿$PBExportHeader$d_maillist_footer_form.srd
+release 12.5;
+datawindow(units=0 timer_interval=0 color=1073741824 brushmode=0 transparency=0 gradient.angle=0 gradient.color=8421504 gradient.focus=0 gradient.repetition.count=0 gradient.repetition.length=100 gradient.repetition.mode=0 gradient.scale=100 gradient.spread=100 gradient.transparency=0 picture.blur=0 picture.clip.bottom=0 picture.clip.left=0 picture.clip.right=0 picture.clip.top=0 picture.mode=0 picture.scale.x=100 picture.scale.y=100 picture.transparency=0 processing=0 HTMLDW=no print.printername="" print.documentname="" print.orientation = 0 print.margin.left = 110 print.margin.right = 110 print.margin.top = 96 print.margin.bottom = 96 print.paper.source = 0 print.paper.size = 0 print.canusedefaultprinter=yes print.prompt=no print.buttons=no print.preview.buttons=no print.cliptext=no print.overrideprintjob=no print.collate=yes print.background=no print.preview.background=no print.preview.outline=yes hidegrayline=no showbackcoloronxp=no picture.file="" )
+header(height=0 color="536870912" transparency="0" gradient.color="8421504" gradient.transparency="0" gradient.angle="0" brushmode="0" gradient.repetition.mode="0" gradient.repetition.count="0" gradient.repetition.length="100" gradient.focus="0" gradient.scale="100" gradient.spread="100" )
+summary(height=0 color="536870912" transparency="0" gradient.color="8421504" gradient.transparency="0" gradient.angle="0" brushmode="0" gradient.repetition.mode="0" gradient.repetition.count="0" gradient.repetition.length="100" gradient.focus="0" gradient.scale="100" gradient.spread="100" )
+footer(height=0 color="536870912" transparency="0" gradient.color="8421504" gradient.transparency="0" gradient.angle="0" brushmode="0" gradient.repetition.mode="0" gradient.repetition.count="0" gradient.repetition.length="100" gradient.focus="0" gradient.scale="100" gradient.spread="100" )
+detail(height=1208 color="536870912" transparency="0" gradient.color="8421504" gradient.transparency="0" gradient.angle="0" brushmode="0" gradient.repetition.mode="0" gradient.repetition.count="0" gradient.repetition.length="100" gradient.focus="0" gradient.scale="100" gradient.spread="100" )
+table(column=(type=char(0) updatewhereclause=yes name=gutter dbname="gutter" )
+ column=(type=number update=yes updatewhereclause=yes key=yes name=id dbname="maillist.id" dbalias="mail.id" )
+ column=(type=char(100) update=yes updatewhereclause=yes name=code dbname="maillist.code" dbalias="mail.code" )
+ column=(type=char(500) update=yes updatewhereclause=yes name=name dbname="maillist.name" dbalias="mail.name" )
+ column=(type=number update=yes updatewhereclause=yes name=company_id dbname="maillist.company_id" dbalias="mail.company_id" )
+ column=(type=number update=yes updatewhereclause=yes name=branch_id dbname="maillist.branch_id" dbalias="mail.branch_id" )
+ column=(type=number update=yes updatewhereclause=yes name=object_ref_id dbname="maillist.object_ref_id" dbalias="mail.object_ref_id" )
+ column=(type=char(50) update=yes updatewhereclause=yes name=object_ref_table dbname="maillist.object_ref_table" dbalias="mail.object_ref_table" )
+ column=(type=number updatewhereclause=yes name=created_by dbname="maillist.created_by" dbalias="mail.created_by" )
+ column=(type=datetime updatewhereclause=yes name=created_date dbname="maillist.created_date" dbalias="mail.created_date" )
+ column=(type=number updatewhereclause=yes name=last_mdf_by dbname="maillist.last_mdf_by" dbalias="mail.last_mdf_by" )
+ column=(type=datetime updatewhereclause=yes name=last_mdf_date dbname="maillist.last_mdf_date" dbalias="mail.last_mdf_date" )
+ column=(type=number update=yes updatewhereclause=yes name=handled_by dbname="maillist.handled_by" dbalias="mail.handled_by" )
+ column=(type=char(1) update=yes updatewhereclause=yes name=active_yn dbname="maillist.active_yn" dbalias="mail.active_yn" )
+ column=(type=char(2000) update=yes updatewhereclause=yes name=body dbname="maillist.body" dbalias="mail.body" )
+ column=(type=char(250) update=yes updatewhereclause=yes name=header dbname="maillist.header" dbalias="mail.header" )
+ column=(type=char(250) update=yes updatewhereclause=yes name=footer dbname="maillist.footer" dbalias="mail.footer" )
+ column=(type=char(250) update=yes updatewhereclause=yes name=subject dbname="maillist.subject" dbalias="mail.subject" )
+ column=(type=char(2000) updatewhereclause=yes name=body_data dbname="maillist.body_data" dbalias="mail.body_data" )
+ retrieve="select '' gutter,mail.ID                ,
+          mail.CODE              ,
+          mail.NAME             ,
+          mail.COMPANY_ID        , 
+          mail.BRANCH_ID         ,
+          mail.OBJECT_REF_ID     ,
+          mail.OBJECT_REF_TABLE  ,
+          mail.CREATED_BY        ,
+          mail.CREATED_DATE      ,  
+          mail.LAST_MDF_BY       , 
+          mail.LAST_MDF_DATE     ,  
+          mail.HANDLED_BY        ,   
+          mail.ACTIVE_YN       , 
+          mail.BODY             , 
+          mail.HEADER           ,  
+          mail.FOOTER         , 
+		mail.SUBJECT ,
+		mail.BODY_DATA   
+from maillist mail " update="maillist" updatewhere=1 updatekeyinplace=yes )
+column(band=detail id=17 alignment="0" tabsequence=10 border="0" color="33554432" x="23" y="12" height="440" width="1582" format="[general]" html.valueishtml="0"  name=footer visible="1" edit.limit=0 edit.case=any edit.autoselect=no edit.nilisnull=yes edit.autohscroll=yes edit.autovscroll=yes  font.face="Tahoma" font.height="-10" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="1" background.color="536870912" background.transparency="0" background.gradient.color="8421504" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="100" background.gradient.focus="0" background.gradient.scale="100" background.gradient.spread="100" tooltip.backcolor="134217752" tooltip.delay.initial="0" tooltip.delay.visible="32000" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="134217751" tooltip.transparency="0" transparency="0" )
+text(band=detail alignment="0" text="Câu kết" border="0" color="33554432" x="736" y="1148" height="64" width="197" html.valueishtml="0"  name=footer_t visible="0"  font.face="Tahoma" font.height="-10" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="1" background.color="536870912" background.transparency="0" background.gradient.color="8421504" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="100" background.gradient.focus="0" background.gradient.scale="100" background.gradient.spread="100" tooltip.backcolor="134217752" tooltip.delay.initial="0" tooltip.delay.visible="32000" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="134217751" tooltip.transparency="0" transparency="0" )
+htmltable(border="1" )
+htmlgen(clientevents="1" clientvalidation="1" clientcomputedfields="1" clientformatting="0" clientscriptable="0" generatejavascript="1" encodeselflinkargs="1" netscapelayers="0" pagingmethod=0 generatedddwframes="1" )
+xhtmlgen() cssgen(sessionspecific="0" )
+xmlgen(inline="0" )
+xsltgen()
+jsgen()
+export.xml(headgroups="1" includewhitespace="0" metadatatype=0 savemetadata=0 )
+import.xml()
+export.pdf(method=0 distill.custompostscript="0" xslfop.print="0" )
+export.xhtml()
+ 

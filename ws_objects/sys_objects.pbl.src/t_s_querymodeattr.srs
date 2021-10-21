@@ -1,0 +1,10 @@
+﻿$PBExportHeader$t_s_querymodeattr.srs
+global type t_s_querymodeattr from structure
+	string		s_col
+	string		s_protect
+	boolean		b_state
+	string		is_visible
+	string		is_limit
+	boolean		ib_haslabel
+end type
+

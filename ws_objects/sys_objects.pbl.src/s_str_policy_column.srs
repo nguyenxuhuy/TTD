@@ -1,0 +1,9 @@
+﻿$PBExportHeader$s_str_policy_column.srs
+global type s_str_policy_column from structure
+	boolean		b_query
+	boolean		b_update
+	boolean		b_access
+	boolean		b_mandatory_save
+	boolean		b_mandatory_book
+end type
+

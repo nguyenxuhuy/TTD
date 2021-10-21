@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<RibbonBar BuiltinTheme="0" Font="FaceName:Tahoma; TextSize:12">
+  <RibbonItems>
+    <ApplicationButton Text="RibbonBar Demo" Enabled="true" Tag="RibbonBar Demo" Visible="true">
+      <ApplicationMenu>
+        <Master>
+          <Item Text="File" PictureName="" Checked="false" Enabled="true" Shortcut="Ctrl+F" Tag="File" Type="0" Visible="true">
+            <Item Text="Save" PictureName="Save!" Checked="false" Enabled="true" Shortcut="Ctrl+S" Tag="Save" Type="0" Visible="true" Clicked="ue_appbutton" />
+            <Item Text="Exit" PictureName="Exit!" Checked="false" Enabled="true" Tag="Exit" Type="0" Visible="true" Clicked="ue_appbutton"/>
+          </Item>
+          <Item Type="1" Visible="true"/>
+          <Item Text="Edit" PictureName="" Checked="false" Enabled="true" Tag="Edit" Type="0" Visible="true">
+            <Item Text="Cut" PictureName="Cut!" Checked="false" Enabled="true" Shortcut="Ctrl+X" Tag="Cut" Type="0" Visible="true" Clicked="ue_appbutton" />
+            <Item Text="Copy" PictureName="Copy!" Checked="false" Enabled="true" Shortcut="Ctrl+C" Tag="Copy" Type="0" Visible="true" Clicked="ue_appbutton" />
+            <Item Text="Paste" PictureName="Paste!" Checked="false" Enabled="true" Shortcut="Ctrl+V" Tag="Paste" Type="0" Visible="true" Clicked="ue_appbutton" />
+          </Item>
+          <Item Text="Tools" PictureName="" Checked="false" Enabled="true" Tag="Tools" Type="0" Visible="true"/>
+          <Item Text="Window" PictureName="" Checked="false" Enabled="true" Tag="Window" Type="0" Visible="true">
+            <Item Text="Tile Vertical" PictureName="TileVertical!" Checked="false" Enabled="true"  Tag="TileVertical" Type="0" Visible="true" Clicked="ue_appbutton" />
+            <Item Text="Tile Horizonal" PictureName="TileHortizontal!" Checked="false" Enabled="true"  Tag="TileHorizontal" Type="0" Visible="true" Clicked="ue_appbutton" />
+            <Item Text="Layer" PictureName="Layer!" Checked="false" Enabled="true"  Tag="Layer" Type="0" Visible="true" Clicked="ue_appbutton" />
+            <Item Text="Cascade" PictureName="Cascade!" Checked="false" Enabled="true"  Tag="Cascade" Type="0" Visible="true" Clicked="ue_appbutton" />
+          </Item>
+          <Item Text="Help" PictureName="HelpBig!" Checked="false" Enabled="true" Tag="Help" Type="0" Visible="true">
+            <Item Text="Help Contents" PictureName="HelpBig!" Checked="false" Enabled="true" Tag="Help" Type="0" Visible="true" Clicked="ue_appbutton" />
+            <Item Text="About" PictureName="ToolkitAbout!" Checked="false" Enabled="true" Tag="About" Type="0" Visible="true" Clicked="ue_appbutton" />
+          </Item>
+        </Master>
+        <Recent Title="Recent Items">
+            <Item Text="Recent Item 1" Checked="false" Enabled="true" Tag="RecentItem1" Type="2" Visible="true" Clicked="ue_recentitem"/>
+        </Recent>
+      </ApplicationMenu>
+    </ApplicationButton>
+    <Categories>
+      <Category Text="File" Enabled="true" Tag="File" Visible="true">
+        <Panel Text="" PictureName="" Enabled="true" Tag="" Visible="true">
+          <LargeButton Text="Save" PictureName="SaveBig!" Checked="false" DefaultCommand="true" Enabled="true" PowerTipText="Save" PowerTipDescription="Save" Tag="Save" Visible="true" Clicked="ue_tabbutton"/>
+          <LargeButton Text="Exit" PictureName="ExitBig!" Checked="false" DefaultCommand="true" Enabled="true" PowerTipText="Exit" PowerTipDescription="Exit" Tag="Exit" Visible="true" Clicked="ue_tabbutton" />
+        </Panel>
+      </Category>
+      <Category Text="Edit" Enabled="true" Tag="Edit" Visible="true">
+        <Panel Text="" PictureName="HRSmall!" Enabled="true" Tag="">
+          <SmallButton Text="Cut" PictureName="Cut!" Tag="Cut" Clicked="ue_tabbutton"/>
+          <SmallButton Text="Copy" PictureName="Copy!" Tag="Copy" Clicked="ue_tabbutton"/>
+          <LargeButton Text="Paste" PictureName="Paste!" Tag="Paste" Clicked="ue_tabbutton"/>
+        </Panel>
+      </Category>
+      <Category Text="Tools"  Enabled="true" Tag="Tool" Visible="true">
+      </Category>
+      <Category Text="Window" Enabled="true" Tag="View" Visible="true">
+        <Panel Text="Tile" PictureName="" Enabled="true" Tag="Tile" Visible="true">
+          <SmallButton Text="Vertical" PictureName="TileVertical!" Tag="TileVertical" Clicked="ue_tabbutton" />
+          <SmallButton Text="Hortzontal" PictureName="TileHorizontal!" Tag="TileHorizontal" Clicked="ue_tabbutton" />
+        </Panel>
+        <Panel>
+          <LargeButton Text="Layer" PictureName="Layer!" Tag="Layer" Clicked="ue_tabbutton">
+          </LargeButton>
+          <LargeButton Text="Cascade" PictureName="Cascade!" Tag="Cascade" Clicked="ue_tabbutton">
+          </LargeButton>
+        </Panel>
+      </Category>
+    </Categories>
+    <TabButtons>
+      <TabButton Text="Help" PictureName="HelpSmall!" Checked="false" DefaultCommand="true" Enabled="true" PowerTipText="Help" PowerTipDescription="Get help." Tag="Help" Visible="true" Clicked="ue_tabbutton"/>
+      <TabButton Text="About" PictureName="ToolkitAbout!" Checked="false" DefaultCommand="true" Enabled="true" PowerTipText="Info" PowerTipDescription="Get info." Tag="About" Visible="true" Clicked="ue_tabbutton"/>
+    </TabButtons>
+  </RibbonItems>
+</RibbonBar>

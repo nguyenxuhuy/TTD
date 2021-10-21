@@ -1,0 +1,7 @@
+﻿$PBExportHeader$t_s_printer_defaults.srs
+global type t_s_printer_defaults from structure
+	long		datatype
+	long		devmode
+	long		desiredaccess
+end type
+

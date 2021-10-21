@@ -1,0 +1,10 @@
+﻿$PBExportHeader$s_str_item_balance.srs
+global type s_str_item_balance from structure
+	double		db_item_id
+	double		db_wh_id
+	double		db_spec_id
+	double		db_loc_id
+	string		s_lot_no
+	string		s_serial_no
+end type
+

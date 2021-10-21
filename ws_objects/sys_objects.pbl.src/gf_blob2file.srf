@@ -1,0 +1,45 @@
+﻿$PBExportHeader$gf_blob2file.srf
+global type gf_blob2file from function_object
+end type
+
+forward prototypes
+global function integer gf_blob2file (blob vblb_data, ref string rs_filename)
+end prototypes
+
+global function integer gf_blob2file (blob vblb_data, ref string rs_filename);integer li_FileNo, li_Writes, li_Cnt
+long ll_BlobLen, ll_CurrentPos
+blob lblb_datatmp
+
+If IsNull(vblb_data) or Len(vblb_data) = 0 Then Return -1
+If IsNull(rs_filename) or Len(rs_filename) = 0 Then Return -1
+
+li_FileNo = FileOpen(rs_filename, StreamMode!, Write!, LockReadWrite!, Replace!)
+If li_FileNo < 0 Then Return -1
+
+ll_BlobLen = Len(vblb_data)
+If ll_BlobLen > 32765 Then
+	If Mod(ll_BlobLen, 32765) = 0 Then
+		li_Writes = ll_BlobLen / 32765
+	Else
+		li_Writes = (ll_BlobLen / 32765) + 1
+	End if
+Else
+	li_Writes = 1
+End if
+
+ll_CurrentPos = 1
+For li_Cnt = 1 To li_Writes
+	lblb_datatmp = BlobMid(vblb_data, ll_CurrentPos, 32765)
+	ll_CurrentPos += 32765
+	If FileWrite(li_FileNo, lblb_datatmp) = -1 Then
+		FileClose(li_FileNo)
+		Return -1
+	End if
+Next
+
+FileClose(li_FileNo)
+
+Return 1
+
+end function
+

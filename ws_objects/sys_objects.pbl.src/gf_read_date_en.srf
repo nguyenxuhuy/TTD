@@ -1,0 +1,15 @@
+﻿$PBExportHeader$gf_read_date_en.srf
+global type gf_read_date_en from function_object
+end type
+
+forward prototypes
+global function string gf_read_date_en (datetime vd_date)
+end prototypes
+
+global function string gf_read_date_en (datetime vd_date);string  ls_date_str
+
+SELECT TO_CHAR(:vd_date, 'fmDDTH')||' of '||TO_CHAR(:vd_date, 'fmMonth')||', '||TO_CHAR(SYSDATE, 'YYYY') "Ides"  into :ls_date_str   FROM DUAL using sqlca;
+
+return ls_date_str
+end function
+

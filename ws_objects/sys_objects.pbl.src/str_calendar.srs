@@ -1,0 +1,7 @@
+﻿$PBExportHeader$str_calendar.srs
+global type str_calendar from structure
+	string		date_type
+	string		date_current
+	boolean		date_null
+end type
+

@@ -1,0 +1,7 @@
+﻿$PBExportHeader$s_str_criteria_rec.srs
+global type s_str_criteria_rec from structure
+	string		s_dwcolumn_rec[]
+	string		s_criteria_rec[]
+	string		s_dwobject[]
+end type
+

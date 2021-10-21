@@ -1,0 +1,9 @@
+﻿$PBExportHeader$s_str_w_ctrl.srs
+global type s_str_w_ctrl from structure
+	datawindow		dw_ctrl[]
+	t_gb		gb_ctrl[]
+	t_t		tb_ctrl[]
+	t_tp		tp_ctrl[]
+	t_g_line		g_line[]
+end type
+

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<RibbonBar BuiltinTheme="0" Font="FaceName:Tahoma; FontCharSet:ansi!; TextSize:12">
+  <RibbonItems >
+    
+    <Categories>
+      <Category Text="Nhà" Enabled="true" Tag="Home" Visible="true" >
+        <Panel Text="Tabs" PictureName="TabsSmall!" Enabled="true" Tag="Tabs" Visible="true">         
+          <LargeButton Text="Đóng" PictureName="Closebig!" Clicked="ue_tabbutton" Tag="close"/>    
+        </Panel>       
+        <Panel Text="Thao tác" PictureName="ActionsSmall!" Enabled="true" Tag="Actions" Visible="true">
+          <LargeButton Text="Thêm" PictureName="Addbig!" Clicked="ue_tabbutton" Tag="e_add" Shortcut="Ctrl+N"/>    
+          <LargeButton Text="Xóa" PictureName="Deletebig!" Clicked="ue_tabbutton" Tag="e_delete" Shortcut="Ctrl+D"/>   
+          <LargeButton Text="Chèn dòng" PictureName="InsertMenuItem!" Clicked="ue_tabbutton" Tag="e_insert" Shortcut="Ctrl+I"/>   
+          <LargeButton Text="Chỉnh sửa" PictureName="ModifyBig!" Clicked="ue_tabbutton" Tag="e_modify" Shortcut="Ctrl+M"/>   
+          <LargeButton Text="Nạp lại" PictureName="RefreshBig!" Clicked="ue_tabbutton" Tag="e_refresh" Shortcut="F5"/>   
+          <LargeButton Text="Lọc" PictureName="filterbig!" Clicked="ue_tabbutton" Tag="e_filter" />
+        </Panel>	
+        <Panel Text="Navigation" PictureName="TabsSmall!" Enabled="true" Tag="Tabs" Visible="true">         
+          <LargeButton Text="" PictureName="NavFirstbig!" Clicked="ue_tabbutton" Tag="e_first" />   
+          <LargeButton Text="" PictureName="NavPrevbig!" Clicked="ue_tabbutton" Tag="e_prior" />   
+           <LargeButton Text="" PictureName="NavNextbig!" Clicked="ue_tabbutton" Tag="e_next" />   
+            <LargeButton Text="" PictureName="NavLastbig!" Clicked="ue_tabbutton" Tag="e_last" />   
+        </Panel>               
+      </Category>
+    </Categories>
+  </RibbonItems>
+</RibbonBar>

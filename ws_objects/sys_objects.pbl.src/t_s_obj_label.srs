@@ -1,0 +1,9 @@
+﻿$PBExportHeader$t_s_obj_label.srs
+$PBExportComments$top structure object label
+global type t_s_obj_label from structure
+	string		obj_name
+	string		obj_text
+	string		obj_desc_name
+	string		obj_type
+end type
+

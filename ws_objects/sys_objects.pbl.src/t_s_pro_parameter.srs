@@ -1,0 +1,14 @@
+﻿$PBExportHeader$t_s_pro_parameter.srs
+global type t_s_pro_parameter from structure
+	any		arg1
+	any		arg2
+	any		arg3
+	any		arg4
+	any		arg5
+	any		arg6
+	any		arg7
+	any		arg8
+	any		arg9
+	any		arg10
+end type
+

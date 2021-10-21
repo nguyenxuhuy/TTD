@@ -1,0 +1,18 @@
+﻿$PBExportHeader$s_str_actionpane.srs
+global type s_str_actionpane from structure
+	string		s_dwo_action
+	string		s_button_name
+	string		s_visible_buttons
+	string		s_enabled_buttons
+	string		s_button_has_sub
+	string		sa_sub_button[]
+	string		sa_enabled_subbutton[]
+	string		s_description
+	string		s_objname_handling
+	integer		i_tp_index
+	boolean		b_full_inherit
+	boolean		b_access
+	boolean		b_independent_data
+	string		sa_subbutton_name[]
+end type
+

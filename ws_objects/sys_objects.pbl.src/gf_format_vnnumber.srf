@@ -1,0 +1,29 @@
+﻿$PBExportHeader$gf_format_vnnumber.srf
+global type gf_format_vnnumber from function_object
+end type
+
+forward prototypes
+global function string gf_format_vnnumber (string as_money)
+end prototypes
+
+global function string gf_format_vnnumber (string as_money);string ls_result
+int li_idx,li_len
+
+ls_result = as_money
+li_len = len(ls_result)
+li_idx=1
+do while li_idx <= li_len
+	if mid(ls_result,li_idx,1)=',' then 
+		ls_result = replace(ls_result,li_idx,1,'.')
+	elseif mid(ls_result,li_idx,1)='.' then
+		if li_idx = li_len then
+			ls_result =  replace(ls_result,li_idx,1,'')
+		else
+			ls_result =  replace(ls_result,li_idx,1,',')
+		end if
+	end if
+	li_idx = li_idx + 1
+loop
+return ls_result
+end function
+

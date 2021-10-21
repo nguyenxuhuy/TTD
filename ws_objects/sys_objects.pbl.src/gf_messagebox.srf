@@ -1,0 +1,34 @@
+﻿$PBExportHeader$gf_messagebox.srf
+$PBExportComments$Hàm global hiển thị message cho users
+global type gf_messagebox from function_object
+end type
+
+forward prototypes
+global function integer gf_messagebox (string vs_msgid, string vs_title, string vs_message, string vs_icon, string vs_button, integer vi_default_bttn)
+end prototypes
+
+global function integer gf_messagebox (string vs_msgid, string vs_title, string vs_message, string vs_icon, string vs_button, integer vi_default_bttn);int li_rt
+string			ls_parm
+window		lw_message
+
+if isnull(vs_msgid) then vs_msgid = ''
+if isnull(vs_title) then vs_title = ''
+if isnull(vs_message) then vs_message = ''
+if isnull(vs_icon) then vs_icon = ''
+if isnull(vs_button) then vs_button = '' 
+if isnull(vi_default_bttn) then vi_default_bttn = 1 
+
+ls_parm =vs_msgid +'#'+vs_title+'#'+vs_message+'#'+vs_icon+'#'+vs_button +'#' + string(vi_default_bttn)
+//if vs_icon = 'information' then
+//	OpenWithparm(lw_message, ls_parm, 's_wr_mle')
+////	lw_message.post show( )
+//else
+	OpenWithparm(lw_message, ls_parm, 's_wr_mle')
+//end if
+
+li_rt = Integer(message.DoubleParm)
+setnull(message.DoubleParm)
+Return li_rt
+
+end function
+

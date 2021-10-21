@@ -1,0 +1,13 @@
+﻿$PBExportHeader$s_str_report.srs
+global type s_str_report from structure
+	string		s_dwo_report
+	string		s_pro_name
+	string		sa_parm_name[]		descriptor "comment" = "g_name, p_name : name = tên field của dwo_report, 1 field -> 2 p_name: p_s_ngs, p_e_ngs"
+	any		sa_parm_value[]		descriptor "comment" = "g_name: gán giá trị ngay lúc thiết kế, p_name: gán giá trị khi chạy"
+	boolean		b_multi_thread
+	string		s_pic_ref_table		descriptor "comment" = "Tên bảng chứa pic"
+	string		s_pic_ref_field		descriptor "comment" = "Tên cột chứa ID của ref_table"
+	string		s_pic_ref_colname		descriptor "comment" = "Tên cột chứa pic của ref_table"
+	boolean		b_printpreview
+end type
+

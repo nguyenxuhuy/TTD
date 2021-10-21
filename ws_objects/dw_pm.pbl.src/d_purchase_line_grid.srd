@@ -1,0 +1,158 @@
+﻿$PBExportHeader$d_purchase_line_grid.srd
+release 19;
+datawindow(units=0 timer_interval=0 color=1073741824 brushmode=0 transparency=0 gradient.angle=0 gradient.color=8421504 gradient.focus=0 gradient.repetition.count=0 gradient.repetition.length=100 gradient.repetition.mode=0 gradient.scale=100 gradient.spread=100 gradient.transparency=0 picture.blur=0 picture.clip.bottom=0 picture.clip.left=0 picture.clip.right=0 picture.clip.top=0 picture.mode=0 picture.scale.x=100 picture.scale.y=100 picture.transparency=0 processing=1 HTMLDW=no print.printername="" print.documentname="" print.orientation = 0 print.margin.left = 110 print.margin.right = 110 print.margin.top = 96 print.margin.bottom = 96 print.paper.source = 0 print.paper.size = 0 print.canusedefaultprinter=yes print.prompt=no print.buttons=no print.preview.buttons=no print.cliptext=no print.overrideprintjob=no print.collate=yes print.background=no print.preview.background=no print.preview.outline=yes hidegrayline=no showbackcoloronxp=no picture.file="" grid.lines=0 selected.mouse=no )
+header(height=64 color="536870912" transparency="0" gradient.color="8421504" gradient.transparency="0" gradient.angle="0" brushmode="0" gradient.repetition.mode="0" gradient.repetition.count="0" gradient.repetition.length="100" gradient.focus="0" gradient.scale="100" gradient.spread="100" )
+summary(height=64 color="536870912" transparency="0" gradient.color="8421504" gradient.transparency="0" gradient.angle="0" brushmode="0" gradient.repetition.mode="0" gradient.repetition.count="0" gradient.repetition.length="100" gradient.focus="0" gradient.scale="100" gradient.spread="100" )
+footer(height=0 color="536870912" transparency="0" gradient.color="8421504" gradient.transparency="0" gradient.angle="0" brushmode="0" gradient.repetition.mode="0" gradient.repetition.count="0" gradient.repetition.length="100" gradient.focus="0" gradient.scale="100" gradient.spread="100" )
+detail(height=80 color="536870912" transparency="0" gradient.color="8421504" gradient.transparency="0" gradient.angle="0" brushmode="0" gradient.repetition.mode="0" gradient.repetition.count="0" gradient.repetition.length="100" gradient.focus="0" gradient.scale="100" gradient.spread="100" )
+table(column=(type=char(0) updatewhereclause=yes name=gutter dbname="gutter" values="	Y/	N" )
+ column=(type=number update=yes updatewhereclause=yes key=yes name=id dbname="po_line.id" dbalias=".id" )
+ column=(type=number update=yes updatewhereclause=yes name=branch_id dbname="po_line.branch_id" dbalias=".branch_id" )
+ column=(type=number update=yes updatewhereclause=yes name=company_id dbname="po_line.company_id" dbalias=".company_id" )
+ column=(type=number update=yes updatewhereclause=yes name=created_by dbname="po_line.created_by" dbalias=".created_by" )
+ column=(type=datetime update=yes updatewhereclause=yes name=created_date dbname="po_line.created_date" dbalias=".created_date" )
+ column=(type=number update=yes updatewhereclause=yes name=disc_amt dbname="po_line.disc_amt" dbalias=".disc_amt" )
+ column=(type=number update=yes updatewhereclause=yes name=disc_pct dbname="po_line.disc_pct" dbalias=".disc_pct" )
+ column=(type=char(1) update=yes updatewhereclause=yes name=foc_yn dbname="po_line.foc_yn" dbalias=".foc_yn" values="	Y/	N" )
+ column=(type=number update=yes updatewhereclause=yes name=item_id dbname="po_line.item_id" dbalias=".item_id" )
+ column=(type=number update=yes updatewhereclause=yes name=last_mdf_by dbname="po_line.last_mdf_by" dbalias=".last_mdf_by" )
+ column=(type=datetime update=yes updatewhereclause=yes name=last_mdf_date dbname="po_line.last_mdf_date" dbalias=".last_mdf_date" )
+ column=(type=char(250) update=yes updatewhereclause=yes name=line_text dbname="po_line.line_text" dbalias=".line_text" )
+ column=(type=char(250) update=yes updatewhereclause=yes name=note dbname="po_line.note" dbalias=".note" )
+ column=(type=number update=yes updatewhereclause=yes name=object_ref_id dbname="po_line.object_ref_id" dbalias=".object_ref_id" )
+ column=(type=char(50) update=yes updatewhereclause=yes name=object_ref_table dbname="po_line.object_ref_table" dbalias=".object_ref_table" )
+ column=(type=number update=yes updatewhereclause=yes name=price dbname="po_line.price" dbalias=".price" )
+ column=(type=number update=yes updatewhereclause=yes name=qty dbname="po_line.qty" dbalias=".qty" )
+ column=(type=number update=yes updatewhereclause=yes name=amount dbname="po_line.amount" dbalias=".amount" )
+ column=(type=number update=yes updatewhereclause=yes name=base_amount dbname="po_line.base_amount" dbalias=".base_amount" )
+ column=(type=number update=yes updatewhereclause=yes name=amount_ex_tax dbname="po_line.amount_ex_tax" dbalias=".amount_ex_tax" )
+ column=(type=number update=yes updatewhereclause=yes name=price_ex_tax dbname="po_line.price_ex_tax" dbalias=".price_ex_tax" )
+ column=(type=number update=yes updatewhereclause=yes name=base_amount_ex_tax dbname="po_line.base_amount_ex_tax" dbalias=".base_amount_ex_tax" )
+ column=(type=number update=yes updatewhereclause=yes name=spec_id dbname="po_line.spec_id" dbalias=".spec_id" )
+ column=(type=number update=yes updatewhereclause=yes name=trans_uom dbname="po_line.trans_uom" dbalias=".trans_uom" )
+ column=(type=number update=yes updatewhereclause=yes name=line_no dbname="po_line.line_no" dbalias=".line_no" )
+ column=(type=number update=yes updatewhereclause=yes name=qty_sku dbname="po_line.qty_sku" dbalias=".qty_sku" )
+ column=(type=datetime update=yes updatewhereclause=yes name=request_receive_date dbname="po_line.request_receive_date" dbalias=".request_receive_date" )
+ column=(type=datetime update=yes updatewhereclause=yes name=confirm_receive_date dbname="po_line.confirm_receive_date" dbalias=".confirm_receive_date" )
+ column=(type=number update=yes updatewhereclause=yes name=warehouse_id dbname="po_line.warehouse_id" dbalias=".warehouse_id" )
+ column=(type=char(1) update=yes updatewhereclause=yes name=close_yn dbname="po_line.close_yn" dbalias=".close_yn" values="	Y/	N" )
+ column=(type=number update=yes updatewhereclause=yes name=subaccount dbname="po_line.subaccount" dbalias=".subaccount" )
+ column=(type=number update=yes updatewhereclause=yes name=vat dbname="po_line.vat" dbalias=".vat" )
+ column=(type=number update=yes updatewhereclause=yes name=vat_amount dbname="po_line.vat_amount" dbalias=".vat_amount" )
+ column=(type=char(100) updatewhereclause=yes name=item_code dbname="object.code" dbalias="i_obj.code" )
+ column=(type=char(500) updatewhereclause=yes name=item_name dbname="object.name" dbalias="i_obj.name" )
+ column=(type=char(50) updatewhereclause=yes name=spec_code dbname="item_spec.code" dbalias=".code" )
+ column=(type=char(150) updatewhereclause=yes name=spec_name dbname="item_spec.name" dbalias=".name" )
+ column=(type=number updatewhereclause=yes name=length dbname="item_spec.length" dbalias=".length" )
+ column=(type=number updatewhereclause=yes name=width dbname="item_spec.width" dbalias=".width" )
+ column=(type=number updatewhereclause=yes name=depth dbname="item_spec.depth" dbalias=".depth" )
+ column=(type=char(20) updatewhereclause=yes name=uom_code dbname="uom.code" dbalias="dtv.code" )
+ column=(type=char(50) updatewhereclause=yes name=object_type dbname="object.object_ref_table" dbalias="i_obj.object_ref_table" )
+ column=(type=char(100) updatewhereclause=yes name=warehouse_code dbname="object.code" dbalias="w_obj.code" )
+ column=(type=char(500) updatewhereclause=yes name=warehouse_name dbname="object.name" dbalias="w_obj.name" )
+ column=(type=number updatewhereclause=yes name=close_qty dbname="item_balance.close_qty" dbalias=".close_qty" )
+ column=(type=char(20) updatewhereclause=yes name=stk_uom_code dbname="uom.code" dbalias="stk_uom.code" )
+ column=(type=char(100) updatewhereclause=yes name=manufacturers dbname="item.manufacturers" dbalias=".manufacturers" )
+ column=(type=number update=yes updatewhereclause=yes name=base_price dbname="po_line.base_price" dbalias=".base_price" )
+ column=(type=char(300) updatewhereclause=yes name=subcode dbname="valueset_value.code" dbalias="subpo.code" )
+ column=(type=char(300) updatewhereclause=yes name=subname dbname="valueset_value.name" dbalias="subpo.name" )
+ column=(type=datetime updatewhereclause=yes name=document_date dbname="document.document_date" dbalias="d.document_date" )
+ column=(type=number updatewhereclause=yes name=object_id dbname="orders.object_id" dbalias="ord.object_id" )
+ column=(type=number updatewhereclause=yes name=currency_id dbname="orders.currency_id" dbalias="ord.currency_id" )
+ column=(type=number updatewhereclause=yes name=exchange_rate dbname="orders.exchange_rate" dbalias="ord.exchange_rate" )
+ retrieve="SELECT            
+'' as gutter,
+PO_LINE.ID,
+PO_LINE.BRANCH_ID,
+PO_LINE.COMPANY_ID,
+PO_LINE.CREATED_BY,
+PO_LINE.CREATED_DATE,
+PO_LINE.DISC_AMT,
+PO_LINE.DISC_PCT, 
+PO_LINE.FOC_YN, 
+PO_LINE.ITEM_ID,  
+PO_LINE.LAST_MDF_BY,
+PO_LINE.LAST_MDF_DATE, 
+PO_LINE.LINE_TEXT, 
+PO_LINE.NOTE,  
+PO_LINE.OBJECT_REF_ID,  
+PO_LINE.OBJECT_REF_TABLE,
+PO_LINE.PRICE,  
+PO_LINE.QTY,
+PO_LINE.AMOUNT,
+PO_LINE.BASE_AMOUNT,
+PO_LINE.AMOUNT_EX_TAX, 
+PO_LINE.PRICE_EX_TAX,
+PO_LINE.BASE_AMOUNT_EX_TAX,
+PO_LINE.SPEC_ID,
+PO_LINE.TRANS_UOM,
+PO_LINE.LINE_NO,
+PO_LINE.QTY_SKU, 
+PO_LINE.REQUEST_RECEIVE_DATE,
+PO_LINE.CONFIRM_RECEIVE_DATE,
+PO_LINE.WAREHOUSE_ID, 
+PO_LINE.CLOSE_YN ,
+PO_LINE.subaccount,
+PO_LINE.vat,
+PO_LINE.vat_amount,
+i_obj.code,
+i_obj.name,
+item_spec.code,
+item_spec.name,
+item_spec.length,
+item_spec.width,
+item_spec.depth,
+dtv.code,
+i_obj.object_ref_table,
+w_obj.code,
+w_obj.name,
+item_balance.close_qty,
+stk_uom.code,
+item.MANUFACTURERS,
+PO_LINE.base_price,
+subpo.code,
+subpo.name,
+d.document_date,
+ord.object_id,
+ord.currency_id,
+ord.exchange_rate
+from PO_LINE  
+left join object i_obj on i_obj.id= PO_LINE.ITEM_ID
+     AND i_obj.OBJECT_REF_TABLE = 'ITEM'
+left join item_spec on item_spec.id = PO_LINE.SPEC_ID
+left join uom dtv on dtv.id=PO_LINE.TRANS_UOM
+left join object w_obj on w_obj.id = PO_LINE.WAREHOUSE_ID
+LEFT JOIN item ON item.object_ref_id = PO_LINE.ITEM_ID
+LEFT JOIN valueset_value subpo ON PO_LINE.subaccount = subpo.id
+left join uom stk_uom on stk_uom.id=item.stock_uom
+left join document d on d.version_id = PO_LINE.object_ref_id
+left join orders ord on ord.id = PO_LINE.object_ref_id
+LEFT JOIN item_balance ON item_balance.item_id = PO_LINE.ITEM_ID 
+        AND PO_LINE.WAREHOUSE_ID = item_balance.object_id
+		and item_balance.value_yn = 'N'
+		and item_balance.balance_date = d.document_date
+" update="PO_LINE" updatewhere=1 updatekeyinplace=yes arguments=(("an_rownum", number)) )
+text(band=header alignment="2" text="[ ]" border="0" color="134217856" x="9" y="8" height="52" width="78" html.valueishtml="0"  name=gutter_t visible="1"  font.face="Tahoma" font.height="-8" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="2" background.color="67108864" background.transparency="0" background.gradient.color="8421504" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="100" background.gradient.focus="0" background.gradient.scale="100" background.gradient.spread="100" tooltip.backcolor="134217752" tooltip.delay.initial="0" tooltip.delay.visible="32000" tooltip.enabled="1" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="134217751" tooltip.tip="Bấm chọn tất cả" tooltip.transparency="0" transparency="0" )
+text(band=header alignment="2" text="Giá" border="0" color="33554432" x="800" y="8" height="52" width="133" html.valueishtml="0"  name=price_t visible="1"  font.face="Tahoma" font.height="-8" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="2" background.color="67108864" background.transparency="0" background.gradient.color="8421504" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="100" background.gradient.focus="0" background.gradient.scale="100" background.gradient.spread="100" tooltip.backcolor="134217752" tooltip.delay.initial="0" tooltip.delay.visible="32000" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="134217751" tooltip.transparency="0" transparency="0" )
+text(band=header alignment="2" text="SL" border="0" color="33554432" x="535" y="8" height="52" width="128" html.valueishtml="0"  name=qty_t visible="1"  font.face="Tahoma" font.height="-8" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="2" background.color="67108864" background.transparency="0" background.gradient.color="8421504" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="100" background.gradient.focus="0" background.gradient.scale="100" background.gradient.spread="100" tooltip.backcolor="134217752" tooltip.delay.initial="0" tooltip.delay.visible="32000" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="134217751" tooltip.transparency="0" transparency="0" )
+text(band=header alignment="2" text="ĐV" border="0" color="33554432" x="672" y="8" height="52" width="119" html.valueishtml="0"  name=uom_code_t visible="1"  font.face="Tahoma" font.height="-8" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="2" background.color="67108864" background.transparency="0" background.gradient.color="0" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="0" background.gradient.focus="0" background.gradient.scale="0" background.gradient.spread="0" tooltip.backcolor="0" tooltip.delay.initial="0" tooltip.delay.visible="0" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="0" tooltip.transparency="0" transparency="0" )
+text(band=header alignment="2" text="Hàng hoá" border="0" color="33554432" x="101" y="8" height="52" width="421" html.valueishtml="0"  name=line_text_t visible="1"  font.face="Tahoma" font.height="-8" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="2" background.color="67108864" background.transparency="0" background.gradient.color="0" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="0" background.gradient.focus="0" background.gradient.scale="0" background.gradient.spread="0" tooltip.backcolor="0" tooltip.delay.initial="0" tooltip.delay.visible="0" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="0" tooltip.transparency="0" transparency="0" )
+text(band=header alignment="2" text="Tiền" border="0" color="33554432" x="942" y="8" height="52" width="215" html.valueishtml="0"  name=amount_t visible="1"  font.face="Tahoma" font.height="-8" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="2" background.color="67108864" background.transparency="0" background.gradient.color="8421504" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="100" background.gradient.focus="0" background.gradient.scale="100" background.gradient.spread="100" tooltip.backcolor="134217752" tooltip.delay.initial="0" tooltip.delay.visible="32000" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="134217751" tooltip.transparency="0" transparency="0" )
+column(band=detail id=1 alignment="2" tabsequence=10 border="0" color="33554432" x="9" y="4" height="76" width="78" format="[general]" html.valueishtml="0"  name=gutter visible="1" checkbox.text="" checkbox.on="Y" checkbox.off="N" checkbox.scale=yes checkbox.threed=no  font.face="Tahoma" font.height="-8" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="0" background.color="553648127~tif(getrow()= currentRow(),rgb(194,252,249), rgb(255,255, 255))" background.transparency="0" background.gradient.color="8421504" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="100" background.gradient.focus="0" background.gradient.scale="100" background.gradient.spread="100" tooltip.backcolor="134217752" tooltip.delay.initial="0" tooltip.delay.visible="32000" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="134217751" tooltip.transparency="0" transparency="0" )
+column(band=detail id=18 alignment="1" tabsequence=30 border="0" color="33554432" x="535" y="4" height="76" width="128" format="#,##0" html.valueishtml="0"  name=qty visible="1" edit.limit=0 edit.case=any edit.autoselect=yes edit.nilisnull=yes edit.autohscroll=yes edit.autovscroll=yes  font.face="Tahoma" font.height="-8" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="0" background.color="536870912~tif(getrow()= currentRow(),rgb(194,252,249), rgb(255,255, 255))" background.transparency="0" background.gradient.color="8421504" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="100" background.gradient.focus="0" background.gradient.scale="100" background.gradient.spread="100" tooltip.backcolor="134217752" tooltip.delay.initial="0" tooltip.delay.visible="32000" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="134217751" tooltip.transparency="0" transparency="0" )
+column(band=detail id=17 alignment="1" tabsequence=50 border="0" color="33554432" x="800" y="4" height="76" width="133" format="#,##0" html.valueishtml="0"  name=price visible="1" edit.limit=0 edit.case=any edit.autoselect=yes edit.nilisnull=yes edit.autohscroll=yes edit.autovscroll=yes  font.face="Tahoma" font.height="-7" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="0" background.color="536870912~tif(getrow()= currentRow(),rgb(194,252,249), rgb(255,255, 255))" background.transparency="0" background.gradient.color="8421504" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="100" background.gradient.focus="0" background.gradient.scale="100" background.gradient.spread="100" tooltip.backcolor="134217752" tooltip.delay.initial="0" tooltip.delay.visible="32000" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="134217751" tooltip.transparency="0" transparency="0" )
+compute(band=summary alignment="1" expression="sum(amount for all)"enabled="0" border="0" color="33554432" x="105" y="4" height="52" width="361" format="#,##0" html.valueishtml="0"  name=compute_1 visible="1"  font.face="Tahoma" font.height="-8" font.weight="700"  font.family="2" font.pitch="2" font.charset="0" background.mode="1" background.color="536870912" background.transparency="0" background.gradient.color="8421504" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="100" background.gradient.focus="0" background.gradient.scale="100" background.gradient.spread="100" tooltip.backcolor="134217752" tooltip.delay.initial="0" tooltip.delay.visible="32000" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="134217751" tooltip.transparency="0" transparency="0" )
+column(band=detail id=13 alignment="0" tabsequence=20 border="0" color="33554432" x="101" y="4" height="76" width="421" format="[general]" html.valueishtml="0"  name=line_text visible="1" edit.limit=0 edit.case=any edit.autoselect=yes edit.nilisnull=yes edit.autohscroll=yes edit.autovscroll=yes edit.displayonly=yes  font.face="Tahoma" font.height="-8" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="0" background.color="536870912~tif(  mod( an_rownum ,2)=1 , rgb(255,231,99), rgb(201,252,48))" background.transparency="0" background.gradient.color="8421504" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="100" background.gradient.focus="0" background.gradient.scale="100" background.gradient.spread="100" tooltip.backcolor="134217752" tooltip.delay.initial="0" tooltip.delay.visible="32000" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="134217751" tooltip.transparency="0" transparency="0" )
+column(band=detail id=42 alignment="2" tabsequence=40 border="0" color="33554432" x="672" y="4" height="76" width="119" format="[general]" html.valueishtml="0"  name=uom_code visible="1" edit.limit=0 edit.case=any edit.autoselect=yes edit.nilisnull=yes edit.autohscroll=yes edit.autovscroll=yes edit.displayonly=yes  font.face="Tahoma" font.height="-8" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="0" background.color="536870912~tif(getrow()= currentRow(),rgb(194,252,249), rgb(255,255, 255))" background.transparency="0" background.gradient.color="8421504" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="100" background.gradient.focus="0" background.gradient.scale="100" background.gradient.spread="100" tooltip.backcolor="134217752" tooltip.delay.initial="0" tooltip.delay.visible="32000" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="134217751" tooltip.transparency="0" transparency="0" )
+column(band=detail id=19 alignment="1" tabsequence=60 border="0" color="33554432" x="942" y="4" height="76" width="215" format="#,##0" html.valueishtml="0"  name=amount visible="1" edit.limit=0 edit.case=any edit.autoselect=yes edit.nilisnull=yes edit.autohscroll=yes edit.autovscroll=yes edit.displayonly=yes  font.face="Tahoma" font.height="-8" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="0" background.color="536870912~tif(getrow()= currentRow(),rgb(194,252,249), rgb(255,255, 255))" background.transparency="0" background.gradient.color="8421504" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="100" background.gradient.focus="0" background.gradient.scale="100" background.gradient.spread="100" tooltip.backcolor="134217752" tooltip.delay.initial="0" tooltip.delay.visible="32000" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="134217751" tooltip.transparency="0" transparency="0" )
+htmltable(border="1" )
+htmlgen(clientevents="1" clientvalidation="1" clientcomputedfields="1" clientformatting="0" clientscriptable="0" generatejavascript="1" encodeselflinkargs="1" netscapelayers="0" pagingmethod=0 generatedddwframes="1" )
+xhtmlgen() cssgen(sessionspecific="0" )
+xmlgen(inline="0" )
+xsltgen()
+jsgen()
+export.xml(headgroups="1" includewhitespace="0" metadatatype=0 savemetadata=0 )
+import.xml()
+export.pdf(method=0 distill.custompostscript="0" xslfop.print="0" nativepdf.customsize=0 nativepdf.customorientation=0 nativepdf.pdfstandard=0 nativepdf.useprintspec=no )
+export.xhtml()
+ 

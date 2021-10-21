@@ -1,0 +1,60 @@
+﻿$PBExportHeader$d_route_hdr_form.srd
+release 12.5;
+datawindow(units=0 timer_interval=0 color=1073741824 brushmode=0 transparency=0 gradient.angle=0 gradient.color=8421504 gradient.focus=0 gradient.repetition.count=0 gradient.repetition.length=100 gradient.repetition.mode=0 gradient.scale=100 gradient.spread=100 gradient.transparency=0 picture.blur=0 picture.clip.bottom=0 picture.clip.left=0 picture.clip.right=0 picture.clip.top=0 picture.mode=0 picture.scale.x=100 picture.scale.y=100 picture.transparency=0 processing=0 HTMLDW=no print.printername="" print.documentname="" print.orientation = 0 print.margin.left = 110 print.margin.right = 110 print.margin.top = 96 print.margin.bottom = 96 print.paper.source = 0 print.paper.size = 0 print.canusedefaultprinter=yes print.prompt=no print.buttons=no print.preview.buttons=no print.cliptext=no print.overrideprintjob=no print.collate=yes print.background=no print.preview.background=no print.preview.outline=yes hidegrayline=no showbackcoloronxp=no picture.file="" )
+header(height=0 color="536870912" transparency="0" gradient.color="8421504" gradient.transparency="0" gradient.angle="0" brushmode="0" gradient.repetition.mode="0" gradient.repetition.count="0" gradient.repetition.length="100" gradient.focus="0" gradient.scale="100" gradient.spread="100" )
+summary(height=0 color="536870912" transparency="0" gradient.color="8421504" gradient.transparency="0" gradient.angle="0" brushmode="0" gradient.repetition.mode="0" gradient.repetition.count="0" gradient.repetition.length="100" gradient.focus="0" gradient.scale="100" gradient.spread="100" )
+footer(height=0 color="536870912" transparency="0" gradient.color="8421504" gradient.transparency="0" gradient.angle="0" brushmode="0" gradient.repetition.mode="0" gradient.repetition.count="0" gradient.repetition.length="100" gradient.focus="0" gradient.scale="100" gradient.spread="100" )
+detail(height=1840 color="536870912" transparency="0" gradient.color="8421504" gradient.transparency="0" gradient.angle="0" brushmode="0" gradient.repetition.mode="0" gradient.repetition.count="0" gradient.repetition.length="100" gradient.focus="0" gradient.scale="100" gradient.spread="100" )
+table(column=(type=number update=yes updatewhereclause=yes key=yes name=id dbname="bom_hdr.id" dbalias=".id" )
+ column=(type=number update=yes updatewhereclause=yes name=item_id dbname="bom_hdr.item_id" dbalias=".item_id" )
+ column=(type=char(100) updatewhereclause=yes name=object_code dbname="object.code" dbalias="obj_bom.code" )
+ column=(type=char(500) updatewhereclause=yes name=object_name dbname="object.name" dbalias="obj_bom.name" )
+ column=(type=number update=yes updatewhereclause=yes name=version_no dbname="bom_hdr.version_no" dbalias=".version_no" )
+ column=(type=char(5) update=yes updatewhereclause=yes name=type dbname="bom_hdr.type" dbalias=".type" )
+ column=(type=char(5) update=yes updatewhereclause=yes name=item_type dbname="bom_hdr.item_type" dbalias=".item_type" values="Sản phẩm	ITEM/Công thức	BOM/" )
+ column=(type=number update=yes updatewhereclause=yes name=spec_id dbname="bom_hdr.spec_id" dbalias=".spec_id" )
+ column=(type=number update=yes updatewhereclause=yes name=object_ref_id dbname="bom_hdr.object_ref_id" dbalias=".object_ref_id" )
+ column=(type=char(50) update=yes updatewhereclause=yes name=object_ref_table dbname="bom_hdr.object_ref_table" dbalias=".object_ref_table" )
+ column=(type=number update=yes updatewhereclause=yes name=company_id dbname="bom_hdr.company_id" dbalias=".company_id" )
+ column=(type=number update=yes updatewhereclause=yes name=branch_id dbname="bom_hdr.branch_id" dbalias=".branch_id" )
+ column=(type=number updatewhereclause=yes name=created_by dbname="bom_hdr.created_by" dbalias=".created_by" )
+ column=(type=datetime updatewhereclause=yes name=created_date dbname="bom_hdr.created_date" dbalias=".created_date" )
+ column=(type=number updatewhereclause=yes name=last_mdf_by dbname="bom_hdr.last_mdf_by" dbalias=".last_mdf_by" )
+ column=(type=datetime updatewhereclause=yes name=last_mdf_date dbname="bom_hdr.last_mdf_date" dbalias=".last_mdf_date" )
+ retrieve="  SELECT  
+              BOM_HDR.ID    ,
+              BOM_HDR.ITEM_ID      ,
+              obj_bom.code, 
+              obj_bom.name,
+              BOM_HDR.VERSION_NO    ,      
+              BOM_HDR.type    ,      
+              BOM_HDR.item_type    ,      
+              BOM_HDR.spec_id, 
+              BOM_HDR.OBJECT_REF_ID  ,
+              BOM_HDR.OBJECT_REF_TABLE  ,
+              BOM_HDR.COMPANY_ID    ,
+              BOM_HDR.BRANCH_ID   ,
+              BOM_HDR.CREATED_BY   ,   
+              BOM_HDR.CREATED_DATE ,
+              BOM_HDR.LAST_MDF_BY  , 
+              BOM_HDR.LAST_MDF_DATE
+ FROM BOM_HDR        
+ left join object obj_bom on obj_bom.id = bom_hdr.item_id 
+" update="BOM_HDR" updatewhere=1 updatekeyinplace=yes )
+text(band=detail alignment="1" text="Tổ sản xuất:" border="0" color="33554432" x="23" y="12" height="64" width="411" html.valueishtml="0"  name=object_code_t visible="1"  font.face="Tahoma" font.height="-10" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="1" background.color="536870912" background.transparency="0" background.gradient.color="8421504" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="100" background.gradient.focus="0" background.gradient.scale="100" background.gradient.spread="100" tooltip.backcolor="134217752" tooltip.delay.initial="0" tooltip.delay.visible="32000" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="134217751" tooltip.transparency="0" transparency="0" )
+column(band=detail id=3 alignment="0" tabsequence=10 border="1" color="33554432" x="475" y="12" height="76" width="558" format="[general]" html.valueishtml="0"  name=object_code visible="1" edit.limit=0 edit.case=any edit.focusrectangle=no edit.autoselect=no  font.face="Tahoma" font.height="-10" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="1" background.color="536870912" background.transparency="0" background.gradient.color="8421504" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="100" background.gradient.focus="0" background.gradient.scale="100" background.gradient.spread="100" tooltip.backcolor="134217752" tooltip.delay.initial="0" tooltip.delay.visible="32000" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="134217751" tooltip.transparency="0" transparency="0" )
+column(band=detail id=4 alignment="0" tabsequence=30 border="1" color="33554432" x="1065" y="12" height="76" width="1344" format="[general]" html.valueishtml="0"  name=object_name visible="1" edit.limit=0 edit.case=any edit.focusrectangle=no edit.autoselect=no  font.face="Tahoma" font.height="-10" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="1" background.color="536870912" background.transparency="0" background.gradient.color="8421504" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="100" background.gradient.focus="0" background.gradient.scale="100" background.gradient.spread="100" tooltip.backcolor="134217752" tooltip.delay.initial="0" tooltip.delay.visible="32000" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="134217751" tooltip.transparency="0" transparency="0" )
+text(band=detail alignment="1" text="Tên tổ SX:" border="0" color="33554432" x="3205" y="12" height="64" width="411" html.valueishtml="0"  name=object_name_t  tag="hidden" visible="1"  font.face="Tahoma" font.height="-10" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="1" background.color="536870912" background.transparency="0" background.gradient.color="8421504" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="100" background.gradient.focus="0" background.gradient.scale="100" background.gradient.spread="100" tooltip.backcolor="134217752" tooltip.delay.initial="0" tooltip.delay.visible="32000" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="134217751" tooltip.transparency="0" transparency="0" )
+column(band=detail id=5 alignment="1" tabsequence=20 border="1" color="33554432" x="2871" y="12" height="76" width="114" format="[general]" html.valueishtml="0"  name=version_no visible="1" edit.limit=0 edit.case=any edit.focusrectangle=no edit.autoselect=yes edit.autohscroll=yes  font.face="Tahoma" font.height="-10" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="1" background.color="536870912" background.transparency="0" background.gradient.color="8421504" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="100" background.gradient.focus="0" background.gradient.scale="100" background.gradient.spread="100" tooltip.backcolor="134217752" tooltip.delay.initial="0" tooltip.delay.visible="32000" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="134217751" tooltip.transparency="0" transparency="0" )
+text(band=detail alignment="1" text="Phiên bản:" border="0" color="33554432" x="2583" y="12" height="76" width="279" html.valueishtml="0"  name=version_no_t visible="1"  font.face="Tahoma" font.height="-10" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="1" background.color="536870912" background.transparency="0" background.gradient.color="8421504" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="100" background.gradient.focus="0" background.gradient.scale="100" background.gradient.spread="100" tooltip.backcolor="134217752" tooltip.delay.initial="0" tooltip.delay.visible="32000" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="134217751" tooltip.transparency="0" transparency="0" )
+htmltable(border="1" )
+htmlgen(clientevents="1" clientvalidation="1" clientcomputedfields="1" clientformatting="0" clientscriptable="0" generatejavascript="1" encodeselflinkargs="1" netscapelayers="0" pagingmethod=0 generatedddwframes="1" )
+xhtmlgen() cssgen(sessionspecific="0" )
+xmlgen(inline="0" )
+xsltgen()
+jsgen()
+export.xml(headgroups="1" includewhitespace="0" metadatatype=0 savemetadata=0 )
+import.xml()
+export.pdf(method=0 distill.custompostscript="0" xslfop.print="0" )
+export.xhtml()
+ 

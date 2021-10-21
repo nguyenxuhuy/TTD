@@ -1,0 +1,20 @@
+﻿$PBExportHeader$s_str_import.srs
+global type s_str_import from structure
+	string		s_table
+	string		s_t_colnames
+	string		s_dwi_colnames
+	string		s_fk_colnames
+	string		s_pk_colnames
+	t_ds_db		ds_pk_data[]
+	string		s_ref_m_col
+	string		s_ref_d_col
+	string		s_ref_val
+	string		s_ref_coltype
+	string		s_imported_val
+	double		db_imported_id
+	boolean		s_changed_val
+	string		s_upd_colname
+	string		s_dwu_colnames
+	string		s_imported_master_chk
+end type
+

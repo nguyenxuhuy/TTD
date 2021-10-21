@@ -1,0 +1,14 @@
+﻿$PBExportHeader$c_str_pos.srs
+global type c_str_pos from structure
+	double		dba_spk[]
+	double		dba_spl[]
+	string		s_response
+	string		s_data[]
+	double		db_data
+	double		dba_data[]
+	date		d_date
+	string		s_promote
+	string		s_accept_gift
+	string		s_gift
+end type
+

@@ -1,0 +1,58 @@
+﻿$PBExportHeader$s_str_dwo_related.srs
+global type s_str_dwo_related from structure
+	string		s_related_obj_name
+	string		s_main_obj_dwo
+	string		s_main_obj_column
+	string		s_uprow_column		descriptor "comment" = "dùng trong struct_popup chỉ cột phụ thuộc giá trị dòng trên"
+	string		s_related_obj_dwo
+	string		s_related_obj_column
+	string		s_data[]
+	string		s_where
+	string		s_text
+	string		s_relatedtext_column
+	string		s_criteria_type
+	string		s_main_obj_dwo_copy[]
+	string		s_main_obj_column_copy[]
+	string		s_related_obj_dwo_copy[]
+	string		s_related_obj_column_copy[]
+	string		s_main_obj_column_chk[]		descriptor "comment" = "khi copy nhiều master thì phải cùng 1 data chỉ định(VD: copy nhiều phiếu thu thì các phiếu đó phải cùng 1 đơn bán hàng)"
+	string		s_related_obj_column_chk[]		descriptor "comment" = "tương tự main_obj_column_chk, dùng trong trường hợp copy_from"
+	string		s_main_obj_column_sum[]		descriptor "comment" = "cột cần cộng tổng"
+	string		s_related_obj_column_sum[]		descriptor "comment" = "cột cần cộng tổng"
+	string		s_match_f_dwo[]
+	string		s_match_t_dwo[]
+	string		s_match_rf_dwo[]		descriptor "comment" = "Chứa dwo return"
+	string		s_match_rf_column[]		descriptor "comment" = "các cột trên dwo return"
+	string		s_match_f_column[]		descriptor "comment" = "các cột trên dwo nguồn"
+	string		s_match_t_column[]		descriptor "comment" = "các cột trên dwo đích"
+	string		s_match_column[]		descriptor "comment" = "các cột trên dwo match"
+	string		s_match_t_col_obj[]		descriptor "comment" = "các cột chứa đối tượng match trên dwo TO"
+	string		s_match_f_col_obj[]		descriptor "comment" = "các cột chứa đối tượng match trên dwo FROM"
+	string		s_match_table		descriptor "comment" = "Tên table match"
+	boolean		b_t_matching		descriptor "comment" = "Đối tượng main nằm bên TO"
+	boolean		b_f_matching		descriptor "comment" = "Đối tượng main nằm bên FROM"
+	boolean		b_f_sum[]		descriptor "comment" = "cộng tổng bên from"
+	string		s_main_dr_cr_obj_dwo_sum[]		descriptor "comment" = "dw chứa đối tượng công nợ cộng tổng bên FROM"
+	string		s_main_dr_cr_obj_column_sum[]		descriptor "comment" = "cột chứa đối tượng công nợ cộng tổng bên FROM"
+	boolean		b_copy_line[]		descriptor "comment" = "true nếu dw cần copy line"
+	boolean		b_get_price		descriptor "comment" = "cột xác định có lấy giá không"
+	string		s_dwo_get_price		descriptor "comment" = "dwo lấy giá bán"
+	string		s_col_get_price[]		descriptor "comment" = "cột lấy giá bán"
+	string		s_col_get_qty[]		descriptor "comment" = "cột lấy số lượng"
+	string		s_col_set_price[]		descriptor "comment" = "cột set lại giá bán"
+	string		s_col_set_qty[]		descriptor "comment" = "cột lấy số lượng"
+	string		s_dwo_set_price		descriptor "comment" = "dwo set lại giá bán"
+	string		s_f_obj_column_chk[]		descriptor "comment" = "Khi copy nếu có những cột này giống nhau thì gộp thành 1 dòng"
+	string		s_t_obj_column_chk[]		descriptor "comment" = "Khi copy nếu có những cột này giống nhau thì gộp thành 1 dòng"
+	boolean		b_return		descriptor "comment" = "bằng true nếu related là trả hàng"
+	boolean		b_copy_tax		descriptor "comment" = "true nếu có copy thuế"
+	string		s_dwo_matched_f_dwo[]		descriptor "comment" = "Chứa dwo đã match với dw from"
+	string		s_column_matched_f_dwo[]		descriptor "comment" = "Chứa cột của dwo đã match với dw from"
+	string		s_match_minus_dwo[]		descriptor "comment" = "chứa dwo minus"
+	string		s_col_filter_copy_line		descriptor "comment" = "cột chứa giá trị cần filter khi copy line( thường là cột chứa đối tượng kh/ncc)"
+	double		db_dr_cr_object		descriptor "comment" = "id đối tượng công nợ, dùng trong trường hợp post giao dịch, thuế"
+	string		s_related_obj_replace_dwo		descriptor "comment" = "dw thay thế cho dw related"
+	boolean		b_selected[]		descriptor "comment" = "TRUE chỉ copy record đc chọn"
+	boolean		b_chk_matched_qty
+end type
+

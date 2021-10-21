@@ -1,0 +1,967 @@
+﻿{
+    "BuiltinTheme": 0,
+    "Font": "FaceName:Tahoma; FontCharSet:ansi!; TextSize:12",
+    "RibbonItems": {
+        "ApplicationButton": {
+            "Text": "TTĐ",
+            "Tag": "TTĐ",
+            "Enabled": true,
+            "Visible": true,
+            "ApplicationMenu": {
+                "Master": {
+                    "Item": [
+                        {
+                            "Text": "Người dùng",
+                            "PictureName": "AccountBig!",
+                            "Shortcut": "Ctrl+Shift+A",
+                            "Tag": "Account",
+                            "Selected": "ue_MenuUserSelected",
+                            "Enabled": true,
+                            "Checked": false,
+                            "Visible": true,
+                            "Type": 0,
+                            "Item": [
+                                {
+                                    "Text": "Cài đặt người dùng",
+                                    "PictureName": "AccountSettingsBig!",
+                                    "Shortcut": "Ctrl+Shift+Alt+A",
+                                    "Tag": "Change account settings",
+                                    "Selected": "ue_MenuAccountSettingsSelected",
+                                    "Clicked": "ue_MenuAcountSettingsClicked",
+                                    "Enabled": true,
+                                    "Checked": true,
+                                    "Visible": true,
+                                    "Type": 0
+                                },
+                                {
+                                    "Text": "Đăng xuất",
+                                    "PictureName": "SignOutBig!",
+                                    "Tag": "SignOut",
+                                    "Selected": "ue_MenuSignOutSelected",
+                                    "Clicked": "ue_MenuSignOutClicked",
+                                    "Enabled": true,
+                                    "Checked": false,
+                                    "Visible": true,
+                                    "Type": 0
+                                }
+                            ]
+                        },
+                        {
+                            "Enabled": true,
+                            "Checked": false,
+                            "Visible": true,
+                            "Type": 1
+                        },
+                        {
+                            "Text": "Tùy chọn",
+                            "PictureName": "OptionsBig!",
+                            "Tag": "Options",
+                            "Selected": "ue_MenuOptionsSelected",
+                            "Clicked": "ue_MenuOptionsClicked",
+                            "Enabled": true,
+                            "Checked": false,
+                            "Visible": true,
+                            "Type": 0
+                        },
+                        {
+                            "Text": "Trợ giúp",
+                            "PictureName": "HelpBig!",
+                            "Tag": "Help",
+                            "Selected": "ue_MenuHelpSelected",
+                            "Enabled": true,
+                            "Checked": false,
+                            "Visible": true,
+                            "Type": 0,
+                            "Item": [
+                                {
+                                    "Text": "Nội dung trỡ giúp",
+                                    "PictureName": "HelpBig!",
+                                    "Tag": "HelpContents",
+                                    "Selected": "ue_MenuHelpContentsSelected",
+                                    "Clicked": "ue_MenuHelpContentsClicked",
+                                    "Enabled": true,
+                                    "Checked": false,
+                                    "Visible": true,
+                                    "Type": 0
+                                },
+                                {
+                                    "Text": "Phiên bản TTĐ",
+                                    "PictureName": "AboutBig!",
+                                    "Tag": "About app",
+                                    "Selected": "ue_MenuAboutSelected",
+                                    "Clicked": "ue_MenuAboutClicked",
+                                    "Enabled": true,
+                                    "Checked": false,
+                                    "Visible": true,
+                                    "Type": 0
+                                }
+                            ]
+                        },
+                        {
+                            "Text": "Đóng",
+                            "PictureName": "CloseBig!",
+                            "Tag": "Close",
+                            "Selected": "ue_MenuCloseSelected",
+                            "Clicked": "ue_MenuCloseClicked",
+                            "Enabled": true,
+                            "Checked": false,
+                            "Visible": true,
+                            "Type": 0
+                        }
+                    ]
+                },
+                "Recent": {
+                    "Title": "Gần đây",
+                    "Item": [
+                        {
+                            "Text": "Employees",
+                            "Tag": "Employees",
+                            "Selected": "ue_MenuEmployeesSelected",
+                            "Clicked": "ue_MenuEmployeesClicked",
+                            "Enabled": false,
+                            "Checked": false,
+                            "Visible": true,
+                            "Type": 2
+                        },
+                        {
+                            "Text": "Products",
+                            "Tag": "Products",
+                            "Selected": "ue_MenuProductsSelected",
+                            "Clicked": "ue_MenuProductsClicked",
+                            "Enabled": true,
+                            "Checked": false,
+                            "Visible": true,
+                            "Type": 2
+                        },
+                        {
+                            "Text": "Orders",
+                            "Tag": "Orders",
+                            "Selected": "ue_MenuProductsSelected",
+                            "Clicked": "ue_MenuOrdersClicked",
+                            "Enabled": true,
+                            "Checked": false,
+                            "Visible": true,
+                            "Type": 2
+                        },
+                        {
+                            "Text": "Reports",
+                            "Tag": "Reports",
+                            "Selected": "ue_MenuReportsSelected",
+                            "Clicked": "ue_MenuReportsClicked",
+                            "Enabled": true,
+                            "Checked": false,
+                            "Visible": true,
+                            "Type": 2
+                        },
+                        {
+                            "Text": "Tasks",
+                            "Tag": "Tasks",
+                            "Selected": "ue_MenuTasksSelected",
+                            "Clicked": "ue_MenuTasksClicked",
+                            "Enabled": true,
+                            "Checked": false,
+                            "Visible": true,
+                            "Type": 2
+                        }
+                    ]
+                }
+            }
+        },
+        "Category": [
+            {
+                "Text": "Nhà",
+                "Tag": "Home",
+                "Enabled": true,
+                "Visible": true,
+                "Panel": [
+                    {
+                        "Text": "Tabs",
+                        "Tag": "Tabs",
+                        "PictureName": "TabsSmall!",
+                        "Enabled": true,
+                        "Visible": true,
+                        "RibbonItem": [
+                            {
+                                "Group": {
+                                    "Enabled": true,
+                                    "NewLine": false,
+                                    "Visible": true,
+                                    "RibbonItem": [
+                                        {
+                                            "SmallButton": {
+                                                "Text": "Đóng tất cả",
+                                                "Tag": "Close all",
+                                                "PictureName": "CloseAllSmall!",
+                                                "Shortcut": "Ctrl+Shift+C",
+                                                "Clicked": "ue_tabbutton",
+                                                "Selected": "ue_ButtonCloseAllSelected",
+                                                "Enabled": true,
+                                                "Visible": true,
+                                                "Checked": false,
+                                                "DefaultCommand": true
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "Group": {
+                                    "Enabled": true,
+                                    "NewLine": true,
+                                    "Visible": true,
+                                    "RibbonItem": [
+                                        {
+                                            "SmallButton": {
+                                                "Text": "Chi tiết phiếu",
+                                                "Tag": "Close",
+                                                "PictureName": "DetailsBig!",
+                                                "Clicked": "ue_tabbutton",
+                                                "Selected": "ue_ButtonCloseSelected",
+                                                "Enabled": true,
+                                                "Visible": true,
+                                                "Checked": false,
+                                                "DefaultCommand": true
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "Text": "Thường dùng",
+                        "Tag": "Boards",
+                        "PictureName": "BoardSmall!",
+                        "Enabled": true,
+                        "Visible": true,
+                        "RibbonItem": [
+                            {
+                                "LargeButton": {
+                                    "Text": "Employees",
+                                    "Tag": "Employees",
+                                    "PictureName": "EmployeeBig!",
+                                    "PowerTipDescription": "Employee infomation",
+                                    "PowerTipText": "Employees",
+                                    "Clicked": "ue_ButtonEmployeesClicked",
+                                    "Selected": "ue_ButtonEmployeesSelected",
+                                    "Enabled": false,
+                                    "Visible": true,
+                                    "Checked": false,
+                                    "DefaultCommand": true
+                                }
+                            },
+                            {
+                                "LargeButton": {
+                                    "Text": "Products",
+                                    "Tag": "Products",
+                                    "PictureName": "ProductsBig!",
+                                    "PowerTipDescription": "Product infomation",
+                                    "PowerTipText": "Products",
+                                    "Clicked": "ue_ButtonProductsClicked",
+                                    "Selected": "ue_ButtonProductsSelected",
+                                    "Enabled": true,
+                                    "Visible": true,
+                                    "Checked": false,
+                                    "DefaultCommand": true
+                                }
+                            },
+                            {
+                                "LargeButton": {
+                                    "Text": "Orders",
+                                    "Tag": "Orders",
+                                    "PictureName": "OrdersBig!",
+                                    "PowerTipDescription": "Order infomation",
+                                    "PowerTipText": "Orders",
+                                    "Clicked": "ue_ButtonOrdersClicked",
+                                    "Selected": "ue_ButtonOrdersSelected",
+                                    "Enabled": true,
+                                    "Visible": true,
+                                    "Checked": false,
+                                    "DefaultCommand": true
+                                }
+                            },
+                            {
+                                "LargeButton": {
+                                    "Text": "Reports",
+                                    "Tag": "Reports",
+                                    "PictureName": "ReportsBig!",
+                                    "PowerTipDescription": "Report infomation",
+                                    "PowerTipText": "Reports",
+                                    "Clicked": "ue_ButtonReportsClicked",
+                                    "Selected": "ue_ButtonReportsSelected",
+                                    "Enabled": true,
+                                    "Visible": true,
+                                    "Checked": false,
+                                    "DefaultCommand": true
+                                }
+                            },
+                            {
+                                "LargeButton": {
+                                    "Text": "Tasks",
+                                    "Tag": "Tasks",
+                                    "PictureName": "TasksBig!",
+                                    "PowerTipDescription": "Task infomation",
+                                    "PowerTipText": "Tasks",
+                                    "Clicked": "ue_ButtonTasksClicked",
+                                    "Selected": "ue_ButtonTasksSelected",
+                                    "Enabled": true,
+                                    "Visible": true,
+                                    "Checked": false,
+                                    "DefaultCommand": true
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "Text": "Actions",
+                        "Tag": "Actions",
+                        "PictureName": "ActionsSmall!",
+                        "Enabled": true,
+                        "Visible": true,
+                        "RibbonItem": [
+                            {
+                                "Group": {
+                                    "Enabled": true,
+                                    "NewLine": false,
+                                    "Visible": true,
+                                    "RibbonItem": [
+                                        {
+                                            "SmallButton": {
+                                                "PictureName": "AddSmall!",
+                                                "PowerTipDescription": "Thêm mới",
+                                                "Clicked": "ue_tabbutton",
+                                                "Enabled": true,
+                                                "Visible": true,
+                                                "Checked": false,
+                                                "DefaultCommand": true
+                                            }
+                                        },
+                                        {
+                                            "SmallButton": {
+                                                "PictureName": "DeleteSmall!",
+                                                "PowerTipDescription": "Xóa",
+                                                "Clicked": "ue_tabbutton",
+                                                "Enabled": true,
+                                                "Visible": true,
+                                                "Checked": false,
+                                                "DefaultCommand": true
+                                            }
+                                        },
+                                        {
+                                            "SmallButton": {
+                                                "PictureName": "InsertMenuItem!",
+                                                "PowerTipDescription": "Chèn dòng",
+                                                "Clicked": "ue_tabbutton",
+                                                "Enabled": true,
+                                                "Visible": true,
+                                                "Checked": false,
+                                                "DefaultCommand": true
+                                            }
+                                        },
+                                        {
+                                            "SmallButton": {
+                                                "PictureName": "ModifySmall!",
+                                                "PowerTipDescription": "Chỉnh sửa",
+                                                "Clicked": "ue_tabbutton",
+                                                "Enabled": true,
+                                                "Visible": true,
+                                                "Checked": false,
+                                                "DefaultCommand": true
+                                            }
+                                        },
+                                        {
+                                            "SmallButton": {
+                                                "PictureName": "SaveSmall!",
+                                                "PowerTipDescription": "Lưu",
+                                                "Clicked": "ue_tabbutton",
+                                                "Enabled": true,
+                                                "Visible": true,
+                                                "Checked": false,
+                                                "DefaultCommand": true
+                                            }
+                                        },
+                                        {
+                                            "SmallButton": {
+                                                "PictureName": "Edit!",
+                                                "PowerTipDescription": "Ghi sổ",
+                                                "Clicked": "ue_tabbutton",
+                                                "Enabled": true,
+                                                "Visible": true,
+                                                "Checked": false,
+                                                "DefaultCommand": true
+                                            }
+                                        },
+                                        {
+                                            "SmallButton": {
+                                                "PictureName": "Custom080!",
+                                                "PowerTipDescription": "Hủy",
+                                                "Clicked": "ue_tabbutton",
+                                                "Enabled": true,
+                                                "Visible": true,
+                                                "Checked": false,
+                                                "DefaultCommand": true
+                                            }
+                                        },
+                                        {
+                                            "SmallButton": {
+                                                "PictureName": "RefreshBig!",
+                                                "PowerTipDescription": "Nạp lại dữ liệu",
+                                                "Clicked": "ue_tabbutton",
+                                                "Enabled": true,
+                                                "Visible": true,
+                                                "Checked": false,
+                                                "DefaultCommand": true
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "Group": {
+                                    "Enabled": true,
+                                    "NewLine": true,
+                                    "Visible": true,
+                                    "RibbonItem": [
+                                        {
+                                            "SmallButton": {
+                                                "PictureName": "NavFirstSmall!",
+                                                "PowerTipDescription": "Về dòng đầu",
+                                                "Clicked": "ue_tabbutton",
+                                                "Enabled": true,
+                                                "Visible": true,
+                                                "Checked": false,
+                                                "DefaultCommand": true
+                                            }
+                                        },
+                                        {
+                                            "SmallButton": {
+                                                "PictureName": "NavPrevSmall!",
+                                                "PowerTipDescription": "Về dòng sau",
+                                                "Clicked": "ue_tabbutton",
+                                                "Enabled": true,
+                                                "Visible": true,
+                                                "Checked": false,
+                                                "DefaultCommand": true
+                                            }
+                                        },
+                                        {
+                                            "SmallButton": {
+                                                "PictureName": "NavNextSmall!",
+                                                "PowerTipDescription": "Tới dòng trước",
+                                                "Clicked": "ue_tabbutton",
+                                                "Enabled": true,
+                                                "Visible": true,
+                                                "Checked": false,
+                                                "DefaultCommand": true
+                                            }
+                                        },
+                                        {
+                                            "SmallButton": {
+                                                "PictureName": "NavLastSmall!",
+                                                "PowerTipDescription": "Tới dòng cuối",
+                                                "Clicked": "ue_tabbutton",
+                                                "Enabled": true,
+                                                "Visible": true,
+                                                "Checked": false,
+                                                "DefaultCommand": true
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "Group": {
+                                    "Tag": "Filter",
+                                    "Enabled": true,
+                                    "NewLine": false,
+                                    "Visible": true,
+                                    "RibbonItem": [
+                                        {
+                                            "SmallButton": {
+                                                "PictureName": "FilterSmall!",
+                                                "PowerTipDescription": "Lọc dữ liệu",
+                                                "Clicked": "ue_tabbutton",
+                                                "Enabled": true,
+                                                "Visible": true,
+                                                "Checked": false,
+                                                "DefaultCommand": true
+                                            }
+                                        },
+                                        {
+                                            "SmallButton": {
+                                                "PictureName": "LibraryList!",
+                                                "PowerTipDescription": "Bộ sổ",
+                                                "Clicked": "ue_tabbutton",
+                                                "Enabled": true,
+                                                "Visible": true,
+                                                "Checked": false,
+                                                "DefaultCommand": true
+                                            }
+                                        },
+                                        {
+                                            "SmallButton": {
+                                                "PictureName": "AttachBig!",
+                                                "PowerTipDescription": "Đính kèm",
+                                                "Clicked": "ue_tabbutton",
+                                                "Enabled": true,
+                                                "Visible": true,
+                                                "Checked": false,
+                                                "DefaultCommand": true
+                                            }
+                                        },
+                                        {
+                                            "SmallButton": {
+                                                "PictureName": "HistoryBig!",
+                                                "PowerTipDescription": "Lược sử cập nhật",
+                                                "Clicked": "ue_tabbutton",
+                                                "Enabled": true,
+                                                "Visible": true,
+                                                "Checked": false,
+                                                "DefaultCommand": true
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "Text": "Copy",
+                        "Tag": "Print",
+                        "PictureName": "CopyBig!",
+                        "Enabled": true,
+                        "Visible": true,
+                        "RibbonItem": [
+                            {
+                                "SmallButton": {
+                                    "Text": "Copy từ phiếu",
+                                    "PictureName": "SendBig!",
+                                    "Clicked": "ue_ButtonPreviewClicked",
+                                    "Enabled": true,
+                                    "Visible": true,
+                                    "Checked": false,
+                                    "DefaultCommand": true,
+                                    "Menu": {
+                                        "Item": [
+                                            {
+                                                "Text": "Employees",
+                                                "PictureName": "EmployeeSmall!",
+                                                "Tag": "Employees",
+                                                "Selected": "ue_MenuEmployeesSelected",
+                                                "Clicked": "ue_MenuEmployeesClicked",
+                                                "Enabled": true,
+                                                "Checked": false,
+                                                "Visible": true,
+                                                "Type": 0
+                                            }
+                                        ]
+                                    }
+                                }
+                            },
+                            {
+                                "SmallButton": {
+                                    "Text": "Tạo Phiếu",
+                                    "PictureName": "CopyToBig!",
+                                    "Clicked": "ue_ButtonPreviewClicked",
+                                    "Enabled": true,
+                                    "Visible": true,
+                                    "Checked": false,
+                                    "DefaultCommand": true,
+                                    "Menu": {
+                                        "Item": [
+                                            {
+                                                "Text": "Employees",
+                                                "PictureName": "EmployeeSmall!",
+                                                "Tag": "Employees",
+                                                "Selected": "ue_MenuEmployeesSelected",
+                                                "Clicked": "ue_MenuEmployeesClicked",
+                                                "Enabled": true,
+                                                "Checked": false,
+                                                "Visible": true,
+                                                "Type": 0
+                                            }
+                                        ]
+                                    }
+                                }
+                            },
+                            {
+                                "SmallButton": {
+                                    "Text": "Nhân bản",
+                                    "PictureName": "UndoBig!",
+                                    "Clicked": "ue_ButtonPreviewClicked",
+                                    "Enabled": true,
+                                    "Visible": true,
+                                    "Checked": false,
+                                    "DefaultCommand": true
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "Text": "In",
+                        "Tag": "Print",
+                        "PictureName": "PrintSmall!",
+                        "Enabled": true,
+                        "Visible": true,
+                        "RibbonItem": [
+                            {
+                                "SmallButton": {
+                                    "Text": "Xem trước",
+                                    "PictureName": "PreviewSmall!",
+                                    "Clicked": "ue_ButtonPreviewClicked",
+                                    "Enabled": true,
+                                    "Visible": true,
+                                    "Checked": false,
+                                    "DefaultCommand": true,
+                                    "Menu": {
+                                        "Item": [
+                                            {
+                                                "Text": "Employees",
+                                                "PictureName": "EmployeeSmall!",
+                                                "Tag": "Employees",
+                                                "Selected": "ue_MenuEmployeesSelected",
+                                                "Clicked": "ue_MenuEmployeesClicked",
+                                                "Enabled": true,
+                                                "Checked": false,
+                                                "Visible": true,
+                                                "Type": 0
+                                            }
+                                        ]
+                                    }
+                                }
+                            },
+                            {
+                                "SmallButton": {
+                                    "Text": "In",
+                                    "PictureName": "PrintBig!",
+                                    "Clicked": "ue_ButtonPrintClicked",
+                                    "Enabled": true,
+                                    "Visible": true,
+                                    "Checked": false,
+                                    "DefaultCommand": true
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "Text": "Đối tượng liên quan",
+                        "Tag": "Print",
+                        "PictureName": "OrdersBig!",
+                        "Enabled": true,
+                        "Visible": true,
+                        "RibbonItem": [
+                            {
+                                "LargeButton": {
+                                    "Text": "PO",
+                                    "PictureName": "OrdersBig!",
+                                    "Clicked": "ue_ButtonPrintClicked",
+                                    "Enabled": true,
+                                    "Visible": true,
+                                    "Checked": false,
+                                    "DefaultCommand": true
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "Text": "Duyệt",
+                        "Tag": "Print",
+                        "PictureName": "InkEdit!",
+                        "Enabled": true,
+                        "Visible": true,
+                        "RibbonItem": [
+                            {
+                                "SmallButton": {
+                                    "Text": "Gửi duyệt",
+                                    "PictureName": "SendBig!",
+                                    "Clicked": "ue_ButtonPreviewClicked",
+                                    "Enabled": true,
+                                    "Visible": true,
+                                    "Checked": false,
+                                    "DefaultCommand": true
+                                }
+                            },
+                            {
+                                "SmallButton": {
+                                    "Text": "Duyệt",
+                                    "PictureName": "Custom038a!",
+                                    "Clicked": "ue_ButtonPreviewClicked",
+                                    "Enabled": true,
+                                    "Visible": true,
+                                    "Checked": false,
+                                    "DefaultCommand": true
+                                }
+                            },
+                            {
+                                "SmallButton": {
+                                    "Text": "Trả duyệt",
+                                    "PictureName": "UndoBig!",
+                                    "Clicked": "ue_ButtonPreviewClicked",
+                                    "Enabled": true,
+                                    "Visible": true,
+                                    "Checked": false,
+                                    "DefaultCommand": true
+                                }
+                            },
+                            {
+                                "SmallButton": {
+                                    "Text": "Lược sử",
+                                    "PictureName": "HistoryBig!",
+                                    "Clicked": "ue_ButtonPreviewClicked",
+                                    "Enabled": true,
+                                    "Visible": true,
+                                    "Checked": false,
+                                    "DefaultCommand": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "Text": "Nơi làm",
+                "Tag": "Workspaces",
+                "Enabled": true,
+                "Visible": true,
+                "Panel": [
+                    {
+                        "Text": "Cung ứng",
+                        "Tag": "Product Management",
+                        "PictureName": "ProductsSmall!",
+                        "Enabled": true,
+                        "Visible": true,
+                        "RibbonItem": [
+                            {
+                                "LargeButton": {
+                                    "Text": "Sản phẩm-dịch vụ",
+                                    "Tag": "pd",
+                                    "PictureName": "ProductsBig!",
+                                    "Clicked": "ue_tabbutton",
+                                    "Enabled": true,
+                                    "Visible": true,
+                                    "Checked": false,
+                                    "DefaultCommand": true
+                                }
+                            },
+                            {
+                                "LargeButton": {
+                                    "Text": "QL kho",
+                                    "Tag": "im",
+                                    "PictureName": "Pics\\fork4.png",
+                                    "Clicked": "ue_tabbutton",
+                                    "Enabled": true,
+                                    "Visible": true,
+                                    "Checked": false,
+                                    "DefaultCommand": true
+                                }
+                            },
+                            {
+                                "LargeButton": {
+                                    "Text": "Bán hàng",
+                                    "Tag": "sm",
+                                    "PictureName": "Pics\\budget.png",
+                                    "Clicked": "ue_tabbutton",
+                                    "Enabled": true,
+                                    "Visible": true,
+                                    "Checked": false,
+                                    "DefaultCommand": true
+                                }
+                            },
+                            {
+                                "LargeButton": {
+                                    "Text": "Thu mua",
+                                    "Tag": "pm",
+                                    "PictureName": "Pics\\purchase.png",
+                                    "Clicked": "ue_tabbutton",
+                                    "Enabled": true,
+                                    "Visible": true,
+                                    "Checked": false,
+                                    "DefaultCommand": true
+                                }
+                            },
+                            {
+                                "LargeButton": {
+                                    "Text": "Sản xuất",
+                                    "Tag": "pp",
+                                    "PictureName": "\\Pics\\factory_yellow_2_256.png",
+                                    "Clicked": "ue_tabbutton",
+                                    "Enabled": true,
+                                    "Visible": true,
+                                    "Checked": false,
+                                    "DefaultCommand": true
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "Text": "Kế toán",
+                        "Tag": "Order Management",
+                        "PictureName": "OrdersSmall!",
+                        "Enabled": true,
+                        "Visible": true,
+                        "RibbonItem": [
+                            {
+                                "LargeButton": {
+                                    "Text": "Kế toán phải trả",
+                                    "Tag": "fmap",
+                                    "PictureName": "CustomerBig!",
+                                    "Clicked": "ue_tabbutton",
+                                    "Enabled": true,
+                                    "Visible": true,
+                                    "Checked": false,
+                                    "DefaultCommand": true
+                                }
+                            },
+                            {
+                                "LargeButton": {
+                                    "Text": "Kế toán phải thu",
+                                    "Tag": "fmar",
+                                    "PictureName": "OrdersBig!",
+                                    "Clicked": "ue_tabbutton",
+                                    "Enabled": true,
+                                    "Visible": true,
+                                    "Checked": false,
+                                    "DefaultCommand": true
+                                }
+                            },
+                            {
+                                "LargeButton": {
+                                    "Text": "Nguồn tiền",
+                                    "Tag": "fmbc",
+                                    "PictureName": "OrdersBig!",
+                                    "Clicked": "ue_tabbutton",
+                                    "Enabled": true,
+                                    "Visible": true,
+                                    "Checked": false,
+                                    "DefaultCommand": true
+                                }
+                            },
+                            {
+                                "LargeButton": {
+                                    "Text": "Tài sản cố định",
+                                    "Tag": "fmfa",
+                                    "PictureName": "OrdersBig!",
+                                    "Clicked": "ue_tabbutton",
+                                    "Enabled": true,
+                                    "Visible": true,
+                                    "Checked": false,
+                                    "DefaultCommand": true
+                                }
+                            },
+                            {
+                                "LargeButton": {
+                                    "Text": "Kế toán tổng hợp",
+                                    "Tag": "fmgl",
+                                    "PictureName": "OrdersBig!",
+                                    "Clicked": "ue_tabbutton",
+                                    "Enabled": true,
+                                    "Visible": true,
+                                    "Checked": false,
+                                    "DefaultCommand": true
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "Text": "Khác",
+                        "Tag": "Product Management",
+                        "PictureName": "ProductsSmall!",
+                        "Enabled": true,
+                        "Visible": true,
+                        "RibbonItem": [
+                            {
+                                "LargeButton": {
+                                    "Text": "Nhân sự",
+                                    "Tag": "hr",
+                                    "PictureName": "ProductsBig!",
+                                    "Clicked": "ue_tabbutton",
+                                    "Enabled": true,
+                                    "Visible": true,
+                                    "Checked": false,
+                                    "DefaultCommand": true
+                                }
+                            },
+                            {
+                                "LargeButton": {
+                                    "Text": "Hệ thống",
+                                    "PictureName": "DepartmentBig!",
+                                    "Clicked": "ue_tabbutton",
+                                    "Enabled": true,
+                                    "Visible": true,
+                                    "Checked": false,
+                                    "DefaultCommand": true,
+                                    "Menu": {
+                                        "Item": [
+                                            {
+                                                "Text": "QT dữ liệu",
+                                                "PictureName": "EmployeeSmall!",
+                                                "Tag": "adbu",
+                                                "Selected": "ue_MenuEmployeesSelected",
+                                                "Clicked": "ue_tabbutton",
+                                                "Enabled": true,
+                                                "Checked": false,
+                                                "Visible": true,
+                                                "Type": 0
+                                            },
+                                            {
+                                                "Text": "QT hệ thông",
+                                                "PictureName": "EmployeeSmall!",
+                                                "Tag": "adsy",
+                                                "Selected": "ue_MenuEmployeesSelected",
+                                                "Clicked": "ue_tabbutton",
+                                                "Enabled": true,
+                                                "Checked": false,
+                                                "Visible": true,
+                                                "Type": 0
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "TabButton": [
+            {
+                "Text": "Company",
+                "Tag": "Company",
+                "PictureName": "SelectApplication1!",
+                "PowerTipDescription": "Công ty",
+                "PowerTipText": "Company",
+                "Selected": "ue_TabButtonMinimizeSelected",
+                "Clicked": "ue_tabbutton",
+                "Enabled": true,
+                "Checked": false,
+                "DefaultCommand": true,
+                "Visible": true
+            },
+            {
+                "Text": "Branch",
+                "Tag": "Branch",
+                "PictureName": "DepartmentBig!",
+                "PowerTipDescription": "Chi nhánh",
+                "PowerTipText": "Banch",
+                "Selected": "ue_TabButtonMinimizeSelected",
+                "Clicked": "ue_tabbutton",
+                "Enabled": true,
+                "Checked": false,
+                "DefaultCommand": true,
+                "Visible": true
+            },
+            {
+                "Text": "Menu",
+                "Tag": "Menu",
+                "PictureName": "Menu1!",
+                "PowerTipText": "Menu",
+                "Selected": "ue_TabButtonHelpSelected",
+                "Clicked": "ue_tabbutton",
+                "Enabled": true,
+                "Checked": false,
+                "DefaultCommand": true,
+                "Visible": true
+            }
+        ]
+    }
+}

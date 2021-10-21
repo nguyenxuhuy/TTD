@@ -1,0 +1,184 @@
+﻿$PBExportHeader$d_c_w_sal_invoice_report_abm.srd
+$PBExportComments$Báo cáo : Hóa đơn giá trị gia tăng (bán hàng)
+release 10;
+datawindow(units=3 timer_interval=0 color=67108864 processing=0 HTMLDW=no print.printername="" print.documentname="" print.orientation = 0 print.margin.left = 635 print.margin.right = 635 print.margin.top = 635 print.margin.bottom = 635 print.paper.source = 0 print.paper.size = 0 print.canusedefaultprinter=yes print.prompt=no print.buttons=no print.preview.buttons=no print.cliptext=no print.overrideprintjob=no print.collate=yes hidegrayline=no )
+header(height=13361 color="536870912" )
+summary(height=4550 color="536870912" )
+footer(height=0 color="536870912" )
+detail(height=635 color="536870912"  height.autosize=yes)
+table(column=(type=char(8) updatewhereclause=yes name=invoice_date dbname="invoice_date" )
+ column=(type=number updatewhereclause=yes name=line_item dbname="line_item" )
+ column=(type=char(20) updatewhereclause=yes name=unit_code dbname="unit_code" )
+ column=(type=number updatewhereclause=yes name=qty dbname="qty" )
+ column=(type=number updatewhereclause=yes name=compute_0005 dbname="compute_0005" )
+ column=(type=number updatewhereclause=yes name=price dbname="price" )
+ column=(type=number updatewhereclause=yes name=amount dbname="amount" )
+ column=(type=char(20) updatewhereclause=yes name=invoice_code dbname="invoice_code" )
+ column=(type=char(20) updatewhereclause=yes name=invoice_sign dbname="invoice_sign" )
+ column=(type=char(20) updatewhereclause=yes name=invoice_number dbname="invoice_number" )
+ column=(type=number updatewhereclause=yes name=sal_invoice_id dbname="sal_invoice_id" )
+ column=(type=number updatewhereclause=yes name=tax_amount dbname="tax_amount" )
+ column=(type=number updatewhereclause=yes name=vat_rate dbname="vat_rate" )
+ column=(type=char(250) updatewhereclause=yes name=cust_name dbname="cust_name" )
+ column=(type=char(250) updatewhereclause=yes name=cust_site_name dbname="cust_site_name" )
+ column=(type=char(4000) updatewhereclause=yes name=cus_add_text dbname="cus_add_text" )
+ column=(type=number updatewhereclause=yes name=payment_method dbname="payment_method" )
+ column=(type=char(30) updatewhereclause=yes name=tax_code dbname="tax_code" )
+ column=(type=number updatewhereclause=yes name=cust_id dbname="cust_id" )
+ column=(type=char(80) updatewhereclause=yes name=company_name dbname="company_name" )
+ column=(type=char(4000) updatewhereclause=yes name=com_add_text dbname="com_add_text" )
+ column=(type=char(50) updatewhereclause=yes name=tel dbname="tel" )
+ column=(type=char(30) updatewhereclause=yes name=tax_code_1 dbname="tax_code" )
+ column=(type=number updatewhereclause=yes name=company_id dbname="company_id" )
+ column=(type=char(50) updatewhereclause=yes name=method_desc dbname="method_desc" )
+ column=(type=char(500) updatewhereclause=yes name=line_desc dbname="line_desc" )
+ column=(type=char(30) updatewhereclause=yes name=bank_account dbname="bank_account" )
+ column=(type=number updatewhereclause=yes name=exchange_rate dbname="exchange_rate" )
+ column=(type=datetime updatewhereclause=yes name=due_date dbname="due_date" )
+ column=(type=decimal(0) updatewhereclause=yes name=days dbname="days" )
+ column=(type=char(50) updatewhereclause=yes name=cust02 dbname="cust02" )
+ column=(type=number updatewhereclause=yes name=cust_num_01 dbname="cust_num_01" )
+ retrieve="SELECT    a.invoice_date,a.LINE_ITEM, a.unit_code, 
+             a.QTY, 
+             pak_currency.f_get_base_currency(a.company_id), 
+            decode(a.QTY, 0, 0, a.AMOUNT * a.exchange_rate/a.QTY)  price, 
+             a.amount * a.exchange_rate  AS AMOUNT,a.INVOICE_CODE, 
+             a.INVOICE_SIGN,a.INVOICE_NUMBER,a.SAL_INVOICE_ID ,
+             f_round( pak_currency.f_get_base_currency(a.company_id),
+             nvl(( select fm_sal_invoice_hdr_tax.LEDGER_CORRECTION_AMT
+                 from fm_sal_invoice_hdr_tax, fm_posting_profile_hdr
+                where fm_sal_invoice_hdr_tax.sal_invoice_id = a.sal_invoice_id                   
+                  and fm_sal_invoice_hdr_tax.posting_profile_id = fm_posting_profile_hdr.posting_profile_id
+                  and fm_posting_profile_hdr.profile_code like '%VAT%'
+                  and rownum < 2
+                ), 0) ) tax_amount, 
+             a.vat_rate,
+             b.CUST_NAME, a.CUST_SITE_NAME,  
+             f_replace(a.ADD_TEXT, ' ,', '') cus_add_text, 
+             b.PAYMENT_METHOD,b.TAX_CODE,b.CUST_ID, 
+             c.COMPANY_NAME, f_replace(c.ADD_TEXT, ' ,', '') com_add_text, 
+             c.TEL, c.TAX_CODE,c.COMPANY_ID, B.METHOD_DESC, a.line_desc,
+             b.bank_account,
+             a.exchange_rate,
+             a.due_date,
+                a.days,
+            a.CUST02,a.cust_num_01
+FROM 
+      (      
+       select to_char(fm_sal_invoice_hdr.invoice_date, 'ddmmyyyy')invoice_date, 
+              fm_sal_invoice_hdr.company_id, fm_sal_invoice_line.LINE_ITEM, 
+              fm_sal_invoice_line.UNIT_ID, sum(fm_sal_invoice_line.QTY) qty, 
+              fm_sal_invoice_line.PRICE, sum( fm_sal_invoice_line.AMOUNT) amount,
+              fm_sal_invoice_hdr.INVOICE_CODE, fm_sal_invoice_hdr.INVOICE_SIGN,
+              fm_sal_invoice_hdr.INVOICE_NUMBER,fm_sal_invoice_hdr.SAL_INVOICE_ID,
+              fm_sal_invoice_hdr.CUST_ID,im_unit.unit_code,
+              fm_sal_invoice_line.vat_rate, fm_sal_invoice_line.line_desc,
+        fm_sal_invoice_line.cust_num_01,
+              trunc(fm_sal_invoice_hdr.due_date) due_date,
+              nvl(fm_sal_invoice_hdr.exchange_rate, 1) exchange_rate,
+             fm_sal_invoice_hdr.trans_currency,                
+             fm_customer_site.cust_site_name,
+             erp_add_combination.add_text,
+             fm_payment_term.days,
+            fm_sal_invoice_hdr.CUST02
+       from erp_add_combination,
+            fm_sal_invoice_line, 
+            fm_sal_invoice_hdr,
+            im_unit,
+            fm_customer_site,
+            fm_payment_term
+       where fm_sal_invoice_hdr.SAL_INVOICE_ID = fm_sal_invoice_line.SAL_INVOICE_ID
+         and fm_sal_invoice_line.UNIT_ID = im_unit.unit_id(+)
+         and fm_sal_invoice_hdr.cust_site_id = fm_customer_site.cust_site_id
+         and fm_customer_site.ADDRESS_ID =  erp_add_combination.ADD_COMBINATION_ID(+)
+         and fm_sal_invoice_hdr.payment_term = fm_payment_term.term_id(+)
+         and fm_sal_invoice_hdr.company_id = fm_payment_term.company_id(+)
+        and NVL(fm_sal_invoice_line.foc_yn,'N') = 'N'
+        
+        group by to_char(fm_sal_invoice_hdr.invoice_date, 'ddmmyyyy'), 
+              fm_sal_invoice_hdr.company_id, fm_sal_invoice_line.LINE_ITEM, 
+              fm_sal_invoice_line.UNIT_ID,
+              fm_sal_invoice_line.PRICE,
+              fm_sal_invoice_hdr.INVOICE_CODE, fm_sal_invoice_hdr.INVOICE_SIGN,
+              fm_sal_invoice_hdr.INVOICE_NUMBER,fm_sal_invoice_hdr.SAL_INVOICE_ID,
+              fm_sal_invoice_hdr.CUST_ID,im_unit.unit_code,
+              fm_sal_invoice_line.vat_rate, fm_sal_invoice_line.line_desc,
+              fm_sal_invoice_line.cust_num_01,
+              trunc(fm_sal_invoice_hdr.due_date),
+              nvl(fm_sal_invoice_hdr.exchange_rate, 1),
+             fm_sal_invoice_hdr.trans_currency,                
+             fm_customer_site.cust_site_name,
+             erp_add_combination.add_text,
+             fm_payment_term.days,
+            fm_sal_invoice_hdr.CUST02
+      )A,
+      (
+       select fm_customer.CUST_NAME,
+              fm_customer.PAYMENT_METHOD,
+              fm_customer.TAX_CODE,
+              fm_customer.CUST_ID, 
+              fm_customer.COMPANY_ID,
+              fm_payment_method.METHOD_DESC,
+              fm_cust_bank.bank_account
+       from  fm_customer, 
+             fm_payment_method,
+             fm_cust_bank
+       where fm_customer.PAYMENT_METHOD= fm_payment_method.METHOD_ID(+)
+         AND fm_customer.CUST_ID = fm_cust_bank.CUST_ID(+)
+      )B,
+      (
+       select erp_legal_company.COMPANY_NAME, 
+              erp_add_combination.ADD_TEXT, 
+              erp_branch.TEL, 
+              erp_legal_company.TAX_CODE,
+              erp_legal_company.COMPANY_ID
+         from erp_legal_company, 
+              erp_branch, 
+              erp_add_combination
+        where erp_legal_company.COMPANY_ID = erp_branch.COMPANY_ID
+          AND erp_branch.ADDRESS_ID =  erp_add_combination.ADD_COMBINATION_ID(+)
+          AND erp_branch.ADDRESS_TYPE = 1 
+      )C  
+    WHERE a.COMPANY_ID = c.COMPANY_ID(+)
+         AND a.CUST_ID = b.CUST_ID(+)
+        AND a.sal_invoice_id = :ai_sal_invoice_id" arguments=(("ai_sal_invoice_id", number))  sort="cust_num_01 A compute_1 A " )
+group(level=1 header.height=0 trailer.height=476 by=("group" ) header.color="536870912" trailer.color="536870912" )
+column(band=header id=31 alignment="0" tabsequence=32766 border="0" color="33554432" x="2910" y="6773" height="608" width="14922" format="[general]" html.valueishtml="0"  name=cust02 visible="1" edit.limit=50 edit.case=any edit.focusrectangle=no edit.autoselect=yes edit.autohscroll=yes  font.face="Tahoma" font.height="-9" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="2" background.color="1073741824" )
+column(band=header id=14 alignment="0" tabsequence=32766 border="0" color="33554432" x="2910" y="7725" height="608" width="14922" format="[general]" html.valueishtml="0"  name=cust_name visible="1" height.autosize=yes edit.limit=250 edit.case=any edit.focusrectangle=no edit.autoselect=yes edit.autohscroll=yes  font.face="Tahoma" font.height="-9" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="2" background.color="1073741824" )
+column(band=header id=18 alignment="0" tabsequence=32766 border="0" color="33554432" x="2910" y="9763" height="608" width="5556" format="[general]" html.valueishtml="0"  name=tax_code visible="1" edit.limit=30 edit.case=any edit.focusrectangle=no edit.autoselect=yes edit.autohscroll=yes  font.face="Tahoma" font.height="-9" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="2" background.color="1073741824" )
+column(band=header id=27 alignment="0" tabsequence=32766 border="0" color="33554432" x="11006" y="9763" height="608" width="6693" format="[general]" html.valueishtml="0"  name=bank_account visible="1" edit.limit=30 edit.case=any edit.focusrectangle=no edit.autoselect=yes edit.autohscroll=yes  font.face="Tahoma" font.height="-9" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="2" background.color="1073741824" )
+column(band=header id=30 alignment="0" tabsequence=32766 border="0" color="33554432" x="15160" y="10742" height="608" width="1481" format="[general]" html.valueishtml="0"  name=days visible="1" edit.limit=0 edit.case=any edit.focusrectangle=no edit.autoselect=yes edit.autohscroll=yes  font.face="Tahoma" font.height="-9" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="2" background.color="1073741824" )
+column(band=header id=16 alignment="0" tabsequence=32766 border="0" color="33554432" x="2910" y="8731" height="608" width="14922" format="[general]" html.valueishtml="0"  name=cus_add_text visible="1" height.autosize=yes edit.limit=4000 edit.case=any edit.focusrectangle=no edit.autoselect=yes edit.autohscroll=yes  font.face="Tahoma" font.height="-9" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="2" background.color="1073741824" )
+compute(band=header alignment="0" expression="mid( invoice_date,1,2 )"border="0" color="33554432" x="7011" y="5873" height="502" width="1058" format="[General]" html.valueishtml="0"  name=compute_13 visible="1"  font.face="Tahoma" font.height="-9" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="2" background.color="1073741824" )
+compute(band=header alignment="0" expression="mid( invoice_date,3,2 )"border="0" color="33554432" x="9868" y="5873" height="502" width="846" format="[General]" html.valueishtml="0"  name=compute_14 visible="1"  font.face="Tahoma" font.height="-9" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="2" background.color="1073741824" )
+compute(band=header alignment="0" expression="mid( invoice_date,5,4 )"border="0" color="33554432" x="12144" y="5873" height="502" width="1058" format="[General]" html.valueishtml="0"  name=compute_15 visible="1"  font.face="Tahoma" font.height="-9" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="2" background.color="1073741824" )
+column(band=detail id=32 alignment="2" tabsequence=32766 border="0" color="33554432" x="79" y="0" height="635" width="899" format="[general]" html.valueishtml="0"  name=cust_num_01 visible="1" edit.limit=0 edit.case=any edit.focusrectangle=no edit.autoselect=no  font.face="Tahoma" font.height="-9" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="2" background.color="1073741824" )
+compute(band=detail alignment="2" expression="getrow()"border="0" color="33554432" x="79" y="0" height="608" width="899" format="[GENERAL]" html.valueishtml="0"  name=compute_1 visible="1~tif( isnull(line_desc),0,if (isnull(cust_num_01),1,0) )"  font.face="Tahoma" font.height="-9" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="2" background.color="1073741824" )
+column(band=detail id=3 alignment="2" tabsequence=32766 border="0" color="33554432" x="8334" y="0" height="608" width="1322" format="[general]" html.valueishtml="0"  name=unit_code visible="1" edit.limit=15 edit.case=any edit.focusrectangle=no edit.autoselect=yes edit.autohscroll=yes  font.face="Tahoma" font.height="-9" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="2" background.color="1073741824" )
+column(band=detail id=4 alignment="1" tabsequence=32766 border="0" color="33554432" x="9763" y="0" height="608" width="1402" format="#,###.###" html.valueishtml="0"  name=qty visible="1" edit.limit=0 edit.case=any edit.focusrectangle=no edit.autoselect=yes edit.autohscroll=yes  font.face="Tahoma" font.height="-9" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="2" background.color="1073741824" )
+compute(band=detail alignment="1" expression="gf_format_vnnumber(string(price,'###,###,###.###'))"border="0" color="33554432" x="11297" y="0" height="608" width="2831" format="[General]" html.valueishtml="0"  name=compute_2 visible="1"  font.face="Tahoma" font.height="-9" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="2" background.color="1073741824" )
+compute(band=detail alignment="1" expression="gf_format_vnnumber(string(amount,'###,###,###.###'))"border="0" color="33554432" x="14816" y="0" height="608" width="2989" format="[General]" html.valueishtml="0"  name=compute_3 visible="1"  font.face="Tahoma" font.height="-9" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="2" background.color="1073741824" )
+compute(band=detail alignment="0" expression="rowheight()"border="0" color="33554432" x="6667" y="0" height="608" width="1481" format="[GENERAL]" html.valueishtml="0"  name=row_hg visible="0"  font.face="Tahoma" font.height="-9" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="2" background.color="1073741824" )
+column(band=detail id=26 alignment="0" tabsequence=32766 border="0" color="33554432" x="1322" y="0" height="608" width="6932" format="[general]" html.valueishtml="0"  name=line_desc visible="1" height.autosize=yes edit.limit=500 edit.case=any edit.focusrectangle=no edit.autoselect=yes edit.autohscroll=yes  font.face="Tahoma" font.height="-9" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="2" background.color="1073741824" )
+line(band=trailer.1 x1="0" y1="0" x2="18123" y2="449"  name=l_1 visible="1" pen.style="0" pen.width="26" pen.color="33554432"  background.mode="2" background.color="1073741824" )
+compute(band=summary alignment="0" expression="gf_format_vnnumber(string( exchange_rate ,'###,###,###.###'))"border="0" color="33554432" x="4365" y="582" height="370" width="3307" format="[GENERAL]" html.valueishtml="0"  name=compute_4 visible="0"  font.face="Tahoma" font.height="-9" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="2" background.color="1073741824" )
+compute(band=summary alignment="0" expression="if (isnull(compute_6), 0, compute_6) + if (isnull(compute_7) , 0, compute_7) "border="0" color="33554432" x="11615" y="2513" height="370" width="2831" format="[GENERAL]" html.valueishtml="0"  name=compute_8 visible="0"  font.face="Tahoma" font.height="-9" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="2" background.color="1073741824" )
+compute(band=summary alignment="1" expression="gf_format_vnnumber(string(compute_8,'###,###,###.###'))"border="0" color="33554432" x="15081" y="2513" height="370" width="2831" format="[General]" html.valueishtml="0"  name=compute_11 visible="1"  font.face="Tahoma" font.height="-9" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="2" background.color="1073741824" )
+compute(band=summary alignment="0" expression="gf_readmoney( string(compute_8))"border="0" color="33554432" x="4550" y="3307" height="899" width="13361" format="[GENERAL]" html.valueishtml="0"  name=compute_12 visible="1"  font.face="Tahoma" font.height="-9" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="2" background.color="1073741824" )
+compute(band=summary alignment="0" expression="ceiling(GetRow()/7)"border="0" color="33554432" x="10001" y="1667" height="370" width="1058" format="[GENERAL]" html.valueishtml="0"  name=group visible="0"  font.face="Tahoma" font.height="-9" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="2" background.color="1073741824" )
+compute(band=summary alignment="0" expression="round(sum(  amount  for all) , 2)"border="0" color="33554432" x="11615" y="1243" height="370" width="2831" format="[GENERAL]" html.valueishtml="0"  name=compute_6 visible="0"  font.face="Tahoma" font.height="-9" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="2" background.color="1073741824" )
+compute(band=summary alignment="0" expression="sum(if(getrow() = 1, tax_amount, 0 ))"border="0" color="33554432" x="11615" y="1931" height="370" width="2831" format="[GENERAL]" html.valueishtml="0"  name=compute_7 visible="0"  font.face="Tahoma" font.height="-9" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="2" background.color="1073741824" )
+compute(band=summary alignment="0" expression="sum(if(getrow() = 1, vat_rate , 0 ))"border="0" color="33554432" x="5767" y="1931" height="370" width="1058" format="[GENERAL]" html.valueishtml="0"  name=compute_5 visible="1"  font.face="Tahoma" font.height="-9" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="2" background.color="1073741824" )
+compute(band=summary alignment="1" expression="gf_format_vnnumber(string(compute_6,'###,###,###.###'))"border="0" color="33554432" x="15081" y="1243" height="396" width="2831" format="[General]" html.valueishtml="0"  name=compute_9 visible="1"  font.face="Tahoma" font.height="-9" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="2" background.color="1073741824" )
+compute(band=summary alignment="1" expression="gf_format_vnnumber(string(compute_7,'###,###,###.###'))"border="0" color="33554432" x="15081" y="1931" height="370" width="2831" format="[General]" html.valueishtml="0"  name=compute_10 visible="1"  font.face="Tahoma" font.height="-9" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="2" background.color="1073741824" )
+htmltable(border="1" )
+htmlgen(clientevents="1" clientvalidation="1" clientcomputedfields="1" clientformatting="0" clientscriptable="0" generatejavascript="1" encodeselflinkargs="1" netscapelayers="0" )
+xhtmlgen() cssgen(sessionspecific="0" )
+xmlgen(inline="0" )
+xsltgen()
+jsgen()
+export.xml(headgroups="1" includewhitespace="0" metadatatype=0 savemetadata=0 )
+import.xml()
+export.pdf(method=0 distill.custompostscript="0" xslfop.print="0" )
+export.xhtml()
+ 

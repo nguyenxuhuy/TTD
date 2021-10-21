@@ -1,0 +1,588 @@
+﻿$PBExportHeader$t_m_popup_object.srm
+$PBExportComments$Top Menu popup
+forward
+global type t_m_popup_object from t_m_popup
+end type
+type m_excel from menu within t_m_popup_object
+end type
+type m_find from menu within t_m_popup_object
+end type
+type m_del_user_profile from menu within t_m_popup_object
+end type
+type m_setup_user_access from menu within t_m_popup_object
+end type
+type m_edit_window_label from menu within t_m_popup_object
+end type
+type m_setup_dw from menu within t_m_popup_object
+end type
+type m_setup_alert from menu within t_m_popup_object
+end type
+type m_add_submenu from menu within t_m_popup_object
+end type
+type m_add_branch from menu within t_m_popup_object
+end type
+type m_close_object from menu within t_m_popup_object
+end type
+type m_setup_deligate from menu within t_m_popup_object
+end type
+type m_spec_identified_cogs from menu within t_m_popup_object
+end type
+type m_filter_detail from menu within t_m_popup_object
+end type
+global type t_m_popup_object from t_m_popup
+m_excel m_excel
+m_find m_find
+m_del_user_profile m_del_user_profile
+m_setup_user_access m_setup_user_access
+m_edit_window_label m_edit_window_label
+m_setup_dw m_setup_dw
+m_setup_alert m_setup_alert
+m_add_submenu m_add_submenu
+m_add_branch m_add_branch
+m_close_object m_close_object
+m_setup_deligate m_setup_deligate
+m_spec_identified_cogs m_spec_identified_cogs
+m_filter_detail m_filter_detail
+end type
+end forward
+
+global type t_m_popup_object from t_m_popup
+m_excel m_excel
+m_find m_find
+m_del_user_profile m_del_user_profile
+m_setup_user_access m_setup_user_access
+m_edit_window_label m_edit_window_label
+m_setup_dw m_setup_dw
+m_setup_alert m_setup_alert
+m_add_submenu m_add_submenu
+m_add_branch m_add_branch
+m_close_object m_close_object
+m_setup_deligate m_setup_deligate
+m_spec_identified_cogs m_spec_identified_cogs
+m_filter_detail m_filter_detail
+end type
+global t_m_popup_object t_m_popup_object
+
+type variables
+
+end variables
+
+on t_m_popup_object.create
+t_m_popup_object=this
+call super::create
+this.m_excel=create m_excel
+this.m_find=create m_find
+this.m_del_user_profile=create m_del_user_profile
+this.m_setup_user_access=create m_setup_user_access
+this.m_edit_window_label=create m_edit_window_label
+this.m_setup_dw=create m_setup_dw
+this.m_setup_alert=create m_setup_alert
+this.m_add_submenu=create m_add_submenu
+this.m_add_branch=create m_add_branch
+this.m_close_object=create m_close_object
+this.m_setup_deligate=create m_setup_deligate
+this.m_spec_identified_cogs=create m_spec_identified_cogs
+this.m_filter_detail=create m_filter_detail
+this.Item[UpperBound(this.Item)+1]=this.m_excel
+this.Item[UpperBound(this.Item)+1]=this.m_find
+this.Item[UpperBound(this.Item)+1]=this.m_del_user_profile
+this.Item[UpperBound(this.Item)+1]=this.m_setup_user_access
+this.Item[UpperBound(this.Item)+1]=this.m_edit_window_label
+this.Item[UpperBound(this.Item)+1]=this.m_setup_dw
+this.Item[UpperBound(this.Item)+1]=this.m_setup_alert
+this.Item[UpperBound(this.Item)+1]=this.m_add_submenu
+this.Item[UpperBound(this.Item)+1]=this.m_add_branch
+this.Item[UpperBound(this.Item)+1]=this.m_close_object
+this.Item[UpperBound(this.Item)+1]=this.m_setup_deligate
+this.Item[UpperBound(this.Item)+1]=this.m_spec_identified_cogs
+this.Item[UpperBound(this.Item)+1]=this.m_filter_detail
+end on
+
+on t_m_popup_object.destroy
+call super::destroy
+destroy(this.m_excel)
+destroy(this.m_find)
+destroy(this.m_del_user_profile)
+destroy(this.m_setup_user_access)
+destroy(this.m_edit_window_label)
+destroy(this.m_setup_dw)
+destroy(this.m_setup_alert)
+destroy(this.m_add_submenu)
+destroy(this.m_add_branch)
+destroy(this.m_close_object)
+destroy(this.m_setup_deligate)
+destroy(this.m_spec_identified_cogs)
+destroy(this.m_filter_detail)
+end on
+
+type m_excel from menu within t_m_popup_object
+end type
+
+on m_excel.create
+call super::create
+this.visible = false
+this.text = "Xuất &Excel"
+this.menustyle = contemporarymenu!
+this.menutextcolor = 134217735
+this.menubackcolor = 134217732
+this.menuhighlightcolor = 12639424
+this.textsize = 8
+this.weight = 400
+this.facename = "Tahoma"
+this.titlebackcolor = 134217730
+this.bitmapbackcolor = 12639424
+this.menubitmaps = true
+this.titlegradient = true
+this.toolbartextcolor = 134217746
+this.toolbarbackcolor = 67108864
+this.toolbarhighlightcolor = 134217741
+this.toolbargradient = true
+this.bitmapgradient = true
+end on
+
+on m_excel.destroy
+call super::destroy
+end on
+
+event clicked;is_clicked_menu = this.classname( )
+
+end event
+
+type m_find from menu within t_m_popup_object
+end type
+
+on m_find.create
+call super::create
+this.visible = false
+this.text = "&Tìm kiếm"
+this.menustyle = contemporarymenu!
+this.menutextcolor = 134217735
+this.menubackcolor = 134217732
+this.menuhighlightcolor = 12639424
+this.textsize = 8
+this.weight = 400
+this.facename = "Tahoma"
+this.titlebackcolor = 134217730
+this.bitmapbackcolor = 12639424
+this.menubitmaps = true
+this.titlegradient = true
+this.toolbartextcolor = 134217746
+this.toolbarbackcolor = 67108864
+this.toolbarhighlightcolor = 134217741
+this.toolbargradient = true
+this.bitmapgradient = true
+end on
+
+on m_find.destroy
+call super::destroy
+end on
+
+event clicked;is_clicked_menu = this.classname( )
+
+/*
+string ls_col_text, ls_find_val, ls_criteria, ls_coltype
+long ll_find, ll_cnt, ll_pos
+datawindow 		ldw_request
+
+ldw_request = ipo_clicked
+if ldw_request.rowcount( ) = 0 then return
+
+ls_col_text = ldw_request.describe(idwo_clicked.name +"_t.text")
+ls_coltype = ldw_request.describe(idwo_clicked.name  + ".ColType")
+
+//openwithparm (u_w_find, ls_col_text)
+ls_find_val = message.stringparm
+setnull(message.stringparm)
+if isnull(ls_find_val) or trim(ls_find_val) ='' then return
+CHOOSE CASE left(ls_coltype,5)
+	Case "char("		
+		ll_cnt = 0
+		ll_pos = 0
+		
+		do while pos(ls_find_val,'*', ll_pos + 1) > 0
+			ll_pos = pos(ls_find_val,'*', ll_pos + 1)
+			ll_cnt ++
+		loop
+		
+		if ll_cnt = 0 then
+			ls_criteria = "upper("+idwo_clicked.name +")='"+upper(ls_find_val)+"'"			
+		elseif left(ls_find_val,1) = '*' and ll_cnt = 1 then
+			ls_find_val =  right(ls_find_val,len(ls_find_val) -1)
+			ls_criteria = "match(upper("+idwo_clicked.name  +"), ~""+upper(ls_find_val)+"$~")"
+		elseif right(ls_find_val,1) = '*' and ll_cnt =1  then
+			ls_find_val =  left(ls_find_val,len(ls_find_val) - 1)
+			ls_criteria = "match(upper("+idwo_clicked.name  +"), ~"^"+upper(ls_find_val)+"~")"
+		elseif ll_cnt = 2 and right(ls_find_val,1) = '*' and  left(ls_find_val,1) = '*'  then
+			ls_find_val= mid(ls_find_val,2,len(ls_find_val) -2)
+			ls_criteria = "match(upper("+idwo_clicked.name  +"), ~""+upper(ls_find_val)+"~")"
+		else
+			ls_criteria = "match(upper("+idwo_clicked.name  +"), ~""+upper(ls_find_val)+"~")"
+		end if		
+	Case "date","datet"
+		ls_criteria = "string(date("+idwo_clicked.name +"),'dd/mm/yyyy')"+"='"+ls_find_val+"'"	
+	Case "decim","numbe"
+		if pos(ls_find_val,'<') = 0 and  pos(ls_find_val,'>') = 0 and pos(ls_find_val,'<>') = 0 then
+			ls_criteria = idwo_clicked.name +"="+ls_find_val	
+		else
+			ls_criteria = idwo_clicked.name +ls_find_val	
+		end if
+	Case else
+END CHOOSE
+
+ll_find = ldw_request.find( ls_criteria, 1, ldw_request.rowcount( ) )
+if ll_find > 0 then
+	ldw_request.scrolltorow( ll_find)
+end if
+*/
+end event
+
+type m_del_user_profile from menu within t_m_popup_object
+end type
+
+on m_del_user_profile.create
+call super::create
+this.visible = false
+this.text = "Xoá tuy biến người dùng"
+this.menustyle = contemporarymenu!
+this.menutextcolor = 134217735
+this.menubackcolor = 134217732
+this.menuhighlightcolor = 12639424
+this.textsize = 8
+this.weight = 400
+this.facename = "Tahoma"
+this.titlebackcolor = 134217730
+this.bitmapbackcolor = 12639424
+this.menubitmaps = true
+this.titlegradient = true
+this.toolbartextcolor = 134217746
+this.toolbarbackcolor = 67108864
+this.toolbarhighlightcolor = 134217741
+this.toolbargradient = true
+this.bitmapgradient = true
+end on
+
+on m_del_user_profile.destroy
+call super::destroy
+end on
+
+event clicked;is_clicked_menu = this.classname( )
+end event
+
+type m_setup_user_access from menu within t_m_popup_object
+end type
+
+on m_setup_user_access.create
+call super::create
+this.visible = false
+this.text = "Cài đặt phân quyền record"
+this.menustyle = contemporarymenu!
+this.menutextcolor = 134217735
+this.menubackcolor = 134217732
+this.menuhighlightcolor = 12639424
+this.textsize = 8
+this.weight = 400
+this.facename = "Tahoma"
+this.titlebackcolor = 134217730
+this.bitmapbackcolor = 12639424
+this.menubitmaps = true
+this.titlegradient = true
+this.toolbartextcolor = 134217746
+this.toolbarbackcolor = 67108864
+this.toolbarhighlightcolor = 134217741
+this.toolbargradient = true
+this.bitmapgradient = true
+end on
+
+on m_setup_user_access.destroy
+call super::destroy
+end on
+
+event clicked;is_clicked_menu = this.classname( )
+end event
+
+type m_edit_window_label from menu within t_m_popup_object
+end type
+
+on m_edit_window_label.create
+call super::create
+this.visible = false
+this.text = "Dịch tên (nhãn) window"
+this.menustyle = contemporarymenu!
+this.menutextcolor = 134217735
+this.menubackcolor = 134217732
+this.menuhighlightcolor = 12639424
+this.textsize = 8
+this.weight = 400
+this.facename = "Tahoma"
+this.titlebackcolor = 134217730
+this.bitmapbackcolor = 12639424
+this.menubitmaps = true
+this.titlegradient = true
+this.toolbartextcolor = 134217746
+this.toolbarbackcolor = 67108864
+this.toolbarhighlightcolor = 134217741
+this.toolbargradient = true
+this.bitmapgradient = true
+end on
+
+on m_edit_window_label.destroy
+call super::destroy
+end on
+
+event clicked;is_clicked_menu = this.classname( )
+end event
+
+type m_setup_dw from menu within t_m_popup_object
+event create ( )
+event destroy ( )
+end type
+
+on m_setup_dw.create
+call super::create
+this.visible = false
+this.text = "Cài đặt bảng"
+this.menustyle = contemporarymenu!
+this.menutextcolor = 134217735
+this.menubackcolor = 134217732
+this.menuhighlightcolor = 12639424
+this.textsize = 8
+this.weight = 400
+this.facename = "Tahoma"
+this.titlebackcolor = 134217730
+this.bitmapbackcolor = 12639424
+this.menubitmaps = true
+this.titlegradient = true
+this.toolbartextcolor = 134217746
+this.toolbarbackcolor = 67108864
+this.toolbarhighlightcolor = 134217741
+this.toolbargradient = true
+this.bitmapgradient = true
+end on
+
+on m_setup_dw.destroy
+call super::destroy
+end on
+
+event clicked;is_clicked_menu = this.classname( )
+end event
+
+type m_setup_alert from menu within t_m_popup_object
+end type
+
+on m_setup_alert.create
+call super::create
+this.visible = false
+this.text = "Cài đặt cảnh báo"
+this.menustyle = contemporarymenu!
+this.menutextcolor = 134217735
+this.menubackcolor = 134217732
+this.menuhighlightcolor = 12639424
+this.textsize = 8
+this.weight = 400
+this.facename = "Tahoma"
+this.titlebackcolor = 134217730
+this.bitmapbackcolor = 12639424
+this.menubitmaps = true
+this.titlegradient = true
+this.toolbartextcolor = 134217746
+this.toolbarbackcolor = 67108864
+this.toolbarhighlightcolor = 134217741
+this.toolbargradient = true
+this.bitmapgradient = true
+end on
+
+on m_setup_alert.destroy
+call super::destroy
+end on
+
+type m_add_submenu from menu within t_m_popup_object
+end type
+
+on m_add_submenu.create
+call super::create
+this.visible = false
+this.text = "Thêm menu con"
+this.menuimage = "TreeView!"
+this.menustyle = contemporarymenu!
+this.menutextcolor = 134217735
+this.menubackcolor = 134217732
+this.menuhighlightcolor = 12639424
+this.textsize = 8
+this.weight = 400
+this.facename = "Tahoma"
+this.titlebackcolor = 134217730
+this.bitmapbackcolor = 12639424
+this.menubitmaps = true
+this.titlegradient = true
+this.toolbartextcolor = 134217746
+this.toolbarbackcolor = 67108864
+this.toolbarhighlightcolor = 134217741
+this.toolbargradient = true
+this.bitmapgradient = true
+end on
+
+on m_add_submenu.destroy
+call super::destroy
+end on
+
+event clicked;is_clicked_menu = this.classname( )
+end event
+
+type m_add_branch from menu within t_m_popup_object
+end type
+
+event clicked;is_clicked_menu = this.classname( )
+end event
+
+on m_add_branch.create
+call super::create
+this.visible = false
+this.text = "Thêm chi nhánh"
+this.menuimage = "TreeView!"
+this.menustyle = contemporarymenu!
+this.menutextcolor = 134217735
+this.menubackcolor = 134217732
+this.menuhighlightcolor = 12639424
+this.textsize = 8
+this.weight = 400
+this.facename = "Tahoma"
+this.titlebackcolor = 134217730
+this.bitmapbackcolor = 12639424
+this.menubitmaps = true
+this.titlegradient = true
+this.toolbartextcolor = 134217746
+this.toolbarbackcolor = 67108864
+this.toolbarhighlightcolor = 134217741
+this.toolbargradient = true
+this.bitmapgradient = true
+end on
+
+on m_add_branch.destroy
+call super::destroy
+end on
+
+type m_close_object from menu within t_m_popup_object
+end type
+
+on m_close_object.create
+call super::create
+this.visible = false
+this.text = "Đóng object"
+this.menustyle = contemporarymenu!
+this.menutextcolor = 134217735
+this.menubackcolor = 134217732
+this.menuhighlightcolor = 12639424
+this.textsize = 8
+this.weight = 400
+this.facename = "Tahoma"
+this.titlebackcolor = 134217730
+this.bitmapbackcolor = 12639424
+this.menubitmaps = true
+this.titlegradient = true
+this.toolbartextcolor = 134217746
+this.toolbarbackcolor = 67108864
+this.toolbarhighlightcolor = 134217741
+this.toolbargradient = true
+this.bitmapgradient = true
+end on
+
+on m_close_object.destroy
+call super::destroy
+end on
+
+event clicked;is_clicked_menu = this.classname( )
+end event
+
+type m_setup_deligate from menu within t_m_popup_object
+end type
+
+event clicked;is_clicked_menu = this.classname( )
+end event
+
+on m_setup_deligate.create
+call super::create
+this.visible = false
+this.text = "Cài đặt ủy quyền record"
+this.menustyle = contemporarymenu!
+this.menutextcolor = 134217735
+this.menubackcolor = 134217732
+this.menuhighlightcolor = 12639424
+this.textsize = 8
+this.weight = 400
+this.facename = "Tahoma"
+this.titlebackcolor = 134217730
+this.bitmapbackcolor = 12639424
+this.menubitmaps = true
+this.titlegradient = true
+this.toolbartextcolor = 134217746
+this.toolbarbackcolor = 67108864
+this.toolbarhighlightcolor = 134217741
+this.toolbargradient = true
+this.bitmapgradient = true
+end on
+
+on m_setup_deligate.destroy
+call super::destroy
+end on
+
+type m_spec_identified_cogs from menu within t_m_popup_object
+end type
+
+on m_spec_identified_cogs.create
+call super::create
+this.visible = false
+this.text = "Áp giá đích danh"
+this.menustyle = contemporarymenu!
+this.menutextcolor = 134217735
+this.menubackcolor = 134217732
+this.menuhighlightcolor = 12639424
+this.textsize = 8
+this.weight = 400
+this.facename = "Tahoma"
+this.titlebackcolor = 134217730
+this.bitmapbackcolor = 12639424
+this.menubitmaps = true
+this.titlegradient = true
+this.toolbartextcolor = 134217746
+this.toolbarbackcolor = 67108864
+this.toolbarhighlightcolor = 134217741
+this.toolbargradient = true
+this.bitmapgradient = true
+end on
+
+on m_spec_identified_cogs.destroy
+call super::destroy
+end on
+
+type m_filter_detail from menu within t_m_popup_object
+end type
+
+on m_filter_detail.create
+call super::create
+this.visible = false
+this.text = "Lọc"
+this.menustyle = contemporarymenu!
+this.menutextcolor = 134217735
+this.menubackcolor = 134217732
+this.menuhighlightcolor = 12639424
+this.textsize = 8
+this.weight = 400
+this.facename = "Tahoma"
+this.titlebackcolor = 134217730
+this.bitmapbackcolor = 12639424
+this.menubitmaps = true
+this.titlegradient = true
+this.toolbartextcolor = 134217746
+this.toolbarbackcolor = 67108864
+this.toolbarhighlightcolor = 134217741
+this.toolbargradient = true
+this.bitmapgradient = true
+end on
+
+on m_filter_detail.destroy
+call super::destroy
+end on
+
+event clicked;is_clicked_menu = this.classname( )
+end event
+

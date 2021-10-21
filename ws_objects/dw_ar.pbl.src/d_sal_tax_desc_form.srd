@@ -1,0 +1,156 @@
+﻿$PBExportHeader$d_sal_tax_desc_form.srd
+release 12.5;
+datawindow(units=0 timer_interval=0 color=1073741824 brushmode=0 transparency=0 gradient.angle=0 gradient.color=8421504 gradient.focus=0 gradient.repetition.count=0 gradient.repetition.length=100 gradient.repetition.mode=0 gradient.scale=100 gradient.spread=100 gradient.transparency=0 picture.blur=0 picture.clip.bottom=0 picture.clip.left=0 picture.clip.right=0 picture.clip.top=0 picture.mode=0 picture.scale.x=100 picture.scale.y=100 picture.transparency=0 processing=0 HTMLDW=no print.printername="" print.documentname="" print.orientation = 0 print.margin.left = 110 print.margin.right = 110 print.margin.top = 96 print.margin.bottom = 96 print.paper.source = 0 print.paper.size = 0 print.canusedefaultprinter=yes print.prompt=no print.buttons=no print.preview.buttons=no print.cliptext=no print.overrideprintjob=no print.collate=yes print.background=no print.preview.background=no print.preview.outline=yes hidegrayline=no showbackcoloronxp=no picture.file="" )
+header(height=0 color="536870912" transparency="0" gradient.color="8421504" gradient.transparency="0" gradient.angle="0" brushmode="0" gradient.repetition.mode="0" gradient.repetition.count="0" gradient.repetition.length="100" gradient.focus="0" gradient.scale="100" gradient.spread="100" )
+summary(height=0 color="536870912" transparency="0" gradient.color="8421504" gradient.transparency="0" gradient.angle="0" brushmode="0" gradient.repetition.mode="0" gradient.repetition.count="0" gradient.repetition.length="100" gradient.focus="0" gradient.scale="100" gradient.spread="100" )
+footer(height=0 color="536870912" transparency="0" gradient.color="8421504" gradient.transparency="0" gradient.angle="0" brushmode="0" gradient.repetition.mode="0" gradient.repetition.count="0" gradient.repetition.length="100" gradient.focus="0" gradient.scale="100" gradient.spread="100" )
+detail(height=2360 color="536870912" transparency="0" gradient.color="8421504" gradient.transparency="0" gradient.angle="0" brushmode="0" gradient.repetition.mode="0" gradient.repetition.count="0" gradient.repetition.length="100" gradient.focus="0" gradient.scale="100" gradient.spread="100" )
+table(column=(type=number update=yes updatewhereclause=yes key=yes name=id dbname="booked_slip.id" dbalias="BKS.id" )
+ column=(type=number update=yes updatewhereclause=yes name=branch_id dbname="booked_slip.branch_id" dbalias="BKS.branch_id" )
+ column=(type=number update=yes updatewhereclause=yes name=company_id dbname="booked_slip.company_id" dbalias="BKS.company_id" )
+ column=(type=number update=yes updatewhereclause=yes name=object_ref_id dbname="booked_slip.object_ref_id" dbalias="BKS.object_ref_id" )
+ column=(type=char(50) update=yes updatewhereclause=yes name=object_ref_table dbname="booked_slip.object_ref_table" dbalias="BKS.object_ref_table" )
+ column=(type=number updatewhereclause=yes name=created_by dbname="booked_slip.created_by" dbalias="BKS.created_by" )
+ column=(type=datetime updatewhereclause=yes name=created_date dbname="booked_slip.created_date" dbalias="BKS.created_date" )
+ column=(type=number updatewhereclause=yes name=last_mdf_by dbname="booked_slip.last_mdf_by" dbalias="BKS.last_mdf_by" )
+ column=(type=datetime updatewhereclause=yes name=last_mdf_date dbname="booked_slip.last_mdf_date" dbalias="BKS.last_mdf_date" )
+ column=(type=char(20) update=yes updatewhereclause=yes name=doc_type dbname="booked_slip.doc_type" dbalias="BKS.doc_type" )
+ column=(type=char(500) update=yes updatewhereclause=yes name=description dbname="booked_slip.description" dbalias="BKS.description" )
+ column=(type=number update=yes updatewhereclause=yes name=version_no dbname="booked_slip.version_no" dbalias="BKS.version_no" )
+ column=(type=datetime update=yes updatewhereclause=yes name=trans_date dbname="booked_slip.trans_date" dbalias="BKS.trans_date" )
+ column=(type=char(200) update=yes updatewhereclause=yes name=trans_address dbname="booked_slip.trans_address" dbalias="BKS.trans_address" )
+ column=(type=char(100) update=yes updatewhereclause=yes name=delivery_person dbname="booked_slip.delivery_person" dbalias="BKS.delivery_person" )
+ column=(type=char(100) update=yes updatewhereclause=yes name=receipt_person dbname="booked_slip.receipt_person" dbalias="BKS.receipt_person" )
+ column=(type=number update=yes updatewhereclause=yes name=delivery_mode dbname="booked_slip.delivery_mode" dbalias="BKS.delivery_mode" )
+ column=(type=number update=yes updatewhereclause=yes name=invoice_object dbname="booked_slip.invoice_object" dbalias="BKS.invoice_object" )
+ column=(type=char(100) update=yes updatewhereclause=yes name=invoice_sign dbname="booked_slip.invoice_sign" dbalias="BKS.invoice_sign" )
+ column=(type=char(100) update=yes updatewhereclause=yes name=invoice_code dbname="booked_slip.invoice_code" dbalias="BKS.invoice_code" )
+ column=(type=char(30) update=yes updatewhereclause=yes name=bank_statement_no dbname="booked_slip.bank_statement_no" dbalias="BKS.bank_statement_no" )
+ column=(type=char(30) update=yes updatewhereclause=yes name=vendor_delivery_no dbname="booked_slip.vendor_delivery_no" dbalias="BKS.vendor_delivery_no" )
+ column=(type=char(1) update=yes updatewhereclause=yes name=invoice_yn dbname="booked_slip.invoice_yn" dbalias="BKS.invoice_yn" values="	Y/	N" )
+ column=(type=char(1) update=yes updatewhereclause=yes name=quantity_yn dbname="booked_slip.quantity_yn" dbalias="BKS.quantity_yn" values="	Y/	N" )
+ column=(type=char(1) update=yes updatewhereclause=yes name=value_yn dbname="booked_slip.value_yn" dbalias="BKS.value_yn" values="	Y/	N" )
+ column=(type=char(1) update=yes updatewhereclause=yes name=allocation_yn dbname="booked_slip.allocation_yn" dbalias="BKS.allocation_yn" values="	Y/	N" )
+ column=(type=number update=yes updatewhereclause=yes name=dr_cr_object dbname="booked_slip.dr_cr_object" dbalias="BKS.dr_cr_object" )
+ column=(type=char(200) update=yes updatewhereclause=yes name=invoice_address dbname="booked_slip.invoice_address" dbalias="BKS.invoice_address" )
+ column=(type=number update=yes updatewhereclause=yes name=exchange_rate dbname="booked_slip.exchange_rate" dbalias="BKS.exchange_rate" )
+ column=(type=number update=yes updatewhereclause=yes name=payment_term dbname="booked_slip.payment_term" dbalias="BKS.payment_term" )
+ column=(type=number update=yes updatewhereclause=yes name=payment_method dbname="booked_slip.payment_method" dbalias="BKS.payment_method" )
+ column=(type=datetime update=yes updatewhereclause=yes name=due_date dbname="booked_slip.due_date" dbalias="BKS.due_date" )
+ column=(type=datetime update=yes updatewhereclause=yes name=invoice_received_date dbname="booked_slip.invoice_received_date" dbalias="BKS.invoice_received_date" )
+ column=(type=char(1) update=yes updatewhereclause=yes name=include_tax_yn dbname="booked_slip.include_tax_yn" dbalias="BKS.include_tax_yn" values="	Y/	N" )
+ column=(type=number update=yes updatewhereclause=yes name=currency_id dbname="booked_slip.currency_id" dbalias="BKS.currency_id" )
+ column=(type=char(1) update=yes updatewhereclause=yes name=replace_yn dbname="booked_slip.replace_yn" dbalias="BKS.replace_yn" )
+ column=(type=char(1) update=yes updatewhereclause=yes name=be_replaced_yn dbname="booked_slip.be_replaced_yn" dbalias="BKS.be_replaced_yn" )
+ column=(type=number update=yes updatewhereclause=yes name=subaccount dbname="booked_slip.subaccount" dbalias="BKS.subaccount" )
+ column=(type=char(500) update=yes updatewhereclause=yes name=tax_desc dbname="booked_slip.tax_desc" dbalias="BKS.tax_desc" )
+ column=(type=char(2000) update=yes updatewhereclause=yes name=note dbname="booked_slip.note" dbalias="BKS.note" )
+ column=(type=char(50) update=yes updatewhereclause=yes name=buyer_person dbname="booked_slip.buyer_person" dbalias="BKS.buyer_person" )
+ column=(type=char(30) update=yes updatewhereclause=yes name=invoice_request dbname="booked_slip.invoice_request" dbalias="BKS.invoice_request" values="Xuất ngay	promptly/Xuất sau	later/Không	none/" )
+ column=(type=number update=yes updatewhereclause=yes name=bank_id dbname="booked_slip.bank_id" dbalias="BKS.bank_id" )
+ column=(type=char(100) updatewhereclause=yes name=invoice_object_code dbname="object.code" dbalias="OBJIV.code" )
+ column=(type=char(500) updatewhereclause=yes name=invoice_object_name dbname="object.name" dbalias="OBJIV.name" )
+ column=(type=char(50) updatewhereclause=yes name=invoice_object_type dbname="object.object_ref_table" dbalias="OBJIV.object_ref_table" )
+ column=(type=char(100) updatewhereclause=yes name=dr_cr_object_code dbname="object.code" dbalias="OBJDC.code" )
+ column=(type=char(500) updatewhereclause=yes name=dr_cr_object_name dbname="object.name" dbalias="OBJDC.name" )
+ column=(type=char(50) updatewhereclause=yes name=dr_cr_object_type dbname="object.object_ref_table" dbalias="OBJDC.object_ref_table" )
+ column=(type=char(20) updatewhereclause=yes name=uom_code dbname="uom.code" dbalias="UOM1.code" )
+ column=(type=char(50) updatewhereclause=yes name=payment_term_code dbname="payment_term.code" dbalias="PM1.code" )
+ column=(type=char(100) updatewhereclause=yes name=payment_term_name dbname="payment_term.name" dbalias="PM1.name" )
+ column=(type=char(30) updatewhereclause=yes name=payment_method_code dbname="valueset_value.code" dbalias="VA1.code" )
+ column=(type=char(100) updatewhereclause=yes name=payment_method_name dbname="valueset_value.name" dbalias="VA1.name" )
+ column=(type=char(20) updatewhereclause=yes name=ven_tax_num dbname="organization.tax_number" dbalias="ORVD.tax_number" )
+ column=(type=char(20) updatewhereclause=yes name=cus_tax_num dbname="organization.tax_number" dbalias="ORCUS.tax_number" )
+ column=(type=char(100) updatewhereclause=yes name=bank_code dbname="bank.bank_code" dbalias="BK1.bank_code" )
+ column=(type=char(500) updatewhereclause=yes name=bank_name dbname="bank.bank_name" dbalias="BK1.bank_name" )
+ column=(type=char(20) updatewhereclause=yes name=account_number dbname="bank.account_number" dbalias="BK1.account_number" )
+ retrieve="SELECT
+bks.ID,
+bks.BRANCH_ID,
+bks.COMPANY_ID,
+bks.OBJECT_REF_ID, 
+bks.OBJECT_REF_TABLE,
+bks.CREATED_BY,
+bks.CREATED_DATE, 
+bks.LAST_MDF_BY,
+bks.LAST_MDF_DATE,
+bks.DOC_TYPE,
+bks.DESCRIPTION,
+bks.VERSION_NO, 
+bks.TRANS_DATE,
+bks.TRANS_ADDRESS,
+bks.DELIVERY_PERSON,
+bks.RECEIPT_PERSON,       
+bks.DELIVERY_MODE,  
+bks.INVOICE_OBJECT,  
+bks.INVOICE_SIGN,
+bks.INVOICE_CODE,  
+bks.BANK_STATEMENT_NO, 
+bks.VENDOR_DELIVERY_NO,
+bks.INVOICE_YN,
+bks.QUANTITY_YN, 
+bks.VALUE_YN,
+bks.ALLOCATION_YN, 
+bks.DR_CR_OBJECT,
+bks.INVOICE_ADDRESS,
+bks.exchange_rate,
+bks.payment_term,
+bks.payment_method,
+bks.due_date,
+bks.invoice_received_date,
+bks.include_tax_yn,
+bks.currency_id,
+bks.REPLACE_YN          ,   
+bks.BE_REPLACED_YN         ,
+bks.SUBACCOUNT,
+bks.tax_desc,
+bks.NOTE,
+bks.BUYER_PERSON,
+bks.INVOICE_REQUEST,
+bks.BANK_ID,
+OBJIV.CODE ,
+OBJIV.NAME ,
+OBJIV.OBJECT_REF_TABLE ,
+OBJDC.CODE ,
+OBJDC.NAME ,
+OBJDC.OBJECT_REF_TABLE ,
+UOM1.CODE,
+PM1.CODE,
+PM1.NAME, 
+VA1.CODE , 
+VA1.NAME , 
+ORVD.TAX_NUMBER ,
+ORCUS.TAX_NUMBER ,
+BK1.BANK_CODE,
+BK1.BANK_NAME,
+BK1.ACCOUNT_NUMBER
+FROM BOOKED_SLIP BKS
+JOIN OBJECT OBJIV ON OBJIV.ID=BKS.INVOICE_OBJECT
+JOIN OBJECT OBJDC ON OBJDC.ID=BKS.DR_CR_OBJECT
+LEFT JOIN UOM UOM1 ON UOM1.ID=BKS.CURRENCY_ID
+LEFT JOIN PAYMENT_TERM PM1 ON PM1.ID=BKS.PAYMENT_TERM
+LEFT JOIN VALUESET_VALUE VA1 ON VA1.ID=BKS.PAYMENT_METHOD
+LEFT JOIN VENDOR VDR ON VDR.OBJECT_REF_ID=OBJDC.ID
+LEFT JOIN ORGANIZATION ORVD ON ORVD.OBJECT_REF_ID=VDR.ID
+LEFT JOIN CUSTOMER CUS1 ON CUS1.OBJECT_REF_ID=OBJDC.ID
+LEFT JOIN ORGANIZATION ORCUS ON ORCUS.OBJECT_REF_ID=CUS1.ID
+LEFT JOIN BANK BK1 ON BK1.ID=BKS.BANK_ID 
+	and BKS.doc_type IN  ('SAL_INVOICE',
+                        'SAL_INVOICE_RETURN',
+                        'SAL_INVOICE_REPLACE',
+                        'RECEIPT',
+                        'BANK_VOUCHER',
+                        'RECEIPT_RETAIL')" update="BOOKED_SLIP" updatewhere=1 updatekeyinplace=yes )
+text(band=detail alignment="0" text="Diễn giải thuế:" border="0" color="33554432" x="41" y="16" height="64" width="379" html.valueishtml="0"  name=tax_desc_t visible="1"  font.face="Tahoma" font.height="-10" font.weight="400"  font.family="2" font.pitch="2" font.charset="163" background.mode="1" background.color="536870912" background.transparency="0" background.gradient.color="8421504" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="100" background.gradient.focus="0" background.gradient.scale="100" background.gradient.spread="100" tooltip.backcolor="134217752" tooltip.delay.initial="0" tooltip.delay.visible="32000" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="134217751" tooltip.transparency="0" transparency="0" )
+column(band=detail id=39 alignment="0" tabsequence=10 border="1" color="33554432" x="434" y="16" height="76" width="1106" format="[general]" html.valueishtml="0"  name=tax_desc visible="1" edit.limit=0 edit.case=any edit.autoselect=no edit.nilisnull=yes edit.autohscroll=yes edit.autovscroll=yes  font.face="Tahoma" font.height="-10" font.weight="400"  font.family="2" font.pitch="2" font.charset="163" background.mode="1" background.color="536870912" background.transparency="0" background.gradient.color="8421504" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="100" background.gradient.focus="0" background.gradient.scale="100" background.gradient.spread="100" tooltip.backcolor="134217752" tooltip.delay.initial="0" tooltip.delay.visible="32000" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="134217751" tooltip.transparency="0" transparency="0" )
+htmltable(border="1" )
+htmlgen(clientevents="1" clientvalidation="1" clientcomputedfields="1" clientformatting="0" clientscriptable="0" generatejavascript="1" encodeselflinkargs="1" netscapelayers="0" pagingmethod=0 generatedddwframes="1" )
+xhtmlgen() cssgen(sessionspecific="0" )
+xmlgen(inline="0" )
+xsltgen()
+jsgen()
+export.xml(headgroups="1" includewhitespace="0" metadatatype=0 savemetadata=0  template=(comment="" encoding="UTF-16LE" name="d_pur_invoice_form" xml="<?xml version=~"1.0~" encoding=~"UTF-16LE~" standalone=~"no~"?><untitled><untitled_row __pbband=~"detail~"><id/><branch_id/><company_id/><object_ref_id/><object_ref_table/><created_by/><created_date/><last_mdf_by/><last_mdf_date/><doc_type/><description>description</description><version_no>version_no</version_no><trans_date/><trans_address/><delivery_person/><receipt_person/><delivery_mode/><invoice_object/><invoice_sign/><invoice_code/><invoice_yn/><quantity_yn/><value_yn/><allocation_yn/><dr_cr_object/><invoice_address/><exchange_rate>exchange_rate</exchange_rate><payment_term/><payment_method/><due_date>due_date</due_date></untitled_row></untitled>"))
+import.xml()
+export.pdf(method=0 distill.custompostscript="0" xslfop.print="0" )
+export.xhtml()
+ 

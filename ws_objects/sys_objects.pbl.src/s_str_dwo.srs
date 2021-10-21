@@ -1,0 +1,53 @@
+﻿$PBExportHeader$s_str_dwo.srs
+global type s_str_dwo from structure
+	string		s_dwo_form
+	string		s_dwo_grid
+	string		s_dwo_default
+	boolean		b_traceable
+	boolean		b_master
+	boolean		b_detail
+	boolean		b_focus_master		descriptor "comment" = "khi click vào sẽ set dw_focus là master của dw này"
+	boolean		b_shared
+	boolean		b_keynull
+	any		a_ref_data
+	string		s_master_keycol
+	string		s_detail_keycol
+	string		s_dwo_details
+	string		s_dwo_master
+	string		s_dwo_shared
+	string		s_dwo_source		descriptor "comment" = "Khai báo ở DWO target"
+	string		s_col_source		descriptor "comment" = "Khai báo ở DWO target"
+	string		s_col_target		descriptor "comment" = "Khai báo ở DWO target"
+	boolean		b_cascade_del
+	boolean		b_ref_table_yn		descriptor "comment" = "true: update table name của dwdetail lên object_ref_table của dwmaster."
+	string		s_ref_table_field		descriptor "comment" = "tên trường của dwdetail để update table name của dwmaster vào."
+	boolean		b_insert
+	boolean		b_delete
+	boolean		b_update
+	boolean		b_query
+	boolean		b_print
+	boolean		b_excel
+	boolean		b_drag
+	boolean		b_dummy_row_yn		descriptor "comment" = "true: dwo insert 1 dòng giả khi không có dòng dữ liệu nào"
+	string		s_popmenu_items
+	string		s_description
+	integer		i_default_h
+	integer		i_default_w
+	string		s_gb_name
+	datastore		ds_suspend_data
+	string		s_suspend_where
+	string		s_suspend_originalwhere
+	string		s_suspend_sqlnowhere
+	boolean		b_suspend_editing		descriptor "comment" = "trạng thái dwo dang có dữ liệu suspend"
+	s_str_policy_attr		str_suspend_security_attr		descriptor "comment" = "ghi nhớ tình trạng phân quyền"
+	s_str_policy_attr		str_suspend_rule_attr		descriptor "comment" = "ghi nhớ tình trang rule"
+	c_dw_querymode		c_suspend_querymode		descriptor "comment" = "ghi nho querymode"
+	c_dwsrv_sort		c_suspend_sort		descriptor "comment" = "ghi nho sort"
+	string		s_pic_ref_table		descriptor "comment" = "Tên bảng chứa pic"
+	string		s_pic_ref_field		descriptor "comment" = "Tên cột chứa ID của ref_table"
+	string		s_pic_ref_colname		descriptor "comment" = "Tên cột chứa pic của ref_table ( cột chứa filetype = tên côt pic + ~"_filetype~")"
+	boolean		b_relation_1_1		descriptor "comment" = "master detail quan hệ 1..1: khi copy khong thêm dòng"
+	boolean		b_keyboardlocked		descriptor "comment" = "khóa bàn phím"
+	string		s_where_query_mode		descriptor "comment" = "giữ lấy where tìm kiếm"
+end type
+

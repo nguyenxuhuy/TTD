@@ -1,0 +1,15 @@
+﻿$PBExportHeader$t_s_tv.srs
+global type t_s_tv from structure
+	double		db_id
+	double		db_up_id
+	string		s_label
+	string		s_object
+	integer		i_type
+	integer		i_sort
+	integer		i_pic_idx
+	integer		i_sel_pic_idx
+	double		db_menu_id
+	string		s_submod_yn
+	string		s_menu_code
+end type
+

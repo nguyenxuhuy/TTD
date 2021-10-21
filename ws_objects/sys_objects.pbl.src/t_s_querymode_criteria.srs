@@ -1,0 +1,8 @@
+﻿$PBExportHeader$t_s_querymode_criteria.srs
+global type t_s_querymode_criteria from structure
+	string		is_colname
+	string		is_displayvalue
+	string		is_value
+	string		is_expression		descriptor "comment" = "OR hoặc AND"
+end type
+

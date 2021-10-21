@@ -1,0 +1,14 @@
+﻿$PBExportHeader$s_str_policy_attr.srs
+global type s_str_policy_attr from structure
+	boolean		b_print
+	boolean		b_excel
+	boolean		b_query
+	boolean		b_update
+	boolean		b_insert
+	boolean		b_delete
+	boolean		b_access
+	boolean		b_full_inherit
+	boolean		b_mandatory_save
+	boolean		b_mandatory_book
+end type
+

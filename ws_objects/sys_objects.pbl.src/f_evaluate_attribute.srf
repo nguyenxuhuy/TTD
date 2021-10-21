@@ -1,0 +1,52 @@
+﻿$PBExportHeader$f_evaluate_attribute.srf
+global type f_evaluate_attribute from function_object
+end type
+
+forward prototypes
+global function string f_evaluate_attribute (datawindow dw, long al_row, string as_columname, string as_attribute)
+end prototypes
+
+global function string f_evaluate_attribute (datawindow dw, long al_row, string as_columname, string as_attribute);//f_evaluate_attribute(dw, row, column, attribute)
+//returns the attribute setting whether or not there is an expression
+/* Searer Business Technology  www.searer.com */
+
+string ls_expression, ls_result, ls_evaluate 
+long ll_tab_pos, ll_Pos_quote 
+
+ls_expression = dw.Describe ( as_columname + "." + as_attribute  )
+
+if ls_expression = '!' or isnull(ls_expression) then return ''
+
+IF Left( ls_expression, 1 ) = "~"" AND Right(ls_expression, 1 ) = "~"" THEN 
+	// PB quirk will SOMETIMES return an expression in quotes!
+	ls_expression= Mid ( ls_expression, 2 , Len ( ls_expression ) - 2 ) 
+END IF 
+
+ll_tab_pos = Pos( ls_expression, "~t" ) 
+
+IF ll_tab_pos > 0 THEN // conditional value 
+	ls_expression = Mid( ls_expression, ll_tab_pos + 1 ) 
+	//check for single quote that gets in way of quote below
+	ll_Pos_quote = Pos ( upper(ls_expression) , "'" ) 
+	do while ll_Pos_quote > 0 
+		ls_expression = Replace( ls_expression, ll_Pos_quote , 0, "~~" )  //insert tilda!
+		ll_Pos_quote += 2 //move past quote and tilda
+		ll_Pos_quote = Pos ( upper(ls_expression) , "'", ll_Pos_quote  ) 
+	loop
+else
+	//NO expression just the value was set
+	ls_result = ls_expression  
+	return ls_result
+END IF 
+
+if isnull(al_row) or al_row < 1 then al_row = 1
+ls_evaluate = "Evaluate('" + ls_expression + "', " + string(al_row) +") "
+
+ls_result = dw.describe(ls_evaluate)
+
+
+
+return ls_result
+
+end function
+

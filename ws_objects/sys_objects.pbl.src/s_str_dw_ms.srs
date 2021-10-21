@@ -1,0 +1,7 @@
+﻿$PBExportHeader$s_str_dw_ms.srs
+global type s_str_dw_ms from structure
+	datawindow		dw_master
+	datawindow		dw_shared[]
+	string		s_dwo_shared
+end type
+

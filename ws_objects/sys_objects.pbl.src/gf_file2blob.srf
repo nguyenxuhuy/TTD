@@ -1,0 +1,40 @@
+﻿$PBExportHeader$gf_file2blob.srf
+global type gf_file2blob from function_object
+end type
+
+forward prototypes
+global function integer gf_file2blob (string vs_filename, ref blob rblb_data)
+end prototypes
+
+global function integer gf_file2blob (string vs_filename, ref blob rblb_data);integer li_fileno, li_loop, li_i
+long ll_filelen, ll_bytes_read
+blob lblb_data,lblb_total_data
+
+If IsNull(vs_filename) or Len(vs_filename) = 0 or Not FileExists(vs_filename) Then Return -1
+
+ll_filelen = FileLength(vs_filename)
+If ll_filelen > 32765 Then
+	If Mod(ll_filelen, 32765) = 0 Then
+		li_loop = ll_filelen / 32765
+	Else
+		li_loop = (ll_filelen / 32765) + 1
+	End if
+Else
+	li_loop = 1
+End if
+
+li_fileno = FileOpen(vs_filename, StreamMode!, Read!, LockReadWrite!, Replace!)
+If li_FileNo < 0 Then Return -1
+
+For li_i = 1 To li_loop
+	ll_bytes_read = FileRead(li_fileno,lblb_data)
+	lblb_total_data = lblb_total_data + lblb_data
+Next
+
+FileClose(li_FileNo)
+rblb_data = lblb_total_data
+
+Return 1
+
+end function
+

@@ -1,0 +1,77 @@
+﻿$PBExportHeader$d_vendor_bank_form.srd
+release 12.5;
+datawindow(units=0 timer_interval=0 color=1073741824 brushmode=0 transparency=0 gradient.angle=0 gradient.color=8421504 gradient.focus=0 gradient.repetition.count=0 gradient.repetition.length=100 gradient.repetition.mode=0 gradient.scale=100 gradient.spread=100 gradient.transparency=0 picture.blur=0 picture.clip.bottom=0 picture.clip.left=0 picture.clip.right=0 picture.clip.top=0 picture.mode=0 picture.scale.x=100 picture.scale.y=100 picture.transparency=0 processing=0 HTMLDW=no print.printername="" print.documentname="" print.orientation = 0 print.margin.left = 110 print.margin.right = 110 print.margin.top = 96 print.margin.bottom = 96 print.paper.source = 0 print.paper.size = 0 print.canusedefaultprinter=yes print.prompt=no print.buttons=no print.preview.buttons=no print.cliptext=no print.overrideprintjob=no print.collate=yes print.background=no print.preview.background=no print.preview.outline=yes hidegrayline=no showbackcoloronxp=no picture.file="" )
+header(height=0 color="536870912" transparency="0" gradient.color="8421504" gradient.transparency="0" gradient.angle="0" brushmode="0" gradient.repetition.mode="0" gradient.repetition.count="0" gradient.repetition.length="100" gradient.focus="0" gradient.scale="100" gradient.spread="100" )
+summary(height=0 color="536870912" transparency="0" gradient.color="8421504" gradient.transparency="0" gradient.angle="0" brushmode="0" gradient.repetition.mode="0" gradient.repetition.count="0" gradient.repetition.length="100" gradient.focus="0" gradient.scale="100" gradient.spread="100" )
+footer(height=0 color="536870912" transparency="0" gradient.color="8421504" gradient.transparency="0" gradient.angle="0" brushmode="0" gradient.repetition.mode="0" gradient.repetition.count="0" gradient.repetition.length="100" gradient.focus="0" gradient.scale="100" gradient.spread="100" )
+detail(height=136 color="536870912" transparency="0" gradient.color="8421504" gradient.transparency="0" gradient.angle="0" brushmode="0" gradient.repetition.mode="0" gradient.repetition.count="0" gradient.repetition.length="100" gradient.focus="0" gradient.scale="100" gradient.spread="100" )
+table(column=(type=number update=yes updatewhereclause=yes key=yes name=id dbname="vendor.id" dbalias=".id" )
+ column=(type=number update=yes updatewhereclause=yes name=payment_term dbname="vendor.payment_term" dbalias=".payment_term" )
+ column=(type=char(30) updatewhereclause=yes name=payment_term_code dbname="valueset_value.code" dbalias="vv1.code" )
+ column=(type=char(100) updatewhereclause=yes name=payment_term_name dbname="valueset_value.name" dbalias="vv1.name" )
+ column=(type=number update=yes updatewhereclause=yes name=payment_method dbname="vendor.payment_method" dbalias=".payment_method" )
+ column=(type=char(30) updatewhereclause=yes name=payment_method_code dbname="valueset_value.code" dbalias="vv2.code" )
+ column=(type=char(100) updatewhereclause=yes name=payment_method_name dbname="valueset_value.name" dbalias="vv2.name" )
+ column=(type=number update=yes updatewhereclause=yes name=default_currency dbname="vendor.default_currency" dbalias=".default_currency" )
+ column=(type=char(20) updatewhereclause=yes name=currency_code dbname="uom.code" dbalias=".code" )
+ column=(type=number update=yes updatewhereclause=yes name=delivery_mode dbname="vendor.delivery_mode" dbalias=".delivery_mode" )
+ column=(type=char(30) updatewhereclause=yes name=delivery_mode_code dbname="valueset_value.code" dbalias="vv3.code" )
+ column=(type=char(100) updatewhereclause=yes name=delivery_mode_name dbname="valueset_value.name" dbalias="vv3.name" )
+ column=(type=char(1) update=yes updatewhereclause=yes name=customer_yn dbname="vendor.customer_yn" dbalias=".customer_yn" values="	Y/	N" )
+ column=(type=char(50) update=yes updatewhereclause=yes name=bank_name dbname="vendor.bank_name" dbalias=".bank_name" )
+ column=(type=char(30) update=yes updatewhereclause=yes name=bank_account dbname="vendor.bank_account" dbalias=".bank_account" )
+ column=(type=char(20) update=yes updatewhereclause=yes name=swift_code dbname="vendor.swift_code" dbalias=".swift_code" )
+ column=(type=number update=yes updatewhereclause=yes name=object_ref_id dbname="vendor.object_ref_id" dbalias=".object_ref_id" )
+ column=(type=char(50) update=yes updatewhereclause=yes name=object_ref_table dbname="vendor.object_ref_table" dbalias=".object_ref_table" )
+ column=(type=number update=yes updatewhereclause=yes name=company_id dbname="vendor.company_id" dbalias=".company_id" )
+ column=(type=number update=yes updatewhereclause=yes name=branch_id dbname="vendor.branch_id" dbalias=".branch_id" )
+ column=(type=number updatewhereclause=yes name=created_by dbname="vendor.created_by" dbalias=".created_by" )
+ column=(type=number updatewhereclause=yes name=last_mdf_by dbname="vendor.last_mdf_by" dbalias=".last_mdf_by" )
+ column=(type=datetime updatewhereclause=yes name=created_date dbname="vendor.created_date" dbalias=".created_date" )
+ column=(type=datetime updatewhereclause=yes name=last_mdf_date dbname="vendor.last_mdf_date" dbalias=".last_mdf_date" )
+ retrieve="  SELECT vendor.id,   
+         vendor.payment_term,   
+         vv1.code,
+         vv1.name,
+         vendor.payment_method,   
+         vv2.code,
+         vv2.name,
+         vendor.default_currency,   
+         uom.code,
+         vendor.delivery_mode,  
+         vv3.code,
+         vv3.name,
+         vendor.customer_yn,   
+         VENDOR.BANK_NAME,
+         VENDOR.BANK_ACCOUNT,
+         VENDOR.SWIFT_CODE,
+         vendor.object_ref_id,  
+         vendor.object_ref_table,   
+         vendor.company_id,  
+         vendor.branch_id,   
+         vendor.created_by,
+         vendor.last_mdf_by,
+         vendor.created_date,   
+         vendor.last_mdf_date
+    FROM vendor   
+    left join valueset_value vv1 on vv1.id = vendor.payment_term
+    left join valueset_value vv2 on vv2.id = vendor.payment_method
+    left join valueset_value vv3 on vv3.id = vendor.delivery_mode
+    left join uom on uom.id = vendor.default_currency" update="vendor" updatewhere=1 updatekeyinplace=yes )
+text(band=detail alignment="0" text="Tên ngân hàng:" border="0" color="33554432" x="114" y="28" height="76" width="416" html.valueishtml="0"  name=bank_name_t visible="1"  font.face="Tahoma" font.height="-10" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="1" background.color="536870912" background.transparency="0" background.gradient.color="8421504" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="100" background.gradient.focus="0" background.gradient.scale="100" background.gradient.spread="100" tooltip.backcolor="134217752" tooltip.delay.initial="0" tooltip.delay.visible="32000" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="134217751" tooltip.transparency="0" transparency="0" )
+text(band=detail alignment="0" text="TK ngân hàng:" border="0" color="33554432" x="2071" y="28" height="64" width="393" html.valueishtml="0"  name=bank_account_t visible="1"  font.face="Tahoma" font.height="-10" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="1" background.color="536870912" background.transparency="0" background.gradient.color="8421504" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="100" background.gradient.focus="0" background.gradient.scale="100" background.gradient.spread="100" tooltip.backcolor="134217752" tooltip.delay.initial="0" tooltip.delay.visible="32000" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="134217751" tooltip.transparency="0" transparency="0" )
+text(band=detail alignment="0" text="Mã SWIFT:" border="0" color="33554432" x="3186" y="28" height="76" width="302" html.valueishtml="0"  name=payment_method_t visible="1"  font.face="Tahoma" font.height="-10" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="1" background.color="536870912" background.transparency="0" background.gradient.color="8421504" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="100" background.gradient.focus="0" background.gradient.scale="100" background.gradient.spread="100" tooltip.backcolor="134217752" tooltip.delay.initial="0" tooltip.delay.visible="32000" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="134217751" tooltip.transparency="0" transparency="0" )
+column(band=detail id=16 alignment="0" tabsequence=30 border="1" color="33554432" x="3497" y="28" height="76" width="539" format="[general]" html.valueishtml="0"  name=swift_code visible="1" edit.limit=0 edit.case=any edit.focusrectangle=no edit.autoselect=no  font.face="Tahoma" font.height="-10" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="1" background.color="536870912" background.transparency="0" background.gradient.color="8421504" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="100" background.gradient.focus="0" background.gradient.scale="100" background.gradient.spread="100" tooltip.backcolor="134217752" tooltip.delay.initial="0" tooltip.delay.visible="32000" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="134217751" tooltip.transparency="0" transparency="0" )
+column(band=detail id=15 alignment="0" tabsequence=20 border="1" color="33554432" x="2473" y="28" height="76" width="690" format="[general]" html.valueishtml="0"  name=bank_account visible="1" edit.limit=0 edit.case=any edit.focusrectangle=no edit.autoselect=no  font.face="Tahoma" font.height="-10" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="1" background.color="536870912" background.transparency="0" background.gradient.color="8421504" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="100" background.gradient.focus="0" background.gradient.scale="100" background.gradient.spread="100" tooltip.backcolor="134217752" tooltip.delay.initial="0" tooltip.delay.visible="32000" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="134217751" tooltip.transparency="0" transparency="0" )
+column(band=detail id=14 alignment="0" tabsequence=10 border="1" color="33554432" x="535" y="28" height="76" width="1509" format="[general]" html.valueishtml="0"  name=bank_name visible="1" edit.limit=0 edit.case=any edit.focusrectangle=no edit.autoselect=no  font.face="Tahoma" font.height="-10" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="1" background.color="536870912" background.transparency="0" background.gradient.color="8421504" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="100" background.gradient.focus="0" background.gradient.scale="100" background.gradient.spread="100" tooltip.backcolor="134217752" tooltip.delay.initial="0" tooltip.delay.visible="32000" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="134217751" tooltip.transparency="0" transparency="0" )
+htmltable(border="1" )
+htmlgen(clientevents="1" clientvalidation="1" clientcomputedfields="1" clientformatting="0" clientscriptable="0" generatejavascript="1" encodeselflinkargs="1" netscapelayers="0" pagingmethod=0 generatedddwframes="1" )
+xhtmlgen() cssgen(sessionspecific="0" )
+xmlgen(inline="0" )
+xsltgen()
+jsgen()
+export.xml(headgroups="1" includewhitespace="0" metadatatype=0 savemetadata=0 )
+import.xml()
+export.pdf(method=0 distill.custompostscript="0" xslfop.print="0" )
+export.xhtml()
+ 

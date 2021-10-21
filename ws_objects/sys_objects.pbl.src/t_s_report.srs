@@ -1,0 +1,15 @@
+﻿$PBExportHeader$t_s_report.srs
+global type t_s_report from structure
+	string		s_dwcriteria
+	string		s_dwreport
+	string		s_argcols[]
+	any		a_argvals[]
+	integer		i_printsource
+	boolean		b_keepscreen
+	string		s_pro_name
+	t_s_pro_parameter		s_t_pro_parameter
+	integer		i_pro_para_number
+	string		s_company_yn
+	string		s_user_yn
+end type
+

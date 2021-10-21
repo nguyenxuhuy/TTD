@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<RibbonBar BuiltinTheme="0" Font="FaceName:Tahoma; FontCharSet:ansi!; TextSize:12">
+  <RibbonItems >
+    <ApplicationButton Text="TTĐ" Enabled="true" Tag="TTĐ" Visible="true" >
+      <ApplicationMenu>
+        <Master >
+          <Item Text="Đổi Password" PictureName="AccountBig!" Checked="false" Enabled="true" Tag="password" Type="0" Visible="true" Clicked="ue_appbutton"  />
+          <Item Text="Cài đặt tùy chọn" PictureName="OptionsBig!" Checked="false" Enabled="true" Shortcut="Ctrl+Shift+Alt+A" Tag="accountsettings" Type="0" Visible="true" Clicked="ue_appbutton"  />
+          <Item Text="Xóa tùy biến người dùng" PictureName="CloseBig!" Checked="false" Enabled="true" Tag="deleteoptions" Type="0" Visible="true" Clicked="ue_appbutton" />
+          <Item Text="Đăng xuất" PictureName="SignOutBig!" Checked="false" Enabled="true" Tag="signout" Type="0" Visible="true" Clicked="ue_appbutton"  />
+        </Master>
+      </ApplicationMenu>
+    </ApplicationButton>
+    <Categories>
+      <Category Text="Nhà" Enabled="true" Tag="Home" Visible="true" >
+        <Panel Text="Tabs" PictureName="TabsSmall!" Enabled="true" Tag="Tabs" Visible="true">          
+          <SmallButton Text="Đóng tất cả" PictureName="CloseAllSmall!" Checked="false" DefaultCommand="true" Enabled="false"   Shortcut="Ctrl+Shift+C" Tag="closeall" Visible="true" Clicked="ue_tabbutton" Selected="ue_ButtonCloseAllSelected" />
+          <SmallButton Text="Chi tiết phiếu" PictureName="DetailsBig!" Checked="false" DefaultCommand="true" Enabled="false" Tag="e_detail" Visible="true" Clicked="ue_tabbutton" Selected="ue_ButtonCloseSelected" />
+        </Panel>
+        <Panel Text="Thao tác" PictureName="ActionsSmall!" Enabled="true" Tag="Actions" Visible="true">
+          <Group>
+            <SmallButton PictureName="AddSmall!" Clicked="ue_tabbutton" Enabled="false" PowerTipDescription="Thêm mới Ctrl+N" Tag="e_add" Shortcut="Ctrl+N"/>
+            <SmallButton PictureName="DeleteRow!" Clicked="ue_tabbutton"  Enabled="false" PowerTipDescription="Xóa Ctrl+D" Tag="e_delete" Shortcut="Ctrl+D"/>
+            <SmallButton PictureName="InsertMenuItem!" Clicked="ue_tabbutton"  Enabled="false" PowerTipDescription="Chèn dòng Ctrl+I" Tag="e_insert" Shortcut="Ctrl+I"/>
+            <SmallButton PictureName="ModifySmall!" Clicked="ue_tabbutton"  Enabled="false" PowerTipDescription="Chỉnh sửa Ctrl+M" Tag="e_modify" Shortcut="Ctrl+M"/>
+            <SmallButton PictureName="RefreshBig!" Clicked="ue_tabbutton"  Enabled="false" PowerTipDescription="Nạp lại dữ liệu F5" Tag="e_refresh" Shortcut="F5"/>
+            <SmallButton PictureName="filterbig!" Clicked="ue_tabbutton"  Enabled="false" PowerTipDescription="Lọc dữ liệu Ctrl+L" Tag="e_filter" Shortcut="Ctrl+L"/>
+          </Group>
+          <Group NewLine="true" >
+            <SmallButton PictureName="NavFirstSmall!" Enabled="false" Clicked="ue_tabbutton" PowerTipDescription="Về dòng đầu" Tag="e_first"/>
+            <SmallButton PictureName="NavPrevSmall!" Enabled="false" Clicked="ue_tabbutton" PowerTipDescription="Về dòng sau" Tag="e_prior"/>
+            <SmallButton PictureName="NavNextSmall!" Enabled="false" Clicked="ue_tabbutton" PowerTipDescription="Tới dòng trước" Tag="e_next"/>
+            <SmallButton PictureName="NavLastSmall!" Enabled="false" Clicked="ue_tabbutton" PowerTipDescription="Tới dòng cuối" Tag="e_last"/>
+            <SmallButton PictureName="LibraryList!" Enabled="false" Clicked="ue_tabbutton"  PowerTipDescription="Bộ sổ" Tag="e_book"/> 
+            <SmallButton PictureName="AttachBig!" Enabled="false" Clicked="ue_tabbutton"   PowerTipDescription="Đính kèm" Tag="e_action_attach"/>                               
+            <SmallButton PictureName="HistoryBig!" Enabled="false" Clicked="ue_tabbutton"   PowerTipDescription="Lược sử cập nhật" Tag="e_user_trace"/>
+          </Group>          
+        </Panel>
+	<Panel Text="Copy" PictureName="CopyBig!" Enabled="true" Tag="Copy">
+          <SmallButton Text="Copy từ phiếu" Enabled="false" PictureName="Pics\coppy.png" Clicked="ue_ButtonPreviewClicked" >      
+ 		<Menu>
+                <Item Text="Từ..." PictureName="Copy!" Checked="false" Enabled="true" Tag="Employees" Type="0" Visible="true" Clicked="ue_appbutton" Selected="ue_MenuEmployeesSelected" />
+              </Menu>            
+          </SmallButton >
+          <SmallButton Text="Tạo Phiếu" Enabled="false" PictureName="CopyToBig!" Clicked="ue_ButtonPreviewClicked" > 
+		<Menu>
+                <Item Text="Tạo phiếu..." PictureName="CopyToBig!" Checked="false" Enabled="true" Tag="Employees" Type="0" Visible="true" Clicked="ue_appbutton" Selected="ue_MenuEmployeesSelected" />
+              </Menu>             
+          </SmallButton >
+          <SmallButton Text="Nhân bản" Enabled="false" PictureName="ShowTwoPagesBig!" Clicked="ue_appbutton" Tag="b_self_copy"/>  
+        </Panel>            
+        <Panel Text="In" Enabled="true" PictureName="PrintSmall!"  Tag="Print">
+          <SmallButton Text="Xem..." PictureName="PreviewSmall!" Clicked="ue_ButtonPreviewClicked" Tag="b_preview" Enabled="false">
+          <Menu>
+                <Item Text="Phiếu..." PictureName="PreviewSmall!" Checked="false" Enabled="true" Tag="b_view" Type="0" Visible="true" Clicked="ue_appbutton" Selected="ue_MenuEmployeesSelected" />
+              </Menu> 
+          </SmallButton >
+          <SmallButton Text="In" Enabled="false" PictureName="PrintBig!" Clicked="ue_appbutton" Tag="b_print"/>         
+          <SmallButton Text="PDF" Enabled="false" PictureName="Pics\pdf2.png" Clicked="ue_appbutton" Tag="b_pdf"/>     
+        </Panel>      
+	<Panel Text="Duyệt" PictureName="InkEdit!" Enabled="true" Tag="Approve">
+          <SmallButton Text="Gửi duyệt" PictureName="Pics\m_send_2_approve.png" Clicked="ue_tabbutton" Tag="b_send_2_approve" />      
+          <SmallButton Text="Duyệt" PictureName="Custom038a!" Clicked="ue_tabbutton" Tag="b_approve" />  
+          <SmallButton Text="Trả duyệt" PictureName="UndoBig!" Clicked="ue_tabbutton"  Tag="b_reject"/>  
+          <SmallButton Text="Lược sử" PictureName="HistoryBig!" Clicked="ue_tabbutton" Tag="b_appr_trace"/>  
+        </Panel>                
+	<Panel Text="Cập nhật" PictureName="ToolkitConfig!" Enabled="true" Tag="Update">
+        </Panel>         
+	<Panel Text="Đối tượng liên quan" PictureName="OrdersBig!" Enabled="true" Tag="Objects">
+        </Panel>          
+        <Panel Text="Thường dùng" PictureName="BoardSmall!" Enabled="true" Tag="Boards" Visible="true">
+        </Panel>        
+      </Category>
+      <Category Text="Nơi làm" Enabled="true" Tag="Workspaces" Visible="true">
+        <Panel Text="Cung ứng" PictureName="ProductsSmall!" Enabled="true" Tag="Product Management">
+          <LargeButton Text="Sản phẩm-dịch vụ" PictureName="ProductsBig!" Clicked="ue_tabbutton" Tag="pd"/>
+          <LargeButton Text="QL kho" PictureName="Pics\fork4.png" Clicked="ue_tabbutton" Tag="im" />
+          <LargeButton Text="Bán hàng" PictureName="Pics\budget.png" Clicked="ue_tabbutton" Tag="sm"/>        
+          <LargeButton Text="Thu mua" PictureName="Pics\purchase.png" Clicked="ue_tabbutton" Tag="pm"/>       
+          <LargeButton Text="Sản xuất" PictureName="Pics\factory_yellow_2_256.png" Clicked="ue_tabbutton" Tag="pp"/>       
+        </Panel>             
+ 	<Panel Text="Kế toán" PictureName="OrdersSmall!" Enabled="true" Tag="Order Management">
+          <LargeButton Text="Kế toán phải trả" PictureName="Pics\ap2.png" Clicked="ue_tabbutton" Tag="fmap"/>
+          <LargeButton Text="Kế toán phải thu" PictureName="Pics\ar.png" Clicked="ue_tabbutton" Tag="fmar"/>
+          <LargeButton Text="Nguồn tiền" PictureName="Pics\bc.png" Clicked="ue_tabbutton" Tag="fmbc"/>
+          <LargeButton Text="Tài sản cố định" PictureName="Pics\fa.png" Clicked="ue_tabbutton" Tag="fmfa"/>
+          <LargeButton Text="Kế toán tổng hợp" PictureName="Pics\gl.png" Clicked="ue_tabbutton" Tag="fmgl"/>
+        </Panel>         
+        <Panel Text="Khác" PictureName="ProductsSmall!" Enabled="true" Tag="Product Management">
+          <LargeButton Text="Nhân sự" PictureName="HRBig!" Clicked="ue_tabbutton" Tag="hr"/>
+          <LargeButton Text="Hệ thống" PictureName="DepartmentBig!" Clicked="ue_tabbutton" Tag="ad">     
+            <Menu>
+                <Item Text="QT dữ liệu" PictureName="EmployeeSmall!" Checked="false" Enabled="true" Tag="adbu" Type="0" Visible="true" Clicked="ue_appbutton" Selected="ue_MenuEmployeesSelected" />
+                <Item Text="QT hệ thông" PictureName="EmployeeSmall!" Checked="false" Enabled="true" Tag="adsy" Type="0" Visible="true" Clicked="ue_appbutton" Selected="ue_MenuEmployeesSelected" />
+              </Menu> 
+          </LargeButton>
+        </Panel>                   
+      </Category>      
+    </Categories>
+    <TabButtons>
+      <TabButton Text="Company" PictureName="SelectApplication1!" Checked="false" DefaultCommand="true" Enabled="true" PowerTipText="Company" PowerTipDescription="Công ty" Tag="Company" Visible="true" Clicked="ue_tabbutton" Selected="ue_TabButtonMinimizeSelected"/>
+      <TabButton Text="Branch" PictureName="SystemTree1!" Checked="false" DefaultCommand="true" Enabled="true" PowerTipText="Banch" PowerTipDescription="Chi nhánh"  Tag="Branch" Visible="true" Clicked="ue_tabbutton" Selected="ue_TabButtonMinimizeSelected"/>
+      <TabButton Text="Menu" PictureName="Menu1!" Checked="false" DefaultCommand="true" Enabled="true" PowerTipText="Menu"  Tag="Menu" Visible="true" Clicked="ue_tabbutton" Selected="ue_TabButtonHelpSelected" />
+    </TabButtons>
+  </RibbonItems>
+</RibbonBar>

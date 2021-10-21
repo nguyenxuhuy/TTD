@@ -1,0 +1,13 @@
+﻿$PBExportHeader$s_str_unit.srs
+global type s_str_unit from structure
+	string		s_dwo_handing
+	string		s_colname_data		descriptor "comment" = "cột chứa giá trị cần làm tròn"
+	string		s_colname_convert		descriptor "comment" = "cột chứa giá trị sau khi qui đổi"
+	string		s_colname_diff		descriptor "comment" = "cột chứa giá trị chênh lệch làm tròn"
+	string		s_dwo_unit		descriptor "comment" = "dwo chứa cột đơn vị"
+	string		s_colname_unit		descriptor "comment" = "tên cột chứa mã đơn vị"
+	string		s_type		descriptor "comment" = "loại giá trị(price, amount  hay item)"
+	string		s_dwo_object		descriptor "comment" = "dwo chứa cột colname_object"
+	string		s_colname_object		descriptor "comment" = "tên cột chứa mã item"
+end type
+

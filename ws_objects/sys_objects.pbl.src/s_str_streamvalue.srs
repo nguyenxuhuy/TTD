@@ -1,0 +1,26 @@
+﻿$PBExportHeader$s_str_streamvalue.srs
+global type s_str_streamvalue from structure
+	string		s_f_obj_dwo		descriptor "comment" = "các dwo chứa cột đối tượng FROM"
+	string		s_f_obj_column		descriptor "comment" = "các cột đối tượng FROM"
+	string		s_f_column_sv
+	string		s_t_obj_dwo		descriptor "comment" = "các dwo chứa cột đối tượng TO"
+	string		s_t_obj_column		descriptor "comment" = "các cột đối tượng TO"
+	string		s_t_column_sv
+	string		s_item_dwo		descriptor "comment" = "dwo chứa cột item, nếu không có thì đặt: none"
+	string		s_item_column		descriptor "comment" = "Thứ tự cột: item_id, spec, qty, uom,loc_id"
+	string		s_item_column_sv
+	string		s_item_lot_dwo
+	string		s_item_lot_column		descriptor "comment" = "Thứ tự cột: qty;lot_no;serial_no"
+	string		s_item_lot_column_sv
+	string		s_currency_dwo		descriptor "comment" = "dwo chứa currency"
+	string		s_currency_column		descriptor "comment" = "Thứ tự cột: currency_id, exchange_rate,trans_date,value_yn,qty_yn,replace_yn,be_replaced_yn"
+	string		s_currency_column_sv
+	string		s_value_dwo
+	string		s_value_column		descriptor "comment" = "Thứ tự cột:item_id, trans_value,base_value,spec_id,qty_sku"
+	string		s_value_column_sv
+	string		s_f_lot_dwo
+	string		s_f_lot_column
+	string		s_t_lot_dwo
+	string		s_t_lot_column
+end type
+

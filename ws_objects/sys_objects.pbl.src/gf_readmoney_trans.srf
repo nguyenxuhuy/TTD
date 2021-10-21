@@ -1,0 +1,109 @@
+﻿$PBExportHeader$gf_readmoney_trans.srf
+global type gf_readmoney_trans from function_object
+end type
+
+forward prototypes
+global function string gf_readmoney_trans (string as_money, string as_dong)
+end prototypes
+
+global function string gf_readmoney_trans (string as_money, string as_dong);//gf_readmoney
+string  result, readchar, numberchar, threenumber, threechar, pre_money,post_money
+string  numberone, numbertwo, numberthree, translate_vn
+integer i, j, s, li_find, idx_dot, n
+
+as_money = trim(as_money)
+idx_dot = pos(as_money, ".", 1)
+if idx_dot  > 0  then
+	pre_money = left(as_money, idx_dot - 1)
+	post_money = mid(as_money, idx_dot +1, len(as_money) - idx_dot )
+else
+	pre_money = as_money
+	post_money=''
+end if;
+
+li_find = pos(pre_money, ",", 1) 
+do while li_find <> 0 
+      pre_money = left(pre_money, li_find - 1) + right(pre_money, len(pre_money) - li_find)
+      li_find = pos(pre_money, ",", li_find + 1)
+loop
+if not match(pre_money, "^[0-9]+$") then
+      messagebox("Notice", "You enter a value invalid")
+      return ""
+end if
+if len(pre_money) > 15 then
+     messagebox("Notice", "Money is so large")
+     return ""
+end if
+if long(pre_money) = 0 then
+     result = 'không ' + trim(as_dong)
+     return result
+end if
+pre_money = fill(" ", 15 - len(pre_money)) + pre_money
+readchar = ' trăm mươi ngàn trăm mươi tỷ  trăm mươi triệu trăm mươi ngàn trăm mươi ' //+ trim(as_dong)
+numberchar = 'một hai ba  bốn năm sáu bảy tám chín'
+for i = 1 to 5
+    threenumber = mid(pre_money, i*3 - 2, 3)
+    if threenumber <> '   ' then
+          numberone   = left(threenumber, 1)
+          numbertwo   = mid(threenumber, 2, 1)
+          numberthree = right(threenumber, 1)
+          threechar   = '' 
+		for j = 1 to 3
+			translate_vn = ''
+			s = double(mid(threenumber, j, 1))
+			if s > 0 then
+			translate_vn = trim(mid(numberchar, s*4 - 3, 4))+' '+trim(mid(readchar,(i - 1)*15+j*5 - 4,5))+' '
+			end if           
+ 
+			choose case j
+			  case 1
+				 if s = 0 and numberone <> ' ' and threenumber <> '000' then
+				translate_vn = "không " + trim(mid(readchar, (i - 1)*15+j*5 - 4,5))+' '
+				 end if
+			 case 2 
+				 if s = 1 then      
+				  translate_vn = 'mười '
+				 end if
+				 if s = 0 and numberthree <> '0' then
+				  if (pos('123456789', numberone) > 0) or (numberone = '0' and i=5) then
+					 translate_vn = 'lẻ ' 
+				  end if 
+				 end if
+			 case 3 
+				 if s = 0 and threenumber <> '000' then
+				  translate_vn = trim(mid(readchar, (i - 1)*15+j*5 - 4,5))+' '
+				 end if
+				 if i = 5 and threenumber = '000' then
+						//translate_vn =  'đồng'
+				 end if
+				 if i = 2 and threenumber = '000' then
+					 translate_vn = 'tỷ '
+				end if
+				if s = 5 and numbertwo <> '0' then
+					translate_vn = "lăm" + mid(translate_vn, 4)
+				end if
+			 end choose                         
+	 			threechar = threechar + translate_vn
+		 next 
+    		result = result + threechar
+    end if
+next 
+if left(result, len("lăm")) = "lăm" then result = "năm" + right(result, len(result) - len("lăm")) 
+//if as_tp = 'I' then return left(result, lastpos(result, ' '))
+if len(post_money) > 0 then
+	result = result + ' phẩy'
+		for i = 1 to len(post_money)
+			n = double(mid(post_money,i,1 ))
+			if not isnull(n) then
+				if n = 0 then
+					result = result + ' ' + 'không'
+				else
+				 	result  = result + ' ' + trim(mid(numberchar, n*4 - 3, 4))
+				end if 
+			end if
+		next
+end if
+result = UPPER(left(result,1)) + mid(result,2,len(result)-1)      // FIRST CHARCTER MUST BE UPPER CASE   20080603  BY REQUEST OF SME
+return trim(result) + ' ' + as_dong
+end function
+

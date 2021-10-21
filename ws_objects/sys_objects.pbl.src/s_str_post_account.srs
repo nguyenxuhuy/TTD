@@ -1,0 +1,25 @@
+﻿$PBExportHeader$s_str_post_account.srs
+global type s_str_post_account from structure
+	string		s_posting_type
+	double		db_dr_account
+	double		db_cr_account
+	double		db_dr_subaccount
+	double		db_cr_subaccount
+	double		db_dr_object_id
+	double		db_cr_object_id
+	string		s_trans_text
+	string		s_dr_object_type
+	string		s_cr_object_type
+	string		s_post_type_text
+	string		s_val_condition
+	string		s_col_base_amt
+	string		s_col_amt
+	string		s_dr_dw_object
+	string		s_dr_object_col
+	string		s_cr_dw_object
+	string		s_cr_object_col
+	string		s_dr_obj_type
+	string		s_cr_obj_type
+	string		s_setup_type
+end type
+

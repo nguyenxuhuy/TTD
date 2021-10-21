@@ -1,0 +1,214 @@
+﻿$PBExportHeader$d_rt_test.srd
+release 17;
+datawindow(units=2 timer_interval=0 color=1073741824 processing=7 print.printername ="" print.documentname="" print.orientation = 0 print.margin.left = 250 print.margin.right = 250 print.margin.top = 250 print.margin.bottom = 250 print.paper.source = 0 print.paper.size = 0 print.canusedefaultprinter=yes print.prompt=no print.cliptext=no print.overrideprintjob=no print.collate=yes print.background=no print.preview.background=no print.preview.outline=yes richtext.headerfooter=yes richtext.wordwrap=no richtext.popmenu=no richtext.pictureframe=no richtext.inputfieldnamesvisible=no richtext.inputfieldsvisible=yes richtext.tabsvisible=no richtext.returnsvisible=no richtext.spacesvisible=no richtext.inputfieldbackcolor=1073741824 richtext.backcolor=1073741824 richtext.tabbar=no richtext.rulerbar=yes richtext.toolbar=yes richtext.displayonly=no )
+detail(text="{\rtf1\ansi\ansicpg1252\uc1\deff0{\fonttbl
+{\f0\fnil\fcharset0\fprq2 Arial;}
+{\f1\fswiss\fcharset0\fprq2 Tahoma;}
+{\f2\froman\fcharset2\fprq2 Symbol;}}
+{\colortbl;\red0\green0\blue0;\red255\green255\blue255;}
+{\stylesheet{\s0\itap0\nowidctlpar\f0\fs24 [Normal];}{\*\cs10\additive Default Paragraph Font;}}
+{\*\generator TX_RTF32 15.0.530.503;}
+\deftab1134\paperw11905\paperh16838\margl0\margt0\margr0\margb0\widowctrl\formshade\sectd
+\headery720\footery720\pgwsxn11905\pghsxn16838\marglsxn0\margtsxn0\margrsxn0\margbsxn0\pard\itap0\nowidctlpar\plain\f1\fs20 Header: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b004800450041004400450052007d000000}{\*\txfieldtext \{HEADER\}{\*\txfieldend}}\{HEADER\}}\plain\f1\fs20\par Contract Act: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0043004f004e00540052004100430054005f004100430054007d000000}{\*\txfieldtext \{CONTRACT_ACT\}{\*\txfieldend}}\{CONTRACT_ACT\}}\plain\f1\fs20\par Id: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0044004f00430055004d0045004e0054005f00490044007d000000}{\*\txfieldtext \{DOCUMENT_ID\}{\*\txfieldend}}\{DOCUMENT_ID\}}\plain\f1\fs20\par Code: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0044004f00430055004d0045004e0054005f0043004f00440045007d000000}{\*\txfieldtext \{DOCUMENT_CODE\}{\*\txfieldend}}\{DOCUMENT_CODE\}}\plain\f1\fs20\par Doc Type: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0044004f00430055004d0045004e0054005f0044004f0043005f0054005900500045007d000000}{\*\txfieldtext \{DOCUMENT_DOC_TYPE\}{\*\txfieldend}}\{DOCUMENT_DOC_TYPE\}}\plain\f1\fs20\par Status: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0044004f00430055004d0045004e0054005f005300540041005400550053007d000000}{\*\txfieldtext \{DOCUMENT_STATUS\}{\*\txfieldend}}\{DOCUMENT_STATUS\}}\plain\f1\fs20\par Document Date: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0044004f00430055004d0045004e0054005f0044004f00430055004d0045004e0054005f0044004100540045007d000000}{\*\txfieldtext \{DOCUMENT_DOCUMENT_DATE\}{\*\txfieldend}}\{DOCUMENT_DOCUMENT_DATE\}}\plain\f1\fs20\par Code: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0044004f00430055004d0045004e0054005f0043004f00440045007d000000}{\*\txfieldtext \{DOCUMENT_CODE\}{\*\txfieldend}}\{DOCUMENT_CODE\}}\plain\f1\fs20\par Cus Code: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f004300550053005f0043004f00440045007d000000}{\*\txfieldtext \{V_SO_LINE_CUS_CODE\}{\*\txfieldend}}\{V_SO_LINE_CUS_CODE\}}\plain\f1\fs20\par Cus Name: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f004300550053005f004e0041004d0045007d000000}{\*\txfieldtext \{V_SO_LINE_CUS_NAME\}{\*\txfieldend}}\{V_SO_LINE_CUS_NAME\}}\plain\f1\fs20\par Cus Address: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f004300550053005f0041004400440052004500530053007d000000}{\*\txfieldtext \{V_SO_LINE_CUS_ADDRESS\}{\*\txfieldend}}\{V_SO_LINE_CUS_ADDRESS\}}\plain\f1\fs20\par Delivery Address: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f00440045004c00490056004500520059005f0041004400440052004500530053007d000000}{\*\txfieldtext \{V_SO_LINE_DELIVERY_ADDRESS\}{\*\txfieldend}}\{V_SO_LINE_DELIVERY_ADDRESS\}}\plain\f1\fs20\par Exchange Rate: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f00450058004300480041004e00470045005f0052004100540045007d000000}{\*\txfieldtext \{V_SO_LINE_EXCHANGE_RATE\}{\*\txfieldend}}\{V_SO_LINE_EXCHANGE_RATE\}}\plain\f1\fs20\par Item Code: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f004900540045004d005f0043004f00440045007d000000}{\*\txfieldtext \{V_SO_LINE_ITEM_CODE\}{\*\txfieldend}}\{V_SO_LINE_ITEM_CODE\}}\plain\f1\fs20\par Item Name: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f004900540045004d005f004e0041004d0045007d000000}{\*\txfieldtext \{V_SO_LINE_ITEM_NAME\}{\*\txfieldend}}\{V_SO_LINE_ITEM_NAME\}}\plain\f1\fs20\par Item Grp Name: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f004900540045004d005f004700520050005f004e0041004d0045007d000000}{\*\txfieldtext \{V_SO_LINE_ITEM_GRP_NAME\}{\*\txfieldend}}\{V_SO_LINE_ITEM_GRP_NAME\}}\plain\f1\fs20\par Line Text: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f004c0049004e0045005f0054004500580054007d000000}{\*\txfieldtext \{V_SO_LINE_LINE_TEXT\}{\*\txfieldend}}\{V_SO_LINE_LINE_TEXT\}}\plain\f1\fs20\par Qty: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f005100540059007d000000}{\*\txfieldtext \{V_SO_LINE_QTY\}{\*\txfieldend}}\{V_SO_LINE_QTY\}}\plain\f1\fs20\par Price: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f00500052004900430045007d000000}{\*\txfieldtext \{V_SO_LINE_PRICE\}{\*\txfieldend}}\{V_SO_LINE_PRICE\}}\plain\f1\fs20\par Amount: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f0041004d004f0055004e0054007d000000}{\*\txfieldtext \{V_SO_LINE_AMOUNT\}{\*\txfieldend}}\{V_SO_LINE_AMOUNT\}}\plain\f1\fs20\par Amount Ex Tax: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f0041004d004f0055004e0054005f00450058005f005400410058007d000000}{\*\txfieldtext \{V_SO_LINE_AMOUNT_EX_TAX\}{\*\txfieldend}}\{V_SO_LINE_AMOUNT_EX_TAX\}}\plain\f1\fs20\par Price Ex Tax: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f00500052004900430045005f00450058005f005400410058007d000000}{\*\txfieldtext \{V_SO_LINE_PRICE_EX_TAX\}{\*\txfieldend}}\{V_SO_LINE_PRICE_EX_TAX\}}\plain\f1\fs20\par Base Amount Ex Tax: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f0042004100530045005f0041004d004f0055004e0054005f00450058005f005400410058007d000000}{\*\txfieldtext \{V_SO_LINE_BASE_AMOUNT_EX_TAX\}{\*\txfieldend}}\{V_SO_LINE_BASE_AMOUNT_EX_TAX\}}\plain\f1\fs20\par Trans Uom: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f005400520041004e0053005f0055004f004d007d000000}{\*\txfieldtext \{V_SO_LINE_TRANS_UOM\}{\*\txfieldend}}\{V_SO_LINE_TRANS_UOM\}}\plain\f1\fs20\par Line No: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f004c0049004e0045005f004e004f007d000000}{\*\txfieldtext \{V_SO_LINE_LINE_NO\}{\*\txfieldend}}\{V_SO_LINE_LINE_NO\}}\plain\f1\fs20\par Confirm Receive Date: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f0043004f004e004600490052004d005f0052004500430045004900560045005f0044004100540045007d000000}{\*\txfieldtext \{V_SO_LINE_CONFIRM_RECEIVE_DATE\}{\*\txfieldend}}\{V_SO_LINE_CONFIRM_RECEIVE_DATE\}}\plain\f1\fs20\par Uom Code: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f0055004f004d005f0043004f00440045007d000000}{\*\txfieldtext \{V_SO_LINE_UOM_CODE\}{\*\txfieldend}}\{V_SO_LINE_UOM_CODE\}}\plain\f1\fs20\par Tel: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f00540045004c007d000000}{\*\txfieldtext \{V_SO_LINE_TEL\}{\*\txfieldend}}\{V_SO_LINE_TEL\}}\plain\f1\fs20\par Fax: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f004600410058007d000000}{\*\txfieldtext \{V_SO_LINE_FAX\}{\*\txfieldend}}\{V_SO_LINE_FAX\}}\plain\f1\fs20\par Contact Name: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f0043004f004e0054004100430054005f004e0041004d0045007d000000}{\*\txfieldtext \{V_SO_LINE_CONTACT_NAME\}{\*\txfieldend}}\{V_SO_LINE_CONTACT_NAME\}}\plain\f1\fs20\par Contact Phone: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f0043004f004e0054004100430054005f00500048004f004e0045007d000000}{\*\txfieldtext \{V_SO_LINE_CONTACT_PHONE\}{\*\txfieldend}}\{V_SO_LINE_CONTACT_PHONE\}}\plain\f1\fs20\par Contact Email: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f0043004f004e0054004100430054005f0045004d00410049004c007d000000}{\*\txfieldtext \{V_SO_LINE_CONTACT_EMAIL\}{\*\txfieldend}}\{V_SO_LINE_CONTACT_EMAIL\}}\plain\f1\fs20\par Manufacturers: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f004d0041004e0055004600410043005400550052004500520053007d000000}{\*\txfieldtext \{V_SO_LINE_MANUFACTURERS\}{\*\txfieldend}}\{V_SO_LINE_MANUFACTURERS\}}\plain\f1\fs20\par Tax Correction: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f005400410058005f0043004f005200520045004300540049004f004e007d000000}{\*\txfieldtext \{V_SO_LINE_TAX_CORRECTION\}{\*\txfieldend}}\{V_SO_LINE_TAX_CORRECTION\}}\plain\f1\fs20\par Base Price: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f0042004100530045005f00500052004900430045007d000000}{\*\txfieldtext \{V_SO_LINE_BASE_PRICE\}{\*\txfieldend}}\{V_SO_LINE_BASE_PRICE\}}\plain\f1\fs20\par Expired Date: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f0045005800500049005200450044005f0044004100540045007d000000}{\*\txfieldtext \{V_SO_LINE_EXPIRED_DATE\}{\*\txfieldend}}\{V_SO_LINE_EXPIRED_DATE\}}\plain\f1\fs20\par Company Name: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f0043004f004d00500041004e0059005f004e0041004d0045007d000000}{\*\txfieldtext \{V_SO_LINE_COMPANY_NAME\}{\*\txfieldend}}\{V_SO_LINE_COMPANY_NAME\}}\plain\f1\fs20\par Comp Address: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f0043004f004d0050005f0041004400440052004500530053007d000000}{\*\txfieldtext \{V_SO_LINE_COMP_ADDRESS\}{\*\txfieldend}}\{V_SO_LINE_COMP_ADDRESS\}}\plain\f1\fs20\par Comp Tel: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f0043004f004d0050005f00540045004c007d000000}{\*\txfieldtext \{V_SO_LINE_COMP_TEL\}{\*\txfieldend}}\{V_SO_LINE_COMP_TEL\}}\plain\f1\fs20\par Comp Fax: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f0043004f004d0050005f004600410058007d000000}{\*\txfieldtext \{V_SO_LINE_COMP_FAX\}{\*\txfieldend}}\{V_SO_LINE_COMP_FAX\}}\plain\f1\fs20\par Staff Phone: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f00530054004100460046005f00500048004f004e0045007d000000}{\*\txfieldtext \{V_SO_LINE_STAFF_PHONE\}{\*\txfieldend}}\{V_SO_LINE_STAFF_PHONE\}}\plain\f1\fs20\par Staff Note: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f00530054004100460046005f004e004f00540045007d000000}{\*\txfieldtext \{V_SO_LINE_STAFF_NOTE\}{\*\txfieldend}}\{V_SO_LINE_STAFF_NOTE\}}\plain\f1\fs20\par Staff Name: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f00530054004100460046005f004e0041004d0045007d000000}{\*\txfieldtext \{V_SO_LINE_STAFF_NAME\}{\*\txfieldend}}\{V_SO_LINE_STAFF_NAME\}}\plain\f1\fs20\par Subacct Code: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f0053005500420041004300430054005f0043004f00440045007d000000}{\*\txfieldtext \{V_SO_LINE_SUBACCT_CODE\}{\*\txfieldend}}\{V_SO_LINE_SUBACCT_CODE\}}\plain\f1\fs20\par Subacct Name: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f0053005500420041004300430054005f004e0041004d0045007d000000}{\*\txfieldtext \{V_SO_LINE_SUBACCT_NAME\}{\*\txfieldend}}\{V_SO_LINE_SUBACCT_NAME\}}\plain\f1\fs20\par Spec Length: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f0053005000450043005f004c0045004e004700540048007d000000}{\*\txfieldtext \{V_SO_LINE_SPEC_LENGTH\}{\*\txfieldend}}\{V_SO_LINE_SPEC_LENGTH\}}\plain\f1\fs20\par Spec Width: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f0053005000450043005f00570049004400540048007d000000}{\*\txfieldtext \{V_SO_LINE_SPEC_WIDTH\}{\*\txfieldend}}\{V_SO_LINE_SPEC_WIDTH\}}\plain\f1\fs20\par Spec Depth: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f0053005000450043005f00440045005000540048007d000000}{\*\txfieldtext \{V_SO_LINE_SPEC_DEPTH\}{\*\txfieldend}}\{V_SO_LINE_SPEC_DEPTH\}}\plain\f1\fs20\par Spec Desc: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f0053005000450043005f0044004500530043007d000000}{\*\txfieldtext \{V_SO_LINE_SPEC_DESC\}{\*\txfieldend}}\{V_SO_LINE_SPEC_DESC\}}\plain\f1\fs20\par Image Link: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f0049004d004100470045005f004c0049004e004b007d000000}{\*\txfieldtext \{V_SO_LINE_IMAGE_LINK\}{\*\txfieldend}}\{V_SO_LINE_IMAGE_LINK\}}\plain\f1\fs20\par Branch Id: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f004200520041004e00430048005f00490044007d000000}{\*\txfieldtext \{V_SO_LINE_BRANCH_ID\}{\*\txfieldend}}\{V_SO_LINE_BRANCH_ID\}}\plain\f1\fs20\par Other Note: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f004f0054004800450052005f004e004f00540045007d000000}{\*\txfieldtext \{V_SO_LINE_OTHER_NOTE\}{\*\txfieldend}}\{V_SO_LINE_OTHER_NOTE\}}\plain\f1\fs20\par Payment Term Name: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f005000410059004d0045004e0054005f005400450052004d005f004e0041004d0045007d000000}{\*\txfieldtext \{V_SO_LINE_PAYMENT_TERM_NAME\}{\*\txfieldend}}\{V_SO_LINE_PAYMENT_TERM_NAME\}}\plain\f1\fs20\par Cust Tax Number: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f0043005500530054005f005400410058005f004e0055004d004200450052007d000000}{\*\txfieldtext \{V_SO_LINE_CUST_TAX_NUMBER\}{\*\txfieldend}}\{V_SO_LINE_CUST_TAX_NUMBER\}}\plain\f1\fs20\par Comp Tax Number: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f0043004f004d0050005f005400410058005f004e0055004d004200450052007d000000}{\*\txfieldtext \{V_SO_LINE_COMP_TAX_NUMBER\}{\*\txfieldend}}\{V_SO_LINE_COMP_TAX_NUMBER\}}\plain\f1\fs20\par Rep Name: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f005200450050005f004e0041004d0045007d000000}{\*\txfieldtext \{V_SO_LINE_REP_NAME\}{\*\txfieldend}}\{V_SO_LINE_REP_NAME\}}\plain\f1\fs20\par Rep Phone: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f005200450050005f00500048004f004e0045007d000000}{\*\txfieldtext \{V_SO_LINE_REP_PHONE\}{\*\txfieldend}}\{V_SO_LINE_REP_PHONE\}}\plain\f1\fs20\par Rep Title: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f005200450050005f005400490054004c0045007d000000}{\*\txfieldtext \{V_SO_LINE_REP_TITLE\}{\*\txfieldend}}\{V_SO_LINE_REP_TITLE\}}\plain\f1\fs20\par Contact Title: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f0043004f004e0054004100430054005f005400490054004c0045007d000000}{\*\txfieldtext \{V_SO_LINE_CONTACT_TITLE\}{\*\txfieldend}}\{V_SO_LINE_CONTACT_TITLE\}}\plain\f1\fs20\par Orders Note: \plain\f1\fs20{\txfielddef{\*\txfieldstart\txfieldtype0\txfieldflags152\txfielddata 7b0056005f0053004f005f004c0049004e0045005f004f00520044004500520053005f004e004f00540045007d000000}{\*\txfieldtext \{V_SO_LINE_ORDERS_NOTE\}{\*\txfieldend}}\{V_SO_LINE_ORDERS_NOTE\}}\plain\f1\fs20\par\pard\itap0\nowidctlpar}")
+header(text="{\rtf1\ansi\ansicpg1252\uc1\deff0{\fonttbl
+{\f0\fnil\fcharset0\fprq2 Arial;}
+{\f1\fswiss\fcharset0\fprq2 Tahoma;}
+{\f2\froman\fcharset2\fprq2 Symbol;}}
+{\colortbl;\red0\green0\blue0;\red255\green255\blue255;}
+{\stylesheet{\s0\itap0\nowidctlpar\f0\fs24 [Normal];}{\*\cs10\additive Default Paragraph Font;}}
+{\*\generator TX_RTF32 15.0.530.503;}
+\deftab1134\paperw11905\paperh16838\margl0\margt0\margr0\margb0\widowctrl\formshade\sectd
+\headery720\footery720\pgwsxn11905\pghsxn16838\marglsxn0\margtsxn0\margrsxn0\margbsxn0\pard\itap0\nowidctlpar\plain\f1\fs20}")
+footer(text="{\rtf1\ansi\ansicpg1252\uc1\deff0{\fonttbl
+{\f0\fnil\fcharset0\fprq2 Arial;}
+{\f1\fswiss\fcharset0\fprq2 Tahoma;}
+{\f2\froman\fcharset2\fprq2 Symbol;}}
+{\colortbl;\red0\green0\blue0;\red255\green255\blue255;}
+{\stylesheet{\s0\itap0\nowidctlpar\f0\fs24 [Normal];}{\*\cs10\additive Default Paragraph Font;}}
+{\*\generator TX_RTF32 15.0.530.503;}
+\deftab1134\paperw11905\paperh16838\margl0\margt0\margr0\margb0\widowctrl\formshade\sectd
+\headery720\footery720\pgwsxn11905\pghsxn16838\marglsxn0\margtsxn0\margrsxn0\margbsxn0\pard\itap0\nowidctlpar\plain\f1\fs20}")table(column=(type=char(15) updatewhereclause=yes name=header dbname="header" )
+ column=(type=char(14) updatewhereclause=yes name=contract_act dbname="contract_act" )
+ column=(type=number updatewhereclause=yes name=document_id dbname="document.id" )
+ column=(type=char(30) updatewhereclause=yes name=document_code dbname="document.code" )
+ column=(type=char(20) updatewhereclause=yes name=document_doc_type dbname="document.doc_type" )
+ column=(type=char(20) updatewhereclause=yes name=document_status dbname="document.status" )
+ column=(type=datetime updatewhereclause=yes name=document_document_date dbname="document.document_date" )
+ column=(type=char(30) updatewhereclause=yes name=document_code_1 dbname="document.code" )
+ column=(type=char(100) updatewhereclause=yes name=v_so_line_cus_code dbname="v_so_line.cus_code" )
+ column=(type=char(500) updatewhereclause=yes name=v_so_line_cus_name dbname="v_so_line.cus_name" )
+ column=(type=char(200) updatewhereclause=yes name=v_so_line_cus_address dbname="v_so_line.cus_address" )
+ column=(type=char(200) updatewhereclause=yes name=v_so_line_delivery_address dbname="v_so_line.delivery_address" )
+ column=(type=number updatewhereclause=yes name=v_so_line_exchange_rate dbname="v_so_line.exchange_rate" )
+ column=(type=char(100) updatewhereclause=yes name=v_so_line_item_code dbname="v_so_line.item_code" )
+ column=(type=char(500) updatewhereclause=yes name=v_so_line_item_name dbname="v_so_line.item_name" )
+ column=(type=char(100) updatewhereclause=yes name=v_so_line_item_grp_name dbname="v_so_line.item_grp_name" )
+ column=(type=char(150) updatewhereclause=yes name=v_so_line_line_text dbname="v_so_line.line_text" )
+ column=(type=number updatewhereclause=yes name=v_so_line_qty dbname="v_so_line.qty" )
+ column=(type=number updatewhereclause=yes name=v_so_line_price dbname="v_so_line.price" )
+ column=(type=number updatewhereclause=yes name=v_so_line_amount dbname="v_so_line.amount" )
+ column=(type=number updatewhereclause=yes name=v_so_line_amount_ex_tax dbname="v_so_line.amount_ex_tax" )
+ column=(type=number updatewhereclause=yes name=v_so_line_price_ex_tax dbname="v_so_line.price_ex_tax" )
+ column=(type=number updatewhereclause=yes name=v_so_line_base_amount_ex_tax dbname="v_so_line.base_amount_ex_tax" )
+ column=(type=number updatewhereclause=yes name=v_so_line_trans_uom dbname="v_so_line.trans_uom" )
+ column=(type=number updatewhereclause=yes name=v_so_line_line_no dbname="v_so_line.line_no" )
+ column=(type=datetime updatewhereclause=yes name=v_so_line_confirm_receive_date dbname="v_so_line.confirm_receive_date" )
+ column=(type=char(20) updatewhereclause=yes name=v_so_line_uom_code dbname="v_so_line.uom_code" )
+ column=(type=char(30) updatewhereclause=yes name=v_so_line_tel dbname="v_so_line.tel" )
+ column=(type=char(30) updatewhereclause=yes name=v_so_line_fax dbname="v_so_line.fax" )
+ column=(type=char(66) updatewhereclause=yes name=v_so_line_contact_name dbname="v_so_line.contact_name" )
+ column=(type=char(50) updatewhereclause=yes name=v_so_line_contact_phone dbname="v_so_line.contact_phone" )
+ column=(type=char(60) updatewhereclause=yes name=v_so_line_contact_email dbname="v_so_line.contact_email" )
+ column=(type=char(100) updatewhereclause=yes name=v_so_line_manufacturers dbname="v_so_line.manufacturers" )
+ column=(type=number updatewhereclause=yes name=v_so_line_tax_correction dbname="v_so_line.tax_correction" )
+ column=(type=number updatewhereclause=yes name=v_so_line_base_price dbname="v_so_line.base_price" )
+ column=(type=datetime updatewhereclause=yes name=v_so_line_expired_date dbname="v_so_line.expired_date" )
+ column=(type=char(100) updatewhereclause=yes name=v_so_line_company_name dbname="v_so_line.company_name" )
+ column=(type=char(200) updatewhereclause=yes name=v_so_line_comp_address dbname="v_so_line.comp_address" )
+ column=(type=char(30) updatewhereclause=yes name=v_so_line_comp_tel dbname="v_so_line.comp_tel" )
+ column=(type=char(30) updatewhereclause=yes name=v_so_line_comp_fax dbname="v_so_line.comp_fax" )
+ column=(type=char(50) updatewhereclause=yes name=v_so_line_staff_phone dbname="v_so_line.staff_phone" )
+ column=(type=char(500) updatewhereclause=yes name=v_so_line_staff_note dbname="v_so_line.staff_note" )
+ column=(type=char(500) updatewhereclause=yes name=v_so_line_staff_name dbname="v_so_line.staff_name" )
+ column=(type=char(30) updatewhereclause=yes name=v_so_line_subacct_code dbname="v_so_line.subacct_code" )
+ column=(type=char(100) updatewhereclause=yes name=v_so_line_subacct_name dbname="v_so_line.subacct_name" )
+ column=(type=number updatewhereclause=yes name=v_so_line_spec_length dbname="v_so_line.spec_length" )
+ column=(type=number updatewhereclause=yes name=v_so_line_spec_width dbname="v_so_line.spec_width" )
+ column=(type=number updatewhereclause=yes name=v_so_line_spec_depth dbname="v_so_line.spec_depth" )
+ column=(type=char(100) updatewhereclause=yes name=v_so_line_spec_desc dbname="v_so_line.spec_desc" )
+ column=(type=char(500) updatewhereclause=yes name=v_so_line_image_link dbname="v_so_line.image_link" )
+ column=(type=number updatewhereclause=yes name=v_so_line_branch_id dbname="v_so_line.branch_id" )
+ column=(type=char(250) updatewhereclause=yes name=v_so_line_other_note dbname="v_so_line.other_note" )
+ column=(type=char(100) updatewhereclause=yes name=v_so_line_payment_term_name dbname="v_so_line.payment_term_name" )
+ column=(type=char(20) updatewhereclause=yes name=v_so_line_cust_tax_number dbname="v_so_line.cust_tax_number" )
+ column=(type=char(20) updatewhereclause=yes name=v_so_line_comp_tax_number dbname="v_so_line.comp_tax_number" )
+ column=(type=char(66) updatewhereclause=yes name=v_so_line_rep_name dbname="v_so_line.rep_name" )
+ column=(type=char(50) updatewhereclause=yes name=v_so_line_rep_phone dbname="v_so_line.rep_phone" )
+ column=(type=char(20) updatewhereclause=yes name=v_so_line_rep_title dbname="v_so_line.rep_title" )
+ column=(type=char(20) updatewhereclause=yes name=v_so_line_contact_title dbname="v_so_line.contact_title" )
+ column=(type=char(2000) updatewhereclause=yes name=v_so_line_orders_note dbname="v_so_line.orders_note" )
+ retrieve="SELECT 'Pics\header.png' header,
+			'Pics\dkhp1.png' contract_act,
+		DOCUMENT.ID,
+            DOCUMENT.CODE,
+            DOCUMENT.DOC_TYPE,
+            DOCUMENT.STATUS, 
+            DOCUMENT.DOCUMENT_DATE,
+            DOCUMENT.CODE,
+            V_SO_LINE.CUS_CODE,V_SO_LINE.cus_name,
+            V_SO_LINE.CUS_ADDRESS, 
+            V_SO_LINE.DELIVERY_ADDRESS,
+            V_SO_LINE.EXCHANGE_RATE, 
+            V_SO_LINE.ITEM_CODE,
+            V_SO_LINE.ITEM_NAME,    
+            V_SO_LINE.ITEM_GRP_NAME,   
+            V_SO_LINE.LINE_TEXT, 
+            V_SO_LINE.QTY, 
+			V_SO_LINE.price,     
+			V_SO_LINE.amount,
+			V_SO_LINE.amount_ex_tax,  
+            V_SO_LINE.PRICE_EX_TAX, 
+            V_SO_LINE.BASE_AMOUNT_EX_TAX,
+            V_SO_LINE.TRANS_UOM, 
+            V_SO_LINE.LINE_NO, 
+            V_SO_LINE.CONFIRM_RECEIVE_DATE,
+            V_SO_LINE.UOM_CODE , 
+            V_SO_LINE.TEL,
+            V_SO_LINE.FAX, 
+            V_SO_LINE.CONTACT_NAME,
+            V_SO_LINE.CONTACT_PHONE,
+            V_SO_LINE.CONTACT_EMAIL,
+            V_SO_LINE.MANUFACTURERS,
+            V_SO_LINE.TAX_CORRECTION,
+		   V_SO_LINE.BASE_PRICE,
+		   V_SO_LINE.EXPIRED_DATE,
+		   V_SO_LINE.COMPANY_NAME,
+		   V_SO_LINE.COMP_ADDRESS,
+		   V_SO_LINE.COMP_TEL,
+		   V_SO_LINE.COMP_FAX,
+			V_SO_LINE.staff_phone,
+			V_SO_LINE.staff_note,
+			V_SO_LINE.staff_name,
+			V_SO_LINE.subacct_code,
+			V_SO_LINE.subacct_name,
+			V_SO_LINE.spec_length,
+			V_SO_LINE.spec_width,
+			V_SO_LINE.spec_depth,
+			V_SO_LINE.spec_desc,
+			V_SO_LINE.image_link,
+V_SO_LINE.branch_id,
+V_SO_LINE.other_note,
+V_SO_LINE.payment_term_name,
+V_SO_LINE.cust_tax_number, 
+V_SO_LINE.comp_tax_number,
+V_SO_LINE.rep_name,
+V_SO_LINE.rep_phone,
+V_SO_LINE.rep_title,
+V_SO_LINE.contact_title,
+V_SO_LINE.orders_note
+FROM    DOCUMENT
+    LEFT JOIN V_SO_LINE ON DOCUMENT.ID = V_SO_LINE.DOC_ID
+WHERE DOCUMENT.DOC_TYPE = 'SO'" )
+column(name=header id=1 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=contract_act id=2 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=document_id id=3 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=document_code id=4 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=document_doc_type id=5 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=document_status id=6 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=document_document_date id=7 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[shortdate] [time]" )
+column(name=document_code_1 id=8 visible="0" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_cus_code id=9 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_cus_name id=10 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_cus_address id=11 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_delivery_address id=12 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_exchange_rate id=13 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_item_code id=14 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_item_name id=15 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_item_grp_name id=16 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_line_text id=17 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_qty id=18 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_price id=19 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_amount id=20 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_amount_ex_tax id=21 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_price_ex_tax id=22 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_base_amount_ex_tax id=23 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_trans_uom id=24 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_line_no id=25 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_confirm_receive_date id=26 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[shortdate] [time]" )
+column(name=v_so_line_uom_code id=27 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_tel id=28 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_fax id=29 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_contact_name id=30 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_contact_phone id=31 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_contact_email id=32 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_manufacturers id=33 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_tax_correction id=34 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_base_price id=35 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_expired_date id=36 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[shortdate] [time]" )
+column(name=v_so_line_company_name id=37 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_comp_address id=38 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_comp_tel id=39 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_comp_fax id=40 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_staff_phone id=41 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_staff_note id=42 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_staff_name id=43 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_subacct_code id=44 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_subacct_name id=45 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_spec_length id=46 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_spec_width id=47 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_spec_depth id=48 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_spec_desc id=49 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_image_link id=50 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_branch_id id=51 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_other_note id=52 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_payment_term_name id=53 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_cust_tax_number id=54 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_comp_tax_number id=55 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_rep_name id=56 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_rep_phone id=57 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_rep_title id=58 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_contact_title id=59 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+column(name=v_so_line_orders_note id=60 visible="1" lineremove=no multiline=no width.autosize=yes width="0" alignment="0" tabsequence=0 format="[general]" )
+htmltable(border="1" cellpadding="0" cellspacing="0" generatecss="no" nowrap="yes")
+export.xml(headgroups="1" includewhitespace="0" metadatatype=0 savemetadata=0 )
+import.xml()

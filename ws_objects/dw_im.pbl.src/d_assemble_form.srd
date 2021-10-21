@@ -1,0 +1,146 @@
+﻿$PBExportHeader$d_assemble_form.srd
+release 17;
+datawindow(units=0 timer_interval=0 color=1073741824 brushmode=0 transparency=0 gradient.angle=0 gradient.color=8421504 gradient.focus=0 gradient.repetition.count=0 gradient.repetition.length=100 gradient.repetition.mode=0 gradient.scale=100 gradient.spread=100 gradient.transparency=0 picture.blur=0 picture.clip.bottom=0 picture.clip.left=0 picture.clip.right=0 picture.clip.top=0 picture.mode=0 picture.scale.x=100 picture.scale.y=100 picture.transparency=0 processing=0 HTMLDW=no print.printername="" print.documentname="" print.orientation = 0 print.margin.left = 110 print.margin.right = 110 print.margin.top = 96 print.margin.bottom = 96 print.paper.source = 0 print.paper.size = 0 print.canusedefaultprinter=yes print.prompt=no print.buttons=no print.preview.buttons=no print.cliptext=no print.overrideprintjob=no print.collate=yes print.background=no print.preview.background=no print.preview.outline=yes hidegrayline=no showbackcoloronxp=no picture.file="" )
+header(height=0 color="536870912" transparency="0" gradient.color="8421504" gradient.transparency="0" gradient.angle="0" brushmode="0" gradient.repetition.mode="0" gradient.repetition.count="0" gradient.repetition.length="100" gradient.focus="0" gradient.scale="100" gradient.spread="100" )
+summary(height=0 color="536870912" transparency="0" gradient.color="8421504" gradient.transparency="0" gradient.angle="0" brushmode="0" gradient.repetition.mode="0" gradient.repetition.count="0" gradient.repetition.length="100" gradient.focus="0" gradient.scale="100" gradient.spread="100" )
+footer(height=0 color="536870912" transparency="0" gradient.color="8421504" gradient.transparency="0" gradient.angle="0" brushmode="0" gradient.repetition.mode="0" gradient.repetition.count="0" gradient.repetition.length="100" gradient.focus="0" gradient.scale="100" gradient.spread="100" )
+detail(height=980 color="536870912" transparency="0" gradient.color="8421504" gradient.transparency="0" gradient.angle="0" brushmode="0" gradient.repetition.mode="0" gradient.repetition.count="0" gradient.repetition.length="100" gradient.focus="0" gradient.scale="100" gradient.spread="100" )
+table(column=(type=number update=yes updatewhereclause=yes key=yes name=id dbname="booked_slip.id" dbalias=".id" )
+ column=(type=number update=yes updatewhereclause=yes name=branch_id dbname="booked_slip.branch_id" dbalias=".branch_id" )
+ column=(type=number update=yes updatewhereclause=yes name=company_id dbname="booked_slip.company_id" dbalias=".company_id" )
+ column=(type=number update=yes updatewhereclause=yes name=object_ref_id dbname="booked_slip.object_ref_id" dbalias=".object_ref_id" )
+ column=(type=char(50) update=yes updatewhereclause=yes name=object_ref_table dbname="booked_slip.object_ref_table" dbalias=".object_ref_table" )
+ column=(type=number updatewhereclause=yes name=created_by dbname="booked_slip.created_by" dbalias=".created_by" )
+ column=(type=datetime updatewhereclause=yes name=created_date dbname="booked_slip.created_date" dbalias=".created_date" )
+ column=(type=number updatewhereclause=yes name=last_mdf_by dbname="booked_slip.last_mdf_by" dbalias=".last_mdf_by" )
+ column=(type=datetime updatewhereclause=yes name=last_mdf_date dbname="booked_slip.last_mdf_date" dbalias=".last_mdf_date" )
+ column=(type=char(20) update=yes updatewhereclause=yes name=doc_type dbname="booked_slip.doc_type" dbalias=".doc_type" )
+ column=(type=char(500) update=yes updatewhereclause=yes name=description dbname="booked_slip.description" dbalias=".description" )
+ column=(type=number update=yes updatewhereclause=yes name=version_no dbname="booked_slip.version_no" dbalias=".version_no" )
+ column=(type=datetime update=yes updatewhereclause=yes name=trans_date dbname="booked_slip.trans_date" dbalias=".trans_date" )
+ column=(type=char(200) update=yes updatewhereclause=yes name=trans_address dbname="booked_slip.trans_address" dbalias=".trans_address" )
+ column=(type=char(100) update=yes updatewhereclause=yes name=delivery_person dbname="booked_slip.delivery_person" dbalias=".delivery_person" )
+ column=(type=char(100) update=yes updatewhereclause=yes name=receipt_person dbname="booked_slip.receipt_person" dbalias=".receipt_person" )
+ column=(type=number update=yes updatewhereclause=yes name=delivery_mode dbname="booked_slip.delivery_mode" dbalias=".delivery_mode" )
+ column=(type=number update=yes updatewhereclause=yes name=invoice_object dbname="booked_slip.invoice_object" dbalias=".invoice_object" )
+ column=(type=char(100) update=yes updatewhereclause=yes name=invoice_sign dbname="booked_slip.invoice_sign" dbalias=".invoice_sign" )
+ column=(type=char(100) update=yes updatewhereclause=yes name=invoice_code dbname="booked_slip.invoice_code" dbalias=".invoice_code" )
+ column=(type=char(30) update=yes updatewhereclause=yes name=bank_statement_no dbname="booked_slip.bank_statement_no" dbalias=".bank_statement_no" )
+ column=(type=char(30) update=yes updatewhereclause=yes name=vendor_delivery_no dbname="booked_slip.vendor_delivery_no" dbalias=".vendor_delivery_no" )
+ column=(type=char(1) update=yes updatewhereclause=yes name=invoice_yn dbname="booked_slip.invoice_yn" dbalias=".invoice_yn" )
+ column=(type=char(1) update=yes updatewhereclause=yes name=quantity_yn dbname="booked_slip.quantity_yn" dbalias=".quantity_yn" values="	Y/	N" )
+ column=(type=char(1) update=yes updatewhereclause=yes name=value_yn dbname="booked_slip.value_yn" dbalias=".value_yn" values="	Y/	N" )
+ column=(type=char(1) update=yes updatewhereclause=yes name=allocation_yn dbname="booked_slip.allocation_yn" dbalias=".allocation_yn" )
+ column=(type=number update=yes updatewhereclause=yes name=dr_cr_object dbname="booked_slip.dr_cr_object" dbalias=".dr_cr_object" )
+ column=(type=char(200) update=yes updatewhereclause=yes name=invoice_address dbname="booked_slip.invoice_address" dbalias=".invoice_address" )
+ column=(type=number update=yes updatewhereclause=yes name=currency_id dbname="booked_slip.currency_id" dbalias=".currency_id" )
+ column=(type=number update=yes updatewhereclause=yes name=exchange_rate dbname="booked_slip.exchange_rate" dbalias=".exchange_rate" )
+ column=(type=number update=yes updatewhereclause=yes name=payment_term dbname="booked_slip.payment_term" dbalias=".payment_term" )
+ column=(type=number update=yes updatewhereclause=yes name=payment_method dbname="booked_slip.payment_method" dbalias=".payment_method" )
+ column=(type=datetime update=yes updatewhereclause=yes name=due_date dbname="booked_slip.due_date" dbalias=".due_date" )
+ column=(type=datetime update=yes updatewhereclause=yes name=invoice_received_date dbname="booked_slip.invoice_received_date" dbalias=".invoice_received_date" )
+ column=(type=char(1) update=yes updatewhereclause=yes name=include_tax_yn dbname="booked_slip.include_tax_yn" dbalias=".include_tax_yn" )
+ column=(type=char(1) update=yes updatewhereclause=yes name=replace_yn dbname="booked_slip.replace_yn" dbalias=".replace_yn" )
+ column=(type=char(1) update=yes updatewhereclause=yes name=be_replaced_yn dbname="booked_slip.be_replaced_yn" dbalias=".be_replaced_yn" )
+ column=(type=number update=yes updatewhereclause=yes name=subaccount dbname="booked_slip.subaccount" dbalias=".subaccount" )
+ column=(type=char(50) update=yes updatewhereclause=yes name=buyer_person dbname="booked_slip.buyer_person" dbalias=".buyer_person" )
+ column=(type=char(30) update=yes updatewhereclause=yes name=invoice_request dbname="booked_slip.invoice_request" dbalias=".invoice_request" )
+ column=(type=char(100) update=yes updatewhereclause=yes name=attribute dbname="booked_slip.attribute" dbalias=".attribute" )
+ column=(type=char(100) update=yes updatewhereclause=yes name=customs_declaration_no dbname="booked_slip.customs_declaration_no" dbalias=".customs_declaration_no" )
+ column=(type=char(500) update=yes updatewhereclause=yes name=tax_desc dbname="booked_slip.tax_desc" dbalias=".tax_desc" )
+ column=(type=char(1) update=yes updatewhereclause=yes name=tax_view_yn dbname="booked_slip.tax_view_yn" dbalias=".tax_view_yn" )
+ column=(type=char(150) update=yes updatewhereclause=yes name=wh_receipt_desc dbname="booked_slip.wh_receipt_desc" dbalias=".wh_receipt_desc" )
+ column=(type=char(2000) update=yes updatewhereclause=yes name=note dbname="booked_slip.note" dbalias=".note" )
+ column=(type=char(30) updatewhereclause=yes name=delivery_mode_code dbname="v_booked_slip_inventory.delivery_mode_code" dbalias="V_BKS_INV.delivery_mode_code" )
+ column=(type=char(100) updatewhereclause=yes name=delivery_mode_name dbname="v_booked_slip_inventory.delivery_mode_name" dbalias="V_BKS_INV.delivery_mode_name" )
+ column=(type=char(50) updatewhereclause=yes name=payment_term_code dbname="v_booked_slip_inventory.payment_term_code" dbalias="V_BKS_INV.payment_term_code" )
+ column=(type=char(100) updatewhereclause=yes name=payment_term_name dbname="v_booked_slip_inventory.payment_term_name" dbalias="V_BKS_INV.payment_term_name" )
+ column=(type=char(30) updatewhereclause=yes name=payment_method_code dbname="v_booked_slip_inventory.payment_method_code" dbalias="V_BKS_INV.payment_method_code" )
+ column=(type=char(100) updatewhereclause=yes name=payment_method_name dbname="v_booked_slip_inventory.payment_method_name" dbalias="V_BKS_INV.payment_method_name" )
+ column=(type=char(20) updatewhereclause=yes name=uom_code dbname="v_booked_slip_inventory.uom_code" dbalias="V_BKS_INV.uom_code" )
+ column=(type=char(100) updatewhereclause=yes name=uom_name dbname="v_booked_slip_inventory.uom_name" dbalias="V_BKS_INV.uom_name" )
+ retrieve="SELECT  
+BOOKED_SLIP.ID ,
+BOOKED_SLIP.BRANCH_ID   ,
+BOOKED_SLIP.COMPANY_ID ,
+BOOKED_SLIP.OBJECT_REF_ID  ,
+BOOKED_SLIP.OBJECT_REF_TABLE ,
+BOOKED_SLIP.CREATED_BY ,
+BOOKED_SLIP.CREATED_DATE ,
+BOOKED_SLIP.LAST_MDF_BY ,
+BOOKED_SLIP.LAST_MDF_DATE  ,
+BOOKED_SLIP.DOC_TYPE ,
+BOOKED_SLIP.DESCRIPTION,
+BOOKED_SLIP.VERSION_NO , 
+BOOKED_SLIP.TRANS_DATE,
+BOOKED_SLIP.TRANS_ADDRESS ,
+BOOKED_SLIP.DELIVERY_PERSON ,
+BOOKED_SLIP.RECEIPT_PERSON ,
+BOOKED_SLIP.DELIVERY_MODE  ,
+BOOKED_SLIP.INVOICE_OBJECT  ,
+BOOKED_SLIP.INVOICE_SIGN ,
+BOOKED_SLIP.INVOICE_CODE  ,
+BOOKED_SLIP.BANK_STATEMENT_NO ,
+BOOKED_SLIP.VENDOR_DELIVERY_NO ,
+BOOKED_SLIP.INVOICE_YN ,
+BOOKED_SLIP.QUANTITY_YN  ,
+BOOKED_SLIP.VALUE_YN     ,
+BOOKED_SLIP.ALLOCATION_YN  ,
+BOOKED_SLIP.DR_CR_OBJECT   ,
+BOOKED_SLIP.INVOICE_ADDRESS ,
+BOOKED_SLIP.CURRENCY_ID  ,
+BOOKED_SLIP.EXCHANGE_RATE ,
+BOOKED_SLIP.PAYMENT_TERM  ,
+BOOKED_SLIP.PAYMENT_METHOD  ,
+BOOKED_SLIP.DUE_DATE  ,
+BOOKED_SLIP.INVOICE_RECEIVED_DATE  ,
+BOOKED_SLIP.INCLUDE_TAX_YN  ,
+BOOKED_SLIP.REPLACE_YN     ,
+BOOKED_SLIP.BE_REPLACED_YN   ,
+BOOKED_SLIP.SUBACCOUNT    ,
+BOOKED_SLIP.BUYER_PERSON      ,
+BOOKED_SLIP.INVOICE_REQUEST   ,
+BOOKED_SLIP.ATTRIBUTE     ,
+BOOKED_SLIP.CUSTOMS_DECLARATION_NO ,
+BOOKED_SLIP.TAX_DESC   ,
+BOOKED_SLIP.TAX_VIEW_YN    ,
+BOOKED_SLIP.WH_RECEIPT_DESC   ,
+BOOKED_SLIP.NOTE,
+V_BKS_INV.DELIVERY_MODE_CODE,
+V_BKS_INV.DELIVERY_MODE_NAME,
+V_BKS_INV.PAYMENT_TERM_CODE,
+V_BKS_INV.PAYMENT_TERM_NAME,
+V_BKS_INV.PAYMENT_METHOD_CODE,
+V_BKS_INV.PAYMENT_METHOD_NAME,
+V_BKS_INV.UOM_CODE,
+V_BKS_INV.UOM_NAME
+FROM V_BOOKED_SLIP_INVENTORY V_BKS_INV
+JOIN BOOKED_SLIP ON BOOKED_SLIP.id = V_BKS_INV.id
+" update="BOOKED_SLIP" updatewhere=1 updatekeyinplace=yes )
+text(band=detail alignment="0" text="Ngày ghi sổ:" border="0" color="33554432" x="18" y="20" height="64" width="338" html.valueishtml="0"  name=trans_date_t visible="1"  font.face="Tahoma" font.height="-10" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="1" background.color="536870912" background.transparency="0" background.gradient.color="8421504" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="100" background.gradient.focus="0" background.gradient.scale="100" background.gradient.spread="100" tooltip.backcolor="134217752" tooltip.delay.initial="0" tooltip.delay.visible="32000" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="134217751" tooltip.transparency="0" transparency="0" )
+text(band=detail alignment="0" text="Loại tiền:" border="0" color="33554432" x="1143" y="20" height="72" width="247" html.valueishtml="0"  name=uom_code_t visible="1"  font.face="Tahoma" font.height="-10" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="1" background.color="536870912" background.transparency="0" background.gradient.color="8421504" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="100" background.gradient.focus="0" background.gradient.scale="100" background.gradient.spread="100" tooltip.backcolor="134217752" tooltip.delay.initial="0" tooltip.delay.visible="32000" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="134217751" tooltip.transparency="0" transparency="0" )
+text(band=detail alignment="0" text="Tỷ giá:" border="0" color="33554432" x="1902" y="20" height="64" width="187" html.valueishtml="0"  name=exchange_rate_t visible="1"  font.face="Tahoma" font.height="-10" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="1" background.color="536870912" background.transparency="0" background.gradient.color="8421504" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="100" background.gradient.focus="0" background.gradient.scale="100" background.gradient.spread="100" tooltip.backcolor="134217752" tooltip.delay.initial="0" tooltip.delay.visible="32000" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="134217751" tooltip.transparency="0" transparency="0" )
+text(band=detail alignment="0" text="Ghi sổ SL" border="0" color="33554432" x="2619" y="20" height="64" width="256" html.valueishtml="0"  name=quantity_yn_t visible="1"  font.face="Tahoma" font.height="-10" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="1" background.color="536870912" background.transparency="0" background.gradient.color="8421504" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="100" background.gradient.focus="0" background.gradient.scale="100" background.gradient.spread="100" tooltip.backcolor="134217752" tooltip.delay.initial="0" tooltip.delay.visible="32000" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="134217751" tooltip.transparency="0" transparency="0" )
+text(band=detail alignment="0" text="Diễn giải:" border="0" color="33554432" x="18" y="124" height="72" width="247" html.valueishtml="0"  name=description_t visible="1"  font.face="Tahoma" font.height="-10" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="1" background.color="536870912" background.transparency="0" background.gradient.color="8421504" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="100" background.gradient.focus="0" background.gradient.scale="100" background.gradient.spread="100" tooltip.backcolor="134217752" tooltip.delay.initial="0" tooltip.delay.visible="32000" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="134217751" tooltip.transparency="0" transparency="0" )
+column(band=detail id=13 alignment="0" tabsequence=10 border="1" color="33554432" x="379" y="20" height="76" width="663" format="[shortdate] [time]" html.valueishtml="0"  name=trans_date  tag="date" visible="1" edit.limit=0 edit.case=any edit.autoselect=no edit.nilisnull=yes edit.autohscroll=yes edit.autovscroll=yes  font.face="Tahoma" font.height="-10" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="1" background.color="536870912" background.transparency="0" background.gradient.color="8421504" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="100" background.gradient.focus="0" background.gradient.scale="100" background.gradient.spread="100" tooltip.backcolor="134217752" tooltip.delay.initial="0" tooltip.delay.visible="32000" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="134217751" tooltip.transparency="0" transparency="0" )
+column(band=detail id=11 alignment="0" tabsequence=70 border="1" color="33554432" x="379" y="124" height="76" width="1495" format="[general]" html.valueishtml="0"  name=description visible="1" edit.limit=100 edit.case=any edit.autoselect=no edit.nilisnull=yes edit.autohscroll=yes edit.autovscroll=yes  font.face="Tahoma" font.height="-10" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="1" background.color="536870912" background.transparency="0" background.gradient.color="8421504" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="100" background.gradient.focus="0" background.gradient.scale="100" background.gradient.spread="100" tooltip.backcolor="134217752" tooltip.delay.initial="0" tooltip.delay.visible="32000" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="134217751" tooltip.transparency="0" transparency="0" )
+column(band=detail id=53 alignment="0" tabsequence=20 border="1" color="33554432" x="1408" y="20" height="76" width="466" format="[general]" html.valueishtml="0"  name=uom_code visible="1" edit.limit=0 edit.case=any edit.autoselect=no edit.nilisnull=yes edit.autohscroll=yes edit.autovscroll=yes  font.face="Tahoma" font.height="-10" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="1" background.color="536870912" background.transparency="0" background.gradient.color="8421504" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="100" background.gradient.focus="0" background.gradient.scale="100" background.gradient.spread="100" tooltip.backcolor="134217752" tooltip.delay.initial="0" tooltip.delay.visible="32000" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="134217751" tooltip.transparency="0" transparency="0" )
+column(band=detail id=24 alignment="0" tabsequence=40 border="1" color="33554432" x="2523" y="20" height="64" width="73" format="[general]" html.valueishtml="0"  name=quantity_yn visible="1" checkbox.text="" checkbox.on="Y" checkbox.off="N" checkbox.scale=yes checkbox.threed=no  font.face="Tahoma" font.height="-10" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="1" background.color="553648127" background.transparency="0" background.gradient.color="8421504" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="100" background.gradient.focus="0" background.gradient.scale="100" background.gradient.spread="100" tooltip.backcolor="134217752" tooltip.delay.initial="0" tooltip.delay.visible="32000" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="134217751" tooltip.transparency="0" transparency="0" )
+text(band=detail alignment="0" text="Ghi sổ giá trị" border="0" color="33554432" x="2994" y="16" height="64" width="343" html.valueishtml="0"  name=value_yn_t visible="1"  font.face="Tahoma" font.height="-10" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="1" background.color="536870912" background.transparency="0" background.gradient.color="8421504" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="100" background.gradient.focus="0" background.gradient.scale="100" background.gradient.spread="100" tooltip.backcolor="134217752" tooltip.delay.initial="0" tooltip.delay.visible="32000" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="134217751" tooltip.transparency="0" transparency="0" )
+column(band=detail id=25 alignment="0" tabsequence=50 border="1" color="33554432" x="2898" y="16" height="64" width="73" format="[general]" html.valueishtml="0"  name=value_yn visible="1" checkbox.text="" checkbox.on="Y" checkbox.off="N" checkbox.scale=yes checkbox.threed=no  font.face="Tahoma" font.height="-10" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="1" background.color="553648127" background.transparency="0" background.gradient.color="8421504" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="100" background.gradient.focus="0" background.gradient.scale="100" background.gradient.spread="100" tooltip.backcolor="134217752" tooltip.delay.initial="0" tooltip.delay.visible="32000" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="134217751" tooltip.transparency="0" transparency="0" )
+text(band=detail alignment="0" text="Phiên bản:" border="0" color="33554432" x="3383" y="12" height="72" width="288" html.valueishtml="0"  name=version_no_t visible="1"  font.face="Tahoma" font.height="-10" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="1" background.color="536870912" background.transparency="0" background.gradient.color="8421504" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="100" background.gradient.focus="0" background.gradient.scale="100" background.gradient.spread="100" tooltip.backcolor="134217752" tooltip.delay.initial="0" tooltip.delay.visible="32000" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="134217751" tooltip.transparency="0" transparency="0" )
+column(band=detail id=12 alignment="1" tabsequence=60 border="1" color="33554432" x="3689" y="12" height="76" width="233" format="[general]" html.valueishtml="0"  name=version_no visible="1" edit.limit=0 edit.case=any edit.autoselect=no edit.nilisnull=yes edit.autohscroll=yes edit.autovscroll=yes  font.face="Tahoma" font.height="-10" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="1" background.color="536870912" background.transparency="0" background.gradient.color="8421504" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="100" background.gradient.focus="0" background.gradient.scale="100" background.gradient.spread="100" tooltip.backcolor="134217752" tooltip.delay.initial="0" tooltip.delay.visible="32000" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="134217751" tooltip.transparency="0" transparency="0" )
+text(band=detail alignment="0" text="Ghi chú:" border="0" color="33554432" x="1897" y="140" height="64" width="215" html.valueishtml="0"  name=note_t visible="1"  font.face="Tahoma" font.height="-10" font.weight="400"  font.family="2" font.pitch="2" font.charset="163" background.mode="1" background.color="536870912" background.transparency="0" background.gradient.color="8421504" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="100" background.gradient.focus="0" background.gradient.scale="100" background.gradient.spread="100" tooltip.backcolor="134217752" tooltip.delay.initial="0" tooltip.delay.visible="32000" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="134217751" tooltip.transparency="0" transparency="0" )
+column(band=detail id=30 alignment="1" tabsequence=30 border="1" color="33554432" x="2121" y="20" height="76" width="366" format="[general]" html.valueishtml="0"  name=exchange_rate visible="1" edit.limit=0 edit.case=any edit.autoselect=no edit.nilisnull=yes edit.autohscroll=yes edit.autovscroll=yes  font.face="Tahoma" font.height="-10" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="1" background.color="536870912" background.transparency="0" background.gradient.color="8421504" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="100" background.gradient.focus="0" background.gradient.scale="100" background.gradient.spread="100" tooltip.backcolor="134217752" tooltip.delay.initial="0" tooltip.delay.visible="32000" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="134217751" tooltip.transparency="0" transparency="0" )
+column(band=detail id=46 alignment="0" tabsequence=80 border="1" color="33554432" x="2121" y="132" height="76" width="2309" format="[general]" html.valueishtml="0"  name=note visible="1" edit.limit=0 edit.case=any edit.autoselect=no edit.nilisnull=yes edit.autohscroll=yes edit.autovscroll=yes  font.face="Tahoma" font.height="-10" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="1" background.color="536870912" background.transparency="0" background.gradient.color="8421504" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="100" background.gradient.focus="0" background.gradient.scale="100" background.gradient.spread="100" tooltip.backcolor="134217752" tooltip.delay.initial="0" tooltip.delay.visible="32000" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="134217751" tooltip.transparency="0" transparency="0" )
+htmltable(border="1" )
+htmlgen(clientevents="1" clientvalidation="1" clientcomputedfields="1" clientformatting="0" clientscriptable="0" generatejavascript="1" encodeselflinkargs="1" netscapelayers="0" pagingmethod=0 generatedddwframes="1" )
+xhtmlgen() cssgen(sessionspecific="0" )
+xmlgen(inline="0" )
+xsltgen()
+jsgen()
+export.xml(headgroups="1" includewhitespace="0" metadatatype=0 savemetadata=0 )
+import.xml()
+export.pdf(method=0 distill.custompostscript="0" xslfop.print="0" nativepdf.customsize=0 nativepdf.customorientation=0 nativepdf.pdfstandard=0 nativepdf.useprintspec=no )
+export.xhtml()
+ 

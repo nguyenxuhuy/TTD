@@ -1,0 +1,7 @@
+﻿$PBExportHeader$s_str_dddw_where.srs
+global type s_str_dddw_where from structure
+	string		s_dddwo
+	string		s_originalwhere
+	boolean		b_firstdrop
+end type
+

@@ -1,0 +1,25 @@
+﻿$PBExportHeader$t_s_printer_info_2.srs
+global type t_s_printer_info_2 from structure
+	long		servername
+	long		printername
+	long		sharename
+	long		portname
+	long		drivername
+	long		comment
+	long		location
+	long		devmode
+	long		sepfile
+	long		printprocessor
+	long		datatype
+	long		parameters
+	long		securitydescriptor
+	long		attributes
+	long		priority
+	long		defaultpriority
+	long		starttime
+	long		untiltime
+	long		status
+	long		cjobs
+	long		averageppm
+end type
+

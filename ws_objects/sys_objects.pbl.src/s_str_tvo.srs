@@ -1,0 +1,6 @@
+﻿$PBExportHeader$s_str_tvo.srs
+global type s_str_tvo from structure
+	datastore		ds_tv_item
+	string		s_popmenu_items
+end type
+

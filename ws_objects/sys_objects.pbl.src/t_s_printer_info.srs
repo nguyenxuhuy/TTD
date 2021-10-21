@@ -1,0 +1,26 @@
+﻿$PBExportHeader$t_s_printer_info.srs
+$PBExportComments$Printer_info_2 information structure (Win32 API)
+global type t_s_printer_info from structure
+	unsignedlong		ul_servername
+	unsignedlong		ul_printername
+	unsignedlong		ul_sharename
+	unsignedlong		ul_portname
+	unsignedlong		ul_drivername
+	unsignedlong		ul_comment
+	unsignedlong		ul_location
+	unsignedlong		ul_devmode
+	unsignedlong		ul_sepfile
+	unsignedlong		ul_printprocessor
+	unsignedlong		ul_datatype
+	unsignedlong		ul_parameters
+	unsignedlong		ul_securitydescriptor
+	unsignedlong		ul_attributes
+	unsignedlong		ul_priority
+	unsignedlong		ul_defaultpriority
+	unsignedlong		ul_starttime
+	unsignedlong		ul_untiltime
+	unsignedlong		ul_status
+	unsignedlong		ul_averageppm
+	character		c_reserved[]
+end type
+

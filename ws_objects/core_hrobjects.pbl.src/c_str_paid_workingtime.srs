@@ -1,0 +1,21 @@
+﻿$PBExportHeader$c_str_paid_workingtime.srs
+global type c_str_paid_workingtime from structure
+	double		base_hour
+	double		base_day
+	double		working_hour
+	double		working_day
+	double		anual_hour
+	double		anual_day
+	double		ot_hour_1
+	double		ot_rate_1
+	double		ot_hour_2
+	double		ot_rate_2
+	double		ot_hour_3
+	double		ot_rate_3
+	double		night_hour
+	double		night_day
+	double		unpaid_hour
+	double		unpaid_day
+	double		late_min
+end type
+

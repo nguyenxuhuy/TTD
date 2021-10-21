@@ -1,0 +1,229 @@
+﻿$PBExportHeader$t_m_report.srm
+$PBExportComments$menu of window report
+forward
+global type t_m_report from menu
+end type
+type m_in from menu within t_m_report
+end type
+type m_save from menu within t_m_report
+end type
+type m_excel from menu within m_save
+end type
+type m_excelwithlayout from menu within m_save
+end type
+type m_pdf from menu within m_save
+end type
+type m_save from menu within t_m_report
+m_excel m_excel
+m_excelwithlayout m_excelwithlayout
+m_pdf m_pdf
+end type
+type m_firstpage from menu within t_m_report
+end type
+type m_priorpage from menu within t_m_report
+end type
+type m_nextpage from menu within t_m_report
+end type
+type m_lastpage from menu within t_m_report
+end type
+global type t_m_report from menu
+m_in m_in
+m_save m_save
+m_firstpage m_firstpage
+m_priorpage m_priorpage
+m_nextpage m_nextpage
+m_lastpage m_lastpage
+end type
+end forward
+
+global type t_m_report from menu
+m_in m_in
+m_save m_save
+m_firstpage m_firstpage
+m_priorpage m_priorpage
+m_nextpage m_nextpage
+m_lastpage m_lastpage
+end type
+global t_m_report t_m_report
+
+on t_m_report.create
+t_m_report=this
+call super::create
+this.text = "t_m_report"
+this.m_in=create m_in
+this.m_save=create m_save
+this.m_firstpage=create m_firstpage
+this.m_priorpage=create m_priorpage
+this.m_nextpage=create m_nextpage
+this.m_lastpage=create m_lastpage
+this.Item[UpperBound(this.Item)+1]=this.m_in
+this.Item[UpperBound(this.Item)+1]=this.m_save
+this.Item[UpperBound(this.Item)+1]=this.m_firstpage
+this.Item[UpperBound(this.Item)+1]=this.m_priorpage
+this.Item[UpperBound(this.Item)+1]=this.m_nextpage
+this.Item[UpperBound(this.Item)+1]=this.m_lastpage
+end on
+
+on t_m_report.destroy
+call super::destroy
+destroy(this.m_in)
+destroy(this.m_save)
+destroy(this.m_firstpage)
+destroy(this.m_priorpage)
+destroy(this.m_nextpage)
+destroy(this.m_lastpage)
+end on
+
+type m_in from menu within t_m_report
+end type
+
+on m_in.create
+call super::create
+this.text = "In"
+this.toolbaritemname = "Print!"
+end on
+
+on m_in.destroy
+call super::destroy
+end on
+
+event clicked;parentwindow.dynamic event e_print()
+end event
+
+type m_save from menu within t_m_report
+m_excel m_excel
+m_excelwithlayout m_excelwithlayout
+m_pdf m_pdf
+end type
+
+on m_save.create
+call super::create
+this.text = "Lưu"
+this.m_excel=create m_excel
+this.m_excelwithlayout=create m_excelwithlayout
+this.m_pdf=create m_pdf
+this.Item[UpperBound(this.Item)+1]=this.m_excel
+this.Item[UpperBound(this.Item)+1]=this.m_excelwithlayout
+this.Item[UpperBound(this.Item)+1]=this.m_pdf
+end on
+
+on m_save.destroy
+call super::destroy
+destroy(this.m_excel)
+destroy(this.m_excelwithlayout)
+destroy(this.m_pdf)
+end on
+
+type m_excel from menu within m_save
+end type
+
+on m_excel.create
+call super::create
+this.text = "Excel (raw data)"
+this.toolbaritemname = "Custom043!"
+this.toolbaritemspace = 1
+end on
+
+on m_excel.destroy
+call super::destroy
+end on
+
+event clicked;parentwindow.dynamic event e_saveas('excelrawdata')
+end event
+
+type m_excelwithlayout from menu within m_save
+end type
+
+event clicked;parentwindow.dynamic event e_saveas('excelwithlayout')
+end event
+
+on m_excelwithlayout.create
+call super::create
+this.text = "Excel (with layout)"
+this.toolbaritemname = "Query5!"
+end on
+
+on m_excelwithlayout.destroy
+call super::destroy
+end on
+
+type m_pdf from menu within m_save
+end type
+
+on m_pdf.create
+call super::create
+this.text = "PDF"
+this.toolbaritemname = "DataWindow!"
+end on
+
+on m_pdf.destroy
+call super::destroy
+end on
+
+event clicked;parentwindow.dynamic event e_saveas('pdf')
+end event
+
+type m_firstpage from menu within t_m_report
+end type
+
+on m_firstpage.create
+call super::create
+this.text = "Trang đầu"
+this.toolbaritemname = "Custom033!"
+end on
+
+on m_firstpage.destroy
+call super::destroy
+end on
+
+event clicked;parentwindow.dynamic event e_firstpage()
+end event
+
+type m_priorpage from menu within t_m_report
+end type
+
+on m_priorpage.create
+call super::create
+this.text = "Trang trước"
+this.toolbaritemname = "Custom036!"
+end on
+
+on m_priorpage.destroy
+call super::destroy
+end on
+
+event clicked;parentwindow.dynamic event e_previouspage()
+end event
+
+type m_nextpage from menu within t_m_report
+end type
+
+on m_nextpage.create
+call super::create
+this.text = "Trang sau"
+this.toolbaritemname = "Custom035!"
+end on
+
+on m_nextpage.destroy
+call super::destroy
+end on
+
+event clicked;parentwindow.dynamic event e_nextpage()
+end event
+
+type m_lastpage from menu within t_m_report
+end type
+
+on m_lastpage.create
+call super::create
+this.text = "Trang cuối"
+this.toolbaritemname = "Custom034!"
+end on
+
+on m_lastpage.destroy
+call super::destroy
+end on
+
+event clicked;parentwindow.dynamic event e_lastpage()
+end event
+

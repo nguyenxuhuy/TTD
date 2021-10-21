@@ -1,0 +1,13 @@
+﻿$PBExportHeader$t_s_sql_attr.srs
+global type t_s_sql_attr from structure
+	string		s_verb
+	string		s_tables
+	string		s_columns
+	string		s_values
+	string		s_where
+	string		s_order
+	string		s_group
+	string		s_having
+	boolean		b_is_union_all
+end type
+

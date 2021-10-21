@@ -1,0 +1,22 @@
+﻿$PBExportHeader$s_str_post_info.srs
+global type s_str_post_info from structure
+	string		s_col_amt
+	string		s_col_base_amt
+	string		s_cr_dw_object
+	string		s_dr_dw_object
+	string		s_cr_object_col
+	string		s_dr_object_col
+	string		s_dw_trans_text
+	string		s_col_trans_text
+	string		s_dw_criterial
+	string		s_col_criterial
+	string		s_spec_idx		descriptor "comment" = "format: ;object_id ; conditional val [ array idx]"
+	string		s_group_idx		descriptor "comment" = "format: ;object_id ; conditional val [ array idx]"
+	string		s_all_idx		descriptor "comment" = "format: ;object_id ; conditional val [ array idx]"
+	string		s_dr_obj_type
+	string		s_cr_obj_type
+	double		db_dr_object_id
+	double		db_cr_object_id
+	string		s_err_text
+end type
+

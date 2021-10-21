@@ -1,0 +1,14 @@
+﻿$PBExportHeader$s_str_data.srs
+global type s_str_data from structure
+	string		s_data
+	string		as_data[]
+	double		db_data
+	double		adb_data[]
+	date		d_data
+	date		ad_data[]
+	any		a_data
+	any		aa_data[]
+	any		aa_data_from[]
+	any		aa_data_to[]
+end type
+

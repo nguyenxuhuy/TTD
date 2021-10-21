@@ -1,0 +1,11 @@
+﻿$PBExportHeader$s_str_ds_4_posting.srs
+global type s_str_ds_4_posting from structure
+	t_ds_db		ds_master[]
+	t_ds_db		ds_details[]
+	string		s_dataobject_str
+	string		s_where_detail[]
+	string		s_where_master[]
+	string		s_join_detail[]
+	string		s_join_master[]
+end type
+

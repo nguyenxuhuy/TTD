@@ -1,0 +1,147 @@
+﻿$PBExportHeader$t_m_popup.srm
+$PBExportComments$Top Menu popup
+forward
+global type t_m_popup from menu
+end type
+end forward
+
+global type t_m_popup from menu
+end type
+global t_m_popup t_m_popup
+
+type variables
+string 					is_clicked_menu, is_show_menu, is_object_name
+dwobject					idwo_clicked
+powerobject				ipo_clicked
+t_m_actionbutton				im_parent
+
+end variables
+
+forward prototypes
+public function integer f_hide_objects ()
+public function string f_get_show_menuname ()
+public function integer f_set_show_menuname (string vs_show_menu)
+public function string f_get_clickedmenu ()
+public function integer f_set_clickedmenu (string vs_clickedmenu)
+public function string f_get_object_name ()
+public function integer f_set_popupmenu (string vs_menu_name[], boolean vb_enabled_bttn[])
+public function integer f_set_popupmenu (string vs_menu_name, string vs_enabled_name)
+public subroutine f_set_im_parent (t_m_popup vm_parent)
+end prototypes
+
+public function integer f_hide_objects ();/* return -1 :error */
+
+string ls_find_string, ls_key_string, ls_value, ls_text, ls_ctrl_name
+long ll_row
+c_obj_service lc_obj_service
+
+
+
+//ls_key_string = lc_obj_service.f_get_parent_w_string( this.ipo_clicked)
+//
+//ls_value = this.ipo_clicked.classname( )
+//if this.ipo_clicked.typeof( ) = datawindow! then
+//	if pos(is_ctrlname, '_t') = 0 then
+//		ls_ctrl_name = is_ctrlname
+//	else
+//		ls_ctrl_name = left(is_ctrlname,len(is_ctrlname) -2)
+//	end if
+//	this.ipo_clicked.dynamic modify(ls_ctrl_name+".visible = 0")
+//	this.ipo_clicked.dynamic modify(ls_ctrl_name+"_t.visible = 0")
+//	ls_text = this.ipo_clicked.dynamic describe(ls_ctrl_name+"_t.text")
+//	ls_key_string = ls_key_string + ls_value
+//	ls_find_string = "key_name ='"+ls_key_string +"' and value ='" +ls_ctrl_name+"'"
+//else
+//	this.ipo_clicked.dynamic f_set_visible(false)
+//	ls_text = this.ipo_clicked.dynamic f_gettext()
+//	ls_find_string = "key_name ='"+ls_key_string +"' and value ='" +ls_value+"'"
+//end if
+//ll_row = ids_user_profile.find( ls_find_string, 1, ids_user_profile.rowcount( ) )
+//if ll_row = 0 then
+//	ll_row = ids_user_profile.insertrow( 0)
+//end if
+//ids_user_profile.setitem( ll_row, 'visible_01', '0')
+//ids_user_profile.setitem( ll_row, 'description', ls_text)
+//
+//ids_user_profile.event e_save( )
+//
+return 0
+end function
+
+public function string f_get_show_menuname ();return is_show_menu
+end function
+
+public function integer f_set_show_menuname (string vs_show_menu);is_show_menu = vs_show_menu
+return 1
+end function
+
+public function string f_get_clickedmenu ();return is_clicked_menu 
+end function
+
+public function integer f_set_clickedmenu (string vs_clickedmenu);is_clicked_menu = vs_clickedmenu
+return 1
+end function
+
+public function string f_get_object_name ();return is_object_name
+end function
+
+public function integer f_set_popupmenu (string vs_menu_name[], boolean vb_enabled_bttn[]);//c_ds_lang lds_lang_text
+long 							ll_item, ll_i , li_bttnCnt, li_itemCnt
+string 						ls_arr_cbname[]
+
+c_obj_service				lc_obj_service
+
+//-- set menu language --//
+if gs_user_lang <> 'vi-vn' then
+	t_w_mdi.ids_lang_text.f_set_menu_lang(this)
+end if
+li_bttnCnt = upperbound(vs_menu_name)	
+li_itemCnt = UpperBound(this.item)
+//-- show menu item --//
+FOR ll_i = 1 to 	li_bttnCnt
+	FOR ll_item = 1 to li_itemCnt
+		if this.item[ll_item].classname() = vs_menu_name[ll_i] then
+			this.item[ll_item].visible = true
+			this.item[ll_item].enabled = vb_enabled_bttn[ll_i]
+			exit
+		end if
+	NEXT
+NEXT
+return 1 
+end function
+
+public function integer f_set_popupmenu (string vs_menu_name, string vs_enabled_name);return 0
+end function
+
+public subroutine f_set_im_parent (t_m_popup vm_parent);im_parent = vm_parent
+end subroutine
+
+on t_m_popup.create
+t_m_popup=this
+call super::create
+this.text = "c_m_popup"
+this.menustyle = contemporarymenu!
+this.menutextcolor = 134217735
+this.menubackcolor = 134217732
+this.menuhighlightcolor = 12639424
+this.textsize = 8
+this.weight = 400
+this.facename = "Tahoma"
+this.titlebackcolor = 134217730
+this.bitmapbackcolor = 12639424
+this.menubitmaps = true
+this.titlegradient = true
+this.toolbartextcolor = 134217746
+this.toolbarbackcolor = 67108864
+this.toolbarhighlightcolor = 134217741
+this.toolbargradient = true
+this.bitmapgradient = true
+end on
+
+on t_m_popup.destroy
+call super::destroy
+end on
+
+event clicked;is_clicked_menu = this.classname( )
+end event
+

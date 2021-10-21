@@ -1,0 +1,154 @@
+﻿$PBExportHeader$d_dwcolumn_setup_grid.srd
+release 19;
+datawindow(units=0 timer_interval=0 color=553648127 brushmode=0 transparency=0 gradient.angle=0 gradient.color=8421504 gradient.focus=0 gradient.repetition.count=0 gradient.repetition.length=100 gradient.repetition.mode=0 gradient.scale=100 gradient.spread=100 gradient.transparency=0 picture.blur=0 picture.clip.bottom=0 picture.clip.left=0 picture.clip.right=0 picture.clip.top=0 picture.mode=0 picture.scale.x=100 picture.scale.y=100 picture.transparency=0 processing=1 HTMLDW=no print.printername="" print.documentname="" print.orientation = 0 print.margin.left = 110 print.margin.right = 110 print.margin.top = 96 print.margin.bottom = 96 print.paper.source = 0 print.paper.size = 0 print.canusedefaultprinter=yes print.prompt=no print.buttons=no print.preview.buttons=no print.cliptext=no print.overrideprintjob=no print.collate=yes print.background=no print.preview.background=no print.preview.outline=yes hidegrayline=no showbackcoloronxp=no picture.file="" grid.lines=0 selected.mouse=no )
+header(height=84 color="536870912" transparency="0" gradient.color="8421504" gradient.transparency="0" gradient.angle="0" brushmode="0" gradient.repetition.mode="0" gradient.repetition.count="0" gradient.repetition.length="100" gradient.focus="0" gradient.scale="100" gradient.spread="100" )
+summary(height=0 color="536870912" transparency="0" gradient.color="8421504" gradient.transparency="0" gradient.angle="0" brushmode="0" gradient.repetition.mode="0" gradient.repetition.count="0" gradient.repetition.length="100" gradient.focus="0" gradient.scale="100" gradient.spread="100" )
+footer(height=0 color="536870912" transparency="0" gradient.color="8421504" gradient.transparency="0" gradient.angle="0" brushmode="0" gradient.repetition.mode="0" gradient.repetition.count="0" gradient.repetition.length="100" gradient.focus="0" gradient.scale="100" gradient.spread="100" )
+detail(height=84 color="536870912" transparency="0" gradient.color="8421504" gradient.transparency="0" gradient.angle="0" brushmode="0" gradient.repetition.mode="0" gradient.repetition.count="0" gradient.repetition.length="100" gradient.focus="0" gradient.scale="100" gradient.spread="100" )
+table(column=(type=char(0) updatewhereclause=yes name=gutter dbname="gutter" values="	Y/	N" )
+ column=(type=number update=yes updatewhereclause=yes key=yes name=id dbname="dwcolumn_setup_hdr.id" dbalias="DSH.id" )
+ column=(type=char(50) update=yes updatewhereclause=yes name=dwobject dbname="dwcolumn_setup_hdr.dwobject" dbalias="DSH.dwobject" )
+ column=(type=char(30) update=yes updatewhereclause=yes name=dwcolumn dbname="dwcolumn_setup_hdr.dwcolumn" dbalias="DSH.dwcolumn" )
+ column=(type=char(500) updatewhereclause=yes name=text dbname="v_dwcolumn_setup_hdr.text" dbalias=".text" )
+ column=(type=char(20) update=yes updatewhereclause=yes name=dwdatatype dbname="dwcolumn_setup_hdr.dwdatatype" dbalias="DSH.dwdatatype" values="nomal	Thông thường/valueset	Bộ giá trị/sequence	Đánh số tự động/structure	Cấu trúc dữ liệu/struct_seq	Cấu trúc đánh số/" )
+ column=(type=char(1) update=yes updatewhereclause=yes name=mandatory_save_yn dbname="dwcolumn_setup_hdr.mandatory_save_yn" dbalias="DSH.mandatory_save_yn" values="	Y/	N" )
+ column=(type=char(1) update=yes updatewhereclause=yes name=displayonly_yn dbname="dwcolumn_setup_hdr.displayonly_yn" dbalias="DSH.displayonly_yn" )
+ column=(type=char(1) update=yes updatewhereclause=yes name=protect_after_save_yn dbname="dwcolumn_setup_hdr.protect_after_save_yn" dbalias="DSH.protect_after_save_yn" values="	Y/	N" )
+ column=(type=char(20) update=yes updatewhereclause=yes name=sort_type dbname="dwcolumn_setup_hdr.sort_type" dbalias="DSH.sort_type" values="asc	Tăng dần/desc	Giảm dần/" )
+ column=(type=number update=yes updatewhereclause=yes name=sort_seq dbname="dwcolumn_setup_hdr.sort_seq" dbalias="DSH.sort_seq" values="1	1/2	3/3	3/4	4/5	5/" )
+ column=(type=char(1) update=yes updatewhereclause=yes name=hidden_yn dbname="dwcolumn_setup_hdr.hidden_yn" dbalias="DSH.hidden_yn" values="	Y/	N" )
+ column=(type=number update=yes updatewhereclause=yes name=limit dbname="dwcolumn_setup_hdr.limit" dbalias="DSH.limit" )
+ column=(type=char(20) updatewhereclause=yes name=created_by dbname="dwcolumn_setup_hdr.created_by" dbalias="DSH.created_by" )
+ column=(type=datetime updatewhereclause=yes name=created_date dbname="dwcolumn_setup_hdr.created_date" dbalias="DSH.created_date" )
+ column=(type=char(20) updatewhereclause=yes name=last_mdf_by dbname="dwcolumn_setup_hdr.last_mdf_by" dbalias="DSH.last_mdf_by" )
+ column=(type=datetime updatewhereclause=yes name=last_mdf_date dbname="dwcolumn_setup_hdr.last_mdf_date" dbalias="DSH.last_mdf_date" )
+ column=(type=char(30) update=yes updatewhereclause=yes name=enter_process_col dbname="dwcolumn_setup_hdr.enter_process_col" dbalias="DSH.enter_process_col" )
+ column=(type=char(60) update=yes updatewhereclause=yes name=init_value dbname="dwcolumn_setup_hdr.init_value" dbalias="DSH.init_value" )
+ column=(type=char(1) update=yes updatewhereclause=yes name=mandatory_booked_yn dbname="dwcolumn_setup_hdr.mandatory_booked_yn" dbalias="DSH.mandatory_booked_yn" values="	Y/	N" )
+ column=(type=char(1) update=yes updatewhereclause=yes name=auto_copy_yn dbname="dwcolumn_setup_hdr.auto_copy_yn" dbalias="DSH.auto_copy_yn" values="	Y/	N" )
+ column=(type=char(20) update=yes updatewhereclause=yes name=textcolor dbname="dwcolumn_setup_hdr.textcolor" dbalias="DSH.textcolor" values="blue	Xanh dương/red	Đỏ/green	Xanh lá/purple	Tím/orange	Cam/yellow	Càng/brown	Nâu/" )
+ column=(type=char(20) update=yes updatewhereclause=yes name=backcolor dbname="dwcolumn_setup_hdr.backcolor" dbalias="DSH.backcolor" )
+ column=(type=char(60) update=yes updatewhereclause=yes name=textclr_criteria_val dbname="dwcolumn_setup_hdr.textclr_criteria_val" dbalias="DSH.textclr_criteria_val" )
+ column=(type=char(20) update=yes updatewhereclause=yes name=textclr_criteria_col dbname="dwcolumn_setup_hdr.textclr_criteria_col" dbalias="DSH.textclr_criteria_col" )
+ column=(type=char(60) update=yes updatewhereclause=yes name=backclr_criteria_val dbname="dwcolumn_setup_hdr.backclr_criteria_val" dbalias="DSH.backclr_criteria_val" )
+ column=(type=char(30) update=yes updatewhereclause=yes name=backclr_criteria_col dbname="dwcolumn_setup_hdr.backclr_criteria_col" dbalias="DSH.backclr_criteria_col" )
+ column=(type=char(50) update=yes updatewhereclause=yes name=object_ref_code dbname="dwcolumn_setup_hdr.object_ref_code" dbalias="DSH.object_ref_code" )
+ column=(type=char(500) updatewhereclause=yes name=object_ref_text dbname="v_dwcolumn_setup_hdr.object_ref_text" dbalias=".object_ref_text" )
+ column=(type=char(400) update=yes updatewhereclause=yes name=display_column dbname="dwcolumn_setup_hdr.display_column" dbalias="DSH.display_column" )
+ column=(type=char(300) update=yes updatewhereclause=yes name=receive_column dbname="dwcolumn_setup_hdr.receive_column" dbalias="DSH.receive_column" )
+ column=(type=char(300) update=yes updatewhereclause=yes name=return_column dbname="dwcolumn_setup_hdr.return_column" dbalias="DSH.return_column" )
+ column=(type=number update=yes updatewhereclause=yes name=object_ref_id dbname="dwcolumn_setup_hdr.object_ref_id" dbalias="DSH.object_ref_id" )
+ column=(type=char(50) update=yes updatewhereclause=yes name=object_ref_table dbname="dwcolumn_setup_hdr.object_ref_table" dbalias="DSH.object_ref_table" )
+ column=(type=char(30) update=yes updatewhereclause=yes name=must_booked_criteria_col dbname="dwcolumn_setup_hdr.must_booked_criteria_col" dbalias="DSH.must_booked_criteria_col" )
+ column=(type=char(60) update=yes updatewhereclause=yes name=must_booked_criteria_val dbname="dwcolumn_setup_hdr.must_booked_criteria_val" dbalias="DSH.must_booked_criteria_val" )
+ column=(type=char(30) update=yes updatewhereclause=yes name=must_save_criteria_col dbname="dwcolumn_setup_hdr.must_save_criteria_col" dbalias="DSH.must_save_criteria_col" )
+ column=(type=char(60) update=yes updatewhereclause=yes name=must_save_criteria_val dbname="dwcolumn_setup_hdr.must_save_criteria_val" dbalias="DSH.must_save_criteria_val" )
+ column=(type=char(30) update=yes updatewhereclause=yes name=displayonly_criteria_col dbname="dwcolumn_setup_hdr.displayonly_criteria_col" dbalias="DSH.displayonly_criteria_col" )
+ column=(type=char(60) update=yes updatewhereclause=yes name=displayonly_criteria_val dbname="dwcolumn_setup_hdr.displayonly_criteria_val" dbalias="DSH.displayonly_criteria_val" )
+ column=(type=char(30) update=yes updatewhereclause=yes name=hidden_criteria_col dbname="dwcolumn_setup_hdr.hidden_criteria_col" dbalias="DSH.hidden_criteria_col" )
+ column=(type=char(60) update=yes updatewhereclause=yes name=hidden_criteria_val dbname="dwcolumn_setup_hdr.hidden_criteria_val" dbalias="DSH.hidden_criteria_val" )
+ column=(type=char(1) update=yes updatewhereclause=yes name=accept_out_of_list_yn dbname="dwcolumn_setup_hdr.accept_out_of_list_yn" dbalias="DSH.accept_out_of_list_yn" )
+ column=(type=char(30) update=yes updatewhereclause=yes name=valueset_criteria_col dbname="dwcolumn_setup_hdr.valueset_criteria_col" dbalias="DSH.valueset_criteria_col" )
+ column=(type=char(60) update=yes updatewhereclause=yes name=valueset_criteria_val dbname="dwcolumn_setup_hdr.valueset_criteria_val" dbalias="DSH.valueset_criteria_val" )
+ column=(type=number update=yes updatewhereclause=yes name=max_limit dbname="dwcolumn_setup_hdr.max_limit" dbalias="DSH.max_limit" )
+ column=(type=char(500) update=yes updatewhereclause=yes name=unique_column dbname="dwcolumn_setup_hdr.unique_column" dbalias="DSH.unique_column" )
+ column=(type=char(30) update=yes updatewhereclause=yes name=seq_reset_column dbname="dwcolumn_setup_hdr.seq_reset_column" dbalias="DSH.seq_reset_column" )
+ column=(type=char(50) update=yes updatewhereclause=yes name=object dbname="dwcolumn_setup_hdr.object" dbalias="DSH.object" )
+ column=(type=number update=yes updatewhereclause=yes name=company_id dbname="dwcolumn_setup_hdr.company_id" dbalias="DSH.company_id" )
+ column=(type=number update=yes updatewhereclause=yes name=branch_id dbname="dwcolumn_setup_hdr.branch_id" dbalias="DSH.branch_id" )
+ column=(type=char(50) update=yes updatewhereclause=yes name=object_ref_name dbname="dwcolumn_setup_hdr.object_ref_name" dbalias="DSH.object_ref_name" )
+ column=(type=char(1) update=yes updatewhereclause=yes name=branch_yn dbname="dwcolumn_setup_hdr.branch_yn" dbalias="DSH.branch_yn" )
+ column=(type=char(30) update=yes updatewhereclause=yes name=init_value_criteria_col dbname="dwcolumn_setup_hdr.init_value_criteria_col" dbalias="DSH.init_value_criteria_col" )
+ column=(type=char(60) update=yes updatewhereclause=yes name=init_value_criteria_val dbname="dwcolumn_setup_hdr.init_value_criteria_val" dbalias="DSH.init_value_criteria_val" )
+ column=(type=char(30) update=yes updatewhereclause=yes name=protect_save_criteria_col dbname="dwcolumn_setup_hdr.protect_save_criteria_col" dbalias="DSH.protect_save_criteria_col" )
+ column=(type=char(60) update=yes updatewhereclause=yes name=protect_save_criteria_val dbname="dwcolumn_setup_hdr.protect_save_criteria_val" dbalias="DSH.protect_save_criteria_val" )
+ column=(type=char(1) update=yes updatewhereclause=yes name=match_not_modify_yn dbname="dwcolumn_setup_hdr.match_not_modify_yn" dbalias="DSH.match_not_modify_yn" )
+ column=(type=char(50) update=yes updatewhereclause=yes name=history_obj_ref_code dbname="dwcolumn_setup_hdr.history_obj_ref_code" dbalias="DSH.history_obj_ref_code" )
+ column=(type=char(400) update=yes updatewhereclause=yes name=history_display_column dbname="dwcolumn_setup_hdr.history_display_column" dbalias="DSH.history_display_column" )
+ column=(type=char(50) update=yes updatewhereclause=yes name=history_related_col dbname="dwcolumn_setup_hdr.history_related_col" dbalias="DSH.history_related_col" )
+ column=(type=char(50) update=yes updatewhereclause=yes name=history_main_col dbname="dwcolumn_setup_hdr.history_main_col" dbalias="DSH.history_main_col" )
+ column=(type=char(5) updatewhereclause=yes name=lang dbname="v_dwcolumn_setup_hdr.lang" dbalias=".lang" )
+ column=(type=char(1) update=yes updatewhereclause=yes name=multi_choose_yn dbname="dwcolumn_setup_hdr.multi_choose_yn" dbalias="DSH.multi_choose_yn" )
+ column=(type=char(50) update=yes updatewhereclause=yes name=object_record_ref dbname="dwcolumn_setup_hdr.object_record_ref" dbalias="DSH.object_record_ref" )
+ retrieve="SELECT '' GUTTER,
+DSH.ID,
+DSH.DWOBJECT,
+DSH.DWCOLUMN,
+V_DWCOLUMN_SETUP_HDR.TEXT,
+DSH.DWDATATYPE,
+DSH.MANDATORY_SAVE_YN,
+DSH.DISPLAYONLY_YN, 
+DSH.PROTECT_AFTER_SAVE_YN, 
+DSH.SORT_TYPE,
+DSH.SORT_SEQ,
+DSH.HIDDEN_YN, 
+DSH.LIMIT,
+DSH.CREATED_BY, 
+DSH.CREATED_DATE,
+DSH.LAST_MDF_BY, 
+DSH.LAST_MDF_DATE,
+DSH.ENTER_PROCESS_COL,
+DSH.INIT_VALUE,
+DSH.MANDATORY_BOOKED_YN,
+DSH.AUTO_COPY_YN,
+DSH.TEXTCOLOR,
+DSH.BACKCOLOR,
+DSH.TEXTCLR_CRITERIA_VAL,
+DSH.TEXTCLR_CRITERIA_COL,
+DSH.BACKCLR_CRITERIA_VAL,
+DSH.BACKCLR_CRITERIA_COL,
+DSH.OBJECT_REF_CODE,
+V_DWCOLUMN_SETUP_HDR.OBJECT_REF_TEXT,
+DSH.DISPLAY_COLUMN,
+DSH.RECEIVE_COLUMN,
+DSH.RETURN_COLUMN,
+DSH.OBJECT_REF_ID,
+DSH.OBJECT_REF_TABLE,
+DSH.MUST_BOOKED_CRITERIA_COL,
+DSH.MUST_BOOKED_CRITERIA_VAL,
+DSH.MUST_SAVE_CRITERIA_COL,
+DSH.MUST_SAVE_CRITERIA_VAL,
+DSH.DISPLAYONLY_CRITERIA_COL,
+DSH.DISPLAYONLY_CRITERIA_VAL,
+DSH.HIDDEN_CRITERIA_COL,
+DSH.HIDDEN_CRITERIA_VAL,
+DSH.ACCEPT_OUT_OF_LIST_YN,
+DSH.VALUESET_CRITERIA_COL,
+DSH.VALUESET_CRITERIA_VAL,
+DSH.MAX_LIMIT,
+DSH.UNIQUE_COLUMN,
+DSH.SEQ_RESET_COLUMN,
+DSH.OBJECT,
+DSH.COMPANY_ID,
+DSH.BRANCH_ID,
+DSH.OBJECT_REF_NAME,
+DSH.BRANCH_YN,
+DSH.INIT_VALUE_CRITERIA_COL,
+DSH.INIT_VALUE_CRITERIA_VAL,
+DSH.PROTECT_SAVE_CRITERIA_COL,
+DSH.PROTECT_SAVE_CRITERIA_VAL,
+DSH.MATCH_NOT_MODIFY_YN,
+DSH.HISTORY_OBJ_REF_CODE,
+DSH.HISTORY_DISPLAY_COLUMN,
+DSH.HISTORY_RELATED_COL,
+DSH.HISTORY_MAIN_COL,
+V_DWCOLUMN_SETUP_HDR.lang,
+DSH.MULTI_CHOOSE_YN,
+DSH.object_record_ref
+FROM DWCOLUMN_SETUP_HDR DSH
+LEFT JOIN V_DWCOLUMN_SETUP_HDR ON V_DWCOLUMN_SETUP_HDR.ID = DSH.ID and v_dwcolumn_setup_hdr.lang = :as_lang" update="DWCOLUMN_SETUP_HDR" updatewhere=1 updatekeyinplace=yes arguments=(("as_lang", string)) )
+text(band=header alignment="2" text="Tên cột" border="0" color="33554432" x="110" y="8" height="76" width="667" html.valueishtml="0"  name=text_t visible="1"  font.face="Tahoma" font.height="-10" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="2" background.color="67108864" background.transparency="0" background.gradient.color="8421504" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="100" background.gradient.focus="0" background.gradient.scale="100" background.gradient.spread="100" tooltip.backcolor="134217752" tooltip.delay.initial="0" tooltip.delay.visible="32000" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="134217751" tooltip.transparency="0" transparency="0" )
+text(band=header alignment="2" text="[]" enabled="0" border="0" color="33554432" x="9" y="8" height="76" width="91" html.valueishtml="0"  name=gutter_t visible="1"  font.face="Tahoma" font.height="-10" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="2" background.color="67108864" background.transparency="0" background.gradient.color="0" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="0" background.gradient.focus="0" background.gradient.scale="0" background.gradient.spread="0" tooltip.backcolor="0" tooltip.delay.initial="0" tooltip.delay.visible="0" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="0" tooltip.transparency="0" transparency="0" )
+column(band=detail id=1 alignment="2" tabsequence=32766 border="0" color="33554432" x="9" y="8" height="76" width="91" format="[general]" html.valueishtml="0"  name=gutter visible="1" checkbox.text="" checkbox.on="Y" checkbox.off="N" checkbox.scale=yes checkbox.threed=no  font.face="Tahoma" font.height="-10" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="1" background.color="536870912" background.transparency="0" background.gradient.color="8421504" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="100" background.gradient.focus="0" background.gradient.scale="100" background.gradient.spread="100" tooltip.backcolor="134217752" tooltip.delay.initial="0" tooltip.delay.visible="32000" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="134217751" tooltip.transparency="0" transparency="0" )
+column(band=detail id=5 alignment="0" tabsequence=10 border="0" color="33554432" x="110" y="8" height="76" width="667" format="[general]" html.valueishtml="0"  name=text visible="1" edit.limit=500 edit.case=any edit.autoselect=no edit.nilisnull=yes edit.autohscroll=yes edit.autovscroll=yes  font.face="Tahoma" font.height="-10" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="1" background.color="536870912" background.transparency="0" background.gradient.color="8421504" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="100" background.gradient.focus="0" background.gradient.scale="100" background.gradient.spread="100" tooltip.backcolor="134217752" tooltip.delay.initial="0" tooltip.delay.visible="32000" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="134217751" tooltip.transparency="0" transparency="0" )
+htmltable(border="1" )
+htmlgen(clientevents="1" clientvalidation="1" clientcomputedfields="1" clientformatting="0" clientscriptable="0" generatejavascript="1" encodeselflinkargs="1" netscapelayers="0" pagingmethod=0 generatedddwframes="1" )
+xhtmlgen() cssgen(sessionspecific="0" )
+xmlgen(inline="0" )
+xsltgen()
+jsgen()
+export.xml(headgroups="1" includewhitespace="0" metadatatype=0 savemetadata=0 )
+import.xml()
+export.pdf(method=0 distill.custompostscript="0" xslfop.print="0" nativepdf.customsize=0 nativepdf.customorientation=0 nativepdf.pdfstandard=0 nativepdf.useprintspec=no )
+export.xhtml()
+ 

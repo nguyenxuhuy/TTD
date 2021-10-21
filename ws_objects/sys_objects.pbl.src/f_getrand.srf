@@ -1,0 +1,11 @@
+﻿$PBExportHeader$f_getrand.srf
+global type f_getRand from function_object
+end type
+
+forward prototypes
+global function string f_getrand ()
+end prototypes
+
+global function string f_getrand ();return String(Today(), "yy-m-d hh:mm")+"_"+ string(Rand(1000))
+end function
+

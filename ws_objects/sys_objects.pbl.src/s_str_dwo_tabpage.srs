@@ -1,0 +1,20 @@
+﻿$PBExportHeader$s_str_dwo_tabpage.srs
+global type s_str_dwo_tabpage from structure
+	s_str_dwo		str_dwo[]
+	string		s_tp_name
+	string		s_display_model
+	boolean		b_fulltab
+	decimal		i_leftpart_width
+	decimal		i_midpart_width
+	decimal		i_gb_11_width
+	decimal		i_upperpart_height
+	decimal		i_fixedpart1_height
+	decimal		i_fixedpart2_height
+	decimal		i_gb_3_height
+	decimal		i_gb_4_height
+	decimal		i_gb_5_height
+	decimal		i_gb_10_width
+	integer		i_index
+	string		s_description
+end type
+

@@ -1,0 +1,1792 @@
+﻿$PBExportHeader$t_m_mdi.srm
+forward
+global type t_m_mdi from menu
+end type
+type m_module from menucascade within t_m_mdi
+end type
+type pd from menu within m_module
+end type
+type m_-pd from menu within m_module
+end type
+type fm from menucascade within m_module
+end type
+type m_-fm from menu within m_module
+end type
+type im from menu within m_module
+end type
+type m_-im from menu within m_module
+end type
+type sm from menu within m_module
+end type
+type m_-sm from menu within m_module
+end type
+type pm from menu within m_module
+end type
+type m_-pm from menu within m_module
+end type
+type pp from menu within m_module
+end type
+type m_-pp from menu within m_module
+end type
+type hr from menu within m_module
+end type
+type m_-hr from menu within m_module
+end type
+type sv from menu within m_module
+end type
+type m_-sv from menu within m_module
+end type
+type pj from menu within m_module
+end type
+type m_-pj from menu within m_module
+end type
+type mp from menu within m_module
+end type
+type m_-mp from menu within m_module
+end type
+type cs from menu within m_module
+end type
+type m_-cs from menu within m_module
+end type
+type ad from menu within m_module
+end type
+type m_module from menucascade within t_m_mdi
+pd pd
+m_-pd m_-pd
+fm fm
+m_-fm m_-fm
+im im
+m_-im m_-im
+sm sm
+m_-sm m_-sm
+pm pm
+m_-pm m_-pm
+pp pp
+m_-pp m_-pp
+hr hr
+m_-hr m_-hr
+sv sv
+m_-sv m_-sv
+pj pj
+m_-pj m_-pj
+mp mp
+m_-mp m_-mp
+cs cs
+m_-cs m_-cs
+ad ad
+end type
+type m_tool from menu within t_m_mdi
+end type
+type m_-13 from menu within m_tool
+end type
+type m_deleteuserprofile from menu within m_tool
+end type
+type m_tool from menu within t_m_mdi
+m_-13 m_-13
+m_deleteuserprofile m_deleteuserprofile
+end type
+type m_window from menucascade within t_m_mdi
+end type
+type m_options from menu within m_window
+end type
+type m_window from menucascade within t_m_mdi
+m_options m_options
+end type
+type m_help from menu within t_m_mdi
+end type
+type m_company from menu within t_m_mdi
+end type
+type m_branch from menu within t_m_mdi
+end type
+type m_sessiondate from menu within t_m_mdi
+end type
+type m_sob from menu within t_m_mdi
+end type
+global type t_m_mdi from menu
+m_module m_module
+m_tool m_tool
+m_window m_window
+m_help m_help
+m_company m_company
+m_branch m_branch
+m_sessiondate m_sessiondate
+m_sob m_sob
+end type
+end forward
+
+global type t_m_mdi from menu
+m_module m_module
+m_tool m_tool
+m_window m_window
+m_help m_help
+m_company m_company
+m_branch m_branch
+m_sessiondate m_sessiondate
+m_sob m_sob
+event e_constructor pbm_constructor
+end type
+global t_m_mdi t_m_mdi
+
+type variables
+
+end variables
+
+forward prototypes
+public subroutine f_set_security_module ()
+end prototypes
+
+public subroutine f_set_security_module ();boolean				lb_access
+
+//-- security --//
+if gi_userid= 0 then return
+	
+g_user.f_get_security_module('ad' , lb_access)
+if not lb_access then
+	this.m_module.ad.visible = false
+end if
+g_user.f_get_security_module('pd' , lb_access)
+if not lb_access then
+	this.m_module.pd.visible = false
+	this.m_module.m_-pd.visible = false
+end if		
+g_user.f_get_security_module('fm' , lb_access)
+if not lb_access then
+	this.m_module.fm.visible = false
+	this.m_module.m_-fm.visible = false
+end if		
+g_user.f_get_security_module('im' , lb_access)
+if not lb_access then
+	this.m_module.im.visible = false
+	this.m_module.m_-im.visible = false
+end if	
+g_user.f_get_security_module('sm' , lb_access)
+if not lb_access then
+	this.m_module.sm.visible = false
+	this.m_module.m_-sm.visible = false
+end if	
+g_user.f_get_security_module('pm' , lb_access)
+if not lb_access then
+	this.m_module.pm.visible = false
+	this.m_module.m_-pm.visible = false
+end if	
+g_user.f_get_security_module('pp' , lb_access)
+if not lb_access then
+	this.m_module.pp.visible = false
+	this.m_module.m_-pp.visible = false
+end if	
+g_user.f_get_security_module('sv' , lb_access)
+if not lb_access then
+	this.m_module.sv.visible = false
+	this.m_module.m_-sv.visible = false
+end if	
+g_user.f_get_security_module('pj' , lb_access)
+if not lb_access then
+	this.m_module.pj.visible = false
+	this.m_module.m_-pj.visible = false
+end if	
+g_user.f_get_security_module('mp' , lb_access)
+if not lb_access then
+	this.m_module.mp.visible = false
+	this.m_module.m_-mp.visible = false
+end if	
+g_user.f_get_security_module('cs' , lb_access)
+if not lb_access then
+	this.m_module.cs.visible = false
+	this.m_module.m_-cs.visible = false
+end if	
+end subroutine
+
+on t_m_mdi.create
+t_m_mdi=this
+call super::create
+this.text = "t_m_mdi"
+this.menustyle = contemporarymenu!
+this.menutextcolor = 134217735
+this.menubackcolor = 134217732
+this.menuhighlightcolor = 12639424
+this.textsize = 8
+this.weight = 700
+this.facename = "Tahoma"
+this.titlebackcolor = 12639424
+this.bitmapbackcolor = 12639424
+this.menubitmaps = true
+this.titlegradient = true
+this.toolbarstyle = contemporarytoolbar!
+this.toolbartextcolor = 134217746
+this.toolbarbackcolor = 67108864
+this.toolbarhighlightcolor = 12639424
+this.toolbargradient = true
+this.bitmapgradient = true
+this.m_module=create m_module
+this.m_tool=create m_tool
+this.m_window=create m_window
+this.m_help=create m_help
+this.m_company=create m_company
+this.m_branch=create m_branch
+this.m_sessiondate=create m_sessiondate
+this.m_sob=create m_sob
+this.Item[UpperBound(this.Item)+1]=this.m_module
+this.Item[UpperBound(this.Item)+1]=this.m_tool
+this.Item[UpperBound(this.Item)+1]=this.m_window
+this.Item[UpperBound(this.Item)+1]=this.m_help
+this.Item[UpperBound(this.Item)+1]=this.m_company
+this.Item[UpperBound(this.Item)+1]=this.m_branch
+this.Item[UpperBound(this.Item)+1]=this.m_sessiondate
+this.Item[UpperBound(this.Item)+1]=this.m_sob
+end on
+
+on t_m_mdi.destroy
+call super::destroy
+destroy(this.m_module)
+destroy(this.m_tool)
+destroy(this.m_window)
+destroy(this.m_help)
+destroy(this.m_company)
+destroy(this.m_branch)
+destroy(this.m_sessiondate)
+destroy(this.m_sob)
+end on
+
+type m_module from menucascade within t_m_mdi
+pd pd
+m_-pd m_-pd
+fm fm
+m_-fm m_-fm
+im im
+m_-im m_-im
+sm sm
+m_-sm m_-sm
+pm pm
+m_-pm m_-pm
+pp pp
+m_-pp m_-pp
+hr hr
+m_-hr m_-hr
+sv sv
+m_-sv m_-sv
+pj pj
+m_-pj m_-pj
+mp mp
+m_-mp m_-mp
+cs cs
+m_-cs m_-cs
+ad ad
+end type
+
+on m_module.create
+call super::create
+this.text = "Phân hệ"
+this.toolbaritemdown = true
+this.mergeoption = windowmenu!
+this.menuitemtype = menuitemtypeabout!
+this.menustyle = contemporarymenu!
+this.menutextcolor = 134217735
+this.menubackcolor = 134217732
+this.menuhighlightcolor = 12639424
+this.textsize = 8
+this.weight = 700
+this.facename = "Tahoma"
+this.menutitletext = "Phân hệ"
+this.titlebackcolor = 12639424
+this.bitmapbackcolor = 12639424
+this.menubitmaps = true
+this.menuanimation = true
+this.titlegradient = true
+this.toolbarstyle = contemporarytoolbar!
+this.toolbartextcolor = 134217746
+this.toolbarbackcolor = 67108864
+this.toolbarhighlightcolor = 12639424
+this.toolbargradient = true
+this.bitmapgradient = true
+this.pd=create pd
+this.m_-pd=create m_-pd
+this.fm=create fm
+this.m_-fm=create m_-fm
+this.im=create im
+this.m_-im=create m_-im
+this.sm=create sm
+this.m_-sm=create m_-sm
+this.pm=create pm
+this.m_-pm=create m_-pm
+this.pp=create pp
+this.m_-pp=create m_-pp
+this.hr=create hr
+this.m_-hr=create m_-hr
+this.sv=create sv
+this.m_-sv=create m_-sv
+this.pj=create pj
+this.m_-pj=create m_-pj
+this.mp=create mp
+this.m_-mp=create m_-mp
+this.cs=create cs
+this.m_-cs=create m_-cs
+this.ad=create ad
+this.Item[UpperBound(this.Item)+1]=this.pd
+this.Item[UpperBound(this.Item)+1]=this.m_-pd
+this.Item[UpperBound(this.Item)+1]=this.fm
+this.Item[UpperBound(this.Item)+1]=this.m_-fm
+this.Item[UpperBound(this.Item)+1]=this.im
+this.Item[UpperBound(this.Item)+1]=this.m_-im
+this.Item[UpperBound(this.Item)+1]=this.sm
+this.Item[UpperBound(this.Item)+1]=this.m_-sm
+this.Item[UpperBound(this.Item)+1]=this.pm
+this.Item[UpperBound(this.Item)+1]=this.m_-pm
+this.Item[UpperBound(this.Item)+1]=this.pp
+this.Item[UpperBound(this.Item)+1]=this.m_-pp
+this.Item[UpperBound(this.Item)+1]=this.hr
+this.Item[UpperBound(this.Item)+1]=this.m_-hr
+this.Item[UpperBound(this.Item)+1]=this.sv
+this.Item[UpperBound(this.Item)+1]=this.m_-sv
+this.Item[UpperBound(this.Item)+1]=this.pj
+this.Item[UpperBound(this.Item)+1]=this.m_-pj
+this.Item[UpperBound(this.Item)+1]=this.mp
+this.Item[UpperBound(this.Item)+1]=this.m_-mp
+this.Item[UpperBound(this.Item)+1]=this.cs
+this.Item[UpperBound(this.Item)+1]=this.m_-cs
+this.Item[UpperBound(this.Item)+1]=this.ad
+end on
+
+on m_module.destroy
+call super::destroy
+destroy(this.pd)
+destroy(this.m_-pd)
+destroy(this.fm)
+destroy(this.m_-fm)
+destroy(this.im)
+destroy(this.m_-im)
+destroy(this.sm)
+destroy(this.m_-sm)
+destroy(this.pm)
+destroy(this.m_-pm)
+destroy(this.pp)
+destroy(this.m_-pp)
+destroy(this.hr)
+destroy(this.m_-hr)
+destroy(this.sv)
+destroy(this.m_-sv)
+destroy(this.pj)
+destroy(this.m_-pj)
+destroy(this.mp)
+destroy(this.m_-mp)
+destroy(this.cs)
+destroy(this.m_-cs)
+destroy(this.ad)
+end on
+
+type pd from menu within m_module
+end type
+
+on pd.create
+call super::create
+this.text = "Hàng hóa - sản phẩm - dịch vụ"
+this.menustyle = contemporarymenu!
+this.menutextcolor = 134217735
+this.menubackcolor = 134217732
+this.menuhighlightcolor = 12639424
+this.textsize = 8
+this.weight = 700
+this.facename = "Tahoma"
+this.titlebackcolor = 12639424
+this.bitmapbackcolor = 12639424
+this.menubitmaps = true
+this.titlegradient = true
+this.toolbarstyle = contemporarytoolbar!
+this.toolbartextcolor = 134217746
+this.toolbarbackcolor = 67108864
+this.toolbarhighlightcolor = 12639424
+this.toolbargradient = true
+this.bitmapgradient = true
+end on
+
+on pd.destroy
+call super::destroy
+end on
+
+event clicked;
+double					ldb_menu_id
+c_menu_item			lc_menu_item
+//t_w_main 				lw_background
+
+//lw_background = t_w_mdi.wf_get_sheet_doc('background')
+//if  isnull(lw_background) then
+////	-- open window background --//
+//	t_w_mdi.wf_open_sheet_doc("u_background;s_w_background;Start Page")	
+//end if
+ldb_menu_id = lc_menu_item.f_get_menu_id_ex( this.classname( ))
+is_module_code =  this.classname( )
+t_w_mdi.f_create_win_menu(ldb_menu_id )
+end event
+
+type m_-pd from menu within m_module
+end type
+
+on m_-pd.create
+call super::create
+this.text = "-"
+this.menustyle = contemporarymenu!
+this.menutextcolor = 134217735
+this.menubackcolor = 134217732
+this.menuhighlightcolor = 12639424
+this.textsize = 8
+this.weight = 700
+this.facename = "Tahoma"
+this.titlebackcolor = 12639424
+this.bitmapbackcolor = 12639424
+this.menubitmaps = true
+this.titlegradient = true
+this.toolbarstyle = contemporarytoolbar!
+this.toolbartextcolor = 134217746
+this.toolbarbackcolor = 67108864
+this.toolbarhighlightcolor = 12639424
+this.toolbargradient = true
+this.bitmapgradient = true
+end on
+
+on m_-pd.destroy
+call super::destroy
+end on
+
+type fm from menucascade within m_module
+end type
+
+event clicked;
+double					ldb_menu_id
+c_menu_item			lc_menu_item
+//t_w_main 				lw_background
+
+//lw_background = t_w_mdi.wf_get_sheet_doc('background')
+//if  isnull(lw_background) then
+////	-- open window background --//
+//	t_w_mdi.wf_open_sheet_doc("u_background;s_w_background;Start Page")	
+//end if
+ldb_menu_id = lc_menu_item.f_get_menu_id_ex( this.classname( ))
+is_module_code =  this.classname( )
+t_w_mdi.f_create_win_menu(ldb_menu_id )
+end event
+
+on fm.create
+call super::create
+this.tag = "fm"
+this.text = "Tài chính - kế toán"
+this.toolbaritemvisible = false
+this.toolbaritemname = "browseobject!"
+this.toolbaritemdownname = "Blob!"
+this.mergeoption = filemenu!
+this.menuimage = "pics\finance.png"
+this.menustyle = contemporarymenu!
+this.menutextcolor = 134217735
+this.menubackcolor = 134217732
+this.menuhighlightcolor = 12639424
+this.textsize = 8
+this.weight = 700
+this.facename = "Tahoma"
+this.titlebackcolor = 12639424
+this.bitmapbackcolor = 12639424
+this.menubitmaps = true
+this.menuanimation = true
+this.titlegradient = true
+this.toolbarstyle = contemporarytoolbar!
+this.toolbartextcolor = 134217746
+this.toolbarbackcolor = 67108864
+this.toolbarhighlightcolor = 12639424
+this.toolbargradient = true
+this.bitmapgradient = true
+end on
+
+on fm.destroy
+call super::destroy
+end on
+
+type m_-fm from menu within m_module
+end type
+
+on m_-fm.create
+call super::create
+this.text = "-"
+this.menustyle = contemporarymenu!
+this.menutextcolor = 134217735
+this.menubackcolor = 134217732
+this.menuhighlightcolor = 12639424
+this.textsize = 8
+this.weight = 700
+this.facename = "Tahoma"
+this.titlebackcolor = 12639424
+this.bitmapbackcolor = 12639424
+this.menubitmaps = true
+this.titlegradient = true
+this.toolbarstyle = contemporarytoolbar!
+this.toolbartextcolor = 134217746
+this.toolbarbackcolor = 67108864
+this.toolbarhighlightcolor = 12639424
+this.toolbargradient = true
+this.bitmapgradient = true
+end on
+
+on m_-fm.destroy
+call super::destroy
+end on
+
+type im from menu within m_module
+end type
+
+event clicked;
+double					ldb_menu_id
+c_menu_item			lc_menu_item
+//t_w_main 				lw_background
+
+//lw_background = t_w_mdi.wf_get_sheet_doc('background')
+//if  isnull(lw_background) then
+////	-- open window background --//
+//	t_w_mdi.wf_open_sheet_doc("u_background;s_w_background;Start Page")	
+//end if
+ldb_menu_id = lc_menu_item.f_get_menu_id_ex( this.classname( ))
+is_module_code =  this.classname( )
+t_w_mdi.f_create_win_menu(ldb_menu_id )
+end event
+
+on im.create
+call super::create
+this.tag = "im"
+this.text = "Quản lý tồn kho"
+this.menuimage = "pics\inventory.png"
+this.menustyle = contemporarymenu!
+this.menutextcolor = 134217735
+this.menubackcolor = 134217732
+this.menuhighlightcolor = 12639424
+this.textsize = 8
+this.weight = 700
+this.facename = "Tahoma"
+this.titlebackcolor = 12639424
+this.bitmapbackcolor = 12639424
+this.menubitmaps = true
+this.menuanimation = true
+this.titlegradient = true
+this.toolbarstyle = contemporarytoolbar!
+this.toolbartextcolor = 134217746
+this.toolbarbackcolor = 67108864
+this.toolbarhighlightcolor = 12639424
+this.toolbargradient = true
+this.bitmapgradient = true
+end on
+
+on im.destroy
+call super::destroy
+end on
+
+type m_-im from menu within m_module
+end type
+
+on m_-im.create
+call super::create
+this.text = "-"
+this.menustyle = contemporarymenu!
+this.menutextcolor = 134217735
+this.menubackcolor = 134217732
+this.menuhighlightcolor = 12639424
+this.textsize = 8
+this.weight = 700
+this.facename = "Tahoma"
+this.titlebackcolor = 12639424
+this.bitmapbackcolor = 12639424
+this.menubitmaps = true
+this.titlegradient = true
+this.toolbarstyle = contemporarytoolbar!
+this.toolbartextcolor = 134217746
+this.toolbarbackcolor = 67108864
+this.toolbarhighlightcolor = 12639424
+this.toolbargradient = true
+this.bitmapgradient = true
+end on
+
+on m_-im.destroy
+call super::destroy
+end on
+
+type sm from menu within m_module
+end type
+
+event clicked;
+double					ldb_menu_id
+c_menu_item			lc_menu_item
+//t_w_main 				lw_background
+
+//lw_background = t_w_mdi.wf_get_sheet_doc('background')
+//if  isnull(lw_background) then
+//	-- open window background --//
+//	t_w_mdi.wf_open_sheet_doc("u_background;s_w_background;Start Page")	
+//end if
+ldb_menu_id = lc_menu_item.f_get_menu_id_ex( this.classname( ))
+is_module_code =  this.classname( )
+t_w_mdi.f_create_win_menu(ldb_menu_id )
+end event
+
+on sm.create
+call super::create
+this.tag = "sm"
+this.text = "Bán hàng và chăm sóc"
+this.menuimage = "pics\sales.png"
+this.menustyle = contemporarymenu!
+this.menutextcolor = 134217735
+this.menubackcolor = 134217732
+this.menuhighlightcolor = 12639424
+this.textsize = 8
+this.weight = 700
+this.facename = "Tahoma"
+this.titlebackcolor = 12639424
+this.bitmapbackcolor = 12639424
+this.menubitmaps = true
+this.menuanimation = true
+this.titlegradient = true
+this.toolbarstyle = contemporarytoolbar!
+this.toolbartextcolor = 134217746
+this.toolbarbackcolor = 67108864
+this.toolbarhighlightcolor = 12639424
+this.toolbargradient = true
+this.bitmapgradient = true
+end on
+
+on sm.destroy
+call super::destroy
+end on
+
+type m_-sm from menu within m_module
+end type
+
+on m_-sm.create
+call super::create
+this.text = "-"
+this.menustyle = contemporarymenu!
+this.menutextcolor = 134217735
+this.menubackcolor = 134217732
+this.menuhighlightcolor = 12639424
+this.textsize = 8
+this.weight = 700
+this.facename = "Tahoma"
+this.titlebackcolor = 12639424
+this.bitmapbackcolor = 12639424
+this.menubitmaps = true
+this.titlegradient = true
+this.toolbarstyle = contemporarytoolbar!
+this.toolbartextcolor = 134217746
+this.toolbarbackcolor = 67108864
+this.toolbarhighlightcolor = 12639424
+this.toolbargradient = true
+this.bitmapgradient = true
+end on
+
+on m_-sm.destroy
+call super::destroy
+end on
+
+type pm from menu within m_module
+end type
+
+event clicked;
+double					ldb_menu_id
+c_menu_item			lc_menu_item
+//t_w_main 				lw_background
+
+//lw_background = t_w_mdi.wf_get_sheet_doc('background')
+//if  isnull(lw_background) then
+////	-- open window background --//
+//	t_w_mdi.wf_open_sheet_doc("u_background;s_w_background;Start Page")	
+//end if
+ldb_menu_id = lc_menu_item.f_get_menu_id_ex( this.classname( ))
+is_module_code =  this.classname( )
+t_w_mdi.f_create_win_menu(ldb_menu_id )
+end event
+
+on pm.create
+call super::create
+this.tag = "pm"
+this.text = "Thu mua"
+this.menuimage = "pics\purchase.png"
+this.menustyle = contemporarymenu!
+this.menutextcolor = 134217735
+this.menubackcolor = 134217732
+this.menuhighlightcolor = 12639424
+this.textsize = 8
+this.weight = 700
+this.facename = "Tahoma"
+this.titlebackcolor = 12639424
+this.bitmapbackcolor = 12639424
+this.menubitmaps = true
+this.menuanimation = true
+this.titlegradient = true
+this.toolbarstyle = contemporarytoolbar!
+this.toolbartextcolor = 134217746
+this.toolbarbackcolor = 67108864
+this.toolbarhighlightcolor = 12639424
+this.toolbargradient = true
+this.bitmapgradient = true
+end on
+
+on pm.destroy
+call super::destroy
+end on
+
+type m_-pm from menu within m_module
+end type
+
+on m_-pm.create
+call super::create
+this.text = "-"
+this.menustyle = contemporarymenu!
+this.menutextcolor = 134217735
+this.menubackcolor = 134217732
+this.menuhighlightcolor = 12639424
+this.textsize = 8
+this.weight = 700
+this.facename = "Tahoma"
+this.titlebackcolor = 12639424
+this.bitmapbackcolor = 12639424
+this.menubitmaps = true
+this.titlegradient = true
+this.toolbarstyle = contemporarytoolbar!
+this.toolbartextcolor = 134217746
+this.toolbarbackcolor = 67108864
+this.toolbarhighlightcolor = 12639424
+this.toolbargradient = true
+this.bitmapgradient = true
+end on
+
+on m_-pm.destroy
+call super::destroy
+end on
+
+type pp from menu within m_module
+end type
+
+event clicked;
+double					ldb_menu_id
+c_menu_item			lc_menu_item
+//t_w_main 				lw_background
+
+//lw_background = t_w_mdi.wf_get_sheet_doc('background')
+//if  isnull(lw_background) then
+////	-- open window background --//
+//	t_w_mdi.wf_open_sheet_doc("u_background;s_w_background;Start Page")	
+//end if
+ldb_menu_id = lc_menu_item.f_get_menu_id_ex( this.classname( ))
+is_module_code =  this.classname( )
+t_w_mdi.f_create_win_menu(ldb_menu_id )
+end event
+
+on pp.create
+call super::create
+this.tag = "pp"
+this.text = "Quản lý sản xuất"
+this.menuimage = "pics\production.png"
+this.menustyle = contemporarymenu!
+this.menutextcolor = 134217735
+this.menubackcolor = 134217732
+this.menuhighlightcolor = 12639424
+this.textsize = 8
+this.weight = 700
+this.facename = "Tahoma"
+this.titlebackcolor = 12639424
+this.bitmapbackcolor = 12639424
+this.menubitmaps = true
+this.menuanimation = true
+this.titlegradient = true
+this.toolbarstyle = contemporarytoolbar!
+this.toolbartextcolor = 134217746
+this.toolbarbackcolor = 67108864
+this.toolbarhighlightcolor = 12639424
+this.toolbargradient = true
+this.bitmapgradient = true
+end on
+
+on pp.destroy
+call super::destroy
+end on
+
+type m_-pp from menu within m_module
+end type
+
+on m_-pp.create
+call super::create
+this.text = "-"
+this.menustyle = contemporarymenu!
+this.menutextcolor = 134217735
+this.menubackcolor = 134217732
+this.menuhighlightcolor = 12639424
+this.textsize = 8
+this.weight = 700
+this.facename = "Tahoma"
+this.titlebackcolor = 12639424
+this.bitmapbackcolor = 12639424
+this.menubitmaps = true
+this.titlegradient = true
+this.toolbarstyle = contemporarytoolbar!
+this.toolbartextcolor = 134217746
+this.toolbarbackcolor = 67108864
+this.toolbarhighlightcolor = 12639424
+this.toolbargradient = true
+this.bitmapgradient = true
+end on
+
+on m_-pp.destroy
+call super::destroy
+end on
+
+type hr from menu within m_module
+end type
+
+on hr.create
+call super::create
+this.text = "Quản lý nhân sự"
+this.menuimage = "pics\hr.png"
+this.menustyle = contemporarymenu!
+this.menutextcolor = 134217735
+this.menubackcolor = 134217732
+this.menuhighlightcolor = 12639424
+this.textsize = 8
+this.weight = 700
+this.facename = "Tahoma"
+this.titlebackcolor = 12639424
+this.bitmapbackcolor = 12639424
+this.menubitmaps = true
+this.titlegradient = true
+this.toolbarstyle = contemporarytoolbar!
+this.toolbartextcolor = 134217746
+this.toolbarbackcolor = 67108864
+this.toolbarhighlightcolor = 12639424
+this.toolbargradient = true
+this.bitmapgradient = true
+end on
+
+on hr.destroy
+call super::destroy
+end on
+
+event clicked;
+double					ldb_menu_id
+c_menu_item			lc_menu_item
+
+ldb_menu_id = lc_menu_item.f_get_menu_id_ex( this.classname( ))
+is_module_code =  this.classname( )
+t_w_mdi.f_create_win_menu(ldb_menu_id )
+end event
+
+type m_-hr from menu within m_module
+end type
+
+on m_-hr.create
+call super::create
+this.text = "-"
+this.menustyle = contemporarymenu!
+this.menutextcolor = 134217735
+this.menubackcolor = 134217732
+this.menuhighlightcolor = 12639424
+this.textsize = 8
+this.weight = 700
+this.facename = "Tahoma"
+this.titlebackcolor = 12639424
+this.bitmapbackcolor = 12639424
+this.menubitmaps = true
+this.titlegradient = true
+this.toolbarstyle = contemporarytoolbar!
+this.toolbartextcolor = 134217746
+this.toolbarbackcolor = 67108864
+this.toolbarhighlightcolor = 12639424
+this.toolbargradient = true
+this.bitmapgradient = true
+end on
+
+on m_-hr.destroy
+call super::destroy
+end on
+
+type sv from menu within m_module
+end type
+
+event clicked;
+double					ldb_menu_id
+c_menu_item			lc_menu_item
+t_w_main 				lw_background
+
+//lw_background = t_w_mdi.wf_get_sheet_doc('background')
+//if  isnull(lw_background) then
+////	-- open window background --//
+//	t_w_mdi.wf_open_sheet_doc("u_background;s_w_background;Start Page")	
+//end if
+ldb_menu_id = lc_menu_item.f_get_menu_id_ex( this.classname( ))
+is_module_code =  this.classname( )
+t_w_mdi.f_create_win_menu(ldb_menu_id )
+end event
+
+on sv.create
+call super::create
+this.tag = "sv"
+this.visible = false
+this.text = "Quản lý dịch vụ"
+this.menustyle = contemporarymenu!
+this.menutextcolor = 134217735
+this.menubackcolor = 134217732
+this.menuhighlightcolor = 12639424
+this.textsize = 8
+this.weight = 700
+this.facename = "Tahoma"
+this.titlebackcolor = 12639424
+this.bitmapbackcolor = 12639424
+this.menubitmaps = true
+this.titlegradient = true
+this.toolbarstyle = contemporarytoolbar!
+this.toolbartextcolor = 134217746
+this.toolbarbackcolor = 67108864
+this.toolbarhighlightcolor = 12639424
+this.toolbargradient = true
+this.bitmapgradient = true
+end on
+
+on sv.destroy
+call super::destroy
+end on
+
+type m_-sv from menu within m_module
+end type
+
+on m_-sv.create
+call super::create
+this.visible = false
+this.text = "-"
+this.menustyle = contemporarymenu!
+this.menutextcolor = 134217735
+this.menubackcolor = 134217732
+this.menuhighlightcolor = 12639424
+this.textsize = 8
+this.weight = 700
+this.facename = "Tahoma"
+this.titlebackcolor = 12639424
+this.bitmapbackcolor = 12639424
+this.menubitmaps = true
+this.titlegradient = true
+this.toolbarstyle = contemporarytoolbar!
+this.toolbartextcolor = 134217746
+this.toolbarbackcolor = 67108864
+this.toolbarhighlightcolor = 12639424
+this.toolbargradient = true
+this.bitmapgradient = true
+end on
+
+on m_-sv.destroy
+call super::destroy
+end on
+
+type pj from menu within m_module
+end type
+
+event clicked;
+double					ldb_menu_id
+c_menu_item			lc_menu_item
+t_w_main 				lw_background
+
+lw_background = t_w_mdi.wf_get_sheet_doc('background')
+if  isnull(lw_background) then
+//	-- open window background --//
+	t_w_mdi.wf_open_sheet_doc("u_background;s_w_background;Start Page")	
+end if
+ldb_menu_id = lc_menu_item.f_get_menu_id_ex( this.classname( ))
+is_module_code =  this.classname( )
+t_w_mdi.f_create_win_menu(ldb_menu_id )
+end event
+
+on pj.create
+call super::create
+this.tag = "pj"
+this.visible = false
+this.text = "Quản lý dự án"
+this.menustyle = contemporarymenu!
+this.menutextcolor = 134217735
+this.menubackcolor = 134217732
+this.menuhighlightcolor = 12639424
+this.textsize = 8
+this.weight = 700
+this.facename = "Tahoma"
+this.titlebackcolor = 12639424
+this.bitmapbackcolor = 12639424
+this.menubitmaps = true
+this.titlegradient = true
+this.toolbarstyle = contemporarytoolbar!
+this.toolbartextcolor = 134217746
+this.toolbarbackcolor = 67108864
+this.toolbarhighlightcolor = 12639424
+this.toolbargradient = true
+this.bitmapgradient = true
+end on
+
+on pj.destroy
+call super::destroy
+end on
+
+type m_-pj from menu within m_module
+end type
+
+on m_-pj.create
+call super::create
+this.visible = false
+this.text = "-"
+this.menustyle = contemporarymenu!
+this.menutextcolor = 134217735
+this.menubackcolor = 134217732
+this.menuhighlightcolor = 12639424
+this.textsize = 8
+this.weight = 700
+this.facename = "Tahoma"
+this.titlebackcolor = 12639424
+this.bitmapbackcolor = 12639424
+this.menubitmaps = true
+this.titlegradient = true
+this.toolbarstyle = contemporarytoolbar!
+this.toolbartextcolor = 134217746
+this.toolbarbackcolor = 67108864
+this.toolbarhighlightcolor = 12639424
+this.toolbargradient = true
+this.bitmapgradient = true
+end on
+
+on m_-pj.destroy
+call super::destroy
+end on
+
+type mp from menu within m_module
+end type
+
+event clicked;
+double					ldb_menu_id
+c_menu_item			lc_menu_item
+//t_w_main 				lw_background
+
+//lw_background = t_w_mdi.wf_get_sheet_doc('background')
+//if  isnull(lw_background) then
+////	-- open window background --//
+//	t_w_mdi.wf_open_sheet_doc("u_background;s_w_background;Start Page")	
+//end if
+ldb_menu_id = lc_menu_item.f_get_menu_id_ex( this.classname( ))
+is_module_code =  this.classname( )
+t_w_mdi.f_create_win_menu(ldb_menu_id )
+end event
+
+on mp.create
+call super::create
+this.tag = "mp"
+this.visible = false
+this.text = "Hoạch định nguồn lực"
+this.menustyle = contemporarymenu!
+this.menutextcolor = 134217735
+this.menubackcolor = 134217732
+this.menuhighlightcolor = 12639424
+this.textsize = 8
+this.weight = 700
+this.facename = "Tahoma"
+this.titlebackcolor = 12639424
+this.bitmapbackcolor = 12639424
+this.menubitmaps = true
+this.titlegradient = true
+this.toolbarstyle = contemporarytoolbar!
+this.toolbartextcolor = 134217746
+this.toolbarbackcolor = 67108864
+this.toolbarhighlightcolor = 12639424
+this.toolbargradient = true
+this.bitmapgradient = true
+end on
+
+on mp.destroy
+call super::destroy
+end on
+
+type m_-mp from menu within m_module
+end type
+
+on m_-mp.create
+call super::create
+this.visible = false
+this.text = "-"
+this.menustyle = contemporarymenu!
+this.menutextcolor = 134217735
+this.menubackcolor = 134217732
+this.menuhighlightcolor = 12639424
+this.textsize = 8
+this.weight = 700
+this.facename = "Tahoma"
+this.titlebackcolor = 12639424
+this.bitmapbackcolor = 12639424
+this.menubitmaps = true
+this.titlegradient = true
+this.toolbarstyle = contemporarytoolbar!
+this.toolbartextcolor = 134217746
+this.toolbarbackcolor = 67108864
+this.toolbarhighlightcolor = 12639424
+this.toolbargradient = true
+this.bitmapgradient = true
+end on
+
+on m_-mp.destroy
+call super::destroy
+end on
+
+type cs from menu within m_module
+end type
+
+on cs.create
+call super::create
+this.visible = false
+this.text = "Chăm sóc khách hàng"
+this.menustyle = contemporarymenu!
+this.menutextcolor = 134217735
+this.menubackcolor = 134217732
+this.menuhighlightcolor = 12639424
+this.textsize = 8
+this.weight = 700
+this.facename = "Tahoma"
+this.titlebackcolor = 12639424
+this.bitmapbackcolor = 12639424
+this.menubitmaps = true
+this.titlegradient = true
+this.toolbarstyle = contemporarytoolbar!
+this.toolbartextcolor = 134217746
+this.toolbarbackcolor = 67108864
+this.toolbarhighlightcolor = 12639424
+this.toolbargradient = true
+this.bitmapgradient = true
+end on
+
+on cs.destroy
+call super::destroy
+end on
+
+event clicked;
+double					ldb_menu_id
+c_menu_item			lc_menu_item
+t_w_main 				lw_background
+
+lw_background = t_w_mdi.wf_get_sheet_doc('background')
+if  isnull(lw_background) then
+//	-- open window background --//
+	t_w_mdi.wf_open_sheet_doc("u_background;s_w_background;Start Page")	
+end if
+ldb_menu_id = lc_menu_item.f_get_menu_id_ex( this.classname( ))
+is_module_code =  this.classname( )
+t_w_mdi.f_create_win_menu(ldb_menu_id )
+
+end event
+
+type m_-cs from menu within m_module
+end type
+
+on m_-cs.create
+call super::create
+this.visible = false
+this.text = "-"
+this.menustyle = contemporarymenu!
+this.menutextcolor = 134217735
+this.menubackcolor = 134217732
+this.menuhighlightcolor = 12639424
+this.textsize = 8
+this.weight = 700
+this.facename = "Tahoma"
+this.titlebackcolor = 12639424
+this.bitmapbackcolor = 12639424
+this.menubitmaps = true
+this.titlegradient = true
+this.toolbarstyle = contemporarytoolbar!
+this.toolbartextcolor = 134217746
+this.toolbarbackcolor = 67108864
+this.toolbarhighlightcolor = 12639424
+this.toolbargradient = true
+this.bitmapgradient = true
+end on
+
+on m_-cs.destroy
+call super::destroy
+end on
+
+type ad from menu within m_module
+end type
+
+event clicked;
+double					ldb_menu_id
+c_menu_item			lc_menu_item
+t_w_main 				lw_background
+
+//lw_background = t_w_mdi.wf_get_sheet_doc('background')
+//if  isnull(lw_background) then
+////	-- open window background --//
+//	t_w_mdi.wf_open_sheet_doc("u_background;s_w_background;Start Page")	
+//end if
+ldb_menu_id = lc_menu_item.f_get_menu_id_ex( this.classname( ))
+is_module_code =  this.classname( )
+t_w_mdi.f_create_win_menu(ldb_menu_id )
+end event
+
+on ad.create
+call super::create
+this.tag = "ad"
+this.text = "Quản trị hệ thống"
+this.menuimage = "pics\sa.png"
+this.menustyle = contemporarymenu!
+this.menutextcolor = 134217735
+this.menubackcolor = 134217732
+this.menuhighlightcolor = 12639424
+this.textsize = 8
+this.weight = 700
+this.facename = "Tahoma"
+this.titlebackcolor = 12639424
+this.bitmapbackcolor = 12639424
+this.menubitmaps = true
+this.menuanimation = true
+this.titlegradient = true
+this.toolbarstyle = contemporarytoolbar!
+this.toolbartextcolor = 134217746
+this.toolbarbackcolor = 67108864
+this.toolbarhighlightcolor = 12639424
+this.toolbargradient = true
+this.bitmapgradient = true
+end on
+
+on ad.destroy
+call super::destroy
+end on
+
+type m_tool from menu within t_m_mdi
+m_-13 m_-13
+m_deleteuserprofile m_deleteuserprofile
+end type
+
+on m_tool.create
+call super::create
+this.text = "&Công cụ"
+this.shifttoright = true
+this.menustyle = contemporarymenu!
+this.menutextcolor = 134217735
+this.menubackcolor = 134217732
+this.menuhighlightcolor = 12639424
+this.textsize = 8
+this.weight = 700
+this.facename = "Tahoma"
+this.titlebackcolor = 12639424
+this.bitmapbackcolor = 12639424
+this.menubitmaps = true
+this.titlegradient = true
+this.toolbarstyle = contemporarytoolbar!
+this.toolbartextcolor = 134217746
+this.toolbarbackcolor = 67108864
+this.toolbarhighlightcolor = 12639424
+this.toolbargradient = true
+this.bitmapgradient = true
+this.m_-13=create m_-13
+this.m_deleteuserprofile=create m_deleteuserprofile
+this.Item[UpperBound(this.Item)+1]=this.m_-13
+this.Item[UpperBound(this.Item)+1]=this.m_deleteuserprofile
+end on
+
+on m_tool.destroy
+call super::destroy
+destroy(this.m_-13)
+destroy(this.m_deleteuserprofile)
+end on
+
+type m_-13 from menu within m_tool
+end type
+
+on m_-13.create
+call super::create
+this.text = "-"
+this.menustyle = contemporarymenu!
+this.menutextcolor = 134217735
+this.menubackcolor = 134217732
+this.menuhighlightcolor = 12639424
+this.textsize = 8
+this.weight = 700
+this.facename = "Tahoma"
+this.titlebackcolor = 12639424
+this.bitmapbackcolor = 12639424
+this.menubitmaps = true
+this.titlegradient = true
+this.toolbarstyle = contemporarytoolbar!
+this.toolbartextcolor = 134217746
+this.toolbarbackcolor = 67108864
+this.toolbarhighlightcolor = 12639424
+this.toolbargradient = true
+this.bitmapgradient = true
+end on
+
+on m_-13.destroy
+call super::destroy
+end on
+
+type m_deleteuserprofile from menu within m_tool
+end type
+
+event clicked;long ll_respond
+window	lw_handle
+
+if isvalid(t_w_mdi.getactivesheet( ) ) then
+	ll_respond = gf_messagebox('m.t_m_mdi.m_deleteunserprofile.01','Xác nhận','Các cửa sổ sẽ đóng lại trước khi xóa. Bạn có chắc chắn xóa không?','question','yesno',2)
+	if ll_respond = 1 then
+		t_w_mdi.wf_close_sheet_grp('DOC')
+	
+//		lw_handle = t_w_mdi.getactivesheet( )
+//		do while isvalid(lw_handle)
+//			if lw_handle.classname( ) <> 's_w_background' then
+//				close(lw_handle)
+//				lw_handle =  t_w_mdi.getactivesheet( )
+//			else
+//				lw_handle =  t_w_mdi.getnextsheet(lw_handle)
+//			end if
+//		loop
+	else
+		return
+	end if
+end if
+
+t_transaction		lt_transaction
+
+//-- Tạo connection voi database --//
+lt_transaction = create t_transaction
+lt_transaction.dbms =	SQLCA.DBMS
+lt_transaction.ServerName	 = SQLCA.ServerName
+lt_transaction.LogId	 = SQLCA.LogId
+lt_transaction.LogPass 	 = SQLCA.LogPass 
+lt_transaction.AutoCommit 	 = false 
+lt_transaction.DBParm	 = SQLCA.DBParm
+connect using	lt_transaction;	
+
+delete user_profile where user_id = :gi_userid using lt_transaction;
+commit using lt_transaction;
+
+disconnect using lt_transaction;
+destroy lt_transaction
+
+end event
+
+on m_deleteuserprofile.create
+call super::create
+this.text = "Xóa tùy biến người dùng"
+this.toolbaritemorder = 1
+this.toolbaritemspace = 1
+this.menustyle = contemporarymenu!
+this.menutextcolor = 134217735
+this.menubackcolor = 134217732
+this.menuhighlightcolor = 12639424
+this.textsize = 8
+this.weight = 700
+this.facename = "Tahoma"
+this.titlebackcolor = 12639424
+this.bitmapbackcolor = 12639424
+this.menubitmaps = true
+this.titlegradient = true
+this.toolbarstyle = contemporarytoolbar!
+this.toolbartextcolor = 134217746
+this.toolbarbackcolor = 67108864
+this.toolbarhighlightcolor = 12639424
+this.toolbargradient = true
+this.bitmapgradient = true
+end on
+
+on m_deleteuserprofile.destroy
+call super::destroy
+end on
+
+type m_window from menucascade within t_m_mdi
+m_options m_options
+end type
+
+on m_window.create
+call super::create
+this.visible = false
+this.text = "&Hệ thống"
+this.toolbaritemdown = true
+this.menustyle = contemporarymenu!
+this.menutextcolor = 134217735
+this.menubackcolor = 134217732
+this.menuhighlightcolor = 12639424
+this.textsize = 8
+this.weight = 700
+this.facename = "Tahoma"
+this.titlebackcolor = 12639424
+this.bitmapbackcolor = 12639424
+this.menubitmaps = true
+this.titlegradient = true
+this.toolbarstyle = contemporarytoolbar!
+this.toolbartextcolor = 134217746
+this.toolbarbackcolor = 67108864
+this.toolbarhighlightcolor = 12639424
+this.toolbargradient = true
+this.bitmapgradient = true
+this.m_options=create m_options
+this.Item[UpperBound(this.Item)+1]=this.m_options
+end on
+
+on m_window.destroy
+call super::destroy
+destroy(this.m_options)
+end on
+
+type m_options from menu within m_window
+end type
+
+on m_options.create
+call super::create
+this.text = "Tùy chọn"
+this.menustyle = contemporarymenu!
+this.menutextcolor = 134217735
+this.menubackcolor = 134217732
+this.menuhighlightcolor = 12639424
+this.textsize = 8
+this.weight = 700
+this.facename = "Tahoma"
+this.titlebackcolor = 12639424
+this.bitmapbackcolor = 12639424
+this.menubitmaps = true
+this.titlegradient = true
+this.toolbarstyle = contemporarytoolbar!
+this.toolbartextcolor = 134217746
+this.toolbarbackcolor = 67108864
+this.toolbarhighlightcolor = 12639424
+this.toolbargradient = true
+this.bitmapgradient = true
+end on
+
+on m_options.destroy
+call super::destroy
+end on
+
+type m_help from menu within t_m_mdi
+end type
+
+on m_help.create
+call super::create
+this.text = "&Trợ giúp ~tF1"
+this.shortcut = 112
+this.menustyle = contemporarymenu!
+this.menutextcolor = 134217735
+this.menubackcolor = 134217732
+this.menuhighlightcolor = 12639424
+this.textsize = 8
+this.weight = 700
+this.facename = "Tahoma"
+this.titlebackcolor = 12639424
+this.bitmapbackcolor = 12639424
+this.menubitmaps = true
+this.menuanimation = true
+this.titlegradient = true
+this.toolbarstyle = contemporarytoolbar!
+this.toolbartextcolor = 134217746
+this.toolbarbackcolor = 67108864
+this.toolbarhighlightcolor = 12639424
+this.toolbargradient = true
+this.bitmapgradient = true
+end on
+
+on m_help.destroy
+call super::destroy
+end on
+
+event clicked;ShowHelp ( gs_path_pic+'\Help\TTD_Help.chm', Index!)
+end event
+
+type m_company from menu within t_m_mdi
+end type
+
+on m_company.create
+call super::create
+this.tag = "Công ty"
+this.text = "TVS"
+this.microhelp = "Công ty"
+this.toolbaritemtext = "test"
+this.mergeoption = merge!
+this.menuimage = "Blob!"
+this.menustyle = contemporarymenu!
+this.menutextcolor = 134217735
+this.menubackcolor = 134217732
+this.menuhighlightcolor = 12639424
+this.textsize = 8
+this.weight = 700
+this.facename = "Tahoma"
+this.titlebackcolor = 12639424
+this.bitmapbackcolor = 12639424
+this.menubitmaps = true
+this.menuanimation = true
+this.titlegradient = true
+this.toolbarstyle = contemporarytoolbar!
+this.toolbartextcolor = 134217746
+this.toolbarbackcolor = 67108864
+this.toolbarhighlightcolor = 12639424
+this.toolbargradient = true
+this.bitmapgradient = true
+end on
+
+on m_company.destroy
+call super::destroy
+end on
+
+event clicked;string					ls_rtn, ls_return[], ls_company_name
+double				ldb_menu_id
+c_string				lc_string
+window				lw_handle
+t_dw_mpl			ldw_main, ldw_focus
+s_object_display	lc_obj_handling
+u_select_company	lc_select_company
+c_menu_item		lc_menu_item
+b_obj_instantiate		lboi_handle
+
+if isvalid(t_w_mdi.getactivesheet( ) )  then
+	lw_handle = t_w_mdi.getactivesheet( )
+	do while isvalid(lw_handle)		
+//		if lw_handle.classname( ) <> 's_w_background' then
+			//--nếu đang copy_line thì không đc chuyển công ty( đến khi phát triển chức năng kết phiếu khác công ty thì rào lại)--//
+			lc_obj_handling = lw_handle.dynamic f_get_obj_handling( )
+			if not isvalid(lc_obj_handling) then
+				lw_handle =  t_w_mdi.getnextsheet(lw_handle)
+				continue 
+			end if
+			if lc_obj_handling.ib_copy_line then
+				gf_messagebox('m.t_m_mdi.m_company.02','Thông báo','Đang kết chi tiết mặt hàng nên không được chuyển công ty!','exclamation','ok',1)
+				return
+			end if
+			ldw_focus = lw_handle.dynamic f_get_idwfocus( )
+			if ldw_focus.f_get_ib_editing( ) then
+				gf_messagebox('m.t_m_mdi.m_company.01','Thông báo','Phải lưu dữ liệu đang soạn thảo trước khi chuyển công ty:@'+ lw_handle.title,'exclamation','ok',1)
+				return
+			end if
+//		end if
+		lw_handle =  t_w_mdi.getnextsheet(lw_handle)
+	loop
+end if
+
+
+lc_select_company = create u_select_company
+openwithparm(s_wr_multi,lc_select_company)
+ls_rtn = message.stringparm
+setnull(message.stringparm)
+if isnull(ls_rtn) or ls_rtn ='' then return
+lc_string.f_stringtoarray(ls_rtn, ';',  ls_return[])
+
+t_w_mdi.wf_close_sheet_grp('DOC')
+this.text = ls_return[1]
+m_branch.text = ls_return[2]
+if isnull(is_module_code) or is_module_code =  '' then
+	ldb_menu_id = lc_menu_item.f_get_menu_id_ex( 'ad')
+else
+	ldb_menu_id = lc_menu_item.f_get_menu_id_ex( is_module_code)
+end if
+t_w_mdi.f_create_win_menu(ldb_menu_id )
+
+ls_company_name =lboi_handle.f_get_branch_name_ex( gdb_branch )
+t_w_mdi.title = ls_company_name + ' | '+ gs_dbname + ' | ' + g_user.name +' | Phiên bản:'+string(gdt_appUpdate_date)
+
+end event
+
+type m_branch from menu within t_m_mdi
+end type
+
+on m_branch.create
+call super::create
+this.text = "HCM"
+this.microhelp = "Chi nhánh"
+this.shifttoright = true
+this.menustyle = contemporarymenu!
+this.menutextcolor = 134217735
+this.menubackcolor = 134217732
+this.menuhighlightcolor = 12639424
+this.textsize = 8
+this.weight = 700
+this.facename = "Tahoma"
+this.titlebackcolor = 12639424
+this.bitmapbackcolor = 12639424
+this.menubitmaps = true
+this.titlegradient = true
+this.toolbarstyle = contemporarytoolbar!
+this.toolbartextcolor = 134217746
+this.toolbarbackcolor = 67108864
+this.toolbarhighlightcolor = 12639424
+this.toolbargradient = true
+this.bitmapgradient = true
+end on
+
+on m_branch.destroy
+call super::destroy
+end on
+
+event clicked;string					ls_rtn, ls_company_name
+double				ldb_menu_id
+c_string				lc_string
+t_w_main				lw_handle
+t_dw_mpl			ldw_main, ldw_focus
+s_object_display	lc_obj_handling
+u_select_branch	lc_select_branch
+c_menu_item			lc_menu_item
+b_obj_instantiate		lboi_handle
+
+if isvalid(t_w_mdi.getactivesheet( ) )  then
+	lw_handle = t_w_mdi.getactivesheet( )
+	do while isvalid(lw_handle)		
+		//--nếu đang copy_line thì không đc chuyển chi nhánh( đến khi phát triển chức năng kết phiếu khác chi nhánh thì rào lại)--//
+		lc_obj_handling = lw_handle.dynamic f_get_obj_handling( )
+		if not isvalid(lc_obj_handling) then
+			lw_handle =  t_w_mdi.getnextsheet(lw_handle)
+			continue
+		end if 
+		if lc_obj_handling.ib_copy_line then
+			gf_messagebox('m.t_m_mdi.m_branch.02','Thông báo','Đang kết chi tiết mặt hàng nên không được chuyển chi nhánh!','exclamation','ok',1)
+			return
+		end if
+		ldw_focus = lw_handle.dynamic f_get_idwfocus( )
+		if ldw_focus.f_get_ib_editing( ) then
+			gf_messagebox('m.t_m_mdi.m_branch.01','Thông báo','Phải lưu dữ liệu đang soạn thảo trước khi chuyển chi nhánh:@'+ lw_handle.title,'exclamation','ok',1)
+			return
+		end if
+		lw_handle =  t_w_mdi.getnextsheet(lw_handle)
+	loop
+end if
+
+//openwithparm(s_wr_multi,'c_select_branch;0')
+lc_select_branch = create using 'u_select_branch'
+openwithparm(s_wr_multi,lc_select_branch)
+ls_rtn = message.stringparm
+setnull(message.stringparm)
+if isnull(ls_rtn) or ls_rtn ='' then return
+
+t_w_mdi.wf_close_sheet_grp('DOC')
+this.text = ls_rtn
+if isnull(is_module_code) or is_module_code =  '' then
+	ldb_menu_id = lc_menu_item.f_get_menu_id_ex( 'ad')
+else
+	ldb_menu_id = lc_menu_item.f_get_menu_id_ex( is_module_code)
+end if
+t_w_mdi.f_create_win_menu(ldb_menu_id )
+
+ls_company_name =lboi_handle.f_get_branch_name_ex( gdb_branch )
+t_w_mdi.title = ls_company_name + ' | '+ gs_dbname + ' | ' + g_user.name +' | Phiên bản:'+string(gdt_appUpdate_date)
+end event
+
+type m_sessiondate from menu within t_m_mdi
+end type
+
+on m_sessiondate.create
+call super::create
+this.text = "[Ngày giao dịch]"
+this.shifttoright = true
+this.menustyle = contemporarymenu!
+this.menutextcolor = 134217735
+this.menubackcolor = 134217732
+this.menuhighlightcolor = 12639424
+this.textsize = 8
+this.weight = 700
+this.facename = "Tahoma"
+this.titlebackcolor = 12639424
+this.bitmapbackcolor = 12639424
+this.menubitmaps = true
+this.titlegradient = true
+this.toolbarstyle = contemporarytoolbar!
+this.toolbartextcolor = 134217746
+this.toolbarbackcolor = 67108864
+this.toolbarhighlightcolor = 12639424
+this.toolbargradient = true
+this.bitmapgradient = true
+end on
+
+on m_sessiondate.destroy
+call super::destroy
+end on
+
+event clicked;string				ls_date
+str_calendar  	lstr_calendar
+
+//-- open calendar --//
+ls_date = mid(this.text,pos(this.text,':')+2, len(this.text) - pos(this.text,':') -2)
+
+lstr_calendar.date_current =  string(date(ls_date),'yyyymmdd')
+OpenWithParm(w_calENDar, lstr_calendar)
+ls_date = message.stringparm
+setnull(message.stringparm)
+if not isnull(ls_date) then
+	select to_date(:ls_date,'yyyymmdd') into :gd_session_date from dual ;
+	this.text =  '[Ngày giao dich: '+string(gd_session_date,gs_w_date_format)+']'
+end if
+end event
+
+type m_sob from menu within t_m_mdi
+end type
+
+event clicked;string			ls_rtn,las_rtn[]
+
+c_string		lc_string
+window		lw_handle
+t_dw_mpl		ldw_main, ldw_focus
+s_object_display	lc_obj_handling
+
+if isvalid(t_w_mdi.getactivesheet( ) )  then
+	lw_handle = t_w_mdi.getactivesheet( )
+	do while isvalid(lw_handle)		
+		if lw_handle.classname( ) <> 's_w_background' then
+			lc_obj_handling = lw_handle.dynamic f_get_obj_handling( )
+			if not isvalid(lc_obj_handling) then
+				lw_handle =  t_w_mdi.getnextsheet(lw_handle)
+				continue
+			end if 
+			ldw_focus = lw_handle.dynamic f_get_idwfocus( )
+			if ldw_focus.f_get_ib_editing( ) then
+				gf_messagebox('m.t_m_mdi.m_sob.01','Thông báo','Phải lưu dữ liệu đang soạn thảo trước khi chuyển sổ:@'+ lw_handle.title,'exclamation','ok',1)
+				return
+			end if
+		end if
+		lw_handle =  t_w_mdi.getnextsheet(lw_handle)
+	loop
+end if
+
+openwithparm(s_wr_multi,'u_select_sob;0')
+ls_rtn = message.stringparm
+setnull(message.stringparm)
+lc_string.f_stringtoarray( ls_rtn, ';', las_rtn)
+if isnull(ls_rtn) or ls_rtn ='' then return
+gs_sob = las_rtn[1]
+if isvalid(t_w_mdi.getactivesheet( ) )  then
+	lw_handle = t_w_mdi.getactivesheet( )	
+	do while isvalid(lw_handle)		
+		if lw_handle.classname( ) <> 's_w_background' then
+			lc_obj_handling = lw_handle.dynamic f_get_obj_handling( )
+			if not isvalid(lc_obj_handling) then
+				lw_handle =  t_w_mdi.getnextsheet(lw_handle)
+				continue
+			end if 
+			ldw_main = lw_handle.dynamic f_get_dwmain( )
+			ldw_main.event e_refresh( )
+		end if
+		lw_handle =  t_w_mdi.getnextsheet(lw_handle)
+	loop
+end if
+
+this.text = '['+las_rtn[2]+']'
+
+end event
+
+on m_sob.create
+call super::create
+this.text = "[Nội bộ]"
+this.shifttoright = true
+this.menustyle = contemporarymenu!
+this.menutextcolor = 134217735
+this.menubackcolor = 134217732
+this.menuhighlightcolor = 12639424
+this.textsize = 8
+this.weight = 700
+this.facename = "Tahoma"
+this.titlebackcolor = 12639424
+this.bitmapbackcolor = 12639424
+this.menubitmaps = true
+this.titlegradient = true
+this.toolbarstyle = contemporarytoolbar!
+this.toolbartextcolor = 134217746
+this.toolbarbackcolor = 67108864
+this.toolbarhighlightcolor = 12639424
+this.toolbargradient = true
+this.bitmapgradient = true
+end on
+
+on m_sob.destroy
+call super::destroy
+end on
+
