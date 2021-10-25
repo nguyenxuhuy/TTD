@@ -427,6 +427,7 @@ if li_rtn = -1 then
 end if
 //--nếu đang copy thì sau khi save tắt chế độ copy--//
 if ic_obj_handling.f_get_ib_copying( ) then ic_obj_handling.f_set_ib_copying( false)
+this.f_ctrl_enable_button(  idw_focus)
 //ic_obj_handling.f_ctrl_actionbuttons( idw_focus)
 //this.event e_display_actionbutton( )
 return idw_focus.setfocus( )
