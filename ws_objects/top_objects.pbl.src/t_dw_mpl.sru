@@ -59,7 +59,7 @@ type prototypes
 end prototypes
 
 type variables
-string		is_dwo_source, is_col_source, is_col_target, is_ref_table_field
+string		is_dwo_source, is_col_source, is_col_target, is_ref_table_field, is_filter_type
 any		a_ref_data[]
 boolean  ib_itemchanged_all_row, ib_excel_copying, ib_accept_data, ib_uprow_copy, ib_keynull
 
@@ -78,7 +78,6 @@ boolean	ib_grid_n_form
 s_str_criteria_rec		is_str_criteria_rec[]
 
 end variables
-
 forward prototypes
 public function integer f_set_criteria_retreive ()
 public function integer f_chk_ora_dberror (long vl_err_code)
