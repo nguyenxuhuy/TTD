@@ -78,6 +78,7 @@ boolean	ib_grid_n_form
 s_str_criteria_rec		is_str_criteria_rec[]
 
 end variables
+
 forward prototypes
 public function integer f_set_criteria_retreive ()
 public function integer f_chk_ora_dberror (long vl_err_code)
@@ -418,7 +419,7 @@ end if
 //-- set master cho detail va ref_field --//
 if this.f_set_master_detail_ref_table( al_row) = -1 then return -1
 
-//-- set edit property --//
+//-- set edit property : trước khi tạo giá trị mặc định --//
 if not this.ib_dummy_row  then this.f_set_editable_property( true)
 
 //-- tạo các giá trị mặc định --//
@@ -458,15 +459,18 @@ if this.ib_ismaster and upperbound(this.iadw_shared) > 0 then
 	NEXT
 end if
 
-ls_first_col = f_GetFirstColumn(true)
-if ls_first_col <> '' then
-	this.SetColumn(ls_first_col)
-end if
-
 
 //-- copy giá trị dòng trên --//
 if al_row > 1 and not lpo_handling.ib_copying then
 	lpo_handling.idwsetup_initial.f_auto_copy_field(this, al_row) 
+end if
+
+//-- set edit property : sau khi tạo giá trị mặc định --//
+if not this.ib_dummy_row  then this.f_set_editable_property( true)
+
+ls_first_col = f_GetFirstColumn(true)
+if ls_first_col <> '' then
+	this.SetColumn(ls_first_col)
 end if
 
 //-- Thông báo object --//

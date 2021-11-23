@@ -294,7 +294,7 @@ ib_changed_dwo_4edit = false
 ib_keyboardlocked = true
 is_object_title = 'Đăng ký menu'
 
-istr_actionpane[1].s_button_name = 'b_add;b_insert;b_modify;b_save;b_query;b_execquery;b_filteron;b_refresh;b_delete;b_print;b_view_report;'
+istr_actionpane[1].s_button_name = 'e_add;e_delete;e_modify;'
 istr_actionpane[1].s_objname_handling = this.classname( )
 istr_actionpane[1].s_description = is_object_title
 

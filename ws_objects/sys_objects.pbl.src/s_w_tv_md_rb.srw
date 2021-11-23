@@ -17,13 +17,6 @@ end forward
 global type s_w_tv_md_rb from s_w_main
 integer width = 4055
 integer height = 2020
-boolean titlebar = true
-boolean controlmenu = true
-boolean minbox = true
-boolean maxbox = true
-boolean resizable = true
-windowstate windowstate = maximized!
-long backcolor = 134217732
 integer ii_tv_width = 900
 dw_2 dw_2
 tv_1 tv_1
@@ -250,13 +243,13 @@ if not isnull(message.stringparm) and message.stringparm <> '' then
 	else
 		this.title = lc_menu_item.f_get_menu_label_ex(double(las_parm[2]), it_transaction )
 	end if
-	ic_obj_main.f_init_policy_datastore_ex(it_transaction )
+	ic_obj_main.f_init_policy_datastore_exx(it_transaction )
 
 elseif not isnull(message.powerobjectparm ) then
 	ic_obj_main = message.powerobjectparm
 	setnull(message.powerobjectparm)
 
-	ic_obj_main.f_init_policy_datastore_ex(it_transaction )
+	ic_obj_main.f_init_policy_datastore_exx(it_transaction )
 	ls_menu_text = lc_menu_item.f_get_menu_label_ex(ic_obj_main.classname( ) ,it_transaction)
 	if ls_menu_text <> '' then
 		this.title  = ls_menu_text
@@ -344,6 +337,7 @@ if ic_obj_handling.f_get_drilldown_data( lstr_drilldown_data) > 1 then
 	li_rtn = ic_obj_handling.dynamic event e_window('e_postopen')
 	ic_obj_handling.f_open_drilldown_rpt( )
 	idw_focus.setfocus( )
+	this.f_ctrl_enable_button(  idw_focus)
 //	this.event e_display_actionbutton( )
 	ib_opening = false
 //	this.setredraw( true)
@@ -358,7 +352,7 @@ else
 			idw_focus = this.f_get_dw( 'd_onhand_grid')
 		end if
 		if idw_focus.dynamic event e_refresh() = -9 or idw_focus.dynamic event e_refresh() = 0  then
-			this.f_ctrl_enable_button(  idw_focus)
+//			this.f_ctrl_enable_button(  idw_focus)
 //			ic_obj_handling.f_ctrl_actionbuttons(idw_focus)
 		end if
 		
@@ -381,13 +375,14 @@ else
 			end if
 		NEXT	
 	else
-		this.f_ctrl_enable_button(  idw_focus)
+//		this.f_ctrl_enable_button(  idw_focus)
 //		ic_obj_handling.f_ctrl_actionbuttons(idw_focus)
 	end if
 end if
 
 li_rtn = ic_obj_handling.dynamic event e_window('e_postopen')
 idw_focus.setfocus( )
+this.f_ctrl_enable_button(  idw_focus)
 //this.event e_display_actionbutton( )
 ib_opening = false
 //this.setredraw( true)
@@ -434,34 +429,19 @@ return idw_focus.setfocus( )
 
 end event
 
+event activate;call super::activate;this.f_ctrl_enable_button(  idw_focus)
+end event
+
 type dw_filter from s_w_main`dw_filter within s_w_tv_md_rb
-integer width = 891
-string title = "top datawindow control"
-boolean livescroll = true
-borderstyle borderstyle = stylebox!
-string is_popmenu = "m_excel;m_setup_user_access;m_setup_deligate;m_setup_alert;m_edit_window_label;m_setup_dw;m_find;m_del_user_profile"
-integer ii_print_copy = 1
 end type
 
 type st_1 from s_w_main`st_1 within s_w_tv_md_rb
-integer width = 402
-integer textsize = -10
-integer weight = 400
-fontpitch fontpitch = variable!
-fontfamily fontfamily = swiss!
-string facename = "Tahoma"
 end type
 
 type tab_action from s_w_main`tab_action within s_w_tv_md_rb
 boolean visible = false
 integer taborder = 0
-integer textsize = -10
-fontpitch fontpitch = variable!
-fontfamily fontfamily = swiss!
-string facename = "Tahoma"
 long backcolor = 134217732
-boolean raggedright = true
-boolean focusonbuttondown = true
 end type
 
 event tab_action::selectionchanged;//-- override //
@@ -471,11 +451,6 @@ event tab_action::selectionchanging;//-- override //
 end event
 
 type gb_filter from s_w_main`gb_filter within s_w_tv_md_rb
-integer textsize = -10
-fontpitch fontpitch = variable!
-fontfamily fontfamily = swiss!
-string facename = "Tahoma"
-long textcolor = 33554432
 end type
 
 type dw_2 from t_dw_mpl within s_w_tv_md_rb

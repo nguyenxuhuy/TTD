@@ -18257,7 +18257,8 @@ end if
 return 0
 end event
 
-event e_window_e_postopen;call super::e_window_e_postopen;this.iw_display.event e_filteron_new( )
+event e_window_e_postopen;call super::e_window_e_postopen;//this.iw_display.event e_filteron_new( )
+this.iw_display.dynamic event e_filteron_rb( )
 return 0
 end event
 
