@@ -44,7 +44,8 @@ long richtexteditx64type = 3
 long richtexteditversion = 1
 string richtexteditkey = ""
 string appicon = "Pics\app.ico"
-string appruntimeversion = "21.0.0.1288"
+string appruntimeversion = "21.0.0.1311"
+boolean unsupportedapierror = true
 end type
 global ttd ttd
 
