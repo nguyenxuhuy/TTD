@@ -280,7 +280,9 @@ end function
 
 public subroutine f_open_w_background ();//opensheet(s_w_background , t_w_mdi,0, Original!)
 try 
-	OpenSheetDocked ( w[1] , 's_w_background', t_w_mdi, WindowDockLeft!, 'iw_background' )
+//	w[1].resize(mdi_1.width, mdi_1.height)
+	wf_open_sheet_doc( 'background;s_w_background;0;0')	
+//	OpenSheetDocked ( w[1] , 's_w_background', t_w_mdi, WindowDockLeft!, 'iw_background' )
 catch ( runtimeerror  l_rte )
 	messagebox('Error', l_rte.text)
 end try
@@ -289,6 +291,8 @@ end try
 //wf_open_sheet_doc( 'background;s_w_background;0;0')
 
 //OpenSheetAsDocument ( w[1], 's_w_background', t_w_mdi, 'iw_background' )
+
+//li_open_rtn = OpenSheetwithParmAsDocument( w[li_win_num], vpo_win_param,vs_win_class, lw_refer, ls_id  )
 end subroutine
 
 public subroutine f_open_w_menu ();open(t_w_menu)
@@ -579,7 +583,11 @@ end if
 //open it
 ls_id = f_getrand() + ";" + ls_win_parm
 li_win_num = wf_get_sheet_max("ALL") + 1
-if li_win_num = 1 then li_win_num = 2
+if  ls_parm[2] = 's_w_background' then
+	li_win_num = 1
+elseif li_win_num = 1 then
+	li_win_num = 2
+end if
 lw_refer = wf_get_sheet_grp('DOC')
 
 if isvalid( lw_refer )  then	
@@ -1347,11 +1355,12 @@ choose case itemtag
 		t_w_mdi.idb_menu_id = lc_menu_item.f_get_menu_id_ex( itemtag)
 		t_w_mdi.is_menu_code = itemtag
 		if isvalid(t_w_mdi.w[1]) then
-			if t_w_mdi.w[1].visible = false then
-				t_w_mdi.w[1].show()
-				t_w_mdi.w[1].enabled = true
-			end if
+//			if t_w_mdi.w[1].visible = false then
+//				t_w_mdi.w[1].show()
+//				t_w_mdi.w[1].enabled = true
+//			end if
 			t_w_mdi.w[1].dynamic event e_query()
+			t_w_mdi.w[1].setfocus()
 		else
 			parent.f_open_w_background( )
 		end if

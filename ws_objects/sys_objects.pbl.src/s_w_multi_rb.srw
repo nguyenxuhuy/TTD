@@ -1840,14 +1840,17 @@ if dw_filter.is_filter_type = '1' then //-- create DW --//
 		ls_presentation_str = "style(type=grid)"
 		FOR li_idx = 1 to li_cnt
 			if li_idx < li_cnt then	
-				ls_sql += '' +  las_colname_in_taborder[li_idx]+ ','
+				ls_sql += "~'~' "+  las_colname_in_taborder[li_idx]+ ','
 			else
-				ls_sql += '' +  las_colname_in_taborder[li_idx]+ ' FROM dual '
+				ls_sql += "~'~' " +  las_colname_in_taborder[li_idx]+ ' FROM dual '
 			end if
 		NEXT
+		connect using it_transaction;
 		ls_dwsyntax = it_transaction.SyntaxFromSQL(ls_sql, ls_presentation_str, ls_err)
-		dw_filter.Create(ls_dwsyntax, ls_err)
-		dw_filter.f_set_editable_4_filter( true)	
+		disconnect using it_transaction;
+		dw_filter.Create(ls_dwsyntax, ls_err)		
+		dw_filter.bringtotop = true
+//		dw_filter.f_set_editable_4_filter( true)	
 	end if
 else
 	dw_filter.is_filter_type = '1'
@@ -1859,7 +1862,7 @@ ii_dwfilter_header = integer(dw_filter.describe( "datawindow.header.height"))
 li_cnt = dw_filter.insertrow( 0)
 dw_filter.scrolltorow(li_cnt)
 ib_filter_on = true
-dw_filter.f_retrieve_dwc_dwfilter( 'colname')
+//dw_filter.f_retrieve_dwc_dwfilter( 'colname')
 this.event e_filter_resize_new( )
 
 
@@ -1867,10 +1870,12 @@ this.event e_filter_resize_new( )
 ls_display_model = ic_obj_handling.dynamic f_get_display_model()
 this.f_resize(ls_display_model )
 
-if isvalid( ic_obj_handling.ids_filter_data) then
-	if ic_obj_handling.ids_filter_data.rowcount( ) = 1 then
-		dw_filter.reset( )
-		ic_obj_handling.ids_filter_data.rowscopy(1,1,primary!,dw_filter, 1,primary!)
+if dw_filter.is_filter_type = '1' then
+	if isvalid( ic_obj_handling.ids_filter_data) then
+		if ic_obj_handling.ids_filter_data.rowcount( ) = 1 then
+			dw_filter.reset( )
+			ic_obj_handling.ids_filter_data.rowscopy(1,1,primary!,dw_filter, 1,primary!)
+		end if
 	end if
 end if
 
@@ -7667,16 +7672,6 @@ this.f_ctrl_enable_button(idw_focus )
 ic_obj_handling.event e_window_activate()
 end event
 
-type dw_filter from s_w_main`dw_filter within s_w_multi_rb
-integer x = 686
-integer y = 1432
-integer width = 498
-integer taborder = 10
-end type
-
-event dw_filter::scrollhorizontal;//dw_1.modify("Datawindow.HorizontalScrollPosition="+this.describe("Datawindow.HorizontalScrollPosition"))
-end event
-
 type st_1 from s_w_main`st_1 within s_w_multi_rb
 integer x = 91
 integer y = 1104
@@ -7703,6 +7698,16 @@ integer x = 133
 integer y = 816
 integer taborder = 0
 end type
+
+type dw_filter from s_w_main`dw_filter within s_w_multi_rb
+integer x = 686
+integer y = 1432
+integer width = 498
+integer taborder = 10
+end type
+
+event dw_filter::scrollhorizontal;//dw_1.modify("Datawindow.HorizontalScrollPosition="+this.describe("Datawindow.HorizontalScrollPosition"))
+end event
 
 type dw_2 from t_dw_mpl within s_w_multi_rb
 integer x = 443
@@ -8207,7 +8212,7 @@ integer taborder = 20
 boolean bringtotop = true
 end type
 
-event scrollhorizontal;call super::scrollhorizontal;//dw_filter.modify("Datawindow.HorizontalScrollPosition="+this.describe("Datawindow.HorizontalScrollPosition"))
+event scrollhorizontal;call super::scrollhorizontal;dw_filter.modify("Datawindow.HorizontalScrollPosition="+this.describe("Datawindow.HorizontalScrollPosition"))
 end event
 
 type gb_7 from t_gb within s_w_multi_rb

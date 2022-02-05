@@ -3,8 +3,6 @@ $PBExportComments$top window of main type
 forward
 global type s_w_main from t_w_main
 end type
-type dw_filter from t_dw_mpl within s_w_main
-end type
 type st_1 from t_st within s_w_main
 end type
 type tab_action from t_t within s_w_main
@@ -12,6 +10,8 @@ end type
 type tab_action from t_t within s_w_main
 end type
 type gb_filter from t_gb within s_w_main
+end type
+type dw_filter from t_dw_mpl within s_w_main
 end type
 end forward
 
@@ -50,10 +50,10 @@ event type integer e_importfile ( )
 event type integer e_change_object_appeon ( s_object_display vpo_change_object )
 event type integer e_filteron_new ( )
 event e_filter_resize_new ( )
-dw_filter dw_filter
 st_1 st_1
 tab_action tab_action
 gb_filter gb_filter
+dw_filter dw_filter
 end type
 global s_w_main s_w_main
 
@@ -371,30 +371,37 @@ any					la_data[]
 
 dw_filter.setredraw( false)
 //li_hdr_height = integer(dw_filter.describe("datawindow.header.height"))
-//ldw_main = this.f_get_dwmain( )
-//dw_filter.accepttext( )
-//li_colCount = upperbound(vas_colname[])
-//FOR li_idx =1 to li_colCount
-//	la_data[li_idx] = dw_filter.f_getitemany( 1, vas_colname[li_idx])
-//	ls_rtn= dw_filter.modify(vas_colname[li_idx]+".visible='0'" )
-//NEXT
-//
-//FOR li_idx = 1 to li_colCount	
-//	ls_rtn= dw_filter.modify(vas_colname[li_idx]+".visible='1'" )
-//	dw_filter.setitem( 1, vas_colname[li_idx],la_data[li_idx])
-//	
-//	ls_x = dw_filter.describe(vas_colname[li_idx]+ ".x")	
-//	if ldw_main.dynamic f_isgrid() then
-//		ls_colWidth = ldw_main.describe(vas_colname[li_idx]+ ".width" )
-//	else
-//		ls_colWidth = dw_filter.describe(vas_colname[li_idx]+ ".width" )
-//	end if
-//	ls_rtn= dw_filter.modify(vas_colname[li_idx]+".x='" + ls_x +"'" )
-//	ls_rtn= dw_filter.modify(vas_colname[li_idx]+".width='" + ls_colWidth +"'" )
-//
-//NEXT
+ldw_main = this.f_get_dwmain( )
+dw_filter.accepttext( )
+li_colCount = upperbound(vas_colname[])
+FOR li_idx =1 to li_colCount
+	la_data[li_idx] = dw_filter.f_getitemany( 1, vas_colname[li_idx])
+	ls_rtn= dw_filter.modify(vas_colname[li_idx]+".visible='0'" )
+NEXT
 
+FOR li_idx = 1 to li_colCount	
+	ls_rtn= dw_filter.modify(vas_colname[li_idx]+".visible='1'" )
+	dw_filter.setitem( 1, vas_colname[li_idx],la_data[li_idx])
+	
+	ls_x = dw_filter.describe(vas_colname[li_idx]+ ".x")	
+	if ldw_main.dynamic f_isgrid() then
+		ls_colWidth = ldw_main.describe(vas_colname[li_idx]+ ".width" )
+	else
+		ls_colWidth = dw_filter.describe(vas_colname[li_idx]+ ".width" )
+	end if
+	ls_rtn= dw_filter.modify(vas_colname[li_idx]+".x=" + ls_x  )
+	ls_rtn= dw_filter.modify(vas_colname[li_idx]+".width=" + ls_colWidth  )
+	ls_rtn= dw_filter.modify(vas_colname[li_idx]+".TabSequence=" + string(li_idx) )
+	ls_rtn= dw_filter.modify(vas_colname[li_idx]+".Edit.limit=" + '250' )
+NEXT
+
+////dw_1.Object.DataWindow.ReadOnly = false
+//ls_rtn = dw_filter.describe( "DataWindow.ReadOnly")
+//ls_rtn = dw_filter.describe( vas_colname[15]+".Edit.style")
+//ls_rtn = dw_filter.describe( vas_colname[15]+".Edit.Displayonly")
+//ls_rtn = dw_filter.describe( vas_colname[15]+".Edit.limit")
 dw_filter.setredraw( true)
+//dw_filter.BringToTop=true
 
 end event
 
@@ -842,7 +849,7 @@ event e_filter_resize_new();s_str_dwo			lstr_dwo[]
 t_dw_mpl			ldw_main,ladw_share[]
 groupbox				lgb_main
 int						li_rtn, li_filter_space, li_return
-string					las_colname_in_taborder[]
+string					las_colname_in_taborder[], ls_vpos_max
 
 
 //-- resize gb_filter va dw_filter --//
@@ -852,7 +859,10 @@ li_rtn = ldw_main.f_getdwshared( ladw_share)
 
 if ldw_main.f_isgrid() and li_rtn = 0 then
 	ii_filter_space = 160
-//	dw_filter.modify( "datawindow.header.height = 0" )		
+	if dw_filter.is_filter_type = '2' then
+		dw_filter.modify( "datawindow.header.height = 0" )		
+	else
+	end if
 else
 	dw_filter.modify( "datawindow.header.height =" + string(ii_dwfilter_header))
 	ii_filter_space = 160 + ii_dwfilter_header
@@ -865,13 +875,13 @@ gb_filter.height = ii_filter_space
 dw_filter.move(gb_filter.x + 14, gb_filter.y + 60)
 dw_filter.width = gb_filter.width - 28
 dw_filter.height = gb_filter.height - 76
-
+//dw_filter.bringtotop = true
 //-- modify display --//
 
-//if ldw_main.f_isgrid() and li_rtn = 0 then
-//	ldw_main.f_get_colname_in_taborder(las_colname_in_taborder[])
-//	this.event e_filter_modify_display( las_colname_in_taborder[]) // new không dùng --//
-//end if
+if dw_filter.is_filter_type = '2' then
+	ldw_main.f_get_colname_in_taborder(las_colname_in_taborder[])
+	this.event e_filter_modify_display( las_colname_in_taborder[])		
+end if
 
 /*
 Đóng lại bởi Long 07/08/2015
@@ -3266,23 +3276,23 @@ end event
 on s_w_main.create
 int iCurrent
 call super::create
-this.dw_filter=create dw_filter
 this.st_1=create st_1
 this.tab_action=create tab_action
 this.gb_filter=create gb_filter
+this.dw_filter=create dw_filter
 iCurrent=UpperBound(this.Control)
-this.Control[iCurrent+1]=this.dw_filter
-this.Control[iCurrent+2]=this.st_1
-this.Control[iCurrent+3]=this.tab_action
-this.Control[iCurrent+4]=this.gb_filter
+this.Control[iCurrent+1]=this.st_1
+this.Control[iCurrent+2]=this.tab_action
+this.Control[iCurrent+3]=this.gb_filter
+this.Control[iCurrent+4]=this.dw_filter
 end on
 
 on s_w_main.destroy
 call super::destroy
-destroy(this.dw_filter)
 destroy(this.st_1)
 destroy(this.tab_action)
 destroy(this.gb_filter)
+destroy(this.dw_filter)
 end on
 
 event open;/*******************************************************
@@ -3597,161 +3607,6 @@ end event
 
 event e_lastpage;call super::e_lastpage;ic_obj_handling.event e_window( 'e_lastpage')
 return 0
-end event
-
-type dw_filter from t_dw_mpl within s_w_main
-integer x = 1294
-integer y = 652
-integer height = 192
-integer taborder = 20
-string dataobject = "d_filter_form"
-boolean hscrollbar = false
-boolean vscrollbar = false
-boolean hsplitscroll = false
-boolean ib_query = true
-end type
-
-event clicked;//-- Override--//
-end event
-
-event e_dwnkey;//-- override --//
-s_w_main				lw_display
-s_object_display		lod_handle
-t_dw_mpl					ldw_main
-t_dw_action_pane			ldw_actionpane
-boolean					lb_querymode
-
-if key= keyEnter!  or key = keytab! then
-	lb_querymode = inv_QueryMode.f_GetEnabled()
-	If lb_querymode Then
-		Send(Handle(this),256,9,Long(0,0))
-		RETURN 1
-	End if
-	this.f_getparentwindow( lw_display)
-	lod_handle = lw_display.f_get_obj_handling( )
-	if lod_handle.classname() = 'u_valueset' and key= keyEnter! then
-		lod_handle.event e_window_e_okclose( )
-		return 1
-	elseif key= keyEnter! then
-		this.accepttext()
-		parent.f_filter_dwmain_new( )
-		return 1
-	end if	
-elseif  key= KeyDownArrow! or key = KeyUPArrow! then
-	if this.classname( ) = 'dw_filter' then
-		this.f_getparentwindow( lw_display)
-		lod_handle = lw_display.f_get_obj_handling( )
-		if lod_handle.classname() = 'u_valueset' then	
-			ldw_main = lw_display.f_get_dwmain( )
-			if  key= KeyDownArrow! then
-				ldw_main.scrollnextrow( )
-			elseif key = KeyUPArrow! then
-				ldw_main.scrollpriorrow( )
-			end if
-			return 1
-		end if	
-	end if
-elseif key=keyF5! then
-	if this.f_getparentwindow(lw_display) = 1 then
-		if lw_display.dynamic f_get_dw_actionpane('d_action_edit',ldw_actionpane) = 1 then
-			if ldw_actionpane.dynamic f_is_button_active('b_refresh') then
-				lw_display.dynamic event e_refresh( )
-			end if
-		end if
-	end if
-	return	 1		
-elseif key=keyS! and keyflags = 2 then
-	if this.f_getparentwindow(lw_display) = 1 then
-		if lw_display.dynamic f_get_dw_actionpane('d_action_edit',ldw_actionpane) = 1 then
-			if ldw_actionpane.dynamic f_is_button_active('b_save') then
-				lw_display.dynamic event e_save( )
-			elseif  ldw_actionpane.dynamic f_is_button_active('b_saveclose') then
-				lw_display.dynamic event e_saveclose( )
-			end if
-		end if
-	end if
-	return 1
-elseif key=keyM! and keyflags = 2 then
-	if this.f_getparentwindow(lw_display) = 1 then
-		if lw_display.dynamic f_get_dw_actionpane('d_action_edit',ldw_actionpane) = 1 then
-			if ldw_actionpane.dynamic f_is_button_active('b_modify') then
-				lw_display.dynamic event e_modify( )
-			end if
-		end if
-	end if
-	return 1
-elseif key=keyN! and keyflags = 2 then
-	if this.f_getparentwindow(lw_display) = 1 then
-		if lw_display.dynamic f_get_dw_actionpane('d_action_edit',ldw_actionpane) = 1 then
-			if ldw_actionpane.dynamic f_is_button_active('b_add') then
-				lw_display.dynamic event e_add( )
-			else
-				lod_handle = lw_display.f_get_obj_handling( )
-				if lod_handle.classname( ) = 'u_valueset' then
-					if ldw_actionpane.dynamic f_is_button_active('b_new') then
-						lod_handle.dynamic event e_action_new( )
-					end if
-				end if
-			end if
-		end if
-	end if
-	return	 1
-end if	
-
-
-end event
-
-event e_dwnlbuttonup;call super::e_dwnlbuttonup;//-- resize column cua dw_filter neu co --//
-string	ls_dwoName
-
-
-if this.ib_dropdowning then return
-//ls_dwoName = this.getcolumnname( )
-//if ls_dwoName <> '' then this.setcolumn( ls_dwoName)
-
-end event
-
-event e_itemchanged;//--OVERRIDE--//
-
-
-parent.is_filter_txt = data
-
-return 0
-end event
-
-event e_vscroll;//-- OVERRIDE--//
-
-return 1
-end event
-
-event editchanged;//-- OVERRIDe--//
-
-if parent.ic_obj_handling.classname() = 'u_valueset' then
-	parent.f_filter_dwmain_new( )
-end if
-end event
-
-event getfocus;//--override --//
-
-end event
-
-event itemchanged;call super::itemchanged;//-- OVERRIDE --//
-
-return event e_itemchanged(1,dwo,data)
-end event
-
-event itemerror;//-- override--//
-
-end event
-
-event itemfocuschanged;//--override--//
-end event
-
-event rbuttondown;//--override--//
-end event
-
-event e_losefocus;call super::e_losefocus;
-return this.accepttext( )
 end event
 
 type st_1 from t_st within s_w_main
@@ -4439,4 +4294,160 @@ boolean italic = true
 long backcolor = 553648127
 string text = "Lọc"
 end type
+
+type dw_filter from t_dw_mpl within s_w_main
+integer x = 1294
+integer y = 652
+integer height = 192
+integer taborder = 20
+boolean bringtotop = true
+string dataobject = "d_filter_form"
+boolean hscrollbar = false
+boolean vscrollbar = false
+boolean hsplitscroll = false
+boolean ib_query = true
+end type
+
+event clicked;//-- Override--//
+end event
+
+event e_dwnkey;//-- override --//
+s_w_main				lw_display
+s_object_display		lod_handle
+t_dw_mpl					ldw_main
+t_dw_action_pane			ldw_actionpane
+boolean					lb_querymode
+
+if key= keyEnter!  or key = keytab! then
+	lb_querymode = inv_QueryMode.f_GetEnabled()
+	If lb_querymode Then
+		Send(Handle(this),256,9,Long(0,0))
+		RETURN 1
+	End if
+	this.f_getparentwindow( lw_display)
+	lod_handle = lw_display.f_get_obj_handling( )
+	if lod_handle.classname() = 'u_valueset' and key= keyEnter! then
+		lod_handle.event e_window_e_okclose( )
+		return 1
+	elseif key= keyEnter! then
+		this.accepttext()
+		parent.f_filter_dwmain_new( )
+		return 1
+	end if	
+elseif  key= KeyDownArrow! or key = KeyUPArrow! then
+	if this.classname( ) = 'dw_filter' then
+		this.f_getparentwindow( lw_display)
+		lod_handle = lw_display.f_get_obj_handling( )
+		if lod_handle.classname() = 'u_valueset' then	
+			ldw_main = lw_display.f_get_dwmain( )
+			if  key= KeyDownArrow! then
+				ldw_main.scrollnextrow( )
+			elseif key = KeyUPArrow! then
+				ldw_main.scrollpriorrow( )
+			end if
+			return 1
+		end if	
+	end if
+elseif key=keyF5! then
+	if this.f_getparentwindow(lw_display) = 1 then
+		if lw_display.dynamic f_get_dw_actionpane('d_action_edit',ldw_actionpane) = 1 then
+			if ldw_actionpane.dynamic f_is_button_active('b_refresh') then
+				lw_display.dynamic event e_refresh( )
+			end if
+		end if
+	end if
+	return	 1		
+elseif key=keyS! and keyflags = 2 then
+	if this.f_getparentwindow(lw_display) = 1 then
+		if lw_display.dynamic f_get_dw_actionpane('d_action_edit',ldw_actionpane) = 1 then
+			if ldw_actionpane.dynamic f_is_button_active('b_save') then
+				lw_display.dynamic event e_save( )
+			elseif  ldw_actionpane.dynamic f_is_button_active('b_saveclose') then
+				lw_display.dynamic event e_saveclose( )
+			end if
+		end if
+	end if
+	return 1
+elseif key=keyM! and keyflags = 2 then
+	if this.f_getparentwindow(lw_display) = 1 then
+		if lw_display.dynamic f_get_dw_actionpane('d_action_edit',ldw_actionpane) = 1 then
+			if ldw_actionpane.dynamic f_is_button_active('b_modify') then
+				lw_display.dynamic event e_modify( )
+			end if
+		end if
+	end if
+	return 1
+elseif key=keyN! and keyflags = 2 then
+	if this.f_getparentwindow(lw_display) = 1 then
+		if lw_display.dynamic f_get_dw_actionpane('d_action_edit',ldw_actionpane) = 1 then
+			if ldw_actionpane.dynamic f_is_button_active('b_add') then
+				lw_display.dynamic event e_add( )
+			else
+				lod_handle = lw_display.f_get_obj_handling( )
+				if lod_handle.classname( ) = 'u_valueset' then
+					if ldw_actionpane.dynamic f_is_button_active('b_new') then
+						lod_handle.dynamic event e_action_new( )
+					end if
+				end if
+			end if
+		end if
+	end if
+	return	 1
+end if	
+
+
+end event
+
+event e_dwnlbuttonup;call super::e_dwnlbuttonup;//-- resize column cua dw_filter neu co --//
+string	ls_dwoName
+
+
+if this.ib_dropdowning then return
+//ls_dwoName = this.getcolumnname( )
+//if ls_dwoName <> '' then this.setcolumn( ls_dwoName)
+
+end event
+
+event e_itemchanged;//--OVERRIDE--//
+
+
+parent.is_filter_txt = data
+
+return 0
+end event
+
+event e_vscroll;//-- OVERRIDE--//
+
+return 1
+end event
+
+event editchanged;//-- OVERRIDe--//
+
+if parent.ic_obj_handling.classname() = 'u_valueset' then
+	parent.f_filter_dwmain_new( )
+end if
+end event
+
+event getfocus;//--override --//
+
+end event
+
+event itemchanged;call super::itemchanged;//-- OVERRIDE --//
+
+return event e_itemchanged(1,dwo,data)
+end event
+
+event itemerror;//-- override--//
+
+end event
+
+event itemfocuschanged;//--override--//
+end event
+
+event rbuttondown;//--override--//
+end event
+
+event e_losefocus;call super::e_losefocus;
+return this.accepttext( )
+end event
 
