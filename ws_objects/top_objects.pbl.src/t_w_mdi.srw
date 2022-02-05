@@ -1321,8 +1321,10 @@ choose case itemtag
 		if isvalid(t_w_mdi.w[1]) then
 			if t_w_mdi.w[1].visible = false then
 				t_w_mdi.w[1].show()
+				t_w_mdi.w[1].enabled = true
 			else
 				t_w_mdi.w[1].hide()
+				t_w_mdi.w[1].enabled = false
 			end if
 		else
 			parent.f_open_w_background( )
@@ -1347,6 +1349,7 @@ choose case itemtag
 		if isvalid(t_w_mdi.w[1]) then
 			if t_w_mdi.w[1].visible = false then
 				t_w_mdi.w[1].show()
+				t_w_mdi.w[1].enabled = true
 			end if
 			t_w_mdi.w[1].dynamic event e_query()
 		else
@@ -1371,12 +1374,19 @@ choose case itemtag
 	case 'e_copyt'
 	case 'e_copyf'
 	case 'e_filter'
-		lw_active = parent.getactivesheet( )
+		lw_handle = parent.getactivesheet( )
+		if lw_handle.classname( ) = 's_w_background' then
+			lw_active = parent.getfirstsheet( )
+			lw_active = parent.getactivesheet( )
+		else
+			lw_active = lw_active
+		end if
+		lw_handle = parent.getfirstsheet( )
 		if isvalid(lw_active) then
 			if lw_active.ib_filter_on then
 				lw_active.triggerevent( 'e_filteroff')
 			else
-				lw_active.triggerevent( 'e_filteron_new')
+				lw_active.triggerevent( 'e_filteron_rb')
 			end if
 		end if
 	case 'e_action_attach'
