@@ -2198,8 +2198,10 @@ for ll_row = 1 to rpo_item_lot.rowcount( )
 	end if
 	
 	//-- insert row --//
-	this.f_insert_item_balance_row_multi_ex( rt_transaction, rpo_item_lot, ll_row, vdw_f_object, vdw_t_object, vd_trans_date, vs_post_type, vas_col_item_lot[], vas_col_item_value[], vas_col_f_object[], vas_col_t_object[], vaa_data[],  ls_sv_qty_yn, ls_sv_value_yn, vdb_trans_uom, vas_col_item_lot[1], ldb_base_value_lot_seri,  rstr_ds_4_posting,  vs_qty_yn, vs_value_yn , lstr_data_from_to, vdb_doc_id, ls_related_doc_qty_yn)
-
+	if this.f_insert_item_balance_row_multi_ex( rt_transaction, rpo_item_lot, ll_row, vdw_f_object, vdw_t_object, vd_trans_date, vs_post_type, vas_col_item_lot[], vas_col_item_value[], vas_col_f_object[], vas_col_t_object[], vaa_data[],  ls_sv_qty_yn, ls_sv_value_yn, vdb_trans_uom, vas_col_item_lot[1], ldb_base_value_lot_seri,  rstr_ds_4_posting,  vs_qty_yn, vs_value_yn , lstr_data_from_to, vdb_doc_id, ls_related_doc_qty_yn) = -1 then
+			rollback using rt_transaction;
+			return -1
+	end if
 	//-- update steamvalue --//
 	if upper(vs_post_type) = 'POST' then
 		ll_insertrow_sv = rds_stream.event e_addrow( )		
@@ -2966,7 +2968,8 @@ FOR li_idx = 1 to upperbound(vstr_streamvalue[])
 	li_rtn = this.f_get_ds_of_streamvalue_ex(vdb_doc_version, ldw_item, ldw_f_object,ldw_t_object , lds_f_lot, lds_t_lot, ldw_item_value,ldw_item_lot, vstr_streamvalue[li_idx], rt_transaction)
 	if li_rtn = 0 then 
 		messagebox('Thông báo','Lỗi f_get_ds_of_streamvalue_ex')
-		return 0
+		rollback using rt_transaction;	
+		return -1
 	end if
 	if li_rtn = -1 then
 		this.f_log_post(vdb_doc_id  , 'Không lấy được Datastore của streamvalue')
@@ -2975,7 +2978,10 @@ FOR li_idx = 1 to upperbound(vstr_streamvalue[])
 	end if
 	//-- Lấy dw col--//
 	li_rtn = this.f_get_dwcol_of_streamvalue( las_col_f_object[], las_col_f_object_sv[], las_col_t_object[], las_col_t_object_sv[], las_col_item[], las_col_item_sv[],las_col_item_value[], las_col_item_value_sv[], las_col_item_lot[], las_col_item_lot_sv[], las_col_currency[], las_col_currency_sv[], vstr_streamvalue[li_idx])
-	if li_rtn = 0 then return 0
+	if li_rtn = 0 then 
+		rollback using rt_transaction;	
+		return -1
+	end if
 	if li_rtn = -1 then
 		this.f_log_post(vdb_doc_id  , 'Không lấy được Datastore column của streamvalue')
 		rollback using rt_transaction;
@@ -3429,8 +3435,8 @@ NEXT
 		if ll_count = 0 and ls_manage_qty_yn ='Y'  and vs_qty_yn = 'Y' and upper(vs_post_type) = 'POST'  then
 			this.f_log_post(vdb_doc_id  ,'Cập nhật ghi sổ không thành công f_booking_item_multi_ex(490)' )
 			Rollback using rt_transaction;
-			Update document set status = 'new' where id = :vdb_doc_id using rt_transaction;
-			commit  using rt_transaction;
+//			Update document set status = 'new' where id = :vdb_doc_id using rt_transaction;
+//			commit  using rt_transaction;
 			return -1
 		end if
 //----------------------------------------------------------------------------//
@@ -3496,10 +3502,10 @@ if rt_transaction.sqlcode = -1 then
 	return -1
 end if
 //-- cập nhật lại bảng item_balance --//
-this.f_booking_item_multi_ex( vdb_doc_id, vdb_doc_version, vs_doctype , rt_transaction, vd_trans_date, 'unpost', vs_qty_yn, vs_value_yn, ladb_related_doc_id[], vstr_streamvalue[], vstr_ds_4_posting )
+if this.f_booking_item_multi_ex( vdb_doc_id, vdb_doc_version, vs_doctype , rt_transaction, vd_trans_date, 'unpost', vs_qty_yn, vs_value_yn, ladb_related_doc_id[], vstr_streamvalue[], vstr_ds_4_posting ) = -1 then
 //if this.f_booking_item_ex(lt_transaction, ld_trans_date, 'unpost', vs_qty_yn, vs_value_yn, ladb_related_doc_id[]) = -1 then
-//	return -1
-//end if
+	return -1
+end if
 
 
 //-- xóa post line --//
@@ -3595,6 +3601,7 @@ boolean					lb_value_posted, lb_qty_posted, lb_create_postline_yn,lb_err
 
 t_ds_db					lds_docs
 t_transaction			lt_transaction
+b_obj_instantiate		lbo_instance
 
 lt_transaction = create t_transaction
 lt_transaction.DBMS = 'O10 Oracle10g (10.1.0)'
@@ -3626,7 +3633,8 @@ select trunc(sysdate)  into :ld_sysdate from dual using lt_transaction;
 
 lds_docs = create t_ds_db
 lds_docs.dataobject = vs_dwo
-la_data[1]=double(vs_docs_id)
+la_data[1]=vs_docs_id
+//la_data[1]=double(vs_docs_id)
 lds_docs.f_add_where( 'id', la_data[]) 
 lds_docs.f_get_doc_trace(  ls_where, ls_sort)
 lds_docs.f_add_where( ls_where, ' AND ')
@@ -3641,8 +3649,11 @@ FOR li_idx = 1 to li_cnt
 	ls_doctype = lds_docs.getitemstring(li_idx,'doc_type')
 	ld_trans_date = date(lds_docs.getitemdatetime( li_idx, 'trans_date'))
 	this.f_get_qty_and_value_yn_sob( ldb_doc_id, ls_qty_yn,ls_value_yn, lt_transaction)
-	this.f_unbooking_ex( ldb_doc_id, ldb_doc_version, ls_doctype, ld_trans_date, ls_qty_yn,ls_value_yn, vastr_streamvalue[], vstr_ds_4_posting,lt_transaction)
-
+	if this.f_unbooking_ex( ldb_doc_id, ldb_doc_version, ls_doctype, ld_trans_date, ls_qty_yn,ls_value_yn, vastr_streamvalue[], vstr_ds_4_posting,lt_transaction) <> -1 then
+		//-- xoá approve profile nếu có--//
+		lbo_instance.f_delete_appr_profile( ldb_doc_id, lt_transaction )	
+		lbo_instance.f_copy_version( ldb_doc_id, vstr_ds_4_posting, lt_transaction)
+	end if
 NEXT
 commit using lt_transaction;	
 disconnect using	lt_transaction;	
@@ -4594,7 +4605,7 @@ FOR ll_idx = 1 to li_insert_cnt
 		ldb_open_amt = ldb_close_amt
 		ldb_open_base_amt = ldb_close_base_amt
 	end if
-	
+	/* khoá 08/11/2021: để job chạy--//
 	//-- Kéo các balance của đối tượng khác theo cùng --//
 	if li_date_cnt > 0 then //-- ngày giao dịch > ngày max của bảng balance --//
 		if lds_allobject_balance_after.retrieve( relativedate(ld_balance_date, -1), ld_balance_date, vs_object_type, vs_sob,gi_user_comp_id, vdb_branch_id, & 
@@ -4602,6 +4613,7 @@ FOR ll_idx = 1 to li_insert_cnt
 			this.f_update_allobject_openclose_value( lds_allobject_balance, lds_allobject_balance_after, rt_transaction)		
 		end if
 	end if
+	Khoá 08/11/2021 --*/
 NEXT
 
 if rds_object_balance_after.update(true,false) = -1 then
@@ -5844,6 +5856,7 @@ FOR ldb_idx = 1 to ll_row_cnt
 			LOOP
 			this.f_log_post( vdb_doc_id, rt_transaction.SQLErrText)	
 //			gf_messagebox('m.b_doc.f_insert_object_balance.04','Thông báo', rt_transaction.SQLErrText ,'stop','ok',1)
+			rollback using rt_transaction;
 			return -1				
 		end if
 		this.f_log_post( vdb_doc_id, rt_transaction.SQLErrText)	
@@ -6480,7 +6493,7 @@ else
 		else
 			ldb_object_ref_id =  rds_item.getitemnumber( rl_item_row, 'ID')
 		end if	
-		if vds_f_object.dataobject = rstr_ds_4_posting.ds_details[li_idx_master].dataobject then
+		if left(vds_f_object.dataobject,len(vds_f_object.dataobject) -5)  = left(rstr_ds_4_posting.ds_details[li_idx_master].dataobject, len(rstr_ds_4_posting.ds_details[li_idx_master].dataobject) -5) then
 			ll_f_object_row = vds_f_object.find("object_ref_id ="+string(ldb_object_ref_id),1,vds_f_object.rowcount())	
 			if ll_f_object_row > 0 then
 				ldb_f_object_id = vds_f_object.getitemnumber( ll_f_object_row, vas_f_col_object[1])
@@ -6498,7 +6511,7 @@ else
 		li_chr_nbr = li_pos_e - (li_pos_s + len(rds_item.dataobject) - 4)
 		li_idx_master = integer(mid(rstr_ds_4_posting.s_dataobject_str, li_pos_s + len(rds_item.dataobject) - 4 , li_chr_nbr ))		
 		
-		if vds_f_object.dataobject = rstr_ds_4_posting.ds_master[li_idx_master].dataobject then
+		if left(vds_f_object.dataobject , len(vds_f_object.dataobject) -5) = left(rstr_ds_4_posting.ds_master[li_idx_master].dataobject, len(rstr_ds_4_posting.ds_master[li_idx_master].dataobject) -5) then
 			if upper(vds_f_object.describe("datawindow.table.UpdateTable")) = 'DOCUMENT' then
 				ll_f_object_row = vds_f_object.find("version_id ="+string(ldb_object_ref_id),1,vds_f_object.rowcount())
 			else
@@ -6515,7 +6528,7 @@ else
 			li_pos_e = pos(rstr_ds_4_posting.s_dataobject_str,  ']',li_pos_s)
 			li_chr_nbr = li_pos_e - (li_pos_s + len(rstr_ds_4_posting.ds_master[li_idx_master].dataobject) - 4)
 			li_idx_master = integer(mid(rstr_ds_4_posting.s_dataobject_str, li_pos_s + len(rstr_ds_4_posting.ds_master[li_idx_master].dataobject) - 4 , li_chr_nbr ))		
-			if vds_f_object.dataobject = rstr_ds_4_posting.ds_master[li_idx_master].dataobject then
+			if left(vds_f_object.dataobject, len(vds_f_object.dataobject) -5) = left(rstr_ds_4_posting.ds_master[li_idx_master].dataobject, len(rstr_ds_4_posting.ds_master[li_idx_master].dataobject) -5) then
 				if upper(vds_f_object.describe("datawindow.table.UpdateTable")) = 'DOCUMENT' then
 					ll_f_object_row = vds_f_object.find("version_id ="+string(ldb_object_ref_id),1,vds_f_object.rowcount())
 				else
@@ -6569,7 +6582,7 @@ else
 		else
 			ldb_object_ref_id =  rds_item.getitemnumber( rl_item_row, 'ID')
 		end if	
-		if vds_t_object.dataobject = rstr_ds_4_posting.ds_details[li_idx_master].dataobject then
+		if left(vds_t_object.dataobject, len(vds_t_object.dataobject) -5) = left(rstr_ds_4_posting.ds_details[li_idx_master].dataobject, len(rstr_ds_4_posting.ds_details[li_idx_master].dataobject) -5) then
 			ll_t_object_row = vds_t_object.find("object_ref_id ="+string(ldb_object_ref_id),1,vds_t_object.rowcount())
 			if ll_t_object_row > 0 then
 				ldb_t_object_id = vds_t_object.getitemnumber( ll_t_object_row, vas_t_col_object[1])
@@ -6606,7 +6619,7 @@ else
 		li_pos_e = pos(rstr_ds_4_posting.s_dataobject_str,  ']',li_pos_s)
 		li_chr_nbr = li_pos_e - (li_pos_s + len(rds_item.dataobject) - 4)
 		li_idx_master = integer(mid(rstr_ds_4_posting.s_dataobject_str, li_pos_s + len(rds_item.dataobject) - 4 , li_chr_nbr ))		
-		if vds_t_object.dataobject = rstr_ds_4_posting.ds_master[li_idx_master].dataobject then
+		if left(vds_t_object.dataobject, len(vds_t_object.dataobject) -5) = left(rstr_ds_4_posting.ds_master[li_idx_master].dataobject, len(rstr_ds_4_posting.ds_master[li_idx_master].dataobject) -5) then
 			if upper(vds_t_object.describe("datawindow.table.UpdateTable")) = 'DOCUMENT' then
 				ll_t_object_row = vds_t_object.find(" VERSION_ID ="+string(ldb_object_ref_id),1,vds_t_object.rowcount())
 			else
@@ -6644,7 +6657,7 @@ else
 			li_pos_e = pos(rstr_ds_4_posting.s_dataobject_str,  ']',li_pos_s)
 			li_chr_nbr = li_pos_e - (li_pos_s + len(rstr_ds_4_posting.ds_master[li_idx_master].dataobject) - 4)
 			li_idx_master = integer(mid(rstr_ds_4_posting.s_dataobject_str, li_pos_s + len(rstr_ds_4_posting.ds_master[li_idx_master].dataobject) - 4 , li_chr_nbr ))			
-			if vds_t_object.dataobject = rstr_ds_4_posting.ds_master[li_idx_master].dataobject then
+			if left(vds_t_object.dataobject, len(vds_t_object.dataobject) -5) = left(rstr_ds_4_posting.ds_master[li_idx_master].dataobject, len(rstr_ds_4_posting.ds_master[li_idx_master].dataobject) -5) then
 				if upper(vds_t_object.describe("datawindow.table.UpdateTable")) = 'DOCUMENT' then
 					ll_t_object_row = vds_t_object.find(" VERSION_ID ="+string(ldb_object_ref_id),1,vds_t_object.rowcount())
 				else
@@ -6774,8 +6787,8 @@ if vs_qty_yn = 'Y'  and ( vs_trans_val_yn = 'N' or vs_related_doc_qty_yn ='N')  
 	vaa_data[10] = 'N'
 	vaa_data[11] = gdb_branch
 	if this.f_update_item_balance(rt_transaction, vaa_data, vd_trans_date, ldb_qty_sku,0,'OUT',ls_balance_control, 'N' , 'N' ,ls_t_object_type) = -1 then
-		update document set status = 'new' where id = :vdb_doc_id using rt_transaction;		
-		commit using rt_transaction;
+//		update document set status = 'new' where id = :vdb_doc_id using rt_transaction;		
+//		commit using rt_transaction;
 		return -1
 	end if	
 end if
@@ -6783,8 +6796,8 @@ if vs_value_yn = 'Y' and  (vs_qty_yn = 'Y' or vs_related_doc_qty_yn ='Y') then  
 	vaa_data[10] = vs_value_yn
 	vaa_data[11] = gdb_branch
 	if this.f_update_item_balance(rt_transaction, vaa_data, vd_trans_date, ldb_qty_sku,vdb_value,'OUT',ls_balance_control, 'N' , vs_value_yn,ls_t_object_type) = -1 then
-		update document set status = 'new' where id = :vdb_doc_id using rt_transaction;
-		commit using rt_transaction;
+//		update document set status = 'new' where id = :vdb_doc_id using rt_transaction;
+//		commit using rt_transaction;
 		return -1
 	end if
 end if
@@ -6813,8 +6826,8 @@ if vs_qty_yn = 'Y'  and ( vs_trans_val_yn = 'N'  or vs_related_doc_qty_yn ='N') 
 	vaa_data[10] = 'N'
 	vaa_data[11] = gdb_branch
 	if this.f_update_item_balance(rt_transaction, vaa_data, vd_trans_date, ldb_qty_sku,0,'IN',ls_balance_control, 'N' , 'N',ls_t_object_type) = -1 then
-		update document set status = 'new' where id = :vdb_doc_id using rt_transaction;
-		commit using rt_transaction;
+//		update document set status = 'new' where id = :vdb_doc_id using rt_transaction;
+//		commit using rt_transaction;
 		return -1
 	end if
 end if
@@ -6822,8 +6835,8 @@ if vs_value_yn = 'Y'  and  (vs_qty_yn = 'Y' or vs_related_doc_qty_yn ='Y')  then
 	vaa_data[10] = vs_value_yn
 	vaa_data[11] = gdb_branch
 	if this.f_update_item_balance(rt_transaction, vaa_data, vd_trans_date, ldb_qty_sku,vdb_value,'IN',ls_balance_control, 'N' , vs_value_yn,ls_t_object_type) = -1 then
-		update document set status = 'new' where id = :vdb_doc_id using rt_transaction;
-		commit using rt_transaction;
+//		update document set status = 'new' where id = :vdb_doc_id using rt_transaction;
+//		commit using rt_transaction;
 		return -1
 	end if
 end if

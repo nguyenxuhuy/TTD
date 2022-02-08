@@ -45,7 +45,7 @@ else
 			lds_identification.dataobject = 'ds_identification'
 			la_value[1] = '=MENU'
 			lds_identification.f_add_where( 'object_ref_table', la_value)
-			lds_identification.settrans( sqlca)
+			lds_identification.settransobject( sqlca)
 			if lds_identification.retrieve( ) > 0 then
 				ll_uprow = lds_identification.find("object_ref_code ='"+ls_upcode+"'", 1, lds_identification.rowcount())
 				if ll_uprow > 0 then
@@ -90,7 +90,7 @@ if ll_uprow > 0 then
 else
 	lds_identification = create t_ds_db
 	lds_identification.dataobject = 'ds_identification'
-	lds_identification.settrans( sqlca)
+	lds_identification.settransobject( sqlca)
 	if lds_identification.retrieve( ) > 0 then
 		ll_uprow = lds_identification.find("code = '"+ls_up_code+"'"  , 1, lds_identification.rowcount())
 		if ll_uprow > 0 then
@@ -215,7 +215,7 @@ if ll_uprow > 0 then
 else
 	lds_identification = create t_ds_db
 	lds_identification.dataobject = 'ds_identification'
-	lds_identification.settrans( rt_transaction)
+	lds_identification.settransobject( rt_transaction)
 	if lds_identification.retrieve( ) > 0 then
 		ll_uprow = lds_identification.find("code = '"+ls_up_code+"'"  , 1, lds_identification.rowcount())
 		if ll_uprow > 0 then

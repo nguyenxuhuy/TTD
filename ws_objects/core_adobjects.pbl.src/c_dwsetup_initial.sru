@@ -1481,7 +1481,7 @@ if ls_rtn <> '' then
 	return -1
 end if
 
-rdwc_hdl.settrans( sqlca)
+rdwc_hdl.settransobject( sqlca)
 
 ll_rowcount = rdwc_hdl.retrieve( )
 

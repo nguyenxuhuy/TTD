@@ -118,7 +118,7 @@ else
 end if
 
 ids_menu_all.dataobject = 'd_submodule'
-ids_menu_all.settrans( sqlca)
+ids_menu_all.settransobject( sqlca)
 ll_row_cnt = ids_menu_all.retrieve(gi_user_comp_id, gdb_branch, gi_userid,  lb_module_id ,gs_user_lang)
 
 if ll_row_cnt > 0 then

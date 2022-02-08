@@ -34,7 +34,7 @@ end variables
 
 global type ttd from application
 string appname = "ttd"
-string themepath = "C:\Users\huyxnguyen\Documents\demo_19r3\theme"
+string themepath = "C:\Users\huyxnguyen\Documents\Core21\theme"
 string themename = "Do Not Use Themes"
 boolean nativepdfvalid = false
 boolean nativepdfincludecustomfont = false
@@ -44,7 +44,8 @@ long richtexteditx64type = 3
 long richtexteditversion = 1
 string richtexteditkey = ""
 string appicon = "Pics\app.ico"
-string appruntimeversion = "21.0.0.1311"
+string appruntimeversion = "21.0.0.1506"
+boolean manualsession = false
 boolean unsupportedapierror = true
 end type
 global ttd ttd

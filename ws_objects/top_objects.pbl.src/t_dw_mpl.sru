@@ -9090,20 +9090,20 @@ return 0
 end event
 
 event sqlpreview;call super::sqlpreview;
-if sqltype = PreviewInsert! then
-	if this.ib_traceable then
-		idb_insert_id[upperbound(idb_insert_id)+1] = this.getitemnumber( row,'ID', buffer,false)
-	end if
-elseif sqltype = PreviewUpdate! then
-	if this.ib_traceable then
-		idb_upd_id[upperbound(idb_upd_id)+1] = this.getitemnumber( row,'ID',buffer,false)
-	end if
-elseif sqltype = PreviewDelete! then	
-elseif sqltype = PreviewSelect! then	
-	//-- Load hình nếu có khung hình --//
-//	if row > 0 then this.f_load_pic(row)
-
-end if
+//if sqltype = PreviewInsert! then
+//	if this.ib_traceable then
+//		idb_insert_id[upperbound(idb_insert_id)+1] = this.getitemnumber( row,'ID', buffer,false)
+//	end if
+//elseif sqltype = PreviewUpdate! then
+//	if this.ib_traceable then
+//		idb_upd_id[upperbound(idb_upd_id)+1] = this.getitemnumber( row,'ID',buffer,false)
+//	end if
+//elseif sqltype = PreviewDelete! then	
+//elseif sqltype = PreviewSelect! then	
+//	//-- Load hình nếu có khung hình --//
+////	if row > 0 then this.f_load_pic(row)
+//
+//end if
 end event
 
 event e_rowfocuschanging;call super::e_rowfocuschanging;t_dw_mpl			ldw_main

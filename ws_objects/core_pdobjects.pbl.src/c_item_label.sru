@@ -1802,7 +1802,7 @@ ldw_main.setitem(1, 'qr_link','Nhathuocthaiminh.vn')
 
 // retrieve dddw --//
 ldw_main.getchild( 'name', ldwc)
-ldwc.settrans(it_transaction )
+ldwc.settransobject(it_transaction )
 ldwc.retrieve(gi_user_comp_id, ls_new_yn ) //-- Kết thúc retrieve dwc: tên hàng --//
 ls_rtn = ldw_main.Modify( 'name.dddw.percentwidth= 200')
 
@@ -2022,7 +2022,7 @@ if rpo_dw.dataobject = 'd_label_search_form' then
 		// retrieve dddw --//
 		rpo_dw.getchild( 'name', ldwc)
 		connect using it_transaction;
-		ldwc.settrans(it_transaction )
+		ldwc.settransobject(it_transaction )
 		ldwc.retrieve(gi_user_comp_id, gdb_branch,  vs_editdata  ) //-- Kết thúc retrieve dwc: tên hàng --//						
 		disconnect using it_transaction;
 	elseif  vs_colname = 'qty' then	

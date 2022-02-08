@@ -59,7 +59,7 @@ date				ld_payment_date,ld_date
  aa_id[1]=vdb_payment_term_id
  lds_payment_term = create t_ds_db
  lds_payment_term.dataobject='d_payment_term_grid'
- lds_payment_term.settrans( sqlca)
+ lds_payment_term.settransobject( sqlca)
  lds_payment_term.f_add_where('id',aa_id)
  ll_rtn=lds_payment_term.retrieve( )
  if ll_rtn>0 then 

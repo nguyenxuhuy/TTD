@@ -219,7 +219,7 @@ if isvalid(lw_parent) then
 	disconnect using it_transaction;
 	iw_display.dynamic event e_save()
 	connect using it_transaction;
-	t_w_mdi.ids_lang_text.settrans(it_transaction )
+	t_w_mdi.ids_lang_text.settransobject(it_transaction )
 	t_w_mdi.ids_lang_text.retrieve( gs_user_lang, gdb_industry_id)
 end if
 return 1

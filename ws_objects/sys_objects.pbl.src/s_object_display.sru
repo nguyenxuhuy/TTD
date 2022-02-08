@@ -2338,7 +2338,7 @@ ids_policy_rule.dataobject = 'ds_policy_rule'
 laa_value[1] = is_menu_code
 laa_value[2] = gdb_branch
 ids_policy_rule.f_add_where(  'identification_code;branch_id;', laa_value[])
-ids_policy_rule.settrans( sqlca)
+ids_policy_rule.settransobject( sqlca)
 ids_policy_rule.retrieve( )
 
 ids_policy_security =  create t_ds_db
@@ -2348,7 +2348,7 @@ laa_value[1] = is_menu_code
 lc_string.f_arraytostring( ldb_policy_id[], ';' ,ls_policy_id)
 laa_value[2] = '('+ls_policy_id+')'
 ids_policy_security.f_add_where('identification_code;object_ref_id;', laa_value[])
-ids_policy_security.settrans( sqlca)
+ids_policy_security.settransobject( sqlca)
 ids_policy_security.retrieve( )
 
 return 1
@@ -2713,7 +2713,7 @@ FOR li_idx = 1 to upperbound(istr_dwo[])
 		if not isvalid(istr_dwo[li_idx].ds_suspend_data) then istr_dwo[li_idx].ds_suspend_data = create datastore
 		istr_dwo[li_idx].ds_suspend_data.dataobject = vdw_suspend.dataobject
 		istr_dwo[li_idx].s_suspend_originalwhere = vdw_suspend.is_originalwhereClause
-		vdw_suspend.f_getCurrentSQL(ls_sql, ls_current_where)
+//		vdw_suspend.f_getCurrentSQL(ls_sql, ls_current_where)
 		istr_dwo[li_idx].s_suspend_sqlnowhere = ls_sql		
 		istr_dwo[li_idx].s_suspend_where = ls_current_where	
 		istr_dwo[li_idx].s_where_query_mode=vdw_suspend.is_where_query_mode //giu lay where tim kiem truoc khi change object
@@ -2743,7 +2743,7 @@ FOR li_idx1 = 1 to upperbound(iastr_dwo_tabpage[])
 			if not isvalid(iastr_dwo_tabpage[li_idx1].str_dwo[li_idx2].ds_suspend_data) then iastr_dwo_tabpage[li_idx1].str_dwo[li_idx2].ds_suspend_data = create datastore
 			iastr_dwo_tabpage[li_idx1].str_dwo[li_idx2].ds_suspend_data.dataobject = vdw_suspend.dataobject
 			iastr_dwo_tabpage[li_idx1].str_dwo[li_idx2].s_suspend_originalwhere = vdw_suspend.is_originalwhereClause
-			vdw_suspend.f_getCurrentSQL(ls_sql, ls_current_where)
+//			vdw_suspend.f_getCurrentSQL(ls_sql, ls_current_where)
 			iastr_dwo_tabpage[li_idx1].str_dwo[li_idx2].s_suspend_sqlnowhere = ls_sql				
 			iastr_dwo_tabpage[li_idx1].str_dwo[li_idx2].s_suspend_where = ls_current_where		
 			iastr_dwo_tabpage[li_idx1].str_dwo[li_idx2].b_suspend_editing = vdw_suspend.dynamic f_get_ib_editing()
@@ -5867,7 +5867,7 @@ if this.idwsetup_initial.ids_setup_dw.rowcount( ) > 0 then
 			ldw_handle = this.iw_display.f_get_dw(ls_drilldown_dwo+'_grid')
 			if left(ls_drilldown_dwo,2) = 'dp' then ll_cur_row = ldw_handle.getrow( )
 			if left(ls_drilldown_dwo,2) = 'dr' then ll_cur_row = vl_cur_row
-			lstr_drilldown_data.str_data[1].aa_data[1] = ldw_handle.f_getitemany(ll_cur_row , ls_drilldown_col)
+			lstr_drilldown_data.str_data[1].aa_data[1] = ldw_handle.dynamic f_getitemany(ll_cur_row , ls_drilldown_col)
 		else
 			if this.idwsetup_initial.ids_setup_dw.getitemstring( li_row, 'DWOBJECT_MAIN') = ls_drilldown_dwo_main then
 				ls_drilldown_col = this.idwsetup_initial.ids_setup_dw.getitemstring( li_row, 'DWOBJECT_MAIN_COLUMN')			
@@ -5894,7 +5894,7 @@ if this.idwsetup_initial.ids_setup_dw.rowcount( ) > 0 then
 				if left(ls_drilldown_dwo,2) = 'dp' then ll_cur_row = ldw_handle.getrow( )
 				if left(ls_drilldown_dwo,2) = 'dr' then ll_cur_row = vl_cur_row
 				li_idx = upperbound(lstr_drilldown_data.str_data[upperbound(lstr_drilldown_data.s_drilldown_obj_column)].aa_data[]) +1
-				lstr_drilldown_data.str_data[upperbound(lstr_drilldown_data.s_drilldown_obj_column)].aa_data[li_idx] = ldw_handle.f_getitemany(ll_cur_row , ls_drilldown_col)
+				lstr_drilldown_data.str_data[upperbound(lstr_drilldown_data.s_drilldown_obj_column)].aa_data[li_idx] = ldw_handle.dynamic f_getitemany(ll_cur_row , ls_drilldown_col)
 			else
 				ls_drilldown_dwo_main = this.idwsetup_initial.ids_setup_dw.getitemstring( li_row, 'DWOBJECT_MAIN')
 				if isnull(ls_drilldown_dwo_main) or ls_drilldown_dwo_main = '' then
@@ -5927,7 +5927,7 @@ if this.idwsetup_initial.ids_setup_dw.rowcount( ) > 0 then
 				if left(ls_drilldown_dwo,2) = 'dp' then ll_cur_row = ldw_handle.getrow( )
 				if left(ls_drilldown_dwo,2) = 'dr' then ll_cur_row = vl_cur_row
 				li_idx = upperbound(lstr_drilldown_data.str_data[upperbound(lstr_drilldown_data.s_drilldown_obj_column)+1].aa_data[]) +1
-				lstr_drilldown_data.str_data[upperbound(lstr_drilldown_data.s_drilldown_obj_column)+1].aa_data[li_idx] = ldw_handle.f_getitemany(ll_cur_row , ls_drilldown_col)				
+				lstr_drilldown_data.str_data[upperbound(lstr_drilldown_data.s_drilldown_obj_column)+1].aa_data[li_idx] = ldw_handle.dynamic f_getitemany(ll_cur_row , ls_drilldown_col)				
 			end if
 		end if
 		
@@ -6106,7 +6106,7 @@ ids_policy_rule.dataobject = 'ds_policy_rule'
 laa_value[1] = '='+is_menu_code 
 laa_value[2] = gdb_branch
 ids_policy_rule.f_add_where(  'object_ref_code;branch_id;', laa_value[])
-ids_policy_rule.settrans( rt_transaction)
+ids_policy_rule.settransobject( rt_transaction)
 ids_policy_rule.retrieve( )
 
 ids_policy_security =  create t_ds_db
@@ -6116,7 +6116,7 @@ laa_value[1] = '='+is_menu_code
 lc_string.f_arraytostring( ldb_policy_id[], ';' ,ls_policy_id)
 laa_value[2] = '('+ls_policy_id+')'
 ids_policy_security.f_add_where('object_ref_code;object_ref_id;', laa_value[])
-ids_policy_security.settrans( rt_transaction)
+ids_policy_security.settransobject( rt_transaction)
 ids_policy_security.retrieve( )
 
 return 1
@@ -6374,8 +6374,8 @@ else
 		end if
 	end if
 	lb_editing = vdw_focus.f_get_ib_editing()
-	lstr_rule_attr = vdw_focus.f_get_rule_attr()
-	lstr_security_attr = vdw_focus.f_get_security_attr()
+	lstr_rule_attr = vdw_focus.dynamic f_get_rule_attr()
+	lstr_security_attr = vdw_focus.dynamic f_get_security_attr()
 	lb_updatable = lstr_rule_attr.b_update and lstr_security_attr.b_update
 	lb_detail = vdw_focus.f_get_ib_detail()
 end if
@@ -6402,7 +6402,7 @@ ids_policy_rule.dataobject = 'ds_policy_rule'
 laa_value[1] = '='+is_menu_code 
 laa_value[2] = gdb_branch
 ids_policy_rule.f_add_where(  'object_ref_code;branch_id;', laa_value[])
-ids_policy_rule.settrans( rt_transaction)
+ids_policy_rule.settransobject( rt_transaction)
 ids_policy_rule.retrieve( )
 
 ids_policy_security =  create t_ds_db
@@ -6416,7 +6416,7 @@ if upperbound(ldb_policy_id[]) > 0 then
 else
 	ids_policy_security.f_add_where('identification_code;', laa_value[])
 end if
-ids_policy_security.settrans( rt_transaction)
+ids_policy_security.settransobject( rt_transaction)
 ids_policy_security.retrieve( )
 
 //-- set enable buttons --//

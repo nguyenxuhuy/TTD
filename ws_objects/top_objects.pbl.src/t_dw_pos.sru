@@ -4064,7 +4064,7 @@ if lb_firstdrop then
 	ls_rtn = this.Modify( vs_colname+ '.dddw.percentwidth='+string(ll_percent) )
 end if
 
-ldwc.settrans( sqlca)
+ldwc.settransobject( sqlca)
 //ls_dwc_filter = this.gettext( )
 //if isnull(ls_dwc_filter) then ls_dwc_filter =''
 //if ls_dwc_filter <> '' then
@@ -4935,7 +4935,7 @@ ls_col_string = 'lang;DWOBJECT;SUBCODE;'
 
 lc_dwservice.f_add_where_dwc(ldwc, ls_col_string, laa_value[])
 	
-ldwc.settrans( sqlca)
+ldwc.settransobject( sqlca)
 	
 ll_rowcount = ldwc.retrieve( )
 if ll_rowcount > 0 then ldwc.insertrow(1)

@@ -73,7 +73,7 @@ this.dw_briefbill.getchild( 'code', ldwc)
 laa_value[1] = gi_user_comp_id
 ls_col_string = 'company_id;'
 lc_dwservice.f_add_where_dwc(ldwc, ls_col_string, laa_value[])
-ldwc.settrans(it_transaction )
+ldwc.settransobject(it_transaction )
 ldwc.retrieve( )
 ls_rtn = dw_briefbill.Modify( 'code.dddw.percentwidth= 200')
 
@@ -81,7 +81,7 @@ this.dw_briefbill.getchild( 'staff_code', ldwc)
 //laa_value[1] = gi_user_comp_id
 //ls_col_string = 'company_id;'
 lc_dwservice.f_add_where_dwc(ldwc, ls_col_string, laa_value[])
-ldwc.settrans(it_transaction )
+ldwc.settransobject(it_transaction )
 ldwc.retrieve( )
 ls_rtn = dw_briefbill.Modify( 'staff_name.dddw.percentwidth= 200')
 end event

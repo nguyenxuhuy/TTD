@@ -68,7 +68,7 @@ int					li_rtn, li_cnt
 if isvalid(iw_display) then
 	iw_display.dynamic f_get_transaction(lt_transaction)
 	if isvalid(lt_transaction) then
-		istr_tvo[1].ds_tv_item.settrans( lt_transaction)
+		istr_tvo[1].ds_tv_item.settransobject( lt_transaction)
 	else 
 		return -1
 	end if

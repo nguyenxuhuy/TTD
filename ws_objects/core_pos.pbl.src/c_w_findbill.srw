@@ -90,7 +90,7 @@ it_transaction = message.powerobjectparm
 setnull(message.powerobjectparm)
 
 dw_filter.insertrow( 0)
-dw_find_bill.settrans( it_transaction )
+dw_find_bill.settransobject( it_transaction )
 dw_find_bill.retrieve(gi_user_comp_id, gdb_branch  )
 
 //dw_find_bill.inv_sort.f_setrequestor( dw_find_bill)
@@ -185,7 +185,7 @@ if ll_row > 0 then
 	lds_bill_print.Modify("DataWindow.Print.Paper.Size=256") //-- size in milimet --//
 	lds_bill_print.Modify("DataWindow.Print.CustomPage.Width=80") 
 	lds_bill_print.Modify("DataWindow.Print.Margin.Top= 5")
-	lds_bill_print.settrans( sqlca)
+	lds_bill_print.settransobject( sqlca)
 	Do while ll_row > 0
 		ldb_bill_id = dw_find_bill.getitemnumber( ll_row, 'document_id')	
 		
@@ -372,7 +372,7 @@ if  row > 0 then
 		if ls_code <> '' and not isnull(ls_code) then
 			lds_load_bill = create t_ds_db
 			lds_load_bill.dataobject = 'ds_load_bill'
-			lds_load_bill.settrans(it_transaction ) 
+			lds_load_bill.settransobject(it_transaction ) 
 			if lds_load_bill.retrieve(gi_user_comp_id, gdb_branch,  ls_code) > 0 then
 				closewithreturn(parent, lds_load_bill)
 			end if

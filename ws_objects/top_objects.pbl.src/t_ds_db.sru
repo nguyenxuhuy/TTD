@@ -596,13 +596,13 @@ call super::destroy
 end on
 
 event sqlpreview;call super::sqlpreview;
-if sqltype = PreviewInsert! then
-	idb_insert_id[upperbound(idb_insert_id)+1] = this.getitemnumber( row,'ID', buffer,false)
-elseif sqltype = PreviewUpdate! then
-	idb_upd_id[upperbound(idb_upd_id)+1] = this.getitemnumber( row,'ID',buffer,false)
-elseif sqltype = PreviewDelete! then	
-elseif sqltype = PreviewSelect! then	
-end if
+//if sqltype = PreviewInsert! then
+//	idb_insert_id[upperbound(idb_insert_id)+1] = this.getitemnumber( row,'ID', buffer,false)
+//elseif sqltype = PreviewUpdate! then
+//	idb_upd_id[upperbound(idb_upd_id)+1] = this.getitemnumber( row,'ID',buffer,false)
+//elseif sqltype = PreviewDelete! then	
+//elseif sqltype = PreviewSelect! then	
+//end if
 end event
 
 event updateend;call super::updateend;//--Up trace info --//

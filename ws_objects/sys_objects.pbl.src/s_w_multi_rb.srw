@@ -328,6 +328,7 @@ public function integer f_set_data_copied_new (t_ds_db vds_copied[], s_str_dwo_r
 public function integer f_set_data_copied (t_ds_db vds_copied[], s_str_dwo_related vstr_dwo_related[], string ls_type_copy, string vs_obj_related, s_w_multi_rb vw_f_copy)
 public function integer f_ctrl_enable_button (t_dw_mpl vdw_focus)
 public function integer f_filter_dwmain_new ()
+public function integer f_filter_dwmain ()
 end prototypes
 
 event e_copy_to(string vs_btn_name);s_str_dwo_related		lstr_related[], lstr_data_related[]
@@ -1278,8 +1279,8 @@ if  gf_messagebox('m.s_w_multi.e_unpost.01', 'Xác nhận sửa ghi sổ','Bạn
 				end if					
 				
 				//-- xoá approve profile nếu có--//
-				lbo_instance.f_delete_appr_profile( ldb_doc_id, it_transaction )	
-				lbo_instance.f_copy_version( ldb_doc_id, lstr_ds_4_posting, it_transaction)
+//				lbo_instance.f_delete_appr_profile( ldb_doc_id, it_transaction )	
+//				lbo_instance.f_copy_version( ldb_doc_id, lstr_ds_4_posting, it_transaction)
 //				update document set status = 'new' where id = :ldb_doc_id using  it_transaction;
 				
 				if ls_docs <> '' then ls_docs+= ','
@@ -1329,8 +1330,8 @@ if  gf_messagebox('m.s_w_multi.e_unpost.01', 'Xác nhận sửa ghi sổ','Bạn
 				end if		
 			end if					
 			//-- xoá approve profile nếu có--//
-			lbo_instance.f_delete_appr_profile( ldb_doc_id, it_transaction )	
-			lbo_instance.f_copy_version( ldb_doc_id, lstr_ds_4_posting, it_transaction)
+//			lbo_instance.f_delete_appr_profile( ldb_doc_id, it_transaction )	
+//			lbo_instance.f_copy_version( ldb_doc_id, lstr_ds_4_posting, it_transaction)
 //			update document set status = 'new' where id = :ldb_doc_id using  it_transaction;			
 			
 			ls_docs += string(ldb_doc_id)
@@ -6352,11 +6353,80 @@ double				ldb_ID
 long					ll_currentrow, ll_originalrow
 
 
-ls_text = this.dw_filter.gettext( ) // getitemstring( 1, 'filter_string')
+if dw_filter.is_filter_type = '1' then
+		
+	ls_text = this.dw_filter.gettext( ) // getitemstring( 1, 'filter_string')	
+		
+	if ic_obj_handling.classname( ) = 'u_valueset' or  ic_obj_handling.classname( ) = 'u_onhand'   then
+		ic_obj_handling.f_get_dwo_tabpage( lstr_dwo_tab[])
+		ldw_main = this.f_get_dw( lstr_dwo_tab[1].str_dwo[1].s_dwo_default)
+		if isnull(ldw_main) then
+			ldw_main = this.f_get_dwmain( )
+		end if
+	else
+		ldw_main = this.f_get_dwmain( )
+	end if
+	
+	if isnull(ls_text) or ls_text = '' then
+		ls_filterstring = ''
+	else
+		ls_colname =  this.dw_filter.getitemstring( 1, 'colname')
+		if ls_colname = '' or isnull(ls_colname) then
+			if left(ldw_main.describe( 'obj_search.coltype'), 5) = 'char(' then 
+				ls_colname = 'obj_search'
+			elseif left(ldw_main.describe( 'doc_search.coltype'), 5) = 'char(' then
+				ls_colname = 'doc_search'
+			end if
+		end if
+		if isnull(ls_colname) or ls_colname ='' then
+			ls_filterstring = lobj_ins.f_get_filterstring( ldw_main,ls_text )
+		else
+			ls_filterstring = lobj_ins.f_get_filterstring( ldw_main,ls_text , ls_colname)
+		end if
+	end if
+	
+	if isvalid(ldw_main) then
+		ll_originalrow = ldw_main.getrow()
+		if ll_originalrow > 0 then
+			if ldw_main.describe( "ID.coltype") <> '!' then	ldb_ID = ldw_main.getitemnumber( ll_originalrow, 'ID')
+		end if
+		ldw_main.setfilter(ls_filterstring )
+		ldw_main.filter( )
+		ldw_main.f_set_gutter_rowcount( )
+		if ldb_ID > 0 then
+			ll_currentrow = ldw_main.find( "ID = "+string(ldb_ID), 1, ldw_main.rowcount())
+			if ll_currentrow = 0 then ll_currentrow = 1
+			ldw_main.scrolltorow( ll_currentrow)
+			// truong hop copy from thi khong filter_detail
+			if not ic_obj_handling.ib_copying then
+				if ll_currentrow = 1 and ll_originalrow = 1 then
+					ldw_main.f_filter_detail( )
+					this.f_ctrl_enable_button(ldw_main )
+	//				ic_obj_handling.f_ctrl_actionbuttons(ldw_main)
+	//				this.triggerevent( "e_display_actionbutton" )
+				end if
+			end if
+		elseif ldw_main.rowcount() = 1 or ldw_main.getrow( ) = 1  then
+			ldw_main.f_filter_detail( )
+		end if
+	
+	end if
+	
+	//ic_obj_handling.is_dwmain_filter = ls_filterstring
+else
+	this.f_filter_dwmain( )
+end if
+return 0
+end function
 
+public function integer f_filter_dwmain ();s_str_dwo_tabpage	lstr_dwo_tab[]
 
+t_dw_mpl			ldw_main
+string					ls_filterstring
+double				ldb_ID
+long					ll_currentrow, ll_originalrow
 
-if ic_obj_handling.classname( ) = 'u_valueset' or  ic_obj_handling.classname( ) = 'u_onhand'   then
+if ic_obj_handling.classname( ) = 'u_valueset' then
 	ic_obj_handling.f_get_dwo_tabpage( lstr_dwo_tab[])
 	ldw_main = this.f_get_dw( lstr_dwo_tab[1].str_dwo[1].s_dwo_default)
 	if isnull(ldw_main) then
@@ -6366,22 +6436,10 @@ else
 	ldw_main = this.f_get_dwmain( )
 end if
 
-if isnull(ls_text) or ls_text = '' then
-	ls_filterstring = ''
-else
-	ls_colname =  this.dw_filter.getitemstring( 1, 'colname')
-	if ls_colname = '' or isnull(ls_colname) then
-		if left(ldw_main.describe( 'obj_search.coltype'), 5) = 'char(' then 
-			ls_colname = 'obj_search'
-		elseif left(ldw_main.describe( 'doc_search.coltype'), 5) = 'char(' then
-			ls_colname = 'doc_search'
-		end if
-	end if
-	if isnull(ls_colname) or ls_colname ='' then
-		ls_filterstring = lobj_ins.f_get_filterstring( ldw_main,ls_text )
-	else
-		ls_filterstring = lobj_ins.f_get_filterstring( ldw_main,ls_text , ls_colname)
-	end if
+ls_filterstring = dw_filter.f_get_filterstring_ex( ldw_main)
+if isnull(ls_filterstring) or ls_filterstring = '' then
+	ic_obj_handling.is_dwmain_filter = ''
+//	return 0
 end if
 
 if isvalid(ldw_main) then
@@ -6400,18 +6458,19 @@ if isvalid(ldw_main) then
 		if not ic_obj_handling.ib_copying then
 			if ll_currentrow = 1 and ll_originalrow = 1 then
 				ldw_main.f_filter_detail( )
-				this.f_ctrl_enable_button(ldw_main )
 //				ic_obj_handling.f_ctrl_actionbuttons(ldw_main)
 //				this.triggerevent( "e_display_actionbutton" )
 			end if
 		end if
-	elseif ldw_main.rowcount() = 1 or ldw_main.getrow( ) = 1  then
-		ldw_main.f_filter_detail( )
 	end if
-
+//	if ls_filterstring <> '' then		
+//		dw_filter.setitem( 1, 'gutter', 'Y')
+//	else
+//		dw_filter.setitem( 1, 'gutter', 'N')
+//	end if
 end if
 
-//ic_obj_handling.is_dwmain_filter = ls_filterstring
+ic_obj_handling.is_dwmain_filter = ls_filterstring
 
 return 0
 end function
@@ -6935,13 +6994,16 @@ li_response = ic_obj_handling.dynamic event e_window_closequery()
 
 //lw_sheet = t_w_mdi.
 lw_sheet = t_w_mdi.getnextsheet(this)
-Do while isvalid(lw_sheet)
-	if lw_sheet.classname( ) <> 's_w_background' then
-		li_cnt++
-	end if
-	lw_sheet = t_w_mdi.getnextsheet(lw_sheet)
-Loop
-if li_cnt = 0 then //-- Đóng tất cả sheets --//
+//Do while isvalid(lw_sheet)
+//	if lw_sheet.classname( ) <> 's_w_background' then
+//		li_cnt++
+//	end if
+//	lw_sheet = t_w_mdi.getnextsheet(lw_sheet)
+//Loop
+//if li_cnt = 0 then //-- Đóng tất cả sheets --//
+//	t_w_mdi.f_create_ribbonbar()
+//end if
+if not isvalid(lw_sheet) then
 	t_w_mdi.f_create_ribbonbar()
 end if
 //-- release resource --//

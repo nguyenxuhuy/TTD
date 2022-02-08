@@ -207,6 +207,7 @@ public function long f_retrieve_dwc_ex (string vs_colname)
 public function boolean f_iscomputes (string vs_colname)
 public function integer f_getcolumns_update (ref string as_columns[])
 public subroutine f_set_security_fields (string ls_visible_fields, string ls_enable_fields)
+public function string f_get_filterstring_ex (t_dw_mpl vdw_main)
 end prototypes
 
 event e_mousemove;
@@ -4269,7 +4270,7 @@ if lb_firstdrop then
 	ls_rtn = this.Modify( vs_colname+ '.dddw.percentwidth='+string(ll_percent) )
 end if
 
-ldwc.settrans( sqlca)
+ldwc.settransobject( sqlca)
 //ls_dwc_filter = this.gettext( )
 //if isnull(ls_dwc_filter) then ls_dwc_filter =''
 //if ls_dwc_filter <> '' then
@@ -5143,7 +5144,7 @@ ls_col_string = 'lang;DWOBJECT;SUBCODE;'
 
 lc_dwservice.f_add_where_dwc(ldwc, ls_col_string, laa_value[])
 	
-ldwc.settrans( sqlca)
+ldwc.settransobject( sqlca)
 	
 ll_rowcount = ldwc.retrieve( )
 if ll_rowcount > 0 then ldwc.insertrow(1)
@@ -5311,7 +5312,7 @@ ls_col_string = 'lang;DWOBJECT;SUBCODE;'
 
 lc_dwservice.f_add_where_dwc(ldwc, ls_col_string, laa_value[])
 	
-ldwc.settrans( sqlca)
+ldwc.settransobject( sqlca)
 	
 ll_rowcount = ldwc.retrieve( )
 if ll_rowcount > 0 then ldwc.insertrow(1)
@@ -5528,7 +5529,7 @@ if lb_firstdrop then
 	ls_rtn = this.Modify( vs_colname+ '.dddw.percentwidth='+string(ll_percent) )
 end if
 
-ldwc.settrans(lt_transaction)
+ldwc.settransobject(lt_transaction)
 //ls_dwc_filter = this.gettext( )
 //if isnull(ls_dwc_filter) then ls_dwc_filter =''
 //if ls_dwc_filter <> '' then
@@ -5601,6 +5602,84 @@ end function
 public subroutine f_set_security_fields (string ls_visible_fields, string ls_enable_fields);is_visible_fields = ls_visible_fields
 is_editable_fields = ls_enable_fields
 end subroutine
+
+public function string f_get_filterstring_ex (t_dw_mpl vdw_main);string			ls_filterString, ls_colname[], ls_colType, ls_data, ls_operator,ls_value,ls_text,ls_data1
+string			ls_rtn,ls_ref_expression,ls_ref_data,ls_ref_format,ls_editType
+int				li_idx, li_colCnt,li_i
+boolean		lb_isnumber = true
+c_string		lc_string
+
+
+li_colCnt = this.f_getcolumns(ls_colname[] )
+
+FOR li_idx = 1 to li_colCnt
+	if ls_colname[li_idx] = 'gutter' then continue
+	ls_colType = vdw_main.describe(ls_colname[li_idx]+ ".colType")
+	ls_editType = vdw_main.describe(ls_colname[li_idx] + ".Edit.Style")
+	ls_data = lower(trim(this.getitemstring( 1, ls_colname[li_idx])))
+	If left(ls_colType,5) = 'char(' then
+//		if this.getcolumnname( ) = ls_colname[li_idx] then
+//			if ls_editType = 'ddlb' then
+//				ls_data = lower(trim(this.gettext( )))
+//				ls_data = this.f_get_data_value_ddlb( ls_data, ls_colname[li_idx])
+//			else
+//				ls_data = lower(trim(this.gettext( )))
+//			end if
+//		else
+//			if ls_editType = 'ddlb' then
+//				ls_data = lower(trim(this.getitemstring( 1, ls_colname[li_idx])))
+//				ls_data = this.f_get_data_value_ddlb( ls_data, ls_colname[li_idx])
+//			else
+//				ls_data = lower(trim(this.getitemstring( 1, ls_colname[li_idx])))
+//			end if 
+//		end if
+		if isnull(ls_data) or ls_data = '' or ls_data = "'" then continue
+		if len(ls_data) = 1 and (ls_data = '*' or ls_data = '=') then ls_data = '' 
+		if ls_filterString <> '' then ls_filterString += " and "
+		ls_filterString += lc_string.f_get_expression( ls_data, ls_colType,ls_colname[li_idx], 'filter')
+		
+	elseif left(ls_colType,5) = 'numbe' or  left(ls_colType,5) = 'decim' then
+//		if this.describe(ls_colname[li_idx]+ "_qm.x") = '!' then
+//			if this.getcolumnname( ) = ls_colname[li_idx] then
+//				ls_data = trim(this.gettext( ))
+//			else		
+//				if  this.describe(ls_colname[li_idx] + "_filter.x") <> "!" then
+//					ls_data = this.describe( ls_colname[li_idx] + '_filter.text' )
+//				else
+//					ls_data = ''
+//				end if
+//			end if
+//		else
+//			ls_data = this.describe(ls_colname[li_idx]+ "_qm.text")
+//		end if
+		if isnull(ls_data) or ls_data = '' then continue
+		ls_data1 = ls_data
+		if ls_filterString <> '' then ls_filterString += " and "
+		
+		ls_filterString += lc_string.f_get_expression( ls_data1, ls_colType,ls_colname[li_idx], 'filter')
+		
+	elseif left(ls_colType,5) = 'date' or  left(ls_colType,5) = 'datet' then
+//		if this.describe(ls_colname[li_idx]+ "_qm.x") = '!' then
+//			if this.getcolumnname( ) = ls_colname[li_idx] then
+//				ls_data = trim(this.gettext( ))
+//			else		
+//				if  this.describe(ls_colname[li_idx] + "_filter.x") <> "!" then
+//					ls_data = this.describe( ls_colname[li_idx] + '_filter.text' )
+//				else
+//					ls_data = ''
+//				end if
+//			end if
+//		else
+//			ls_data = this.describe(ls_colname[li_idx]+ "_qm.text")
+//		end if
+		if isnull(ls_data) or ls_data = '' then continue
+		if ls_filterString <> '' then ls_filterString += " and "
+		ls_filterString += lc_string.f_get_expression( ls_data, ls_colType,ls_colname[li_idx], 'filter')
+	end if
+NEXT 
+
+return ls_filterString
+end function
 
 on t_dw.create
 end on

@@ -331,6 +331,8 @@ ldw_main.height = ldw_main.height + ii_filter_space
 ldw_main = this.f_get_dwmain( )
 ii_filter_space = 0
 ib_filter_on = false
+ldw_main.setfilter( "")
+ldw_main.filter( )
 
 //-- khi nào có dữ liệu nhớ lại string --//
 this.f_store_filter_datastore( )
@@ -4398,7 +4400,9 @@ end if
 
 end event
 
-event e_dwnlbuttonup;call super::e_dwnlbuttonup;//-- resize column cua dw_filter neu co --//
+event e_dwnlbuttonup;//-- OVERRIDE--//
+
+//-- resize column cua dw_filter neu co --//
 string	ls_dwoName
 
 

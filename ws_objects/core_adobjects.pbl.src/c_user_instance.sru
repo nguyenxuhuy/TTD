@@ -196,7 +196,7 @@ if len(ls_err) > 0 then
 	 return -1
 end if
 
-lds_datastore.settrans( sqlca)
+lds_datastore.settransobject( sqlca)
 ll_row = lds_datastore.retrieve( )
 if ll_row > 0 then
 	idb_role_id[] = lds_datastore.object.role_id.current
@@ -508,7 +508,7 @@ if len(ls_err) > 0 then
 	 return -1
 end if
 
-lds_datastore.settrans( rt_transaction)
+lds_datastore.settransobject( rt_transaction)
 ll_row = lds_datastore.retrieve( )
 if ll_row > 0 then
 	idb_role_id[] = lds_datastore.object.role_id.current

@@ -751,7 +751,7 @@ for ll_idx = 1 to lds_trans_setup.rowcount( )
 next
 lds_trans_setup.setfilter("lower(cr_obj_type) ='tax_authority'") 
 lds_trans_setup.filter()
-for ll_idx = 1 to lds_trans_setup.rowcount( )
+for ll_idx = 1 to lds_trans_setup.rowcount( ) 
 	ll_row = ldw_binding.event e_addrow()
 	ldw_binding.setitem(ll_row,'tax_id',lds_trans_setup.getitemnumber(ll_idx,'cr_obj_instance_id') )
 	ldw_binding.setitem(ll_row,'object_code',lds_trans_setup.getitemstring(ll_idx,'cr_object_code') )
@@ -3450,7 +3450,7 @@ any				la_data
 
 li_cnt = this.idwsetup_initial.f_get_must_booked_colname( vdw_handle, lsa_colname)
 FOR li_idx = 1 to li_cnt
-	la_data = vdw_handle.f_getitemany( vdw_handle.getrow( ) ,lsa_colname[li_idx] )
+	la_data = vdw_handle.dynamic f_getitemany( vdw_handle.getrow( ) ,lsa_colname[li_idx] )
 	if isnull(la_data) then
 		
 	end if
@@ -4231,7 +4231,7 @@ else
 		gf_messagebox('m.b_doc.f_get_object_and_subaccount.01','Thông báo','Không tìm thấy DW OBJECT trong cài đặt ghi sổ:@'+ vs_dw_object,'stop','ok',1)
 		return -1
 	end if
-	ldw_master = vdw_get_amount.f_get_idw_master()
+	ldw_master = vdw_get_amount.dynamic f_get_idw_master()
 	if isvalid(ldw_master) then
 		if ldw_object = ldw_master then			
 			ldb_object_ref_id =  vdw_get_amount.getitemnumber(vl_get_amount_row, 'object_ref_id')
@@ -4267,7 +4267,7 @@ b_rule		lb_rule
 
 if rl_trans_setup_row > 0 then
 	ll_found_row = rl_trans_setup_row
-	ldw_master = vdw_get_amount.f_get_idw_master()
+	ldw_master = vdw_get_amount.dynamic f_get_idw_master()
 	DO while not lb_ok and ll_found_row > 0
 		ls_dr_dw_criteria = vds_trans_setup.getitemstring(ll_found_row, 'dr_dw_criterial')		
 		ls_dr_dw_object =  vds_trans_setup.getitemstring(ll_found_row, 'DR_dw_object')
@@ -4313,7 +4313,7 @@ if rl_trans_setup_row > 0 then
 					end if
 									
 					if ls_dr_dw_criteria = left(vdw_get_amount.dataobject, len(vdw_get_amount.dataobject) - 5) then
-						la_dr_criteria_data = vdw_get_amount.f_getitemany(vl_get_amount_row, ls_dr_col_criteria)
+						la_dr_criteria_data = vdw_get_amount.dynamic f_getitemany(vl_get_amount_row, ls_dr_col_criteria)
 						ls_dr_coltype_criteria = vdw_get_amount.describe(ls_dr_col_criteria+'.coltype')
 					else
 						if isvalid(ldw_master) then
@@ -4323,7 +4323,7 @@ if rl_trans_setup_row > 0 then
 							end if
 						end if
 						if ll_criteria_row = 0 then ll_criteria_row = ldw_dr_criteria.getrow()
-						la_dr_criteria_data = ldw_dr_criteria.f_getitemany(ll_criteria_row, ls_dr_col_criteria)
+						la_dr_criteria_data = ldw_dr_criteria.dynamic f_getitemany(ll_criteria_row, ls_dr_col_criteria)
 						ls_dr_coltype_criteria = ldw_dr_criteria.describe(ls_dr_col_criteria+'.coltype')				
 					end if
 					
@@ -4383,7 +4383,7 @@ if rl_trans_setup_row > 0 then
 			if ls_dw_trans_text = left(vdw_get_amount.dataobject, len(vdw_get_amount.dataobject) - 5) then 
 				ls_trans_text = vdw_get_amount.getitemstring( vl_get_amount_row , ls_col_trans_text)
 			else
-				ldw_master = vdw_get_amount.f_get_idw_master()
+				ldw_master = vdw_get_amount.dynamic f_get_idw_master()
 				ldw_trans_text = this.iw_display.dynamic f_get_dw(ls_dw_trans_text+ '_grid')
 				if not isvalid(ldw_trans_text)  then
 					gf_messagebox('m.b_doc.f_find_setup_account_dr.06','Thông báo','Không tìm thấy DW TRANS TEXT:@'+ ls_dw_trans_text,'stop','ok',1)
@@ -4537,7 +4537,7 @@ b_rule		lb_rule
 
 if rl_trans_setup_row > 0 then
 	ll_found_row = rl_trans_setup_row
-	ldw_master = vdw_get_amount.f_get_idw_master()
+	ldw_master = vdw_get_amount.dynamic f_get_idw_master()
 	DO while not lb_ok and ll_found_row > 0
 		ls_CR_dw_criteria = vds_trans_setup.getitemstring(ll_found_row, 'CR_dw_criterial')		
 		ls_CR_dw_object =  vds_trans_setup.getitemstring(ll_found_row, 'CR_dw_object')
@@ -4566,7 +4566,7 @@ if rl_trans_setup_row > 0 then
 					end if
 									
 					if ls_CR_dw_criteria = left(vdw_get_amount.dataobject, len(vdw_get_amount.dataobject) - 5) then
-						la_CR_criteria_data = vdw_get_amount.f_getitemany(vl_get_amount_row, ls_CR_col_criteria)
+						la_CR_criteria_data = vdw_get_amount.dynamic f_getitemany(vl_get_amount_row, ls_CR_col_criteria)
 						ls_CR_coltype_criteria = vdw_get_amount.describe(ls_CR_col_criteria+'.coltype')
 					else
 						if isvalid(ldw_master) then
@@ -4576,7 +4576,7 @@ if rl_trans_setup_row > 0 then
 							end if
 						end if
 						if ll_criteria_row = 0 then ll_criteria_row = ldw_CR_criteria.getrow()
-						la_CR_criteria_data = ldw_CR_criteria.f_getitemany(ll_criteria_row, ls_CR_col_criteria)
+						la_CR_criteria_data = ldw_CR_criteria.dynamic f_getitemany(ll_criteria_row, ls_CR_col_criteria)
 						ls_CR_coltype_criteria = ldw_CR_criteria.describe(ls_CR_col_criteria+'.coltype')				
 					end if
 					
@@ -4635,7 +4635,7 @@ if rl_trans_setup_row > 0 then
 			if ls_dw_trans_text = left(vdw_get_amount.dataobject, len(vdw_get_amount.dataobject) - 5) then 
 				ls_trans_text = vdw_get_amount.getitemstring( vl_get_amount_row , ls_col_trans_text)
 			else
-				ldw_master = vdw_get_amount.f_get_idw_master()
+				ldw_master = vdw_get_amount.dynamic f_get_idw_master()
 				ldw_trans_text = this.iw_display.dynamic f_get_dw(ls_dw_trans_text+ '_grid')
 				if not isvalid(ldw_trans_text)  then
 					gf_messagebox('m.b_doc.f_find_setup_account_dr.06','Thông báo','Không tìm thấy DW TRANS TEXT:@'+ ls_dw_trans_text,'stop','ok',1)
@@ -4892,7 +4892,7 @@ for li_idx = 1 to upperbound(vas_data_col)
 	if pos(upper(vs_pas_col), upper(vas_update_col[li_idx])+';' ) > 0  then continue
 	
 	if upper(vas_data_col[li_idx])= 'QTY' then 
-		ldb_qty = vdw_data.f_getitemany( vl_data_row, vas_data_col[li_idx]+'_sku')
+		ldb_qty = vdw_data.dynamic f_getitemany( vl_data_row, vas_data_col[li_idx]+'_sku')
 		if ldb_qty < 0 then
 			ldb_sv_qty =-ldb_qty	
 		else
@@ -4900,7 +4900,7 @@ for li_idx = 1 to upperbound(vas_data_col)
 		end if
 		li_rtn = rds_stream.setitem( vl_update_row,vas_update_col[li_idx], ldb_sv_qty  )
 	else
-		li_rtn = rds_stream.setitem( vl_update_row,vas_update_col[li_idx], vdw_data.f_getitemany( vl_data_row, vas_data_col[li_idx])  )
+		li_rtn = rds_stream.setitem( vl_update_row,vas_update_col[li_idx], vdw_data.dynamic f_getitemany( vl_data_row, vas_data_col[li_idx])  )
 	end if
 next
 
@@ -4913,7 +4913,7 @@ end if
 if vdw_f_object.dataobject = vdw_data.dataobject then
 	ll_f_object_row = vl_data_row
 else
-	ldw_master = vdw_data.f_get_idw_master()
+	ldw_master = vdw_data.dynamic f_get_idw_master()
 	if isvalid(ldw_master) then
 		if ldw_master.dataobject = vdw_f_object.dataobject then
 			ldb_object_ref_id = vdw_data.getitemnumber(vl_data_row, 'object_ref_id')
@@ -4926,7 +4926,7 @@ end if
 if vdw_t_object.dataobject = vdw_data.dataobject then
 	ll_t_object_row = vl_data_row
 else
-	ldw_master = vdw_data.f_get_idw_master()
+	ldw_master = vdw_data.dynamic f_get_idw_master()
 	if isvalid(ldw_master) then
 		if ldw_master.dataobject = vdw_t_object.dataobject then
 			ldb_object_ref_id = vdw_data.getitemnumber(vl_data_row, 'object_ref_id')
@@ -4937,8 +4937,8 @@ else
 end if
 
 for li_idx = 1 to upperbound(vas_f_object_col[])
-	ldb_f_object =  vdw_f_object.f_getitemany( ll_f_object_row, vas_f_object_col[li_idx] )
-	ldb_t_object = vdw_t_object.f_getitemany( ll_t_object_row, vas_t_object_col[li_idx] )
+	ldb_f_object =  vdw_f_object.dynamic f_getitemany( ll_f_object_row, vas_f_object_col[li_idx] )
+	ldb_t_object = vdw_t_object.dynamic f_getitemany( ll_t_object_row, vas_t_object_col[li_idx] )
 	if  ldb_qty < 0 then //-- đảo object from/to --//
 		ldb_tmp_object = ldb_f_object
 		ldb_f_object = ldb_t_object
@@ -4963,13 +4963,13 @@ t_dw_mpl	ldw_master, ldw_handle
 
 ldw_handle = iw_display.f_get_dw( vs_dwo_filter)
 if isvalid(ldw_handle) then
-	ldw_master = ldw_handle.f_get_idw_master()
+	ldw_master = ldw_handle.dynamic f_get_idw_master()
 	if vb_doc_filter_yn then
 		ldw_handle.ib_doc_filter = true				
 	else
 		ldw_handle.ib_doc_filter = false
 	end if
-	ls_filterStr = ldw_master.f_get_detail_filterstring(ldw_handle, vb_doc_filter_yn )
+	ls_filterStr = ldw_master.dynamic f_get_detail_filterstring(ldw_handle, vb_doc_filter_yn )
 	ldw_handle.setfilter( ls_filterStr)
 	return ldw_handle.filter( )		
 end if
@@ -5185,7 +5185,7 @@ FOR li_idx = 1 to upperbound(this.istr_streamvalue[])
 	
 	//-- xả filter nếu có --//
 	if ldw_item.f_get_ib_detail( )  then
-		ldw_master = ldw_item.f_get_idw_master( )
+		ldw_master = ldw_item.dynamic f_get_idw_master( )
 		ls_ref_table= upper(ldw_master.describe( "datawindow.table.updateTable"))
 		if ls_ref_table = 'BOOKED_SLIP' then //--master của item là bookslip --//
 			FOR ll_row = 1 to ldw_item.rowcount( )			///////////////-- duyệt từng item --/////////////
@@ -6537,7 +6537,7 @@ if ll_find > 0 then
 				ldb_obj_id =  lstr_retaled[li_idx].db_dr_cr_object
 			end if
 			if ldb_obj_id > 0 then 
-				ls_obj_type = this.f_get_object_type( ldb_obj_id)
+				ls_obj_type = this.f_get_object_type( ldb_obj_id) 
 				exit
 			end if
 		next
@@ -6579,7 +6579,7 @@ if ll_find > 0 then
 			else
 				ldw_creteria =  iw_display.f_get_dw(ls_dw_criterial+'_grid')
 				if isvalid(ldw_creteria) then
-					ls_creterial_data = string(ldw_creteria.f_getitemany(ldw_creteria.getrow( ) , ls_col_criterial))
+					ls_creterial_data = string(ldw_creteria.dynamic f_getitemany(ldw_creteria.getrow( ) , ls_col_criterial))
 					lc_dwser.f_get_build_column( ldw_creteria, ls_col_criterial, ls_col_type)
 					lb_ok =  lb_rule.f_is_criteria_ok( ls_creterial_data, ls_val_criterial, ls_col_type)
 					if lb_ok then
@@ -6652,7 +6652,7 @@ if ll_find > 0 then
 				else
 					ldw_creteria =  iw_display.f_get_dw(ls_dw_criterial+'_grid')
 					if isvalid(ldw_creteria) then
-						ls_creterial_data = string(ldw_creteria.f_getitemany(ldw_creteria.getrow( ) , ls_col_criterial))
+						ls_creterial_data = string(ldw_creteria.dynamic f_getitemany(ldw_creteria.getrow( ) , ls_col_criterial))
 						lc_dwser.f_get_build_column( ldw_creteria, ls_col_criterial, ls_col_type)
 						lb_ok =  lb_rule.f_is_criteria_ok( ls_creterial_data, ls_val_criterial, ls_col_type)
 						if lb_ok then
@@ -6904,7 +6904,7 @@ for li_idx = 1 to upperbound(vas_data_col)
 	if pos(upper(vs_pas_col), upper(vas_update_col[li_idx])+';' ) > 0  then continue
 	
 	if upper(vas_data_col[li_idx])= 'QTY' then 
-		ldb_qty = vdw_data.f_getitemany( vl_data_row, vas_data_col[li_idx]+'_sku')
+		ldb_qty = vdw_data.dynamic f_getitemany( vl_data_row, vas_data_col[li_idx]+'_sku')
 		if ldb_qty < 0 then
 			ldb_sv_qty = -ldb_qty		
 		else
@@ -6916,7 +6916,7 @@ for li_idx = 1 to upperbound(vas_data_col)
 	elseif lower(vas_update_col[li_idx]) = 'base_value' then
 		li_rtn = rds_stream.setitem( vl_update_row,vas_update_col[li_idx], vdb_base_value  )
 	else
-		li_rtn = rds_stream.setitem( vl_update_row,vas_update_col[li_idx], vdw_data.f_getitemany( vl_data_row, vas_data_col[li_idx])  )
+		li_rtn = rds_stream.setitem( vl_update_row,vas_update_col[li_idx], vdw_data.dynamic f_getitemany( vl_data_row, vas_data_col[li_idx])  )
 	end if
 next
 
@@ -6929,7 +6929,7 @@ end if
 if vdw_f_object.dataobject = vdw_data.dataobject then
 	ll_f_object_row = vl_data_row
 else
-	ldw_master = vdw_data.f_get_idw_master()
+	ldw_master = vdw_data.dynamic f_get_idw_master()
 	if isvalid(ldw_master) then
 		if ldw_master.dataobject = vdw_f_object.dataobject then
 			ldb_object_ref_id = vdw_data.getitemnumber(vl_data_row, 'object_ref_id')
@@ -6942,7 +6942,7 @@ end if
 if vdw_t_object.dataobject = vdw_data.dataobject then
 	ll_t_object_row = vl_data_row
 else
-	ldw_master = vdw_data.f_get_idw_master()
+	ldw_master = vdw_data.dynamic f_get_idw_master()
 	if isvalid(ldw_master) then
 		if ldw_master.dataobject = vdw_t_object.dataobject then
 			ldb_object_ref_id = vdw_data.getitemnumber(vl_data_row, 'object_ref_id')
@@ -6952,8 +6952,8 @@ else
 	if ll_t_object_row = 0 then ll_t_object_row = vdw_t_object.getrow()
 end if
 for li_idx = 1 to upperbound(vas_f_object_col[])
-	 ldb_f_object = vdw_f_object.f_getitemany( ll_f_object_row, vas_f_object_col[li_idx] )
-	 ldb_t_object = vdw_t_object.f_getitemany( ll_t_object_row, vas_t_object_col[li_idx] )
+	 ldb_f_object = vdw_f_object.dynamic f_getitemany( ll_f_object_row, vas_f_object_col[li_idx] )
+	 ldb_t_object = vdw_t_object.dynamic f_getitemany( ll_t_object_row, vas_t_object_col[li_idx] )
 	 if ldb_qty < 0 then //-- đảo đối tượng from/to --//
 		ldb_tmp_object = ldb_f_object
 		ldb_f_object = ldb_t_object
@@ -6982,7 +6982,7 @@ if isvalid(vdw_currency) then
 		if ll_currency_row = 0 then ll_currency_row = vdw_currency.getrow()
 	end if
 	for li_idx = 1 to upperbound(vas_cur_col[])
-		li_rtn = rds_stream.setitem( vl_update_row,vas_cur_col_sv[li_idx], vdw_currency.f_getitemany( ll_currency_row, vas_cur_col[li_idx] ))
+		li_rtn = rds_stream.setitem( vl_update_row,vas_cur_col_sv[li_idx], vdw_currency.dynamic f_getitemany( ll_currency_row, vas_cur_col[li_idx] ))
 	next
 	if li_rtn = -1 then
 		gf_messagebox('m.b_doc.f_update_streamvalue.03','Thông báo','Lỗi setitem vào datastore rd_streamvalue: f_update_streamvalue(91)','stop','ok',1)
@@ -7034,7 +7034,7 @@ end if
 if ls_sv_value_yn = 'Y' then 
 	this.ic_unit_instance.f_get_base_cur(ldb_base_curr, ls_base_curr_code, ls_base_curr_name)	
 	ldb_round_id_base = this.ic_unit_instance.f_get_round_id( ldb_round_id_base, 0, 'bc')		
-	ldb_round_id_trans = vdw_currency.f_getitemany( vdw_currency.getrow(), vas_col_currency[1] )
+	ldb_round_id_trans = vdw_currency.dynamic f_getitemany( vdw_currency.getrow(), vas_col_currency[1] )
 	ldb_round_id_trans = this.ic_unit_instance.f_get_round_id( ldb_round_id_trans, 0, 'amount')	
 end if
 
@@ -7573,7 +7573,7 @@ lds_matching.f_settransobject( lt_transaction)
 lds_f_post_line = create t_ds_db
 lds_f_post_line.dataobject = 'd_post_line_grid'
 lds_f_post_line.f_settransobject(lt_transaction)
-
+ 
 FOR li_idx = 1 to upperbound(vs_posting_type[])
 	ls_posting_type_error += vs_posting_type[li_idx]+'; '
 	lb_update_sku = false
@@ -9032,7 +9032,7 @@ where obj.id = act.object_ref_id and act.account_type = 'SETTLE_TAX' using sqlca
 
 lds_ledger_transfer = create t_ds_db
 lds_ledger_transfer.dataobject = 'ds_tax_transfer'
-lds_ledger_transfer.settrans(SQLCA)
+lds_ledger_transfer.settransobject(SQLCA)
 ld_trans_date = date( dw_master.getitemdatetime(dw_master.getrow(),'trans_date'))
 ldb_trans_currency = dw_master.getitemnumber(dw_master.getrow(),'CURRENCY_ID')
 ll_rtn = lds_ledger_transfer.retrieve(ld_trans_date, ldb_trans_currency, gs_sob)
@@ -9190,7 +9190,7 @@ this.iw_display.setredraw( false)
 lds_ledger_transfer = create t_ds_db
 lds_ledger_transfer.dataobject = 'ds_ledger_transfer'	
 lds_ledger_transfer.f_add_where('sob;company_id;account_type;balance_date;trans_currency',laa_value [])
-lds_ledger_transfer.settrans(SQLCA)
+lds_ledger_transfer.settransobject(SQLCA)
 ll_rtn = lds_ledger_transfer.retrieve()
 
 if ll_rtn >0 then
@@ -9521,7 +9521,7 @@ end function
 public function integer f_insert_post_line (double vdb_doc_id, double vdb_branch_id, t_ds_db vds_trans_setup, t_dw_mpl vdw_get_amount, string vs_posting_type[], double vdb_currency_id, decimal vdc_exrate);//-- Không c òn dùng : 20Feb18--//
 
 long				ll_row, ll_insert_row, ll_rtn_row, ll_rtn
-int					li_row, li_idx
+int					li_row, li_idx 
 string				ls_col_get_amount, ls_col_get_base_amount, ls_not_accept_col, ls_posting_type, ls_posting_type_error, ls_dr_obj_type, ls_cr_obj_type, las_col_item[]
 string				ls_base_curr_code, ls_base_curr_name, ls_object_ref_table, ls_base_currcode, ls_base_currname, ls_f_post_line_str
 double			ldb_amount, ldb_base_amount, ldb_dr_object_id, ldb_cr_object_id, ldb_round_diff, ldb_act_qty_sku, ldb_trans_uom, ldb_base_settled_amt
@@ -9554,8 +9554,8 @@ FOR li_idx = 1 to upperbound(vs_posting_type[])
 	ls_posting_type_error += vs_posting_type[li_idx]+'; '
 	lb_update_sku = false
 	
-	rds_post_line = create t_ds_db
-	rds_post_line.dataobject = 'd_post_line_grid'
+	rds_post_line = create t_ds_db 
+	rds_post_line.dataobject = 'd_post_line_grid' 
 	rds_post_line.f_settransobject(lt_transaction)	
 	
 	FOR ll_row = 1 to vdw_get_amount.rowcount()
@@ -10210,25 +10210,25 @@ FOR ll_row = 1 to vdw_get_amount.rowcount()
 	
 	//-- Lấy conditional value --//
 	if vstr_post_info.s_dw_criterial = left(vdw_get_amount.dataobject, len(vdw_get_amount.dataobject) - 5) then 
-		ls_condition_val = string(vdw_get_amount.f_getitemany( ll_row ,vstr_post_info.s_col_criterial))
+		ls_condition_val = string(vdw_get_amount.dynamic f_getitemany( ll_row ,vstr_post_info.s_col_criterial))
 		ls_condition_coltype = vdw_get_amount.Describe( vstr_post_info.s_col_criterial+".ColType")
 	elseif not isnull(vstr_post_info.s_dw_criterial) and vstr_post_info.s_dw_criterial <> '' then
-		ldw_master = vdw_get_amount.f_get_idw_master()
+		ldw_master = vdw_get_amount.dynamic f_get_idw_master()
 		if isvalid(ldw_master) then
 			ldb_object_ref_id =  vdw_get_amount.getitemnumber(ll_row, 'object_ref_id')
 			ll_master_row = ldw_master.find( "id = "+string(ldb_object_ref_id) , 1, ldw_master.rowcount())		
 			if ll_master_row = 0 then ll_master_row = ldw_master.getrow()		
 			if vstr_post_info.s_dw_criterial = left(ldw_master.dataobject, len(ldw_master.dataobject) - 5) then 		
-				ls_condition_val = string(ldw_master.f_getitemany( ll_master_row, vstr_post_info.s_col_criterial))	
+				ls_condition_val = string(ldw_master.dynamic f_getitemany( ll_master_row, vstr_post_info.s_col_criterial))	
 				ls_condition_coltype = ldw_master.Describe( vstr_post_info.s_col_criterial+".ColType")
 			else
-				ldb_object_ref_id =  ldw_master.getitemnumber(ll_master_row, 'object_ref_id')
-				ldw_master = ldw_master.f_get_idw_master()
+				ldb_object_ref_id =  ldw_master.dynamic getitemnumber(ll_master_row, 'object_ref_id')
+				ldw_master = ldw_master.dynamic f_get_idw_master()
 				if isvalid(ldw_master) then
 					if vstr_post_info.s_dw_criterial = left(ldw_master.dataobject, len(ldw_master.dataobject) - 5) then
 						ll_master_row = ldw_master.find( "id = "+string(ldb_object_ref_id) , 1, ldw_master.rowcount())	
 						if ll_master_row = 0 then ll_master_row = ldw_master.getrow()										
-						ls_condition_val = string(ldw_master.f_getitemany( ll_master_row, vstr_post_info.s_col_criterial))	
+						ls_condition_val = string(ldw_master.dynamic f_getitemany( ll_master_row, vstr_post_info.s_col_criterial))	
 						ls_condition_coltype = ldw_master.Describe( vstr_post_info.s_col_criterial+".ColType")		
 					end if
 				end if
@@ -10350,7 +10350,7 @@ FOR ll_row = 1 to vdw_get_amount.rowcount()
 	if vstr_post_info.s_dw_trans_text = left(vdw_get_amount.dataobject, len(vdw_get_amount.dataobject) - 5) then 
 		ls_trans_text_dw = vdw_get_amount.getitemstring( ll_row ,vstr_post_info.s_col_trans_text)
 	elseif not isnull(vstr_post_info.s_dw_trans_text) and vstr_post_info.s_dw_trans_text <> '' then
-		ldw_master = vdw_get_amount.f_get_idw_master()
+		ldw_master = vdw_get_amount.dynamic f_get_idw_master()
 		if isvalid(ldw_master) then
 			ldb_object_ref_id =  vdw_get_amount.getitemnumber(ll_row, 'object_ref_id')
 			ll_master_row = ldw_master.find( "id = "+string(ldb_object_ref_id) , 1, ldw_master.rowcount())			
@@ -10359,7 +10359,7 @@ FOR ll_row = 1 to vdw_get_amount.rowcount()
 				ls_trans_text_dw = ldw_master.getitemstring( ll_master_row, vstr_post_info.s_col_trans_text)	
 			else
 				ldb_object_ref_id =  ldw_master.getitemnumber(ll_master_row, 'object_ref_id')
-				ldw_master = ldw_master.f_get_idw_master()
+				ldw_master = ldw_master.dynamic f_get_idw_master()
 				if isvalid(ldw_master) then
 					if vstr_post_info.s_dw_trans_text = left(ldw_master.dataobject, len(ldw_master.dataobject) - 5) then
 						ll_master_row = ldw_master.find( "id = "+string(ldb_object_ref_id) , 1, ldw_master.rowcount())	
@@ -10586,6 +10586,7 @@ if lb_create_account then
 	end if	
 	destroy rds_post_line
 	GarbageCollect ( )
+	return 0
 	
 	//-- update cot sku ,cogs--//
 	if  vdw_get_amount.rowcount()> 0 and lb_update_sku then
@@ -13607,7 +13608,7 @@ t_dw_mpl		ldw_master
 				end if					
 
 			else
-				ldw_master = vdw_get_amount.f_get_idw_master()
+				ldw_master = vdw_get_amount.dynamic f_get_idw_master()
 				if isvalid(ldw_master) then
 					if vstr_post_account.s_dr_dw_object = left(ldw_master.dataobject, len(ldw_master.dataobject) - 5) then 
 						ldb_object_ref_id =  vdw_get_amount.getitemnumber(vl_handle_row, 'object_ref_id')
@@ -13628,7 +13629,7 @@ t_dw_mpl		ldw_master
 						if ll_master_row = 0 then ll_master_row = ldw_master.getrow()									
 						ldb_object_ref_id =  ldw_master.getitemnumber(ll_master_row, 'object_ref_id')
 						
-						ldw_master = ldw_master.f_get_idw_master()
+						ldw_master = ldw_master.dynamic f_get_idw_master()
 						if isvalid(ldw_master) then
 							if vstr_post_account.s_dr_dw_object = left(ldw_master.dataobject, len(ldw_master.dataobject) - 5) then 
 								ll_master_row = ldw_master.find( "id = "+string(ldb_object_ref_id) , 1, ldw_master.rowcount())			
@@ -13669,7 +13670,7 @@ t_dw_mpl		ldw_master
 				
 //				rdb_cr_subacct_id = vdw_get_amount.getitemnumber( vl_handle_row ,'SUBACCOUNT')								
 			else
-				ldw_master = vdw_get_amount.f_get_idw_master()
+				ldw_master = vdw_get_amount.dynamic f_get_idw_master()
 				if isvalid(ldw_master) then
 					if vstr_post_account.s_cr_dw_object = left(ldw_master.dataobject, len(ldw_master.dataobject) - 5) then 
 						ldb_object_ref_id =  vdw_get_amount.getitemnumber(vl_handle_row, 'object_ref_id')
@@ -13690,7 +13691,7 @@ t_dw_mpl		ldw_master
 						if ll_master_row = 0 then ll_master_row = ldw_master.getrow()									
 						ldb_object_ref_id =  ldw_master.getitemnumber(ll_master_row, 'object_ref_id')
 						
-						ldw_master = ldw_master.f_get_idw_master()
+						ldw_master = ldw_master.dynamic f_get_idw_master()
 						if isvalid(ldw_master) then
 							if vstr_post_account.s_cr_dw_object = left(ldw_master.dataobject, len(ldw_master.dataobject) - 5) then 
 								ll_master_row = ldw_master.find( "id = "+string(ldb_object_ref_id) , 1, ldw_master.rowcount())			
@@ -13736,7 +13737,7 @@ t_dw_mpl	ldw_master
 					rdb_dr_subacct_id = vdw_get_amount.getitemnumber( vl_handle_row ,'DR_SUBACCOUNT')
 				end if				
 			else
-				ldw_master = vdw_get_amount.f_get_idw_master()
+				ldw_master = vdw_get_amount.dynamic f_get_idw_master()
 				if isvalid(ldw_master) then
 					if vstr_post_info.s_dr_dw_object = left(ldw_master.dataobject, len(ldw_master.dataobject) - 5) then 
 						ldb_object_ref_id =  vdw_get_amount.getitemnumber(vl_handle_row, 'object_ref_id')
@@ -13755,7 +13756,7 @@ t_dw_mpl	ldw_master
 						if ll_master_row = 0 then ll_master_row = ldw_master.getrow()									
 						ldb_object_ref_id =  ldw_master.getitemnumber(ll_master_row, 'object_ref_id')
 						
-						ldw_master = ldw_master.f_get_idw_master()
+						ldw_master = ldw_master.dynamic f_get_idw_master()
 						if isvalid(ldw_master) then
 							if vstr_post_info.s_dr_dw_object = left(ldw_master.dataobject, len(ldw_master.dataobject) - 5) then 
 								ll_master_row = ldw_master.find( "id = "+string(ldb_object_ref_id) , 1, ldw_master.rowcount())			
@@ -13792,7 +13793,7 @@ t_dw_mpl	ldw_master
 					rdb_cr_subacct_id = vdw_get_amount.getitemnumber( vl_handle_row ,'CR_SUBACCOUNT')
 				end if														
 			else
-				ldw_master = vdw_get_amount.f_get_idw_master()
+				ldw_master = vdw_get_amount.dynamic f_get_idw_master()
 				if isvalid(ldw_master) then
 					if vstr_post_info.s_cr_dw_object = left(ldw_master.dataobject, len(ldw_master.dataobject) - 5) then 
 						ldb_object_ref_id =  vdw_get_amount.getitemnumber(vl_handle_row, 'object_ref_id')
@@ -13811,7 +13812,7 @@ t_dw_mpl	ldw_master
 						if ll_master_row = 0 then ll_master_row = ldw_master.getrow()									
 						ldb_object_ref_id =  ldw_master.getitemnumber(ll_master_row, 'object_ref_id')
 						
-						ldw_master = ldw_master.f_get_idw_master()
+						ldw_master = ldw_master.dynamic f_get_idw_master()
 						if isvalid(ldw_master) then
 							if vstr_post_info.s_cr_dw_object = left(ldw_master.dataobject, len(ldw_master.dataobject) - 5) then 
 								ll_master_row = ldw_master.find( "id = "+string(ldb_object_ref_id) , 1, ldw_master.rowcount())			
@@ -14104,7 +14105,7 @@ b_obj_instantiate		lobj_ins
 if rdw_f_object.dataobject = rpo_item.dynamic f_get_dataobject() then 
 	ldb_f_object_id = rdw_f_object.getitemnumber( vl_item_row, vas_f_col_object[1])
 else
-	ldw_master = rdw_f_object.f_get_idw_master()
+	ldw_master = rdw_f_object.dynamic f_get_idw_master()
 	if isvalid(ldw_master) then
 		if ldw_master.dataobject = rpo_item.dynamic f_get_dataobject() then
 			ldb_object_ref_id =  rpo_item.dynamic getitemnumber( vl_item_row, 'ID')
@@ -14119,7 +14120,7 @@ end if
 if rdw_t_object.dataobject = rpo_item.dynamic f_get_dataobject() then 
 	ldb_t_object_id = rdw_t_object.getitemnumber( vl_item_row, vas_t_col_object[1])
 else
-	ldw_master = rdw_t_object.f_get_idw_master()
+	ldw_master = rdw_t_object.dynamic f_get_idw_master()
 	if isvalid(ldw_master) then
 		if ldw_master.dataobject = rpo_item.dynamic f_get_dataobject() then
 			ldb_object_ref_id =  rpo_item.dynamic getitemnumber( vl_item_row, 'ID')
@@ -14863,7 +14864,7 @@ for li_idx = 1 to upperbound(vas_data_col)
 	if pos(upper(vs_pas_col), upper(vas_update_col[li_idx])+';' ) > 0  then continue
 	
 	if upper(vas_data_col[li_idx])= 'QTY' then 
-		ldb_qty = vdw_data.f_getitemany( vl_data_row, vas_data_col[li_idx]+'_sku')
+		ldb_qty = vdw_data.dynamic f_getitemany( vl_data_row, vas_data_col[li_idx]+'_sku')
 		if ldb_qty < 0 then
 			ldb_sv_qty = -ldb_qty		
 		else
@@ -14875,7 +14876,7 @@ for li_idx = 1 to upperbound(vas_data_col)
 	elseif lower(vas_update_col[li_idx]) = 'base_value' then
 		li_rtn = rds_stream.setitem( vl_update_row,vas_update_col[li_idx], vdb_base_value  )
 	else
-		li_rtn = rds_stream.setitem( vl_update_row,vas_update_col[li_idx], vdw_data.f_getitemany( vl_data_row, vas_data_col[li_idx])  )
+		li_rtn = rds_stream.setitem( vl_update_row,vas_update_col[li_idx], vdw_data.dynamic f_getitemany( vl_data_row, vas_data_col[li_idx])  )
 	end if
 next
 
@@ -14888,7 +14889,7 @@ end if
 if vdw_f_object.dataobject = vdw_data.dataobject then
 	ll_f_object_row = vl_data_row
 else
-	ldw_master = vdw_data.f_get_idw_master()
+	ldw_master = vdw_data.dynamic f_get_idw_master()
 	if isvalid(ldw_master) then
 		if ldw_master.dataobject = vdw_f_object.dataobject then
 			ldb_object_ref_id = vdw_data.getitemnumber(vl_data_row, 'object_ref_id')
@@ -14901,7 +14902,7 @@ end if
 if vdw_t_object.dataobject = vdw_data.dataobject then
 	ll_t_object_row = vl_data_row
 else
-	ldw_master = vdw_data.f_get_idw_master()
+	ldw_master = vdw_data.dynamic f_get_idw_master()
 	if isvalid(ldw_master) then
 		if ldw_master.dataobject = vdw_t_object.dataobject then
 			ldb_object_ref_id = vdw_data.getitemnumber(vl_data_row, 'object_ref_id')
@@ -14912,8 +14913,8 @@ else
 end if
 for li_idx = 1 to upperbound(vas_f_object_col[])
 	if li_idx = 1 then
-		 ldb_f_object = vdw_f_object.f_getitemany( ll_f_object_row, vas_f_object_col[li_idx] )
-		 ldb_t_object = vdw_t_object.f_getitemany( ll_t_object_row, vas_t_object_col[li_idx] )
+		 ldb_f_object = vdw_f_object.dynamic f_getitemany( ll_f_object_row, vas_f_object_col[li_idx] )
+		 ldb_t_object = vdw_t_object.dynamic f_getitemany( ll_t_object_row, vas_t_object_col[li_idx] )
 		 if ldb_qty < 0 then //-- đảo đối tượng from/to --//
 			ldb_tmp_object = ldb_f_object
 			ldb_f_object = ldb_t_object
@@ -14946,8 +14947,8 @@ if isvalid(vdw_currency) then
 		if ll_currency_row = 0 then ll_currency_row = vdw_currency.getrow()
 	end if
 	for li_idx = 1 to upperbound(vas_cur_col[])
-		li_rtn = rds_stream.setitem( vl_update_row,vas_cur_col_sv[li_idx], vdw_currency.f_getitemany( ll_currency_row, vas_cur_col[li_idx] ))
-	next
+		li_rtn = rds_stream.setitem( vl_update_row,vas_cur_col_sv[li_idx], vdw_currency.dynamic f_getitemany( ll_currency_row, vas_cur_col[li_idx] ))
+	next 
 	if li_rtn = -1 then
 		gf_messagebox('m.b_doc.f_update_streamvalue.03','Thông báo','Lỗi setitem vào datastore rd_streamvalue: f_update_streamvalue(91)','stop','ok',1)
 		return -1

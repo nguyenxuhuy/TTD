@@ -169,13 +169,13 @@ this.dw_filter.getchild( 'name', ldwc)
 //-- add where comapny --//
 laa_data[1] = gi_user_comp_id
 lc_dwservice.f_add_where_dwc(ldwc,  'company_id', laa_data[])
-ldwc.settrans(it_transaction )
+ldwc.settransobject(it_transaction )
 ldwc.retrieve( ) //-- Kết thúc retrieve dwc: tên hàng --//
 ls_rtn = dw_filter.Modify( 'name.dddw.percentwidth= 200')
 
 //-- retrieve dwc_unit: tên hàng --//
 this.dw_filter.getchild( 'unit', ldwc_unit)
-ldwc_unit.settrans(it_transaction )
+ldwc_unit.settransobject(it_transaction )
 ldwc_unit.retrieve( )
 ls_rtn = dw_filter.Modify( 'unit.dddw.percentwidth= 250')
 

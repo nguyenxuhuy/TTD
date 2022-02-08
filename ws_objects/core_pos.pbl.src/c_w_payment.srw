@@ -93,7 +93,7 @@ this.dw_payment.getchild( 'code', ldwc)
 laa_value[1] = gi_user_comp_id
 ls_col_string = 'company_id;'
 lc_dwservice.f_add_where_dwc(ldwc, ls_col_string, laa_value[])
-ldwc.settrans(it_transaction )
+ldwc.settransobject(it_transaction )
 ldwc.retrieve( )
 ls_rtn = dw_payment.Modify( 'code.dddw.percentwidth= 200')
 
@@ -102,7 +102,7 @@ this.dw_payment.getchild( 'staff_code', ldwc_staff)
 //laa_value[1] = gi_user_comp_id
 //ls_col_string = 'company_id;'
 lc_dwservice.f_add_where_dwc(ldwc_staff, ls_col_string, laa_value[])
-ldwc_staff.settrans(it_transaction )
+ldwc_staff.settransobject(it_transaction )
 ldwc_staff.retrieve( )
 ls_rtn = dw_payment.Modify( 'staff_code.dddw.percentwidth= 200')
 

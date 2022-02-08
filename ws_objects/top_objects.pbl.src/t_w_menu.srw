@@ -272,7 +272,7 @@ tv_1.f_delete_all_items( )
 
 lds_menu = CREATE t_ds_db
 lds_menu.dataobject = 'd_menu'
-lds_menu.settrans( sqlca)
+lds_menu.settransobject( sqlca)
 li_items = lds_menu.retrieve(gi_user_comp_id,gdb_branch, gi_userid ,  gs_user_lang, vdb_module_id)
 
 if li_items <1 then return li_items

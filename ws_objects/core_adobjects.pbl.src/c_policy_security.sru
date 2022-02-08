@@ -489,7 +489,7 @@ ldw_main.dynamic f_add_where('object_ref_table',la_args[])
 //-- load identification key --//
 lds_identification_load = create datastore
 lds_identification_load.dataobject = 'ds_identification_load'
-lds_identification_load.settrans( it_transaction )
+lds_identification_load.settransobject( it_transaction )
 
 if lds_identification_load.retrieve( ) > 0 then
 	lds_identification_load.setsort( "up_code asc")

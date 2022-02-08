@@ -77,7 +77,7 @@ it_transaction = message.powerobjectparm
 setnull(message.powerobjectparm)
 
 dw_filter.insertrow( 0)
-dw_find_bill.settrans( it_transaction )
+dw_find_bill.settransobject( it_transaction )
 dw_find_bill.retrieve(gi_user_comp_id, gdb_branch )
 dw_find_bill.f_set_gutter_rowcount( )
 dw_find_bill.inv_sort.f_setrequestor( dw_find_bill)

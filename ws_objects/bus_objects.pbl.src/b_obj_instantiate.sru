@@ -11046,7 +11046,7 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] )
 			NEXT
 			lds_handle.setsort( ls_sortString)
 		end if
-		lds_handle.settrans( rt_transaction)
+		lds_handle.settransobject( rt_transaction)
 		lds_handle.retrieve( )
 		FOR li_row = 1 to lds_handle.rowcount()
 			//-- check match full--//
@@ -11699,7 +11699,7 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] )
 		else
 			lds_handle.f_add_where( "object_ref_id", laa_value[])
 		end if
-		lds_handle.settrans( rt_transaction)
+		lds_handle.settransobject( rt_transaction)
 		lds_handle.retrieve( )
 		FOR li_row = 1 to lds_handle.rowcount()
 	
@@ -12031,7 +12031,7 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] )
 		else
 			lds_handle.f_add_where( "object_ref_id", laa_value[])
 		end if
-		lds_handle.settrans( rt_transaction)
+		lds_handle.settransobject( rt_transaction)
 		lds_handle.retrieve( )
 		FOR li_row = 1 to lds_handle.rowcount()
 			//-- check match full--//
@@ -13009,10 +13009,10 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) - 1
 			lds_handle.f_add_where( "object_ref_id", laa_value[])			
 			lds_handle_detail.dataobject = 'd_tax_line_grid'
 			lds_handle_detail.f_add_where( "doc_version", laa_value[])	
-			lds_handle_detail.settrans( rt_transaction)
+			lds_handle_detail.settransobject( rt_transaction)
 			lds_handle_detail.retrieve( )
 		end if
-		lds_handle.settrans( rt_transaction)
+		lds_handle.settransobject( rt_transaction)
 		lds_handle.retrieve( )
 		FOR li_row = 1 to lds_handle.rowcount()
 			ldb_f_ref_id = lds_handle.getitemnumber(li_row, 'id')
@@ -13823,7 +13823,7 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] )
 			else
 				lds_handle.f_add_where( "object_ref_id", laa_value[])
 			end if
-			lds_handle.settrans( rt_transaction)
+			lds_handle.settransobject( rt_transaction)
 			lds_handle.retrieve( )
 			FOR li_row = 1 to lds_handle.rowcount()
 				//-- check match full--//
@@ -14232,7 +14232,7 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] )
 		else
 			lds_handle.f_add_where( "object_ref_id", laa_value[])
 		end if
-		lds_handle.settrans( rt_transaction)
+		lds_handle.settransobject( rt_transaction)
 		lds_handle.retrieve( )
 		FOR li_row = 1 to lds_handle.rowcount()
 			//-- check match full--//
@@ -14897,7 +14897,7 @@ if lower(ls_update_table) = 'document' then
 	join trans_setup_hdr t1 on t1.id = t.trans_hdr_id
 	join trans_setup_hdr t2 on t2.company_id= t1.company_id 
 								and t2.doc_type = 'SO'
-								and t2.INTER_BRANCH_ID = t1.branch_id
+//								and coalesce(t2.INTER_BRANCH_ID,0) = t1.branch_id
 								and t2.branch_id = :vdb_t_branch_id
 	where t.company_id = :gi_user_comp_id
 	and t.id =  :ldb_id
@@ -14909,8 +14909,8 @@ if lower(ls_update_table) = 'document' then
 		join trans_setup_hdr t1 on t1.id = t.trans_hdr_id
 		join trans_setup_hdr t2 on t2.company_id= t1.company_id 
 									and t2.doc_type = 'SO'
-									and t2.INTER_BRANCH_ID = t1.branch_id
-									and t2.branch_id = :vdb_t_branch_id
+//									and coalesce(t2.INTER_BRANCH_ID,0) = t1.branch_id
+									and t2.branch_id = :vdb_t_branch_id 
 		where t.company_id = :gi_user_comp_id
 		and t.id =  :ldb_id
 		using rt_transaction;
@@ -15176,10 +15176,10 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) - 1
 			lds_handle.f_add_where( "object_ref_id", laa_value[])			
 			lds_handle_detail.dataobject = 'd_tax_line_grid'
 			lds_handle_detail.f_add_where( "doc_version", laa_value[])	
-			lds_handle_detail.settrans( rt_transaction)
+			lds_handle_detail.settransobject( rt_transaction)
 			lds_handle_detail.retrieve( )
 		end if
-		lds_handle.settrans( rt_transaction)
+		lds_handle.settransobject( rt_transaction)
 		lds_handle.retrieve( )
 		FOR li_row = 1 to lds_handle.rowcount()
 			ldb_f_ref_id = lds_handle.getitemnumber(li_row, 'id')
@@ -15636,10 +15636,10 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) - 1
 			lds_handle.f_add_where( "object_ref_id", laa_value[])			
 			lds_handle_detail.dataobject = 'd_tax_line_grid'
 			lds_handle_detail.f_add_where( "doc_version", laa_value[])	
-			lds_handle_detail.settrans( rt_transaction)
+			lds_handle_detail.settransobject( rt_transaction)
 			lds_handle_detail.retrieve( )
 		end if
-		lds_handle.settrans( rt_transaction)
+		lds_handle.settransobject( rt_transaction)
 		lds_handle.retrieve( )
 		FOR li_row = 1 to lds_handle.rowcount()
 			ldb_f_ref_id = lds_handle.getitemnumber(li_row, 'id')
@@ -16416,10 +16416,10 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) - 1
 			lds_handle.f_add_where( "object_ref_id", laa_value[])			
 			lds_handle_detail.dataobject = 'd_tax_line_grid'
 			lds_handle_detail.f_add_where( "doc_version", laa_value[])	
-			lds_handle_detail.settrans( rt_transaction)
+			lds_handle_detail.settransobject( rt_transaction)
 			lds_handle_detail.retrieve( )
 		end if
-		lds_handle.settrans( rt_transaction)
+		lds_handle.settransobject( rt_transaction)
 		lds_handle.retrieve( )
 		FOR li_row = 1 to lds_handle.rowcount()
 			ldb_f_ref_id = lds_handle.getitemnumber(li_row, 'id')
@@ -16850,7 +16850,7 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] )
 		else
 			lds_handle.f_add_where( "object_ref_id", laa_value[])
 		end if
-		lds_handle.settrans( rt_transaction)
+		lds_handle.settransobject( rt_transaction)
 		lds_handle.retrieve( )
 		FOR li_row = 1 to lds_handle.rowcount()
 			//-- check match full--//
@@ -17245,7 +17245,7 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] )
 		else
 			lds_handle.f_add_where( "object_ref_id", laa_value[])
 		end if
-		lds_handle.settrans( rt_transaction)
+		lds_handle.settransobject( rt_transaction)
 		lds_handle.retrieve( )
 		FOR li_row = 1 to lds_handle.rowcount()
 			//-- check match full--//
@@ -18507,7 +18507,7 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] )
 		else
 			lds_handle.f_add_where( "object_ref_id", laa_value[])
 		end if
-		lds_handle.settrans( rt_transaction)
+		lds_handle.settransobject( rt_transaction)
 		lds_handle.retrieve( )
 		FOR li_row = 1 to lds_handle.rowcount()
 			//-- check match full--//
@@ -18898,7 +18898,7 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] )
 		else
 			lds_handle.f_add_where( "object_ref_id", laa_value[])
 		end if
-		lds_handle.settrans( rt_transaction)
+		lds_handle.settransobject( rt_transaction)
 		lds_handle.retrieve( )
 		FOR li_row = 1 to lds_handle.rowcount()
 			//-- check match full--//
@@ -19293,7 +19293,7 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] )
 		else
 			lds_handle.f_add_where( "object_ref_id", laa_value[])
 		end if
-		lds_handle.settrans( rt_transaction)
+		lds_handle.settransobject( rt_transaction)
 		lds_handle.retrieve( )
 		FOR li_row = 1 to lds_handle.rowcount()
 			//-- check match full--//
@@ -19688,7 +19688,7 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] )
 		else
 			lds_handle.f_add_where( "object_ref_id", laa_value[])
 		end if
-		lds_handle.settrans( rt_transaction)
+		lds_handle.settransobject( rt_transaction)
 		lds_handle.retrieve( )
 		FOR li_row = 1 to lds_handle.rowcount()
 			//-- check match full--//
