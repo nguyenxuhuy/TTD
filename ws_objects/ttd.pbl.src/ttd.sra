@@ -85,8 +85,10 @@ string 				ls_service_name
 c_connect_srv 		l_connect
 
 li_rtn = l_connect.f_logon()
+//messagebox('2',li_rtn)
 
 If li_rtn = 1 then 
+//	messagebox('3',gi_userid)
 	open(t_w_mdi)
 end if
 end event

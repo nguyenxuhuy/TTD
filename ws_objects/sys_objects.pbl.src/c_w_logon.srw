@@ -251,12 +251,18 @@ end if
 ls_def_schema = ProfileString(ls_inifile,'default schema','schema','ttd')
 ls_connectionstring = ls_def_schema + ';'+sle_usr.text+';' +sle_pwd.text
 gs_user_lang = ddlb_lang.text
+
 if lc_connect_srv.f_connection(ls_connectionstring) = 1 then
+//	messagebox('connect','OK')
+	
 	SetProfileString("global.ini",  "default lang", "lang", ddlb_lang.text)
 	SetProfileString("global.ini",  "login", "username", sle_usr.text)
 //	SetProfileString("global.ini",  "default schema", "schema", ddlb_schema.text)
 	gs_user_lang = ddlb_lang.text	
 	closewithreturn(parent, 1)
+	
+//	messagebox('close','OK')
+	
 else
 	sle_usr.setfocus( )
 end if

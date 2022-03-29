@@ -1158,6 +1158,7 @@ event open;//t_m_mdi 				lm_menu
 b_obj_instantiate		lboi_handle
 string						ls_company_code, ls_brand_code
 
+//messagebox('tmdi_open',gi_userid)
 
 //rbb_1.importfromxmlfile( "toolbar2.xml")
 //rbb_1.importfromxmlfile( "XmlFile1.xml")
@@ -1168,7 +1169,7 @@ this.f_create_ribbonbar( )
 
 
 ib_opening = true
-g_user.f_init(gi_userid)
+//g_user.f_init(gi_userid) //-- đã init lúc đăng nhập --//
 g_user.f_init_policy_datastore( )
 
 //-- set language --//
@@ -1182,8 +1183,11 @@ ids_lang_text.retrieve( gs_user_lang, gdb_industry_id)
 //open(iw_search, 's_w_search')
 //iw_search.show( )
 
+//messagebox('2',gi_userid)
+
 this.f_open_w_background( )
 
+//messagebox('3',gi_userid)
 
 //if gs_user_lang <> 'vi-vn' then 	 	
 //	ids_lang_text.f_set_menu_lang(lm_menu)
@@ -1232,6 +1236,7 @@ gbl_can_active = true
 
 this.post f_disconnect_sqlca( )
 
+//messagebox('4',gi_userid)
 end event
 
 event close;
@@ -1362,9 +1367,9 @@ choose case itemtag
 			parent.f_open_w_background( )
 		end if
 	case 'e_add','e_modify','e_delete','e_cancel','e_save','e_post','e_unpost','e_detail','e_refresh','e_book'
-		lw_active = parent.getactivesheet( )
-		if isvalid(lw_active) then
-			li_rtn = lw_active.triggerevent( itemtag)
+		lw_handle = parent.getactivesheet( )
+		if isvalid(lw_handle) then
+			li_rtn = lw_handle.triggerevent( itemtag)
 		end if
 		if li_rtn = 1 then
 			choose case itemtag
@@ -1373,16 +1378,17 @@ choose case itemtag
 			end choose
 		end if
 	case 'e_self_copy'
-		lw_active = parent.getactivesheet( )
-		if isvalid(lw_active) then
-			lw_active.dynamic event e_copy_to_new('b_copyt_self')
+		lw_handle = parent.getactivesheet( )
+		if isvalid(lw_handle) then
+			lw_handle.dynamic event e_copy_to_new('b_copyt_self')
 		end if		
 	case 'e_copyt'
 	case 'e_copyf'
 	case 'e_filter'
-		lw_active = parent.getactivesheet( )
-		if isvalid(lw_active) then
-			if lw_active.classname( ) <> 's_w_background' then			
+		lw_handle = parent.getactivesheet( )
+		if isvalid(lw_handle) then
+			if lw_handle.classname( ) <> 's_w_background' then			
+				lw_active = lw_handle
 				if lw_active.ib_filter_on then
 					lw_active.triggerevent( 'e_filteroff')
 				else
@@ -1391,15 +1397,15 @@ choose case itemtag
 			end if
 		end if
 	case 'e_action_attach'
-		lw_active = parent.getactivesheet( )
-		if isvalid(lw_active) then
-			lod_handle = lw_active.f_get_obj_handling( )
+		lw_handle = parent.getactivesheet( )
+		if isvalid(lw_handle) then
+			lod_handle = lw_handle.f_get_obj_handling( )
 			lod_handle.triggerevent(itemtag )
 		end if				
 	case else //-- e_change_object_appeon --//
-		lw_active = parent.getactivesheet( )
-		if isvalid(lw_active) then
-			lw_active.triggerevent(itemtag )
+		lw_handle = parent.getactivesheet( )
+		if isvalid(lw_handle) then
+			lw_handle.triggerevent(itemtag )
 		end if				
 end choose
 end event

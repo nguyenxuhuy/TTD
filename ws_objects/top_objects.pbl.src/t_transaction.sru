@@ -45,6 +45,7 @@ end on
 
 event dberror; 
 choose case code
+		
 	case 3114		
 		messagebox('Thông báo','Chương trình mất kết nối với cơ sở dữ liệu. Phải đóng lại. Vui lòng kiểm tra lại network trước khi mở lại', stopsign!, ok!,1)
 		HALT CLOSE 
@@ -56,6 +57,7 @@ choose case code
 	case 1843, 1840
 		return -1		
 	case else
+		messagebox('Thông báo', string(code) +';'+ string(this.sqldbcode) )
 		messagebox('Thông báo','Lỗi dữ liệu: chương trình tự đóng sau khi bấm OK <'+sqlerrortext+'>', stopsign!, ok!,1)
 //		HALT CLOSE
 		if this.database = 'multithread' then

@@ -24,16 +24,22 @@ long ll_userid, ll_company_id
 b_obj_instantiate		lb_obj
 c_string					lc_string
 
+
+//messagebox('valid','hchk')	
+
 select ad.encrypt(:vs_password) into :ls_password_entered from dual;
 g_user = create c_user_instance
 
+//messagebox('2',ls_password_entered)	
+
 if g_user.f_init( vs_username)  <> -1 then
+//	messagebox('init ok1',vs_username)	
 	
 	if ls_password_entered = g_user.password then
 		gi_user_comp_id = g_user.default_comp
 		gdb_branch = g_user.default_branch
 		gi_userid	= g_user.id
-		
+//		messagebox('init ok2',vs_username)	
 //		lc_legal_entity = create c_legal_entity
 		gs_company = lb_obj.f_get_object_code(gi_user_comp_id)
 		gs_branch =  lb_obj.f_get_object_code(gdb_branch)
@@ -53,6 +59,9 @@ if g_user.f_init( vs_username)  <> -1 then
 		
 		RegistryGet("HKEY_CURRENT_USER\Control Panel\International","sThousand",RegString!, gs_w_thousand_grp)
 		RegistryGet("HKEY_CURRENT_USER\Control Panel\International","sDecimal",RegString!, gs_decimal)
+		
+//		messagebox('valid return',vs_username)	
+		
 		return true
 	else
 		return false
@@ -71,9 +80,11 @@ try
 	long ll_return
 	ls_def_lang = ProfileString(ls_inifile,'default lang','lang','vi-vn')
 	openwithparm(c_w_logon,ls_def_lang)
-	
+		
 	ll_return = message.doubleparm
 	setnull(message.doubleparm)
+	
+//	messagebox('error',ll_return)
 	
 	return ll_return
 
@@ -122,6 +133,7 @@ try
 	gs_dbname = ls_servername
 	
 	if ls_company <> '' then
+//		messagebox('comp',ls_company)
 		ls_logpass = this.f_crt_pwd( ls_company)
 	end if
 	
@@ -132,10 +144,14 @@ try
 	SQLCA.AutoCommit = False
 	SQLCA.DBParm = " CommitOnDisconnect='No', SQLCache=25, PBCatalogOwner='"+ ls_logid +"'"
 
+//messagebox('1',ls_servername)	
+
 	Connect using SQLCA; 
 
 	if sqlca.sqlcode = 0 then
+//		messagebox('b4 valid',ls_dbms)	
 		if this.f_isvalid_pwd( lsa_parm[2], lsa_parm[3]) then
+//			messagebox('valid',ls_dbms)	
 			return 1
 		else
 			messagebox('Thông báo - Information','Tên đăng nhập hoặc Mật mã không hợp lệ - Invalid UserName or Password')	

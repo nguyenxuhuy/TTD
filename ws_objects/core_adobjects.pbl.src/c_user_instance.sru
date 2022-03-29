@@ -105,6 +105,8 @@ where RU.ID = :vdb_ID
 and ru.active_yn = 'Y'
 using sqlca;
 
+
+
 if sqlca.sqlcode <> 0 then
 	return -1
 end if
@@ -162,6 +164,7 @@ AND ru.active_yn = 'Y'
 and rownum=1
 using sqlca;
 
+//MessageBox("Caution",  "d_user_instance.f_init")
 
 if sqlca.sqlcode <> 0 then
 	return -1
@@ -178,6 +181,8 @@ datastore	lds_datastore
 //------------------//
 
 if vdb_user_id < 0 then return -1
+
+//MessageBox("Caution",  "d_user_instance.F_SET_role")
 
 lds_datastore = create datastore
 ls_sql = "select ROLE_ID from role_assign where user_id = " + string(vdb_user_id) 

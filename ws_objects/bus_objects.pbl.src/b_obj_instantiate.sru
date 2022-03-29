@@ -3717,31 +3717,36 @@ else
 end if
 end function
 
-public function string f_get_object_code (double vdb_id);
+public function string f_get_object_code (double vdb_id);int		li_cnt
 string	ls_code
 
 //setnull(ls_code)
 if isnull(vdb_id) then return ls_code
 
-select code into :ls_code from object where id = :vdb_id using sqlca;
-if sqlca.sqlcode = 100 then
-	select code into :ls_code from legal_entity where id = :vdb_id using sqlca;
-end if
-
-if sqlca.sqlcode = 100 then
-	select code into :ls_code from valueset_value where id = :vdb_id using sqlca;
-end if
-
-if sqlca.sqlcode = 100 then
-	select code into :ls_code from uom where id = :vdb_id using sqlca;
-end if
-
-if sqlca.sqlcode = 0 then
-	return ls_code
+select count(code) into :li_cnt from object where id = :vdb_id using sqlca;
+if li_cnt = 1 then 
+	select code into :ls_code from object where id = :vdb_id using sqlca;
 else
-	gf_messagebox('m.b_obj_instantiate.f_get_object_code.01','Thông báo','Không tìm thấy mã đối tượng có ID:@'+string(vdb_id),'exclamation','ok',1) 			
-	return ls_code
+	select count(code) into :li_cnt from legal_entity where id = :vdb_id using sqlca;
+	if li_cnt = 1 then
+		select code into :ls_code from legal_entity where id = :vdb_id using sqlca;
+	else
+		select count(code) into :li_cnt from valueset_value where id = :vdb_id using sqlca;
+		if  li_cnt = 1 then
+			select code into :ls_code from valueset_value where id = :vdb_id using sqlca;
+		else
+			select count(code) into :li_cnt from uom where id = :vdb_id using sqlca;
+			if li_cnt = 1 then
+				select code into :ls_code from uom where id = :vdb_id using sqlca;
+			else
+				gf_messagebox('m.b_obj_instantiate.f_get_object_code.01','Thông báo','Không tìm thấy mã đối tượng có ID:@'+string(vdb_id),'exclamation','ok',1) 	
+			end if
+		end if
+	end if
 end if
+
+return ls_code
+
 end function
 
 public function boolean f_is_objects (string vs_object_code, string vs_object_type);/*********************************************
