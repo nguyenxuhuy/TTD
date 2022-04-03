@@ -1293,6 +1293,24 @@ event constructor;call super::constructor;ib_changed_dwo_4edit = false
 is_display_model = '2dgb_1tp'
 ib_display_text = false
 is_object_title = 'Sản phẩm - hàng hóa - dịch vụ'
+
+istr_actionpane[1].s_button_name = 'b_send_2_approve;b_approve;b_reject;'
+istr_actionpane[1].s_button_name += 'b_doc_trace;b_cancel;b_self_copy;e_add;e_modify;e_delete;'
+//istr_actionpane[1].s_button_has_sub ='b_related_object;b_update;b_approve;b_view;b_copyt;b_copyf;'
+//istr_actionpane[1].sa_sub_button[1]='u_so;'
+//istr_actionpane[1].sa_subbutton_name[1]='Đơn bán hàng(SO);'
+//istr_actionpane[1].sa_sub_button[2]='b_complete;b_lose;b_excel;'
+//istr_actionpane[1].sa_subbutton_name[2]='Thành công;Không thành;Excel;'
+//istr_actionpane[1].sa_sub_button[3]=''	//'b_send_2_approve;b_approve;b_reject;'
+//istr_actionpane[1].sa_subbutton_name[3]=''	//'Gửi duyệt;Duyệt;Trả duyệt'
+//istr_actionpane[1].sa_sub_button[4]='b_view_qt;b_view_qt_kni_eng;'
+//istr_actionpane[1].sa_subbutton_name[4]='Chào giá;Chào giá ENG;'
+//istr_actionpane[1].sa_sub_button[5]=''
+//istr_actionpane[1].sa_subbutton_name[5]=''
+//istr_actionpane[1].sa_sub_button[6]=''
+//istr_actionpane[1].sa_subbutton_name[6]=''
+
+/*
 istr_actionpane[1].s_button_name = 'b_add_multi;b_insert;b_modify;b_save;b_query;b_execquery;b_filteron;b_item_barcode;b_refresh;b_delete;b_copyt_multi;b_purchase_multi;b_sales_multi;b_web_sync;'
 istr_actionpane[1].s_button_has_sub = 'b_add_multi;b_web_sync;'
 istr_actionpane[1].sa_sub_button[1]='b_add;b_copyt_seft;'
@@ -1302,7 +1320,7 @@ istr_actionpane[1].sa_sub_button[2]='b_fr_web_prodnm;b_to_web_price;b_to_web_pro
 istr_actionpane[1].sa_enabled_subbutton[] = istr_actionpane[1].sa_sub_button[]
 istr_actionpane[1].s_objname_handling = this.classname( )
 istr_actionpane[1].s_description = is_object_title
-
+*/
 end event
 
 event e_dw_e_postinsertrow;call super::e_dw_e_postinsertrow;t_dw_mpl		ldw_item
@@ -1331,7 +1349,8 @@ any				laa_value[]
 ldw_main = iw_display.dynamic f_get_dwmain()
 laa_value[1] = '=ITEM'
 ldw_main.f_add_where('object_ref_table;',laa_value[])
-iw_display.event e_filteron_new( )
+
+iw_display.dynamic event e_filteron_rb( )
 
 return  1
 end event
