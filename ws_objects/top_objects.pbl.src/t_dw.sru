@@ -208,6 +208,8 @@ public function boolean f_iscomputes (string vs_colname)
 public function integer f_getcolumns_update (ref string as_columns[])
 public subroutine f_set_security_fields (string ls_visible_fields, string ls_enable_fields)
 public function string f_get_filterstring_ex (t_dw_mpl vdw_main)
+public function long f_retrieve_dwc_dwfilter_ex (string vs_colname, ref t_transaction rt_transaction)
+public function long f_retrieve_dwc_dwfilter_ex (string vs_colname, string vs_dwo, ref t_transaction rt_transaction)
 end prototypes
 
 event e_mousemove;
@@ -5679,6 +5681,96 @@ FOR li_idx = 1 to li_colCnt
 NEXT 
 
 return ls_filterString
+end function
+
+public function long f_retrieve_dwc_dwfilter_ex (string vs_colname, ref t_transaction rt_transaction);any							laa_value[]
+string							ls_col_string, ls_dwo, ls_objectname
+long							ll_rowcount
+datawindowchild			ldwc
+datawindow					ldw_main
+s_w_main						lw_parent
+c_dwservice					lc_dwservice
+s_object_display			lsod_handle
+
+if this.getchild( vs_colname, ldwc) = -1 then return -1
+
+//-- build where theo gia trị phụ thuộc --//
+if this.f_getparentwindow( lw_parent) <> 1 then return 0
+lsod_handle = lw_parent.f_get_obj_handling( )
+
+ldw_main = lw_parent.dynamic f_get_dwmain( )
+ls_dwo = ldw_main.dataobject
+if left(ls_dwo,2)= 'd_' then
+	ls_dwo =  left(ls_dwo, len(ls_dwo) - 5)
+end if
+
+
+if ls_dwo = this.getitemstring( 1, 'dwo') then return 0
+
+ls_objectname =lsod_handle.classname( )
+if ls_objectname = 'u_valueset' and left(ls_dwo,3)= 'dd_'  then
+	ls_objectname = ls_dwo
+elseif  ls_objectname = 'u_valueset' and left(ls_dwo,2)= 'd_' then
+	ls_objectname = mid(ls_dwo,3)
+end if
+
+this.setitem( 1, 'dwo', ls_dwo)
+laa_value[1] = '='+gs_user_lang
+laa_value[2] = '='+ls_dwo
+laa_value[3] = ls_objectname
+
+ls_col_string = 'lang;DWOBJECT;SUBCODE;'
+
+lc_dwservice.f_add_where_dwc(ldwc, ls_col_string, laa_value[])
+	
+ldwc.settransobject( rt_transaction)
+	
+ll_rowcount = ldwc.retrieve( )
+if ll_rowcount > 0 then ldwc.insertrow(1)
+return ll_rowcount
+end function
+
+public function long f_retrieve_dwc_dwfilter_ex (string vs_colname, string vs_dwo, ref t_transaction rt_transaction);any							laa_value[]
+string							ls_col_string, ls_dwo, ls_objectname
+long							ll_rowcount
+datawindowchild			ldwc
+datawindow					ldw_main
+s_w_main						lw_parent
+c_dwservice					lc_dwservice
+s_object_display			lsod_handle
+
+if this.getchild( vs_colname, ldwc) = -1 then return -1
+
+//-- build where theo gia trị phụ thuộc --//
+ls_dwo = vs_dwo
+if left(ls_dwo,2)= 'd_' then
+	ls_dwo =  left(ls_dwo, len(ls_dwo) - 5)
+end if
+if ls_dwo = this.getitemstring( 1, 'dwo') then return 0
+
+if this.f_getparentwindow( lw_parent) <> 1 then return 0
+lsod_handle = lw_parent.f_get_obj_handling( )
+ls_objectname =lsod_handle.classname( )
+if ls_objectname = 'u_valueset' and left(ls_dwo,3)= 'dd_'  then
+	ls_objectname = ls_dwo
+elseif  ls_objectname = 'u_valueset' and left(ls_dwo,2)= 'd_' then
+	ls_objectname = mid(ls_dwo,3)
+end if
+
+this.setitem( 1, 'dwo', ls_dwo)
+laa_value[1] = '='+gs_user_lang
+laa_value[2] = '='+ls_dwo
+laa_value[3] = ls_objectname
+
+ls_col_string = 'lang;DWOBJECT;SUBCODE;'
+
+lc_dwservice.f_add_where_dwc(ldwc, ls_col_string, laa_value[])
+	
+ldwc.settransobject( rt_transaction)
+	
+ll_rowcount = ldwc.retrieve( )
+if ll_rowcount > 0 then ldwc.insertrow(1)
+return ll_rowcount
 end function
 
 on t_dw.create
