@@ -787,7 +787,7 @@ end if
 return 1
 end event
 
-event type integer e_itemchanged(long row, dwobject dwo, ref string data);/*********************************************************************
+event e_itemchanged;/*********************************************************************
 Chức năng: kiểm tra ràng buộc dữ liệu trên cùng dw
 ------------------------------------------------------------
 return:
