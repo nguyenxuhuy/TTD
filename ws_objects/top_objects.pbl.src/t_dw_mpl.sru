@@ -9392,7 +9392,8 @@ if left(ls_coltype,3) = 'num' or  left(ls_coltype,3) = 'dec' then
 	end if
 end if
 //-- gọi e_itemchanged --//
-li_rtn = this.event e_itemchanged( row, dwo, ls_data)
+//li_rtn = this.event e_itemchanged( row, dwo, ls_data)
+li_rtn = this.event e_itemchanged(row, dwo, ls_data)
 //-- kiểm tra giá trị trả về --//
 if li_ansector_rtn = 2 and li_rtn = 0 then
 	ls_colname = dwo.name
