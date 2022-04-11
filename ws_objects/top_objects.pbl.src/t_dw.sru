@@ -5735,6 +5735,7 @@ ldwc.settransobject( rt_transaction)
 	
 ll_rowcount = ldwc.retrieve( )
 if ll_rowcount > 0 then ldwc.insertrow(1)
+ldwc.setredraw( true)
 return ll_rowcount
 end function
 
