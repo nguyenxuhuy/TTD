@@ -7524,7 +7524,7 @@ this.event e_resize_tab_action(newwidth, newheight)
 
 //-- resize filter --//
 if gb_filter.visible then
-	this.event e_filter_resize( )
+	this.event e_filter_resize_new( )
 end if
 
 if isvalid(ic_obj_handling) then

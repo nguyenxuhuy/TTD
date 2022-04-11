@@ -47,6 +47,7 @@ event type integer e_doubleclicked ( long vl_row,  string vs_colname )
 event type integer e_print_no_dialog ( )
 event e_command pbm_command
 event e_rbuttonup pbm_dwnrbuttonup
+event type integer e_itemchanged ( long row,  dwobject dwo,  string data )
 end type
 global t_dw t_dw
 
@@ -820,13 +821,19 @@ event e_dwdropdown;string 	ls_colname, ls_text, ls_dddw_displaycol, ls_filter_st
 long		ll_rtn
 datawindowchild			ldwc
 b_obj_instantiate			lbo_ins
+s_w_main					lw_parent
+t_transaction				lt_transaction
 
 //-- Khởi tạo valueset object --//
 ls_colname = this.getcolumnname( )
 IF  this.describe(ls_colname + ".Edit.Style")  = 'dddw' and this.describe(ls_colname + '.dddw.name') <> '' then
 	if this.classname( ) = 'dw_filter' then
 //		this.ib_dropdowning = true
-		this.f_retrieve_dwc_dwfilter(ls_colname )		
+		this.f_getparentwindow( lw_parent) 
+		lw_parent.f_get_transaction( lt_transaction) 
+		connect using lt_transaction;
+		this.f_retrieve_dwc_dwfilter_ex(ls_colname ,lt_transaction)	
+		disconnect using lt_transaction;
 	else
 		this.ib_dropdowning = true
 		ll_rtn = this.f_retrieve_dwc_ex(ls_colname )
@@ -5694,6 +5701,7 @@ s_object_display			lsod_handle
 
 if this.getchild( vs_colname, ldwc) = -1 then return -1
 
+if ldwc.rowcount( ) > 0 then return  ldwc.rowcount( )
 //-- build where theo gia trị phụ thuộc --//
 if this.f_getparentwindow( lw_parent) <> 1 then return 0
 lsod_handle = lw_parent.f_get_obj_handling( )
