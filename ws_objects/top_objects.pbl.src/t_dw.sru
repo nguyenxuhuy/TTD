@@ -47,7 +47,6 @@ event type integer e_doubleclicked ( long vl_row,  string vs_colname )
 event type integer e_print_no_dialog ( )
 event e_command pbm_command
 event e_rbuttonup pbm_dwnrbuttonup
-event type integer e_itemchanged ( long row,  dwobject dwo,  string data )
 end type
 global t_dw t_dw
 
