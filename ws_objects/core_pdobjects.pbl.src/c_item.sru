@@ -1289,7 +1289,7 @@ on c_item.destroy
 call super::destroy
 end on
 
-event constructor;call super::constructor;ib_changed_dwo_4edit = false
+event constructor;call super::constructor;ib_changed_dwo_4edit = true
 is_display_model = '2dgb_1tp'
 ib_display_text = false
 is_object_title = 'Sản phẩm - hàng hóa - dịch vụ'
@@ -1309,6 +1309,8 @@ istr_actionpane[1].s_button_name += 'b_doc_trace;b_cancel;b_self_copy;e_add;e_mo
 //istr_actionpane[1].sa_subbutton_name[5]=''
 //istr_actionpane[1].sa_sub_button[6]=''
 //istr_actionpane[1].sa_subbutton_name[6]=''
+
+istr_actionpane[1].s_description = is_object_title
 
 /*
 istr_actionpane[1].s_button_name = 'b_add_multi;b_insert;b_modify;b_save;b_query;b_execquery;b_filteron;b_item_barcode;b_refresh;b_delete;b_copyt_multi;b_purchase_multi;b_sales_multi;b_web_sync;'
@@ -1350,7 +1352,7 @@ ldw_main = iw_display.dynamic f_get_dwmain()
 laa_value[1] = '=ITEM'
 ldw_main.f_add_where('object_ref_table;',laa_value[])
 
-iw_display.dynamic event e_filteron_rb( )
+//iw_display.dynamic event e_filteron_rb( )
 
 return  1
 end event
@@ -1360,48 +1362,48 @@ datawindow				ldw_focus
 int								li_idx
 
 ldw_focus = iw_display.dynamic f_get_idwfocus()
-
-if isvalid(ldw_focus) then
-	if not this.ib_copying then
-		//-- control d_action_edit --//
-		FOR li_idx = 1 to upperbound(istr_actionpane[]) 
-			if istr_actionpane[li_idx].s_dwo_action = 'd_action_edit' then
-				if ldw_focus.dynamic f_get_ib_shared() then
-					ldw_focus = ldw_focus.dynamic f_getdwmaster()
-				end if			
-				if ldw_focus.dynamic f_get_ib_detail() then
-					if ib_changed_dwo_4edit then
-						if ldw_focus.dynamic f_isgrid() then
-							istr_actionpane[li_idx].s_visible_buttons = 'b_add;b_insert;b_modify;b_filteron;b_refresh;b_delete;b_unit_conversion;b_dosage;b_struct_comb;'
-						else
-							istr_actionpane[li_idx].s_visible_buttons = 'b_add;b_modify;b_filteron;b_refresh;b_delete;b_unit_conversion;b_dosage;b_struct_comb;'
-						end if
-					else
-						if ldw_focus.dynamic f_isgrid() then
-							istr_actionpane[li_idx].s_visible_buttons = 'b_add;b_insert;b_modify;b_filteron;b_refresh;b_delete;b_unit_conversion;b_dosage;b_struct_comb;'
-						else
-							istr_actionpane[li_idx].s_visible_buttons = 'b_add;b_modify;b_filteron;b_refresh;b_delete;b_unit_conversion;b_dosage;b_struct_comb;'
-						end if
-					end if
-				else				
-					if  ib_changed_dwo_4edit then
-						istr_actionpane[li_idx].s_visible_buttons='b_add_multi;b_modify;b_filteron;b_refresh;b_delete;b_unit_conversion;b_dosage;b_struct_comb;b_web_sync;'
-					else
-						istr_actionpane[li_idx].s_visible_buttons='b_add_multi;b_modify;b_filteron;b_refresh;b_delete;b_unit_conversion;b_dosage;b_struct_comb;'
-					end if
-				end if
-			elseif  istr_actionpane[li_idx].s_dwo_action = 'd_action_related_object' then
-				istr_actionpane[li_idx].s_visible_buttons =  'b_so;b_goods_delivery;b_sal_invoice;b_po;b_goods_receipt;b_pur_invoice;'
-			elseif  istr_actionpane[li_idx].s_dwo_action = 'd_action_manage' then	
-				istr_actionpane[li_idx].s_visible_buttons =  'b_book; b_attach; b_note;b_user_trace;'
-			elseif  istr_actionpane[li_idx].s_dwo_action = 'd_action_related_report' then			
-				
-			end if				
-		NEXT
-	end if
-	iw_display.event e_ctrl_actionbutton()
-end if
-return 0
+//
+//if isvalid(ldw_focus) then
+//	if not this.ib_copying then
+//		//-- control d_action_edit --//
+//		FOR li_idx = 1 to upperbound(istr_actionpane[]) 
+//			if istr_actionpane[li_idx].s_dwo_action = 'd_action_edit' then
+//				if ldw_focus.dynamic f_get_ib_shared() then
+//					ldw_focus = ldw_focus.dynamic f_getdwmaster()
+//				end if			
+//				if ldw_focus.dynamic f_get_ib_detail() then
+//					if ib_changed_dwo_4edit then
+//						if ldw_focus.dynamic f_isgrid() then
+//							istr_actionpane[li_idx].s_visible_buttons = 'b_add;b_insert;b_modify;b_filteron;b_refresh;b_delete;b_unit_conversion;b_dosage;b_struct_comb;'
+//						else
+//							istr_actionpane[li_idx].s_visible_buttons = 'b_add;b_modify;b_filteron;b_refresh;b_delete;b_unit_conversion;b_dosage;b_struct_comb;'
+//						end if
+//					else
+//						if ldw_focus.dynamic f_isgrid() then
+//							istr_actionpane[li_idx].s_visible_buttons = 'b_add;b_insert;b_modify;b_filteron;b_refresh;b_delete;b_unit_conversion;b_dosage;b_struct_comb;'
+//						else
+//							istr_actionpane[li_idx].s_visible_buttons = 'b_add;b_modify;b_filteron;b_refresh;b_delete;b_unit_conversion;b_dosage;b_struct_comb;'
+//						end if
+//					end if
+//				else				
+//					if  ib_changed_dwo_4edit then
+//						istr_actionpane[li_idx].s_visible_buttons='b_add_multi;b_modify;b_filteron;b_refresh;b_delete;b_unit_conversion;b_dosage;b_struct_comb;b_web_sync;'
+//					else
+//						istr_actionpane[li_idx].s_visible_buttons='b_add_multi;b_modify;b_filteron;b_refresh;b_delete;b_unit_conversion;b_dosage;b_struct_comb;'
+//					end if
+//				end if
+//			elseif  istr_actionpane[li_idx].s_dwo_action = 'd_action_related_object' then
+//				istr_actionpane[li_idx].s_visible_buttons =  'b_so;b_goods_delivery;b_sal_invoice;b_po;b_goods_receipt;b_pur_invoice;'
+//			elseif  istr_actionpane[li_idx].s_dwo_action = 'd_action_manage' then	
+//				istr_actionpane[li_idx].s_visible_buttons =  'b_book; b_attach; b_note;b_user_trace;'
+//			elseif  istr_actionpane[li_idx].s_dwo_action = 'd_action_related_report' then			
+//				
+//			end if				
+//		NEXT
+//	end if
+//	iw_display.event e_ctrl_actionbutton()
+//end if
+//return 0
 
 
 //

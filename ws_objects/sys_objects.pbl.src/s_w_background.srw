@@ -256,6 +256,8 @@ if handle > 0 then
 		this.selectitem(handle)
 		if not l_tvi.expanded then this.post expanditem(handle)										
 		return 
+	elseif  upperbound(ls_parm) = 3 then
+		ls_parm[2] = ls_parm[3]		
 	end if
 	setpointer(hourglass!)
 	this.selectitem(handle)			
@@ -343,6 +345,8 @@ if handle > 0 then
 		this.selectitem(handle)
 		if not l_tvi.expanded then this.post expanditem(handle)										
 		return 
+	elseif  upperbound(ls_parm) = 3 then
+		ls_parm[2] = ls_parm[3]		
 	end if
 	setpointer(hourglass!)
 	this.selectitem(handle)			
@@ -400,6 +404,8 @@ if handle > 0 then
 		this.selectitem(handle)
 		if not l_tvi.expanded then this.post expanditem(handle)										
 		return 
+	elseif  upperbound(ls_parm) = 3 then
+		ls_parm[2] = ls_parm[3]		
 	end if
 	setpointer(hourglass!)
 	this.selectitem(handle)			
@@ -456,6 +462,8 @@ if handle > 0 then
 		this.selectitem(handle)
 		if not l_tvi.expanded then this.post expanditem(handle)										
 		return 
+	elseif  upperbound(ls_parm) = 3 then
+		ls_parm[2] = ls_parm[3]
 	end if
 	setpointer(hourglass!)
 	this.selectitem(handle)			

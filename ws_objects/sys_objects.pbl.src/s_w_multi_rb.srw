@@ -1863,7 +1863,15 @@ ii_dwfilter_header = integer(dw_filter.describe( "datawindow.header.height"))
 li_cnt = dw_filter.insertrow( 0)
 dw_filter.scrolltorow(li_cnt)
 ib_filter_on = true
-//dw_filter.f_retrieve_dwc_dwfilter( 'colname')
+if dw_filter.is_filter_type = '1'  then
+	if not this.ib_opening then
+		connect using it_transaction;
+	end if
+	dw_filter.f_retrieve_dwc_dwfilter_ex( 'colname', it_transaction)
+	if not this.ib_opening then
+		disconnect using it_transaction;
+	end if
+end if
 this.event e_filter_resize_new( )
 
 

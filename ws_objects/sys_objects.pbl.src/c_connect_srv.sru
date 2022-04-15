@@ -144,14 +144,10 @@ try
 	SQLCA.AutoCommit = False
 	SQLCA.DBParm = " CommitOnDisconnect='No', SQLCache=25, PBCatalogOwner='"+ ls_logid +"'"
 
-//messagebox('1',ls_servername)	
-
 	Connect using SQLCA; 
 
 	if sqlca.sqlcode = 0 then
-//		messagebox('b4 valid',ls_dbms)	
 		if this.f_isvalid_pwd( lsa_parm[2], lsa_parm[3]) then
-//			messagebox('valid',ls_dbms)	
 			return 1
 		else
 			messagebox('Thông báo - Information','Tên đăng nhập hoặc Mật mã không hợp lệ - Invalid UserName or Password')	
