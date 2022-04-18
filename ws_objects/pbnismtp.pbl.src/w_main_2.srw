@@ -1,14 +1,14 @@
-﻿$PBExportHeader$w_main.srw
+﻿$PBExportHeader$w_main_2.srw
 forward
-global type w_main from window
+global type w_main_2 from window
 end type
-type cb_cancel from commandbutton within w_main
+type cb_cancel from commandbutton within w_main_2
 end type
-type dw_adapters from datawindow within w_main
+type dw_adapters from datawindow within w_main_2
 end type
 end forward
 
-global type w_main from window
+global type w_main_2 from window
 integer width = 2423
 integer height = 1392
 boolean titlebar = true
@@ -20,21 +20,21 @@ boolean center = true
 cb_cancel cb_cancel
 dw_adapters dw_adapters
 end type
-global w_main w_main
+global w_main_2 w_main_2
 
 type variables
 n_adapter in_adapt
 
 end variables
 
-on w_main.create
+on w_main_2.create
 this.cb_cancel=create cb_cancel
 this.dw_adapters=create dw_adapters
 this.Control[]={this.cb_cancel,&
 this.dw_adapters}
 end on
 
-on w_main.destroy
+on w_main_2.destroy
 destroy(this.cb_cancel)
 destroy(this.dw_adapters)
 end on
@@ -57,7 +57,7 @@ Next
 
 end event
 
-type cb_cancel from commandbutton within w_main
+type cb_cancel from commandbutton within w_main_2
 integer x = 2011
 integer y = 1152
 integer width = 334
@@ -77,7 +77,7 @@ event clicked;Close(Parent)
 
 end event
 
-type dw_adapters from datawindow within w_main
+type dw_adapters from datawindow within w_main_2
 integer x = 37
 integer y = 32
 integer width = 2309

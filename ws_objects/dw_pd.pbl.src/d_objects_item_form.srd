@@ -48,6 +48,8 @@ table(column=(type=char(0) updatewhereclause=yes name=gutter dbname="gutter" )
  column=(type=char(50) updatewhereclause=yes name=barcode dbname="item_barcode.barcode" dbalias="ibc.barcode" )
  column=(type=char(20) updatewhereclause=yes name=location_code dbname="location.code" dbalias="l.code" )
  column=(type=char(10) updatewhereclause=yes name=abc_rank dbname="item.abc_rank" dbalias="i.abc_rank" )
+ column=(type=number updatewhereclause=yes name=item_id dbname="item.id" dbalias="i.id" )
+ column=(type=number updatewhereclause=yes name=item_barcode_id dbname="item_barcode.id" dbalias="ibc.id" )
  column=(type=char(4000) updatewhereclause=yes name=obj_search dbname="dwh_search.obj_search" dbalias=".obj_search" )
  retrieve="SELECT '' as gutter,
 object.id,
@@ -66,7 +68,7 @@ object.object_ref_id,
 object.object_ref_table,  
 object.object_ref_name,
 object.created_by,
-object.created_date,   
+object.created_date, 
 object.last_mdf_by,    
 object.last_mdf_date,
 object.note,
@@ -92,10 +94,12 @@ i.dosage_form,
 ibc.barcode,
 l.code,
 i.abc_rank,
+i.id,
+ibc.id,
 dwh_search.obj_search
 FROM OBJECT 
 Left join item i on i.object_ref_id = object.id
-left join item_barcode ibc on ibc.OBJECT_REF_ID = i.id
+left join item_barcode ibc on ibc.OBJECT_REF_ID = i.id and ibc.BARCODE_TYPE='vendor'
 left join rounding r on r.id= i.round_id
 left join uom u on u.id= i.stock_uom
 left join location l on l.id= object.location

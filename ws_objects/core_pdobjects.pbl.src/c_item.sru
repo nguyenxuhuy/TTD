@@ -338,32 +338,32 @@ istr_dwo[1].b_keyboardlocked = true
 istr_dwo[1].s_gb_name = 'gb_6'
 istr_dwo[1].s_description = 'sản phẩm - hàng hóa - dịch vụ'
 
-istr_dwo[2].s_dwo_default =  'd_item_form'
-istr_dwo[2].s_dwo_form = 'd_item_form'
-istr_dwo[2].s_dwo_grid = ''
-istr_dwo[2].b_detail = true
-istr_dwo[2].b_master = true
-istr_dwo[2].b_cascade_del = true
-istr_dwo[2].b_shared = false
-istr_dwo[2].s_dwo_master = 'd_objects_item_grid;'
-istr_dwo[2].s_dwo_details = 'd_item_purchase_price_grid;d_item_sales_price_grid;d_item_barcode_grid;d_item_catch_grid;d_coupon_serial_grid;'
-istr_dwo[2].s_master_keycol = 'ID;'
-istr_dwo[2].s_detail_keycol = 'OBJECT_REF_ID;'
-istr_dwo[2].b_ref_table_yn  = true
-istr_dwo[2].s_ref_table_field = 'OBJECT_REF_TABLE'
-istr_dwo[2].b_relation_1_1 = true
-istr_dwo[2].b_insert = true
-istr_dwo[2].b_update = true
-istr_dwo[2].b_delete = true
-istr_dwo[2].b_query = true
-istr_dwo[2].b_print = true
-istr_dwo[2].b_excel = true
-istr_dwo[2].b_traceable = true
-istr_dwo[2].b_keyboardlocked = true
-istr_dwo[2].b_focus_master = true
-istr_dwo[2].s_description = 'Thuộc tính sản phẩm'
-istr_dwo[2].s_pic_ref_table = ''
-istr_dwo[2].s_pic_ref_field = ''
+//istr_dwo[2].s_dwo_default =  'd_item_form'
+//istr_dwo[2].s_dwo_form = 'd_item_form'
+//istr_dwo[2].s_dwo_grid = ''
+//istr_dwo[2].b_detail = true
+//istr_dwo[2].b_master = true
+//istr_dwo[2].b_cascade_del = true
+//istr_dwo[2].b_shared = false
+//istr_dwo[2].s_dwo_master = 'd_objects_item_grid;'
+//istr_dwo[2].s_dwo_details = 'd_item_purchase_price_grid;d_item_sales_price_grid;d_item_barcode_grid;d_item_catch_grid;d_coupon_serial_grid;'
+//istr_dwo[2].s_master_keycol = 'ID;'
+//istr_dwo[2].s_detail_keycol = 'OBJECT_REF_ID;'
+//istr_dwo[2].b_ref_table_yn  = true
+//istr_dwo[2].s_ref_table_field = 'OBJECT_REF_TABLE'
+//istr_dwo[2].b_relation_1_1 = true
+//istr_dwo[2].b_insert = true
+//istr_dwo[2].b_update = true
+//istr_dwo[2].b_delete = true
+//istr_dwo[2].b_query = true
+//istr_dwo[2].b_print = true
+//istr_dwo[2].b_excel = true
+//istr_dwo[2].b_traceable = true
+//istr_dwo[2].b_keyboardlocked = true
+//istr_dwo[2].b_focus_master = true
+//istr_dwo[2].s_description = 'Thuộc tính sản phẩm'
+//istr_dwo[2].s_pic_ref_table = ''
+//istr_dwo[2].s_pic_ref_field = ''
 
 //istr_dwo[3].s_dwo_default =  'd_unit_conversion_grid'
 //istr_dwo[3].s_dwo_form = ''
@@ -1290,7 +1290,7 @@ call super::destroy
 end on
 
 event constructor;call super::constructor;ib_changed_dwo_4edit = true
-is_display_model = '2dgb_1tp'
+is_display_model = 'up_1d_lo_tb'
 ib_display_text = false
 is_object_title = 'Sản phẩm - hàng hóa - dịch vụ'
 
@@ -1424,7 +1424,7 @@ end event
 event e_window_e_preopen;call super::e_window_e_preopen;//--resize parm --//
 
 iw_display.dynamic f_set_ii_upperpart_height(1/2)
-iw_display.dynamic f_set_ii_fixedpart1_height(1/3*1/2)
+//iw_display.dynamic f_set_ii_fixedpart1_height(1/3*1/2)
 
 return 0
 end event
@@ -1636,72 +1636,6 @@ end if
 return ancestorreturnvalue
 end event
 
-event e_dw_e_postitemchanged;call super::e_dw_e_postitemchanged;t_dw_mpl		ldw_handle,ldw_barcode, ldw_unit_conversion
-double			ldb_stock_uom, ldb_round_id
-long				ll_insertrow
-
-if pos(rpo_dw.dataobject, 'd_objects_item_') > 0 or  rpo_dw.dataobject = 'd_item_form' then
-	if  rpo_dw.dataobject = 'd_objects_item_grid' then
-		ldw_handle = iw_display.dynamic f_get_dw('d_item_form')
-	else
-		ldw_handle = iw_display.dynamic f_get_dw('d_objects_item_grid')
-	end if
-	
-	if vs_colname = 'uom_code' then
-		ldb_stock_uom = rpo_dw.getitemnumber(vl_currentrow, 'stock_uom')
-		ldw_handle.setitem(ldw_handle.getrow(), 'stock_uom',ldb_stock_uom)
-		ldw_handle.setitem(ldw_handle.getrow(), 'uom_code',vs_editdata)		
-	elseif vs_colname = 'rounding_code' then
-		ldb_round_id = rpo_dw.getitemnumber(vl_currentrow, 'round_id')
-		ldw_handle.setitem(ldw_handle.getrow(), 'round_id',ldb_round_id)
-		ldw_handle.setitem(ldw_handle.getrow(), 'rounding_code',vs_editdata)			
-	elseif vs_colname = 'value_yn' then
-		ldw_handle.setitem(ldw_handle.getrow(), 'value_yn',vs_editdata )		
-		if vs_editdata = 'Y' then
-			ldw_handle.setitem(ldw_handle.getrow(), 'quantity_yn',vs_editdata )
-		end if
-	elseif vs_colname = 'quantity_yn' then
-		ldw_handle.setitem(ldw_handle.getrow(), 'quantity_yn',vs_editdata )			
-		if vs_editdata = 'N' or isnull(vs_editdata) then
-			ldw_handle.setitem(ldw_handle.getrow(), 'value_yn','N' )		
-		end if
-	elseif vs_colname = 'lot_yn' then
-		ldw_handle.setitem(ldw_handle.getrow(), 'lot_yn',vs_editdata )	
-	elseif vs_colname = 'manufacturers' then
-		ldw_handle.setitem(ldw_handle.getrow(), 'manufacturers',vs_editdata )
-	elseif vs_colname = 'spec_desc' then
-		ldw_handle.setitem(ldw_handle.getrow(), 'spec_desc',vs_editdata )
-	elseif vs_colname = 'ingredient' then
-		ldw_handle.setitem(ldw_handle.getrow(), 'ingredient',vs_editdata )
-	elseif vs_colname = 'origin' then
-		ldw_handle.setitem(ldw_handle.getrow(), 'origin',vs_editdata )		
-	elseif vs_colname = 'dosage_form' then
-		ldw_handle.setitem(ldw_handle.getrow(), 'dosage_form',vs_editdata )				
-	elseif vs_colname = 'min_stock' then
-		ldw_handle.setitem(ldw_handle.getrow(), 'min_stock',double(vs_editdata) )
-	elseif vs_colname = 'max_stock' then
-		ldw_handle.setitem(ldw_handle.getrow(), 'max_stock',double(vs_editdata) )
-	elseif vs_colname = 'barcode' then // -- DWBARCODE--//
-		ldw_barcode =  iw_display.dynamic f_get_dw('d_item_barcode_grid')
-		if vs_editdata <> '' and not isnull(vs_editdata) then			
-			if ldw_barcode.rowcount( ) = 0 then
-				connect using it_transaction;
-				ll_insertrow = ldw_barcode.event e_addrow( )
-				disconnect using it_transaction;
-			else
-				ll_insertrow = 1
-			end if
-			ldw_barcode.setitem(ll_insertrow, 'barcode',vs_editdata )
-		else
-			if ldw_barcode.rowcount( ) > 0 then
-				ldw_barcode.setitem(1, 'barcode',vs_editdata )
-			end if
-		end if
-	end if
-end if
-return 0
-end event
-
 event e_window_e_postsave;call super::e_window_e_postsave;double				ldb_from_unit_id
 t_dw_mpl			ldw_item
 
@@ -1748,5 +1682,66 @@ if rpo_dw.dataobject = 'd_item_form' then
 	end if
 end if
 return ancestorreturnvalue
+end event
+
+event e_dw_e_postsave;call super::e_dw_e_postsave;double		ldb_item_id, ldb_stock_uom, ldb_round_id, ldb_min_stock, ldb_max_stock, ldb_obj_id, ldb_barcode_id
+string			ls_value_yn, ls_quantity_yn, ls_lot_yn, ls_manufacturers, ls_ingredient, ls_spec_desc, ls_origin, ls_abc_rank, ls_barcode
+
+b_obj_instantiate		lbo_ins
+
+if rpo_dw.dataobject = 'd_objects_item_form' then
+	ldb_obj_id =  rpo_dw.getitemnumber(rpo_dw.getrow(), 'id') 
+	if ldb_obj_id > 0 then
+		//-- table ITEM --//
+		ldb_item_id = rpo_dw.getitemnumber(rpo_dw.getrow(), 'item_id') 
+		ldb_stock_uom = rpo_dw.getitemnumber(rpo_dw.getrow(), 'stock_uom') 
+		ldb_round_id = rpo_dw.getitemnumber(rpo_dw.getrow(), 'round_id') 
+		ldb_min_stock = rpo_dw.getitemnumber(rpo_dw.getrow(), 'min_stock') 
+		ldb_max_stock = rpo_dw.getitemnumber(rpo_dw.getrow(), 'max_stock') 
+		ls_value_yn = rpo_dw.getitemstring(rpo_dw.getrow(), 'value_yn') 
+		ls_quantity_yn = rpo_dw.getitemstring(rpo_dw.getrow(), 'quantity_yn') 		
+		ls_lot_yn = rpo_dw.getitemstring(rpo_dw.getrow(), 'lot_yn')
+		ls_manufacturers = rpo_dw.getitemstring(rpo_dw.getrow(), 'manufacturers')
+		ls_ingredient = rpo_dw.getitemstring(rpo_dw.getrow(), 'ingredient')
+		ls_spec_desc = rpo_dw.getitemstring(rpo_dw.getrow(), 'spec_desc')
+		ls_origin = rpo_dw.getitemstring(rpo_dw.getrow(), 'origin')
+		ls_abc_rank = rpo_dw.getitemstring(rpo_dw.getrow(), 'abc_rank')
+//		
+		if ldb_item_id > 0 then
+			//-- update--//		
+			UPDATE item 
+			set stock_uom = :ldb_stock_uom , round_id = :ldb_round_id, min_stock = :ldb_min_stock, 
+				 max_stock = :ldb_max_stock , value_yn = :ls_value_yn, quantity_yn = :ls_quantity_yn,
+				 lot_yn = :ls_lot_yn , manufacturers = :ls_manufacturers , ingredient = :ls_ingredient , spec_desc = :ls_spec_desc , origin = :ls_origin , abc_rank = :ls_abc_rank
+			where object_ref_id = :ldb_obj_id using it_transaction;
+		else
+			//-- insert--//
+			ldb_item_id = lbo_ins.f_Create_id_ex( it_transaction )
+			INSERT into item (id, object_ref_id, object_ref_Table, company_id, branch_id, created_by, created_Date, last_mdf_by, last_mdf_date,
+										stock_uom, round_id, min_stock, max_stock, value_yn, quantity_yn, lot_yn, manufacturers, ingredient, spec_desc, origin, abc_rank )
+			VALUES (:ldb_item_id, :ldb_obj_id, 'OBJECT',:gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,
+						:ldb_stock_uom, :ldb_round_id, :ldb_min_stock, :ldb_max_stock, :ls_value_yn, :ls_quantity_yn, :ls_lot_yn, :ls_manufacturers, :ls_ingredient, :ls_spec_desc, :ls_origin, :ls_abc_rank  )
+			using it_transaction;
+		end if
+		//-- table ITEM_BARCODE --//
+		ldb_barcode_id =  rpo_dw.getitemnumber(rpo_dw.getrow(), 'item_barcode_id') 
+		ls_barcode =  rpo_dw.getitemstring(rpo_dw.getrow(), 'barcode')
+		if ldb_barcode_id > 0 then
+			//-- update--//		
+			UPDATE item_barcode 
+			set barcode_type = 'vendor' , barcode = :ls_barcode
+			where object_ref_id = :ldb_obj_id using it_transaction;			
+		else
+			//-- insert--//
+			ldb_barcode_id = lbo_ins.f_Create_id_ex( it_transaction )
+			INSERT into item_barcode (id, object_ref_id, object_ref_Table, company_id, branch_id, created_by, created_Date, last_mdf_by, last_mdf_date,
+										barcode_type, barcode  )
+			VALUES (:ldb_barcode_id, :ldb_item_id, 'ITEM',:gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,
+						'vendor', :ls_barcode)
+			using it_transaction;			
+		end if
+	end if
+end if
+return 0
 end event
 
