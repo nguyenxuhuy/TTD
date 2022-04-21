@@ -170,6 +170,7 @@ event e_lose ( )
 event type integer e_copy_to_new ( string vs_btn_name )
 event type integer e_save4close ( )
 event type integer e_filteron_rb ( )
+event type integer e_filterswitch_rb ( )
 dw_2 dw_2
 tab_1 tab_1
 dw_4 dw_4
@@ -241,7 +242,7 @@ global s_w_multi_rb s_w_multi_rb
 
 type variables
 int ii_redraw
-
+boolean				ib_saving
 b_callback			ib_callback
 end variables
 
@@ -1832,6 +1833,91 @@ ldw_main = this.f_get_dwmain( )
 gb_filter.visible = true
 dw_filter.visible = true
 
+if dw_filter.is_filter_type = '' then dw_filter.is_filter_type = '1'
+
+if dw_filter.is_filter_type = '1' then //-- create DW --//
+	dw_filter.dataobject = 'd_filter_form'
+else
+	// Gan dataobject cho dw_filter//
+	if ldw_main.dynamic f_isgrid() then
+		li_cnt = ldw_main.f_get_colname_in_taborder( las_colname_in_taborder[])
+		ls_sql = "SELECT "
+		ls_presentation_str = "style(type=grid)"
+		FOR li_idx = 1 to li_cnt
+			if li_idx < li_cnt then	
+				ls_sql += "~'~' "+  las_colname_in_taborder[li_idx]+ ','
+			else
+				ls_sql += "~'~' " +  las_colname_in_taborder[li_idx]+ ' FROM dual '
+			end if
+		NEXT
+		if not ib_saving and not ib_opening then
+			connect using it_transaction;
+		end if
+		ls_dwsyntax = it_transaction.SyntaxFromSQL(ls_sql, ls_presentation_str, ls_err)
+		if not ib_saving and not ib_opening then
+			disconnect using it_transaction;
+		end if
+		dw_filter.Create(ls_dwsyntax, ls_err)		
+		dw_filter.bringtotop = true
+//		dw_filter.f_set_editable_4_filter( true)	
+	end if	
+end if
+
+ii_dwfilter_header = integer(dw_filter.describe( "datawindow.header.height"))
+
+li_cnt = dw_filter.insertrow( 0)
+dw_filter.scrolltorow(li_cnt)
+ib_filter_on = true
+if dw_filter.is_filter_type = '1'  then
+	if not this.ib_opening and  not ib_saving then
+		connect using it_transaction;
+	end if
+	dw_filter.f_retrieve_dwc_dwfilter_ex( 'colname', it_transaction)
+	if not this.ib_opening and  not ib_saving then
+		disconnect using it_transaction;
+	end if
+end if
+this.event e_filter_resize_new( )
+
+
+//--resize window--//
+ls_display_model = ic_obj_handling.dynamic f_get_display_model()
+this.f_resize(ls_display_model )
+
+if dw_filter.is_filter_type = '1' then
+	if isvalid( ic_obj_handling.ids_filter_data) then
+		if ic_obj_handling.ids_filter_data.rowcount( ) = 1 then
+			dw_filter.reset( )
+			ic_obj_handling.ids_filter_data.rowscopy(1,1,primary!,dw_filter, 1,primary!)
+		end if
+	end if
+end if
+
+//this.event e_ctrl_actionbutton( )
+//this.event e_display_actionbutton( )
+
+//-- set dw focus để chuẩn bị xử lý các chuổi đặt biệt của datetime và number--//
+//ldw_focus = dw_filter
+//dw_filter.inv_querymode.f_setdwfocus( ldw_focus)
+
+return 0
+end event
+
+event type integer e_filterswitch_rb();//-- override--//
+
+t_dw_mpl			ldw_main
+c_string				lc_string
+t_dw					ldw_focus
+int						li_cnt, li_idx
+long					ll_currow
+string					las_colname_in_taborder[], ls_dwsyntax, ls_err, ls_vpos_max, ls_vpos,ls_display_model
+string					ls_presentation_str, ls_sql
+
+// Gan dataobject cho dw_filter//
+ldw_main = this.f_get_dwmain( )
+gb_filter.visible = true
+dw_filter.visible = true
+
 if dw_filter.is_filter_type = '1' then //-- create DW --//
 	dw_filter.is_filter_type = '2'
 	// Gan dataobject cho dw_filter//
@@ -1846,9 +1932,13 @@ if dw_filter.is_filter_type = '1' then //-- create DW --//
 				ls_sql += "~'~' " +  las_colname_in_taborder[li_idx]+ ' FROM dual '
 			end if
 		NEXT
-		connect using it_transaction;
+		if not ib_saving and not ib_opening then
+			connect using it_transaction;
+		end if
 		ls_dwsyntax = it_transaction.SyntaxFromSQL(ls_sql, ls_presentation_str, ls_err)
-		disconnect using it_transaction;
+		if not ib_saving and not ib_opening then
+			disconnect using it_transaction;
+		end if
 		dw_filter.Create(ls_dwsyntax, ls_err)		
 		dw_filter.bringtotop = true
 //		dw_filter.f_set_editable_4_filter( true)	
@@ -1864,11 +1954,11 @@ li_cnt = dw_filter.insertrow( 0)
 dw_filter.scrolltorow(li_cnt)
 ib_filter_on = true
 if dw_filter.is_filter_type = '1'  then
-	if not this.ib_opening then
+	if not this.ib_opening and  not ib_saving then
 		connect using it_transaction;
 	end if
 	dw_filter.f_retrieve_dwc_dwfilter_ex( 'colname', it_transaction)
-	if not this.ib_opening then
+	if not this.ib_opening and  not ib_saving then
 		disconnect using it_transaction;
 	end if
 end if
@@ -7175,10 +7265,12 @@ int li_rtn
 t_dw_mpl		ldw_main
 
 connect using it_transaction;
+ib_saving = true
 
 li_rtn = this.event e_save4close( )
 if li_rtn = -1 then
 	disconnect using it_transaction;
+	ib_saving = false
 	return -1
 end if
 //-- close edit --//
@@ -7187,17 +7279,18 @@ if ic_obj_handling.dynamic f_is_changed_dwo_4edit()  then
 	if isvalid(ldw_main) then
 		ldw_main.f_close_edit()
 	else
+		ib_saving = false
 		return -1
 	end if		
 	
-	this.event e_filteron_new( )
+	this.event e_filteron_rb( )
 //	-- set lại filter data nếu có--//
 	this.f_filter_dwmain_new( )	
 	
 end if
 ic_obj_handling.event e_window( 'e_saveclose')
 disconnect using it_transaction;
-
+ib_saving = false
 return li_rtn
 end event
 

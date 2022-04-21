@@ -437,7 +437,7 @@ dw_filter.height = gb_filter.height - 76
 
 //-- modify display --//
 
-if ldw_main.f_isgrid() and li_rtn = 0 then
+if ldw_main.f_isgrid() and li_rtn = 0 and  dw_filter.is_filter_type = '2' then
 	ldw_main.f_get_colname_in_taborder(las_colname_in_taborder[])
 	this.event e_filter_modify_display( las_colname_in_taborder[]) // new không dùng --//
 end if

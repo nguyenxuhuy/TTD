@@ -1392,7 +1392,7 @@ choose case itemtag
 				if lw_active.ib_filter_on then
 					lw_active.triggerevent( 'e_filteroff')
 				else
-					lw_active.triggerevent( 'e_filteron_rb')
+					lw_active.triggerevent( 'e_filterswitch_rb')
 				end if
 			end if
 		end if

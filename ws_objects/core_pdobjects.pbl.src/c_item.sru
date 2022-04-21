@@ -320,12 +320,12 @@ istr_dwo[1].s_dwo_grid = 'd_objects_item_grid'
 istr_dwo[1].b_master = true
 istr_dwo[1].b_detail = false
 istr_dwo[1].b_cascade_del = true
-istr_dwo[1].s_dwo_details = 'd_item_form;d_item_spec_grid;d_item_link_grid;d_unit_conversion_grid;'
+istr_dwo[1].s_dwo_details = 'd_item_spec_grid;d_item_barcode_grid;d_item_link_grid;'
 istr_dwo[1].s_dwo_shared = ''
 istr_dwo[1].s_dwo_master = ''
 istr_dwo[1].s_master_keycol = ''
 istr_dwo[1].s_detail_keycol = ''
-istr_dwo[1].b_ref_table_yn  = true
+istr_dwo[1].b_ref_table_yn  = false
 istr_dwo[1].s_ref_table_field = 'OBJECT_REF_TABLE;'
 istr_dwo[1].b_insert = true
 istr_dwo[1].b_update = true
@@ -742,7 +742,7 @@ public subroutine f_set_dwo_tabpage ();iastr_dwo_tabpage[1].s_tp_name = 's_tp_mu
 iastr_dwo_tabpage[1].s_display_model ='1d'
 //iastr_dwo_tabpage[1].i_upperpart_height  =730
 iastr_dwo_tabpage[1].str_dwo[1].s_dwo_default =  'd_item_spec_grid'
-iastr_dwo_tabpage[1].str_dwo[1].s_dwo_form = 'd_item_spec_form'
+iastr_dwo_tabpage[1].str_dwo[1].s_dwo_form = ''
 iastr_dwo_tabpage[1].str_dwo[1].s_dwo_grid = 'd_item_spec_grid'
 iastr_dwo_tabpage[1].str_dwo[1].b_master = false
 iastr_dwo_tabpage[1].str_dwo[1].b_detail = true
@@ -774,7 +774,7 @@ iastr_dwo_tabpage[2].str_dwo[1].s_dwo_grid = 'd_item_barcode_grid'
 iastr_dwo_tabpage[2].str_dwo[1].b_master = false
 iastr_dwo_tabpage[2].str_dwo[1].b_detail = true
 iastr_dwo_tabpage[2].str_dwo[1].b_cascade_del = true
-iastr_dwo_tabpage[2].str_dwo[1].s_dwo_master = 'd_item_form;'
+iastr_dwo_tabpage[2].str_dwo[1].s_dwo_master = 'd_objects_item_grid;'
 iastr_dwo_tabpage[2].str_dwo[1].s_dwo_details = ''
 iastr_dwo_tabpage[2].str_dwo[1].s_dwo_shared = ''
 iastr_dwo_tabpage[2].str_dwo[1].s_master_keycol = 'ID;'
@@ -801,7 +801,7 @@ iastr_dwo_tabpage[3].str_dwo[1].s_dwo_grid = 'd_item_catch_grid'
 iastr_dwo_tabpage[3].str_dwo[1].b_master = false
 iastr_dwo_tabpage[3].str_dwo[1].b_detail = true
 iastr_dwo_tabpage[3].str_dwo[1].b_cascade_del = true
-iastr_dwo_tabpage[3].str_dwo[1].s_dwo_master = 'd_item_form;'
+iastr_dwo_tabpage[3].str_dwo[1].s_dwo_master = 'd_objects_item_grid;'
 iastr_dwo_tabpage[3].str_dwo[1].s_dwo_details = ''
 iastr_dwo_tabpage[3].str_dwo[1].s_dwo_shared = ''
 iastr_dwo_tabpage[3].str_dwo[1].s_master_keycol = 'ID;'
@@ -1617,7 +1617,7 @@ return 0
 end event
 
 event e_dw_e_predelete;call super::e_dw_e_predelete;t_dw_mpl		ldw_main
-double			ldb_spec
+double			ldb_spec, ldb_item_id
 int					li_cnt
 if rpo_dw.dataobject = 'd_item_spec_grid' then
 	ldb_spec = rpo_dw.getitemnumber(vl_currentrow, 'ID')
@@ -1631,6 +1631,18 @@ if rpo_dw.dataobject = 'd_item_spec_grid' then
 		gf_messagebox('m.e_dw_e_preinsertrow.01','Thông báo','Mặt hàng đã có giao dịch, không thể xoá quy cách','exclamation','ok',1)
 		return -1
 	end if	
+elseif pos(rpo_dw.dataobject, 'd_objects_item_') > 0 then
+	ldb_item_id  = rpo_dw.getitemnumber(vl_currentrow, 'ID')
+//	connect using it_transaction;
+	select count(id)
+	into :li_cnt
+	  from stream_value
+	 where  item_id = :ldb_item_id using it_transaction ;
+//	disconnect using it_transaction;
+	 if li_cnt> 0 then
+		gf_messagebox('m.e_dw_e_preinsertrow.01','Thông báo','Mặt hàng đã có giao dịch, không thể xoá quy cách','exclamation','ok',1)
+		return -1
+	end if		
 end if
 
 return ancestorreturnvalue
@@ -1639,18 +1651,18 @@ end event
 event e_window_e_postsave;call super::e_window_e_postsave;double				ldb_from_unit_id
 t_dw_mpl			ldw_item
 
-if vi_save_return = -1 then return -1
-if ib_addnew then
-	ib_addnew = false
-	ldw_item = iw_display.f_get_dw( 'd_item_form')
-	ldb_from_unit_id = ldw_item.getitemnumber(ldw_item.getrow() , 'from_unit_id')
-	if isnull(ldb_from_unit_id) then
-		if gf_messagebox('m.c_item.e_window_e_postsave.01','Xác nhận','Bạn có cần thêm quy đổi đơn vị không?','question','yesno',1) = 1 then
-			this.event e_action_unit_conversion( )
-			iw_display.iw_child.is_opentype = 'auto'
-		end if
-	end if
-end if
+//if vi_save_return = -1 then return -1
+//if ib_addnew then
+//	ib_addnew = false
+//	ldw_item = iw_display.f_get_dw( 'd_item_form')
+//	ldb_from_unit_id = ldw_item.getitemnumber(ldw_item.getrow() , 'from_unit_id')
+//	if isnull(ldb_from_unit_id) then
+//		if gf_messagebox('m.c_item.e_window_e_postsave.01','Xác nhận','Bạn có cần thêm quy đổi đơn vị không?','question','yesno',1) = 1 then
+//			this.event e_action_unit_conversion( )
+//			iw_display.iw_child.is_opentype = 'auto'
+//		end if
+//	end if
+//end if
 return ancestorreturnvalue
 end event
 
@@ -1660,28 +1672,6 @@ ls_first_colname =  iw_display.dw_filter.f_getfirstcolumn( true)
 iw_display.f_set_idwfocus(  iw_display.dw_filter)
 li_rtn = iw_display.idw_focus.setcolumn( ls_first_colname)
 return li_rtn
-end event
-
-event e_dw_e_save;call super::e_dw_e_save;double 	ldb_to_coefficient, ldb_from_unit_id, ldb_item_id, ldb_stock_uom
-
-if rpo_dw.dataobject = 'd_item_form' then
-	ldb_to_coefficient = rpo_dw.getitemnumber(rpo_dw.getrow(), 'to_coefficient')
-	ldb_from_unit_id = rpo_dw.getitemnumber(rpo_dw.getrow(), 'FROM_UNIT_ID')
-	ldb_item_id = rpo_dw.getitemnumber(rpo_dw.getrow(), 'object_ref_id')
-	ldb_stock_uom = rpo_dw.getitemnumber(rpo_dw.getrow(), 'stock_uom')
-	if ldb_from_unit_id > 0 and ldb_item_id > 0 then
-//		connect using it_transaction;
-		UPDATE unit_conversion set to_coefficient = :ldb_to_coefficient where item_id = :ldb_item_id and from_unit_id = :ldb_from_unit_id using it_transaction;
-		if it_transaction.sqlnrows = 0 then
-			INSERT into unit_conversion (id, item_id, FROM_COEFFICIENT, FROM_UNIT_ID, TO_COEFFICIENT, TO_UNIT_ID, COMPANY_ID, BRANCH_ID, CREATED_BY, CREATED_DATE, LAST_MDF_BY, LAST_MDF_DATE)
-			SELECT SEQ_TABLE_ID.nextval, :ldb_item_id, 1, :ldb_from_unit_id, :ldb_to_coefficient, :ldb_stock_uom, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate from dual
-			using it_transaction;
-
-		end if
-//		disconnect using it_transaction;
-	end if
-end if
-return ancestorreturnvalue
 end event
 
 event e_dw_e_postsave;call super::e_dw_e_postsave;double		ldb_item_id, ldb_stock_uom, ldb_round_id, ldb_min_stock, ldb_max_stock, ldb_obj_id, ldb_barcode_id
@@ -1726,19 +1716,21 @@ if rpo_dw.dataobject = 'd_objects_item_form' then
 		//-- table ITEM_BARCODE --//
 		ldb_barcode_id =  rpo_dw.getitemnumber(rpo_dw.getrow(), 'item_barcode_id') 
 		ls_barcode =  rpo_dw.getitemstring(rpo_dw.getrow(), 'barcode')
-		if ldb_barcode_id > 0 then
-			//-- update--//		
-			UPDATE item_barcode 
-			set barcode_type = 'vendor' , barcode = :ls_barcode
-			where object_ref_id = :ldb_obj_id using it_transaction;			
-		else
-			//-- insert--//
-			ldb_barcode_id = lbo_ins.f_Create_id_ex( it_transaction )
-			INSERT into item_barcode (id, object_ref_id, object_ref_Table, company_id, branch_id, created_by, created_Date, last_mdf_by, last_mdf_date,
-										barcode_type, barcode  )
-			VALUES (:ldb_barcode_id, :ldb_item_id, 'ITEM',:gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,
-						'vendor', :ls_barcode)
-			using it_transaction;			
+		if not isnull(ls_barcode) and ls_barcode <> '' then
+			if ldb_barcode_id > 0 then
+				//-- update--//		
+				UPDATE item_barcode 
+				set barcode_type = 'vendor' , barcode = :ls_barcode
+				where object_ref_id = :ldb_obj_id using it_transaction;			
+			else
+				//-- insert--//
+				ldb_barcode_id = lbo_ins.f_Create_id_ex( it_transaction )
+				INSERT into item_barcode (id, object_ref_id, object_ref_Table, company_id, branch_id, created_by, created_Date, last_mdf_by, last_mdf_date,
+											barcode_type, barcode  )
+				VALUES (:ldb_barcode_id, :ldb_obj_id, 'OBJECT',:gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,
+							'vendor', :ls_barcode)
+				using it_transaction;			
+			end if
 		end if
 	end if
 end if
