@@ -1413,8 +1413,8 @@ end event
 event e_item_barcode;call super::e_item_barcode;c_string				lc_string
 string					ls_obj_name
 
-ls_obj_name = lc_string.f_globalreplace( vs_btn_name, 'b_', 'ur_')
-iw_display.f_openchildwithparm( 's_w_multi_n', ls_obj_name+';0')
+//ls_obj_name = lc_string.f_globalreplace( vs_btn_name, 'b_', 'ur_')
+//iw_display.f_openchildwithparm( 's_w_multi_n', ls_obj_name+';0')
 return 0
 end event
 
