@@ -551,7 +551,11 @@ li_rc = this.getchilditemcount( l_rgi.itemhandle )
 FOR li_idx = 1 to li_rc
 	this.getchilditembyindex( l_rgi.itemhandle, li_idx , l_rsbi)
 	if  l_rsbi.tag= 'e_refresh'or  l_rsbi.tag = 'e_filter' then
-		l_rsbi.enabled =  true
+		if vb_editing then
+			l_rsbi.enabled =  false
+		else
+			l_rsbi.enabled =  true
+		end if
 	else
 		if vs_type = 'document' then
 			if vs_doc_status = '' or isnull(vs_doc_status)  then
@@ -589,9 +593,9 @@ FOR li_idx = 1 to li_rc
 			if vb_detail and vb_change_4_edit then
 				if isnull(vs_doc_status)  then
 					choose case l_rsbi.tag
-						case 'e_add','e_insert'
+						case 'e_add','e_insert','e_save','e_delete'
 							l_rsbi.enabled =  vb_updatable and vb_editing and pos(vs_enable_buttons, 'e_add;')>0
-						case 'e_modify','e_save','e_delete'
+						case 'e_modify' 
 							l_rsbi.enabled =  false
 					end choose
 				else

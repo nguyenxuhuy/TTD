@@ -136,6 +136,8 @@ type rb_3 from t_rb within s_w_multi_rb
 end type
 type czkem from olecustomcontrol within s_w_multi_rb
 end type
+type rte_1 from t_rte within s_w_multi_rb
+end type
 end forward
 
 global type s_w_multi_rb from s_w_main
@@ -237,6 +239,7 @@ rb_1 rb_1
 rb_2 rb_2
 rb_3 rb_3
 czkem czkem
+rte_1 rte_1
 end type
 global s_w_multi_rb s_w_multi_rb
 
@@ -6642,6 +6645,7 @@ this.rb_1=create rb_1
 this.rb_2=create rb_2
 this.rb_3=create rb_3
 this.czkem=create czkem
+this.rte_1=create rte_1
 iCurrent=UpperBound(this.Control)
 this.Control[iCurrent+1]=this.dw_2
 this.Control[iCurrent+2]=this.tab_1
@@ -6709,6 +6713,7 @@ this.Control[iCurrent+63]=this.rb_1
 this.Control[iCurrent+64]=this.rb_2
 this.Control[iCurrent+65]=this.rb_3
 this.Control[iCurrent+66]=this.czkem
+this.Control[iCurrent+67]=this.rte_1
 end on
 
 on s_w_multi_rb.destroy
@@ -6779,6 +6784,7 @@ destroy(this.rb_1)
 destroy(this.rb_2)
 destroy(this.rb_3)
 destroy(this.czkem)
+destroy(this.rte_1)
 end on
 
 event e_print;call super::e_print;t_dw	ldw_print
@@ -10070,6 +10076,17 @@ fontpitch fontpitch = variable!
 fontfamily fontfamily = swiss!
 string facename = "Tahoma"
 long textcolor = 33554432
+end type
+
+type rte_1 from t_rte within s_w_multi_rb
+boolean visible = false
+integer x = 2313
+integer y = 120
+integer height = 352
+integer taborder = 10
+boolean bringtotop = true
+boolean border = false
+borderstyle borderstyle = StyleBox!
 end type
 
 

@@ -34,7 +34,7 @@ end variables
 
 global type ttd from application
 string appname = "ttd"
-string themepath = "C:\Users\huyxnguyen\Documents\Core21\theme"
+string themepath = "theme"
 string themename = "Do Not Use Themes"
 boolean nativepdfvalid = false
 boolean nativepdfincludecustomfont = false

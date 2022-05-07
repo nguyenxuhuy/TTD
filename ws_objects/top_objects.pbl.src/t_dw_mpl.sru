@@ -12,7 +12,7 @@ boolean hscrollbar = true
 boolean vscrollbar = true
 boolean hsplitscroll = true
 boolean livescroll = true
-borderstyle borderstyle = stylebox!
+borderstyle borderstyle = StyleShadowBox!
 event type long e_insertrow ( )
 event type integer e_preinsertrow ( )
 event type long e_postinsertrow ( long al_row )
@@ -5439,9 +5439,9 @@ if this.f_getparentwindow( lw_parent) = 1 then
 			end if	
 			//-- resize filter --//
 			if lw_parent.dynamic f_is_filter_on() then
-				lw_parent.dynamic event e_filter_resize()
+				lw_parent.dynamic event e_filter_resize_new()
 			end if									
-			this.f_set_properties( )
+//			this.f_set_properties( )
 			this.settransobject( lt_transaction)			
 			this.f_create_navigate_bttn( )
 			this.object.datawindow.color = rgb(255,255,255)
@@ -5455,7 +5455,7 @@ if this.f_getparentwindow( lw_parent) = 1 then
 			ll_rowcnt = this.event e_retrieve( )
 			disconnect using lt_transaction;
 			if lw_parent.dynamic f_is_filter_on() then
-				lw_parent.dynamic f_filter_dwmain()	
+				lw_parent.dynamic f_filter_dwmain_new()	
 			end if	
 			
 			if ll_rowcnt > 1 then

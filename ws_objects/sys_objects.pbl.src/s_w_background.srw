@@ -584,7 +584,7 @@ integer y = 280
 integer width = 3781
 integer height = 1344
 integer transparency = 80
-string picturename = "C:\Users\huyxnguyen\Documents\demo_19r3\Pics\bamboo-2.png"
+string picturename = "Pics\bamboo-2.png"
 boolean focusrectangle = false
 end type
 

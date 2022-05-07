@@ -15,10 +15,11 @@ end variables
 
 forward prototypes
 public subroutine f_set_dwo_window ()
+public function integer f_get_dw_retrieve_args (ref datawindow rdw_focus, ref any ra_args[])
 end prototypes
 
 public subroutine f_set_dwo_window ();istr_dwo[1].s_dwo_default =  'd_object_book_grid'
-istr_dwo[1].s_dwo_form = 'd_object_book_form'
+istr_dwo[1].s_dwo_form = ''
 istr_dwo[1].s_dwo_grid = 'd_object_book_grid'
 istr_dwo[1].b_master = true
 istr_dwo[1].b_cascade_del = true
@@ -31,7 +32,7 @@ istr_dwo[1].b_print = true
 istr_dwo[1].b_excel = true
 istr_dwo[1].b_traceable = true
 istr_dwo[1].b_keyboardlocked = true
-istr_dwo[1].s_description = 'Bộ sổ của'
+istr_dwo[1].s_description = 'Bộ sổ của:'
 
 istr_dwo[2].s_dwo_default =  'd_object_book_detail_grid'
 istr_dwo[2].s_dwo_form = ''
@@ -73,6 +74,13 @@ istr_dwo[3].b_keyboardlocked = true
 istr_dwo[3].b_focus_master = false
 istr_dwo[3].s_description = ''
 end subroutine
+
+public function integer f_get_dw_retrieve_args (ref datawindow rdw_focus, ref any ra_args[]);
+if rdw_focus.dataobject = 'd_object_book_grid' then
+	ra_args[1] = gi_userid
+end if
+return 1
+end function
 
 on c_book.create
 call super::create
@@ -177,7 +185,7 @@ int 			li_idx
 t_transaction 	lt_transaction
 
 if AncestorReturnValue = 1 then return 1
-if rpo_dw.dataobject = 'd_object_book_grid' or rpo_dw.dataobject = 'd_object_book_form' then
+if rpo_dw.dataobject = 'd_object_book_grid'  then
 	if vs_colname = 'default_yn' then
 		if vs_editdata = 'Y' then
 			li_idx = rpo_dw.find("default_yn ='Y'", 1, rpo_dw.rowcount())
@@ -400,37 +408,37 @@ return 1
 end event
 
 event e_dw_e_presave;call super::e_dw_e_presave;//--chỉ insert dòng nào có điều kiện--//
-int					li_idx
-string				ls_criteria,ls_default_yn,ls_dataobject,ls_obj
-window			lw_parent
-datawindow		ldw_detail
-
-t_transaction		lc_transaction
-s_object_display	lod_handle_parent
-
-setnull(ls_criteria)
-if mid(rpo_dw.dataobject,1,len(rpo_dw.dataobject)-5) = 'd_object_book' then
-	ldw_detail = iw_display.dynamic f_get_dw('d_object_book_detail_grid')
-	for li_idx = ldw_detail.rowcount( ) to 1 step -1
-		if trim(ldw_detail.getitemstring( li_idx, 'criteria')) = '' or isnull(ldw_detail.getitemstring( li_idx, 'criteria')) then
-			ldw_detail.deleterow( li_idx)
-		end if
-	next
-	ls_default_yn = rpo_dw.getitemstring(rpo_dw.getrow(),'default_yn')
-	if isnull(ls_default_yn) then ls_default_yn = 'N'
-	if ls_default_yn = 'Y' then
-		lw_parent = iw_display.f_getparentwindow()
-		lod_handle_parent = lw_parent.dynamic f_get_obj_handling()
-		ls_dataobject = lod_handle_parent.f_get_main_dwo()
-		ls_dataobject = mid(ls_dataobject,1,len(ls_dataobject)-5)
-		ls_obj = lod_handle_parent.classname()
-		iw_display.f_get_transaction( lc_transaction)
-		update record_access_hdr
-		set record_access_hdr.default_yn = 'N'
-		where default_yn = 'Y'
-            		and dwo = :ls_dataobject and object = :ls_obj using lc_transaction;
-	end if
-end if
+//int					li_idx
+//string				ls_criteria,ls_default_yn,ls_dataobject,ls_obj
+//window			lw_parent
+//datawindow		ldw_detail
+//
+//t_transaction		lc_transaction
+//s_object_display	lod_handle_parent
+//
+//setnull(ls_criteria)
+//if mid(rpo_dw.dataobject,1,len(rpo_dw.dataobject)-5) = 'd_object_book' then
+//	ldw_detail = iw_display.dynamic f_get_dw('d_object_book_detail_grid')
+//	for li_idx = ldw_detail.rowcount( ) to 1 step -1
+//		if trim(ldw_detail.getitemstring( li_idx, 'criteria')) = '' or isnull(ldw_detail.getitemstring( li_idx, 'criteria')) then
+//			ldw_detail.deleterow( li_idx)
+//		end if
+//	next
+//	ls_default_yn = rpo_dw.getitemstring(rpo_dw.getrow(),'default_yn')
+//	if isnull(ls_default_yn) then ls_default_yn = 'N'
+//	if ls_default_yn = 'Y' then
+//		lw_parent = iw_display.f_getparentwindow()
+//		lod_handle_parent = lw_parent.dynamic f_get_obj_handling()
+//		ls_dataobject = lod_handle_parent.f_get_main_dwo()
+//		ls_dataobject = mid(ls_dataobject,1,len(ls_dataobject)-5)
+//		ls_obj = lod_handle_parent.classname()
+//		iw_display.f_get_transaction( lc_transaction)
+//		update record_access_hdr
+//		set record_access_hdr.default_yn = 'N'
+//		where default_yn = 'Y'
+//            		and dwo = :ls_dataobject and object = :ls_obj using lc_transaction;
+//	end if
+//end if
 return 1
 end event
 
@@ -440,7 +448,7 @@ return 1
 end event
 
 event e_dw_e_predelete;call super::e_dw_e_predelete;if mid(rpo_dw.dataobject,1,len(rpo_dw.dataobject)-5) = 'd_object_book' then
-	gf_messagebox('m.c_book.e_dw_e_predelete.01','Thông báo','Chưa cài đặt bộ mặc định','exclamation','ok',1)
+	gf_messagebox('m.c_book.e_dw_e_predelete.01','Thông báo','Chưa cài đặt bộ sổ mặc định','exclamation','ok',1)
 	return -1
 end if
 return vl_currentrow
