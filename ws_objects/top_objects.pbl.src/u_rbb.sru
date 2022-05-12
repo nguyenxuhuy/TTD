@@ -232,7 +232,53 @@ IF li_rc = 1 THEN
 		Case "ribbonlargebuttonitem"
 
 			largebutton = po			
-			
+			if largebutton.tag = 'e_modify' then
+				largebutton.tag = 'e_save'
+				largebutton.picturename = 'SaveBig!'
+				largebutton.shortcut = "Ctrl+S"
+				largebutton.powertipdescription = "Lưu Ctrl+S"
+				largebutton.text = 'Lưu'
+				this.setlargebutton(al_handle , largebutton)
+			elseif largebutton.tag = 'e_save' then
+				largebutton.tag = 'e_modify'
+				largebutton.picturename = 'ModifySmall!'
+				largebutton.shortcut = "Ctrl+M"
+				largebutton.text = 'Chỉnh sửa'				
+				largebutton.powertipdescription = "Chỉnh sửa Ctrl+M"
+				this.setlargebutton(al_handle , largebutton)		
+			elseif  largebutton.tag = 'e_add' or largebutton.tag = 'e_insert'  then
+				this.getitembytag(  'e_modify', po)
+				largebutton = po 
+				largebutton.tag = 'e_save'
+				largebutton.picturename = 'SaveBig!'
+				largebutton.shortcut = "Ctrl+S"
+				largebutton.powertipdescription = "Lưu Ctrl+S"
+				largebutton.text = 'Lưu'
+				this.setlargebutton(largebutton.itemhandle , largebutton)				
+			elseif largebutton.tag = 'e_post' then
+				largebutton.tag = 'e_unpost'
+				largebutton.picturename = 'Custom094!'
+				largebutton.shortcut = ""
+				largebutton.powertipdescription = "Sửa ghi sổ"
+				largebutton.text = 'Sửa ghi sổ'
+				this.setlargebutton(al_handle , largebutton)							
+			elseif largebutton.tag = 'e_unpost' then
+				largebutton.tag = 'e_post'
+				largebutton.picturename = 'Edit!'
+				largebutton.shortcut = "Ctrl+G"
+				largebutton.powertipdescription = "Ghi sổ Ctrl+G"
+				largebutton.text = 'Ghi sổ'
+				this.setlargebutton(al_handle , largebutton)			
+			elseif largebutton.tag = 'e_filter' then
+				if largebutton.picturename = 'filterbig!' then
+					largebutton.picturename = 'Pics\filter4.jpg'
+				else
+					largebutton.picturename = 'filterbig!'
+				end if
+				this.setlargebutton(al_handle , largebutton)						
+			elseif largebutton.tag = 'e_send_2_approve' then
+			elseif largebutton.tag = 'e_request_2_change' then
+			end if			
 		Case "ribbontabbuttonitem"			
 			tabbutton = po
 
@@ -550,7 +596,7 @@ this.getchilditembyindex( vrpi_action.itemhandle, 1, l_rgi)
 li_rc = this.getchilditemcount( l_rgi.itemhandle )
 FOR li_idx = 1 to li_rc
 	this.getchilditembyindex( l_rgi.itemhandle, li_idx , l_rsbi)
-	if  l_rsbi.tag= 'e_refresh'or  l_rsbi.tag = 'e_filter' then
+	if  l_rsbi.tag= 'e_refresh'or  l_rsbi.tag = 'e_filter' or   l_rsbi.tag = 'e_book' then
 		if vb_editing then
 			l_rsbi.enabled =  false
 		else
@@ -591,12 +637,16 @@ FOR li_idx = 1 to li_rc
 		elseif vs_type = 'detail' then
 		elseif vs_type = 'object' then
 			if vb_detail and vb_change_4_edit then
-				if isnull(vs_doc_status)  then
+				if isnull(vs_doc_status) or vs_doc_status = ''  then
 					choose case l_rsbi.tag
-						case 'e_add','e_insert','e_save','e_delete'
-							l_rsbi.enabled =  vb_updatable and vb_editing and pos(vs_enable_buttons, 'e_add;')>0
+						case 'e_add','e_insert'
+							l_rsbi.enabled =  vb_updatable and vb_editing and pos(vs_enable_buttons, l_rsbi.tag+';')>0
 						case 'e_modify' 
-							l_rsbi.enabled =  false
+							l_rsbi.enabled =  not vb_editing and vb_updatable
+						case 'e_save'
+							l_rsbi.enabled =  vb_editing and vb_updatable
+						case 'e_delete'
+							l_rsbi.enabled =  vb_updatable and vb_editing and pos(vs_enable_buttons, l_rsbi.tag+';')>0
 					end choose
 				else
 					choose case l_rsbi.tag
@@ -608,7 +658,20 @@ FOR li_idx = 1 to li_rc
 							l_rsbi.enabled =  vb_updatable
 					end choose	
 				end if						
-			else 
+			elseif  vb_detail and not vb_change_4_edit then
+				if isnull(vs_doc_status) or vs_doc_status = ''  then
+					choose case l_rsbi.tag
+						case 'e_add','e_insert'
+							l_rsbi.enabled =  vb_updatable and pos(vs_enable_buttons, 'e_add;')>0
+						case 'e_modify' 
+							l_rsbi.enabled =  not vb_editing and vb_updatable  and pos(vs_enable_buttons, 'e_modify;')>0
+						case 'e_save'
+							l_rsbi.enabled =  vb_editing and vb_updatable
+						case 'e_delete'
+							l_rsbi.enabled =  pos(vs_enable_buttons, 'e_delete;')>0 and vb_updatable
+					end choose
+				end if
+			else
 				if isnull(vs_doc_status)  then
 					choose case l_rsbi.tag
 						case 'e_add','e_insert'

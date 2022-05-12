@@ -1996,8 +1996,8 @@ else
 	ldw_main = iw_display.dynamic f_get_dwmain()
 end if
 for ll_idx=1 to ids_book.rowcount( )
-	ls_colname = ids_book.getitemstring( ll_idx, 'record_access_line_dwcolumn')
-	ls_criteria_of_column = ids_book.getitemstring( ll_idx, 'record_access_line_criteria')
+	ls_colname = ids_book.getitemstring( ll_idx, 'dwcolumn')
+	ls_criteria_of_column = ids_book.getitemstring( ll_idx, 'criteria')
 	ls_EditStyle = ldw_main.describe( ls_colname + '.edit.style')
 	if ls_EditStyle = 'ddlb' then
 		ls_source_value = ldw_main.describe(ls_colname+ '.values')
@@ -2029,9 +2029,9 @@ rs_criteria_of_dwcolumns[] = is_criteria_of_dwcolumn_books[]
 return upperbound(rs_criteria_of_dwcolumns)
 end function
 
-public function integer f_book (double vdb_book_id, boolean vb_modify);string 			ls_sql,ls_dataobject,ls_syntaxSql,ls_err,ls_filter,ls_obj
+public function integer f_book (double vdb_book_id, boolean vb_modify);string 			ls_sql,ls_dataobject,ls_syntaxSql,ls_err,ls_filter,ls_obj, las_dwcolumns[], las_criteria_of_dwcolumns[]
 //t_transaction 	lt_transaction
-long				ll_idx
+long				ll_cnt
 double			ldb_book_id
 datawindow		ldw_main,ldw_main_parent
 window			lw_parent
@@ -2044,67 +2044,79 @@ ls_dataobject = ldw_main.dataobject
 ls_dataobject = mid(ls_dataobject,1,len(ls_dataobject)-5)
 ls_obj = this.classname( )
 if left(ls_obj,2) = 'u_' then ls_obj = upper(ls_obj)
-if lbo_ins.f_is_branch_yn_ex( ls_obj, it_transaction) then
-	if vdb_book_id = 0 then
-		select ID into :ldb_book_id
-		from	record_access_hdr
-		where default_yn = 'Y'
-				and branch_id = :gdb_branch
-				and dwo = :ls_dataobject and object = :ls_obj using it_transaction;
+
+if not this.iw_display.ib_opening then
+	connect using it_transaction;
+end if
+//if lbo_ins.f_is_branch_yn_ex( ls_obj, it_transaction) then
+	if vdb_book_id = 0 then   // -- lấy default book --//
+		select count(db.ID) into :ll_cnt
+			from	record_access_hdr rah join default_book db on db.object_ref_id = rah.id
+			where db.default_yn = 'Y' and db.user_id = :gi_userid
+					and rah.dwo = :ls_dataobject
+					and rah.object = :ls_obj
+					using it_transaction;							
+		if ll_cnt = 0 then
+			select count(ID) into :ll_cnt
+			from	record_access_hdr
+			where default_yn = 'Y'
+					and dwo = :ls_dataobject and object = :ls_obj using it_transaction;		
+			if ll_cnt = 0 then
+				is_dwcolumn_books[] = las_dwcolumns[]
+				is_criteria_of_dwcolumn_books[] = las_criteria_of_dwcolumns[]
+				return 0
+			elseif  ll_cnt = 1 then
+				select ID into :ldb_book_id
+				from	record_access_hdr
+				where default_yn = 'Y'
+						and dwo = :ls_dataobject and object = :ls_obj using it_transaction;						
+			elseif  ll_cnt > 1 then
+				select ID into :ldb_book_id
+				from	record_access_hdr
+				where default_yn = 'Y'
+						and dwo = :ls_dataobject and object = :ls_obj and rownum = 1
+						using it_transaction;					
+			end if
+		elseif ll_cnt = 1 then
+			select  rah.id into :ldb_book_id
+			from	record_access_hdr rah join default_book db on db.object_ref_id = rah.id
+			where db.default_yn = 'Y' and db.user_id = :gi_userid
+					and rah.dwo = :ls_dataobject
+					and rah.object = :ls_obj
+					using it_transaction;				
+		elseif ll_cnt > 1 then
+				select  rah.id into :ldb_book_id
+			from	record_access_hdr rah join default_book db on db.object_ref_id = rah.id
+			where db.default_yn = 'Y' and db.user_id = :gi_userid
+					and rah.dwo = :ls_dataobject
+					and rah.object = :ls_obj
+					and rownum=1
+					using it_transaction;			
+		end if
 	else
 		ldb_book_id = vdb_book_id
 	end if	
-else
-	if vdb_book_id = 0 then
-		select ID into :ldb_book_id
-		from	record_access_hdr
-		where default_yn = 'Y'
-				and dwo = :ls_dataobject and object = :ls_obj using it_transaction;
-	else
-		ldb_book_id = vdb_book_id
-	end if
-end if
+
 
 //--tạo ids_book nếu datastore chưa được tạo--//
 if not isvalid(ids_book) then
-	ls_sql = "Select record_access_line.dwcolumn,record_access_line.criteria,record_access_line.OBJECT_REF_ID"+&
-				" from record_access_line join record_access_hdr on record_access_line.OBJECT_REF_ID = record_access_hdr.ID"+&
-				" where nvl(record_access_line.criteria,' ') <> ' ' and record_access_hdr.dwo = '" + ls_dataobject + "'"	+ " and object = '" + ls_obj + "'"
-//	iw_display.dynamic f_get_transaction(lt_transaction)	
-	ls_syntaxSql = it_transaction.syntaxfromsql( ls_sql, '', ls_err)
-	if ls_err = '' then
-		ids_book = create t_ds_db
-		ids_book.create( ls_syntaxSql,ls_err)
-		if ls_err = '' then
-			ids_book.settransobject( it_transaction)
-			ids_book.retrieve( )
-			if ids_book.rowcount( )>0 then
-				if f_filter_criteria_of_book(string(ldb_book_id) ) = 0 then
-					//--message chưa tạo bộ sổ--//
-				else
-					f_set_criteria_of_book()
-				end if
-			else
-				//--message chưa tạo bộ sổ--//
-			end if
-		end if
-	end if
+
+	ids_book = create t_ds_db
+	ids_book.dataobject = 'ds_book'
+	ids_book.settransobject( it_transaction)
+	ids_book.retrieve( ldb_book_id)
+	f_set_criteria_of_book()
+
 else 
-	if vb_modify then ids_book.retrieve( )
-	if f_filter_criteria_of_book(string(ldb_book_id) ) = 0 then
-		//--nếu là sổ mới tạo thì retrieve lại--//
-		ids_book.retrieve( )
-		if f_filter_criteria_of_book(string(ldb_book_id) ) > 0 then
-			f_set_criteria_of_book()
-		else
-			//--message--//
-		end if
-	else
-		f_set_criteria_of_book()
-	end if
+//	if vb_modify then ids_book.retrieve(ldb_book_id )
+	ids_book.settransobject( it_transaction)
+	ids_book.retrieve(ldb_book_id )
+	f_set_criteria_of_book()
+
 end if
-//--setfilter để lấy lại tất cả các dòng--//
-f_filter_criteria_of_book('')
+if not this.iw_display.ib_opening then
+	disconnect using it_transaction;
+end if
 return upperbound(is_criteria_of_dwcolumn_books)
 end function
 
@@ -6356,7 +6368,8 @@ else
 
 	ls_updateTable = upper(vdw_focus.describe("datawindow.table.updatetable")) 
 	if vdw_focus.rowcount() = 0 then
-		setnull(ls_status)
+//		setnull(ls_status)
+		ls_status = ''
 	else
 		if left(this.classname( ), 9)= 'u_detail_' or ls_updateTable = 'DOCUMENT'  then
 			ls_status = vdw_focus.getitemstring(vdw_focus.getrow(), 'status')

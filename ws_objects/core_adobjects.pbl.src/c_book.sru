@@ -91,7 +91,7 @@ call super::destroy
 end on
 
 event constructor;call super::constructor;is_table = 'RECORD_ACCESS_HDR'
-ib_changed_dwo_4edit = true
+ib_changed_dwo_4edit = false
 is_display_model = '2d'
 ib_display_text = true
 is_object_title = 'Bộ sổ'
@@ -189,7 +189,7 @@ if rpo_dw.dataobject = 'd_object_book_grid'  then
 	if vs_colname = 'default_yn' then
 		if vs_editdata = 'Y' then
 			li_idx = rpo_dw.find("default_yn ='Y'", 1, rpo_dw.rowcount())
-			if li_idx > 0 then
+			if li_idx > 0 and li_idx <> vl_currentrow then
 				rpo_dw.setitem(li_idx,'default_yn','N')
 			end if
 			/* Khóa 30/04/2014: không đúng
@@ -398,47 +398,12 @@ datawindow	ldw_detail
 setnull(ls_criteria)
 if mid(rdw_requester.dataobject,1,len(rdw_requester.dataobject)-5) = 'd_object_book' then
 	ldw_detail = iw_display.dynamic f_get_dw('d_object_book_detail_grid')
-	for li_idx = 1 to ldw_detail.rowcount( )
+	for li_idx = ldw_detail.rowcount( ) to 1 step -1
 		if trim(ldw_detail.getitemstring( li_idx, 'criteria')) = '' or isnull(ldw_detail.getitemstring( li_idx, 'criteria')) then
 			ldw_detail.deleterow( li_idx)
 		end if
 	next
 end if
-return 1
-end event
-
-event e_dw_e_presave;call super::e_dw_e_presave;//--chỉ insert dòng nào có điều kiện--//
-//int					li_idx
-//string				ls_criteria,ls_default_yn,ls_dataobject,ls_obj
-//window			lw_parent
-//datawindow		ldw_detail
-//
-//t_transaction		lc_transaction
-//s_object_display	lod_handle_parent
-//
-//setnull(ls_criteria)
-//if mid(rpo_dw.dataobject,1,len(rpo_dw.dataobject)-5) = 'd_object_book' then
-//	ldw_detail = iw_display.dynamic f_get_dw('d_object_book_detail_grid')
-//	for li_idx = ldw_detail.rowcount( ) to 1 step -1
-//		if trim(ldw_detail.getitemstring( li_idx, 'criteria')) = '' or isnull(ldw_detail.getitemstring( li_idx, 'criteria')) then
-//			ldw_detail.deleterow( li_idx)
-//		end if
-//	next
-//	ls_default_yn = rpo_dw.getitemstring(rpo_dw.getrow(),'default_yn')
-//	if isnull(ls_default_yn) then ls_default_yn = 'N'
-//	if ls_default_yn = 'Y' then
-//		lw_parent = iw_display.f_getparentwindow()
-//		lod_handle_parent = lw_parent.dynamic f_get_obj_handling()
-//		ls_dataobject = lod_handle_parent.f_get_main_dwo()
-//		ls_dataobject = mid(ls_dataobject,1,len(ls_dataobject)-5)
-//		ls_obj = lod_handle_parent.classname()
-//		iw_display.f_get_transaction( lc_transaction)
-//		update record_access_hdr
-//		set record_access_hdr.default_yn = 'N'
-//		where default_yn = 'Y'
-//            		and dwo = :ls_dataobject and object = :ls_obj using lc_transaction;
-//	end if
-//end if
 return 1
 end event
 
@@ -452,5 +417,41 @@ event e_dw_e_predelete;call super::e_dw_e_predelete;if mid(rpo_dw.dataobject,1,l
 	return -1
 end if
 return vl_currentrow
+end event
+
+event e_window_e_preopen;call super::e_window_e_preopen;iw_display.F_SET_II_upperpart_height( 1/2)
+return ancestorreturnvalue
+end event
+
+event e_dw_e_postsave;call super::e_dw_e_postsave;string				ls_user_default, ls_dfl_object
+double			ldb_book_id, ldb_id
+//int					li_cnt
+b_obj_instantiate		lbo_ins
+
+if rpo_dw.dataobject = 'd_object_book_grid' then
+	ldb_id =  rpo_dw.getitemnumber(rpo_dw.getrow(), 'ID')
+	ls_dfl_object =  rpo_dw.getitemstring(rpo_dw.getrow(), 'object')
+	ls_user_default = rpo_dw.getitemstring(rpo_dw.getrow(), 'user_default_yn')
+	if isnull(ls_user_default) then ls_user_default = 'N'
+	ldb_book_id =  rpo_dw.getitemnumber(rpo_dw.getrow(), 'default_book_id')
+	if isnull(ldb_book_id) then ldb_book_id = 0
+	if ldb_book_id > 0 then
+		UPDATE default_book 
+		SET default_yn = :ls_user_default 
+		WHERE id = :ldb_book_id
+		using it_transaction;
+	else
+//		select count(id) into :li_cnt from default_book where object_ref_id = :ldb_id using it_transaction;
+		ldb_book_id = lbo_ins.f_create_id_ex( it_transaction )
+		INSERT into default_book(id, object_ref_id,object_ref_table,company_id,branch_id,created_by,created_date,last_mdf_By,last_mdf_date,
+					user_id,default_object, DEFAULT_YN)
+		VALUES (:ldb_book_id, :ldb_id, 'RECORD_ACCESS_HDR',:gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,
+					:gi_userid, :ls_dfl_object, :ls_user_default)
+		using it_transaction;
+	end if
+
+end if
+
+return ancestorreturnvalue
 end event
 

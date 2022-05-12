@@ -5537,6 +5537,7 @@ if lb_firstdrop then
 	ls_rtn = this.Modify( vs_colname+ '.dddw.percentwidth='+string(ll_percent) )
 end if
 
+connect using lt_transaction;
 ldwc.settransobject(lt_transaction)
 //ls_dwc_filter = this.gettext( )
 //if isnull(ls_dwc_filter) then ls_dwc_filter =''
@@ -5546,7 +5547,7 @@ ldwc.settransobject(lt_transaction)
 	ldwc.setfilter( "")
 //end if
 ll_rowcount = ldwc.retrieve( )
-
+disconnect using lt_transaction;
 lc_dwservice.f_set_gutter_rowcount(ldwc)
 
 //lod_handling.idwsetup_initial.ids_setup_dw.setfilter( "")
@@ -5643,8 +5644,9 @@ FOR li_idx = 1 to li_colCnt
 //		end if
 		if isnull(ls_data) or ls_data = '' or ls_data = "'" then continue
 		if len(ls_data) = 1 and (ls_data = '*' or ls_data = '=') then ls_data = '' 
-		if ls_filterString <> '' then ls_filterString += " and "
-		ls_filterString += lc_string.f_get_expression( ls_data, ls_colType,ls_colname[li_idx], 'filter')
+		if ls_filterString <> '' then ls_data += " and "
+		ls_data = f_convert_uni2unsign(ls_text)
+		ls_filterString += lc_string.f_get_expression( ls_data, ls_colType,'f_convert_uni2unsign('+ls_colname[li_idx]+')', 'filter')
 		
 	elseif left(ls_colType,5) = 'numbe' or  left(ls_colType,5) = 'decim' then
 //		if this.describe(ls_colname[li_idx]+ "_qm.x") = '!' then

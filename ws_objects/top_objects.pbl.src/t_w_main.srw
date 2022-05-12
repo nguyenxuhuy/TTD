@@ -172,7 +172,7 @@ end if
 
 //li_rt = OpenSheetwithparm(lw_opened, vs_stringparm, vs_windowchild, t_w_mdi, 3 , original!)
 
-li_rt = Openwithparm(lw_opened, vs_stringparm,vs_windowchild, this )
+li_rt = Openwithparm(lw_opened, vs_stringparm,vs_windowchild )
 If li_rt = -1 Then Return -1				
 
 lw_opened.iw_parent = this

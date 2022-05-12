@@ -7097,7 +7097,7 @@ end if
 li_response = ic_obj_handling.dynamic event e_window_closequery()
 
 //lw_sheet = t_w_mdi.
-lw_sheet = t_w_mdi.getnextsheet(this)
+//lw_sheet = t_w_mdi.getnextsheet(this)
 //Do while isvalid(lw_sheet)
 //	if lw_sheet.classname( ) <> 's_w_background' then
 //		li_cnt++
@@ -7107,9 +7107,9 @@ lw_sheet = t_w_mdi.getnextsheet(this)
 //if li_cnt = 0 then //-- Đóng tất cả sheets --//
 //	t_w_mdi.f_create_ribbonbar()
 //end if
-if not isvalid(lw_sheet) then
-	t_w_mdi.f_create_ribbonbar()
-end if
+//if not isvalid(lw_sheet) then
+//	t_w_mdi.f_create_ribbonbar()
+//end if
 //-- release resource --//
 //disconnect using it_transaction;
 destroy it_transaction
@@ -7834,11 +7834,12 @@ s_str_dwo_related		lstr_data_related[]
 //		end if
 //	end if
 //end if
-
-ldw_main =  this.f_get_dwmain( )
-this.f_set_idwfocus( ldw_main)
-this.f_ctrl_enable_button(idw_focus )
-ic_obj_handling.event e_window_activate()
+if  not this.ib_opening then 
+	ldw_main =  this.f_get_dwmain( )
+	this.f_set_idwfocus( ldw_main)
+	this.f_ctrl_enable_button(idw_focus )
+	ic_obj_handling.event e_window_activate()
+end if
 end event
 
 type st_1 from s_w_main`st_1 within s_w_multi_rb
@@ -10086,7 +10087,7 @@ integer height = 352
 integer taborder = 10
 boolean bringtotop = true
 boolean border = false
-borderstyle borderstyle = StyleBox!
+borderstyle borderstyle = stylebox!
 end type
 
 

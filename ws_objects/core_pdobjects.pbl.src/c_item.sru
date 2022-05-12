@@ -1354,7 +1354,7 @@ ldw_main.f_add_where('object_ref_table;',laa_value[])
 
 //iw_display.dynamic event e_filteron_rb( )
 
-return  1
+return  0
 end event
 
 event e_action_ctrl_bttn;//-- Override --//
@@ -1668,9 +1668,9 @@ end event
 
 event e_window_e_postopen;call super::e_window_e_postopen;string				ls_first_colname
 int					li_rtn
-ls_first_colname =  iw_display.dw_filter.f_getfirstcolumn( true)
-iw_display.f_set_idwfocus(  iw_display.dw_filter)
-li_rtn = iw_display.idw_focus.setcolumn( ls_first_colname)
+//ls_first_colname =  iw_display.dw_filter.f_getfirstcolumn( true)
+//iw_display.f_set_idwfocus(  iw_display.dw_filter)
+//li_rtn = iw_display.idw_focus.setcolumn( ls_first_colname)
 return li_rtn
 end event
 

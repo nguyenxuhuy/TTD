@@ -14,7 +14,8 @@ public function integer f_addtowhereclause (ref string as_sql, string as_criteri
 public function integer f_delete (double vdb_id[])
 public function integer f_getoriginalsql_of_datastore (ref string rs_originalsql, datastore vds_handling)
 private function string f_remove_lrf_join (string vs_joinstring, string vs_join_type)
-public function string f_remove_lrf_join (string vs_joinstring)
+private function string f_remove_lrf_join_ex (string vs_joinstring, string vs_join_type, string vs_where, string vs_table_alias)
+public function string f_remove_lrf_join_ex (string vs_joinstring, string vs_where, string vs_table_alias)
 end prototypes
 
 public function integer f_parse (string as_sql, ref t_s_sql_attr astr_sql[]);integer	li_Pos, li_KWNum, li_NumStats, li_Cnt, li_PosU, li_posW
@@ -350,12 +351,81 @@ ls_join += ' ' + ls_LRF_join
 return ls_join
 end function
 
-public function string f_remove_lrf_join (string vs_joinstring);
+private function string f_remove_lrf_join_ex (string vs_joinstring, string vs_join_type, string vs_where, string vs_table_alias);int				li_pos1, li_pos2, li_idx
+string			ls_LRF_join, ls_join, ls_jointype, ls_cutStr, lsa_alias[] , ls_where, ls_join_tbl
+c_string		lc_string
+
+if vs_join_type = '' or isnull(vs_join_type) then return ''
+if vs_joinstring = '' or isnull(vs_joinstring) then return ''
+//-- xử lý các alias trong where clause của master --//
+ls_where =upper(lc_String.f_remove_doublewhitespace( trim(vs_where)))
+li_pos1 =  pos(ls_where , '.' )
+Do while li_pos1 > 0 
+	ls_cutStr = left(ls_where, li_pos1)
+	ls_where = mid(ls_where, li_pos1 +1)
+	ls_cutStr = mid(ls_cutStr, lastpos( ls_cutStr,' '))	
+	if pos(ls_cutStr, upper(vs_table_alias) +'.') = 0 then
+		lsa_alias[upperbound(lsa_alias) + 1] = trim(ls_cutStr)
+	end if
+	li_pos1 =  pos(ls_where , '.' )
+loop
+
+//-- Cắt khoảng trắng đầu đuôi --//
+vs_joinstring = trim(vs_joinstring)
+vs_join_type = trim(vs_join_type)
+//-- 2 khoảng trắng giữa chuỗi chuyển thành 1 khoảng trắng --//
+vs_joinstring = lc_String.f_remove_doublewhitespace( vs_joinstring) 
+vs_join_type =  lc_String.f_remove_doublewhitespace( vs_join_type) 
+
+vs_join_type = upper(vs_join_type)
+ls_LRF_join = upper(vs_joinstring)
+//-- remove left join --//
+li_pos1 = pos(ls_LRF_join , vs_join_type)
+DO while li_pos1 > 0
+	if li_pos1 = 1 then
+		li_pos2 = pos(ls_LRF_join, 'JOIN', 9) 
+		if li_pos2 = 0 then
+			if pos(lower(ls_LRF_join), 'dwh_search' ) > 0 then
+				ls_join +=  ' ' + ls_LRF_join 
+			end if			
+			ls_LRF_join =''
+		else
+			ls_cutStr = left(ls_LRF_join, li_pos2 - 6)		
+			ls_LRF_join = trim( mid(ls_LRF_join, li_pos2 - 6))
+			ls_jointype = trim(left(ls_LRF_join,10))+';'
+			if pos('LEFT JOIN;RIGHT JOIN;FULL JOIN;',ls_jointype) = 0 then
+				ls_LRF_join = trim(mid(ls_LRF_join, 6))
+			end if
+			//-- kiểm tra cutStr : nếu là join dwh_search thì giữ lại --//			
+			if pos(lower(ls_cutStr), 'dwh_search' ) > 0 then
+				ls_join +=  ' ' + ls_cutStr 
+			end if
+			//-- kiểm tra cutStr : nếu có điều kiện trong where thì giữ lại --//	
+			ls_join_tbl = trim(mid(ls_cutStr , pos (ls_cutStr, 'JOIN') + 4, pos( ls_cutStr, ' ON') - pos (ls_cutStr, 'JOIN') - 4))
+			For li_idx = 1 to upperbound(lsa_alias[])
+				if pos(' '+ls_join_tbl+'.', ' '+lsa_alias[li_idx]) > 0 then
+					ls_join +=  ' ' + ls_cutStr 
+					exit 
+				end if
+			NEXT
+		end if
+	else
+		ls_join += ' ' + mid(ls_LRF_join,1, li_pos1 -1)
+		ls_LRF_join = mid(ls_LRF_join, li_pos1)
+	end if
+	li_pos1 = pos(ls_LRF_join , vs_join_type)
+LOOP
+ls_join += ' ' + ls_LRF_join
+
+return ls_join
+end function
+
+public function string f_remove_lrf_join_ex (string vs_joinstring, string vs_where, string vs_table_alias);
 string			ls_join
 
-ls_join = this.f_remove_lrf_join(vs_joinstring , 'LEFT JOIN')
-ls_join = this.f_remove_lrf_join(ls_join , 'RIGHT JOIN')
-ls_join = this.f_remove_lrf_join(ls_join , 'FULL JOIN')
+ls_join = this.f_remove_lrf_join_ex(vs_joinstring , 'LEFT JOIN',vs_where, vs_table_alias)
+ls_join = this.f_remove_lrf_join_ex(ls_join , 'RIGHT JOIN', vs_where, vs_table_alias)
+ls_join = this.f_remove_lrf_join_ex(ls_join , 'FULL JOIN', vs_where, vs_table_alias)
 
 return ls_join
 end function

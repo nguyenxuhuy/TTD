@@ -49,12 +49,151 @@ this.tab_action.height= rbb_1.height
 
 end event
 
-event open;call super::open;rbb_1.importfromxmlfile( "XmlFile2.xml")
+event open;/*******************************************************
+OVERRIDE:
+------------------
+Chức năng:
+	- Tạo object chính
+	- Gọi control action pane
+	- gọi pre-open
+	- gọi post-open: chỉ chạy e_postopen khi mở window thành công
+------------------------------------------------------------------------------------------------*/
+
+int 						li_rtn, li_width, li_height
+string						ls_object, ls_parm, las_parm[], ls_display_model, ls_menu_code, ls_menu_text
+window					lw_requester
+c_obj_service			lc_obj_service
+s_str_dw_md			lastr_dw_md_empty[]
+s_str_dw_ms			lastr_dw_ms_empty[]
+s_str_dwo_related		lstr_data_related[]	
+datawindow				ldw_empty[]
+c_menu_item			lc_menu_item
+
+ib_opening = true
+//-- Tạo connection voi database --//
+it_transaction = create t_transaction
+it_transaction.dbms =	SQLCA.DBMS
+it_transaction.ServerName	 = SQLCA.ServerName
+it_transaction.LogId	 = SQLCA.LogId
+it_transaction.LogPass 	 = SQLCA.LogPass 
+it_transaction.AutoCommit 	 = false 
+it_transaction.DBParm	 = SQLCA.DBParm
+connect using	it_transaction;	
+
+if not isnull(message.stringparm) and message.stringparm <> '' then
+	ls_parm = message.stringparm	
+	setnull(message.stringparm)
+
+	lc_obj_service.f_stringtoarray(ls_parm ,";",las_parm[])
+	ic_obj_main = create using las_parm[1]
+	ic_obj_main.f_set_menu_id(las_parm[2])	
+	ls_menu_code = lc_menu_item.f_get_menu_code_ex( double(las_parm[2]), it_transaction)
+	ic_obj_main.f_set_menu_code(ls_menu_code )
+	//-- init dwsetup --//
+	if upper(ic_obj_main.classname( )) = 'U_VALUESET_ENTRY' then
+//		ic_obj_main.idwsetup_initial.f_init_ids_setup_dw( upper(ic_obj_main.classname( )) )
+//	else
+		ic_obj_main.idwsetup_initial.f_init_ids_setup_dw_ex( upper(ic_obj_main.f_get_menu_code( ) ), it_transaction )
+	end if
+	
+	if las_parm[1] <> 'u_valueset_entry' then
+		this.is_win_name = las_parm[1]
+	else
+		this.is_win_name = las_parm[1]+las_parm[2]
+	end if
+
+	if upperbound(las_parm[]) > 2 then
+		this.title = las_parm[3]				
+		this.is_win_grp = las_parm[4]
+		this.is_sheet_type = las_parm[4]		
+	else
+		this.title = lc_menu_item.f_get_menu_label_ex(double(las_parm[2]), it_transaction )
+	end if
+	ic_obj_main.f_init_policy_datastore_exx(it_transaction )
+
+elseif not isnull(message.powerobjectparm ) then
+	ic_obj_main = message.powerobjectparm
+	setnull(message.powerobjectparm)
+
+	ic_obj_main.f_init_policy_datastore_exx(it_transaction )
+	ls_menu_text = lc_menu_item.f_get_menu_label_ex(ic_obj_main.classname( ) ,it_transaction)
+	if ls_menu_text <> '' then
+		this.title  = ls_menu_text
+	else
+		this.title = ic_obj_main.is_object_title
+	end if
+	this.is_win_name = ic_obj_main.is_win_name
+	this.is_win_grp = ic_obj_main.is_win_grp
+	this.is_sheet_type = ic_obj_main.is_sheet_type
+	
+	//-- init dwsetup --//
+	if upper(ic_obj_main.classname( )) = 'U_VALUESET_ENTRY' then
+//		ic_obj_main.idwsetup_initial.f_init_ids_setup_dw( upper(ic_obj_main.classname( )) )
+//	else
+		ic_obj_main.idwsetup_initial.f_init_ids_setup_dw_ex( upper(ic_obj_main.f_get_menu_code( ) ), it_transaction )
+	end if	
+end if
+
+is_popmenu = 'm_setup_user_access;m_edit_window_label;'
+//-- create main object --//
+lw_requester = this
+ic_obj_main.dynamic f_set_wdisplay(lw_requester)
+
+//-- ghi nhớ menu_id của window được open --//
+ic_obj_handling = ic_obj_main
+
+//-- pre-open : resize nội bộ đối tượng hoặc window display--//
+this.f_set_resize( )  
+li_rtn = this.event e_preopen( ) 
+if li_rtn = -1 then return -1
+
+//---------------------//
+//-- TẠO RIBBON --//
+//--------------------//
+//if ic_obj_handling.dynamic f_create_actionpane(tab_action) = -1 then return -1
+ic_obj_handling.f_update_ribbonbar( t_w_mdi.rbb_1)
+
+
+//-- gán dwo cho dw cùa window --//
+iastr_dw_ms = lastr_dw_ms_empty[]
+iastr_dw_md = lastr_dw_md_empty[]
+this.iwdw_detail[]  = ldw_empty[]
+this.iwdw_share[] = ldw_empty[]
+this.iadw_none_md[] = ldw_empty[]
+this.f_set_dwo( )
+
+//-- tao tabpage detail nếu có --//
+if ic_obj_handling.dynamic f_create_tabpage() = -1 then return -1
+
+//-- set master detail share --//
+this.f_arrange_dwdetail( this.iwdw_detail[] )
+this.f_arrage_dwshared( this.iwdw_share[] )
+this.f_set_md_ms()
+
+//-- set record security --//
+this.f_set_record_security_ex( it_transaction )
+
+//-- thông báo đến object : add where cua object nếu có--//
+li_rtn = ic_obj_handling.event e_window( 'open')
+if li_rtn = -1 then 
+	return -1
+end if
+//-- resize --//
+ic_obj_handling.f_get_resize_wdisplay(li_width ,li_height)
+if li_width > 0 and li_height > 0 then
+	this.width = li_width
+	this.height = li_height
+end if
+
+//-- post open --//
+if li_rtn <> -1 then this.post event e_postopen(li_rtn )
+
+rbb_1.importfromxmlfile( "XmlFile2.xml")
 
 end event
 
-type dw_filter from s_w_multi_rb`dw_filter within s_w_multi_n_rb
-end type
+event activate;// overrid--//
+end event
 
 type st_1 from s_w_multi_rb`st_1 within s_w_multi_n_rb
 end type
@@ -63,6 +202,9 @@ type tab_action from s_w_multi_rb`tab_action within s_w_multi_n_rb
 end type
 
 type gb_filter from s_w_multi_rb`gb_filter within s_w_multi_n_rb
+end type
+
+type dw_filter from s_w_multi_rb`dw_filter within s_w_multi_n_rb
 end type
 
 type dw_2 from s_w_multi_rb`dw_2 within s_w_multi_n_rb
@@ -341,6 +483,9 @@ integer taborder = 160
 string binarykey = "s_w_multi.win"
 end type
 
+type rte_1 from s_w_multi_rb`rte_1 within s_w_multi_n_rb
+end type
+
 type rbb_1 from u_rbb within s_w_multi_n_rb
 integer x = 5
 integer height = 308
@@ -351,12 +496,19 @@ boolean hidetabheader = true
 boolean #centralizedeventhandling = true
 end type
 
-event itemclicked;call super::itemclicked;s_w_main		lw_active
+event itemclicked;call super::itemclicked;int						li_rtn
+s_w_main				lw_active
 s_object_display		lod_handle
 
 choose case itemtag
-	case 'e_add','e_modify','e_delete','e_save','e_first','e_next','e_prior','e_last'
-			parent.triggerevent( itemtag)
+	case 'e_add','e_modify','e_delete','e_save','e_first','e_next','e_prior','e_last','e_okclose'
+			li_rtn = parent.triggerevent( itemtag)
+			if li_rtn = 1 then
+				choose case itemtag
+					case 'e_modify','e_save','e_post','e_unpost','e_add','e_insert'
+						this.f_change_action_button( itemhandle, index, 0)
+				end choose
+			end if			
 	case 'e_filter'
 			if parent.ib_filter_on then
 				parent.triggerevent( 'e_filteroff')

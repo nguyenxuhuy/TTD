@@ -12,7 +12,7 @@ boolean hscrollbar = true
 boolean vscrollbar = true
 boolean hsplitscroll = true
 boolean livescroll = true
-borderstyle borderstyle = StyleShadowBox!
+borderstyle borderstyle = styleshadowbox!
 event type long e_insertrow ( )
 event type integer e_preinsertrow ( )
 event type long e_postinsertrow ( long al_row )
@@ -6704,7 +6704,11 @@ FOR li_idx = 1 to upperbound(ias_master_keycol[])
 	end if
 NEXT
 //-- remove LRF join --//
-ls_join_m = lc_sql.f_remove_LRF_join(ls_join_m)
+if ls_table_alias_m = '' then
+	ls_join_m = lc_sql.f_remove_LRF_join_ex(ls_join_m, ls_where_m, ls_table_m)
+else
+	ls_join_m = lc_sql.f_remove_LRF_join_ex(ls_join_m, ls_where_m, ls_table_alias_m)
+end if
 
 //-- Tách GROUP clause trước khi join, sau đó gắn lại--//
 li_rtn = lc_sql.f_parse( ls_detailSQL, lstr_sql_attr[])

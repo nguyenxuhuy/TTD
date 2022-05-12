@@ -1326,7 +1326,7 @@ FOR li_idx = 1 to upperbound(ias_master_keycol[])
 	ls_onclause += ' = ' + ls_detail_colname
 NEXT
 //-- remove LRF join --//
-ls_join_m = lc_sql.f_remove_LRF_join(ls_join_m)
+//ls_join_m = lc_sql.f_remove_LRF_join(ls_join_m)
 
 ls_joinSQL = ls_detailSQL + ' JOIN ' + ls_table_m +' ' + ls_table_alias_m + ' ON ' + ls_onclause + ' ' + ls_join_m
 
