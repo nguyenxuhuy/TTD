@@ -31,7 +31,6 @@ forward prototypes
 public function integer of_triggerparentevent (long al_handle, long al_index, long al_subindex)
 public function integer of_triggerevent (long al_handle, long al_index, long al_subindex)
 public function integer f_change_action_button (long al_handle, long al_index, long al_subindex)
-public function integer f_enable_panel_tab (ribbonpanelitem vrpi_tab, string vs_type, string vs_doc_status, boolean vb_editing, boolean vb_updatable)
 public function integer f_enable_panel_copy (ribbonpanelitem vrpi_action, string vs_type, string vs_doc_status, boolean vb_editing, string vs_enable_buttons, boolean vb_change_4_edit)
 public function integer f_enable_panel_print (ribbonpanelitem vrpi_action, string vs_type, string vs_doc_status, boolean vb_editing, string vs_enable_buttons, boolean vb_change_4_edit)
 public function integer f_enable_panel_approve (ribbonpanelitem vrpi_action, string vs_type, string vs_doc_status, boolean vb_editing, string vs_enable_buttons, boolean vb_change_4_edit)
@@ -39,6 +38,9 @@ public function integer f_enable_panel_update (ribbonpanelitem vrpi_action, stri
 public function integer f_enable_panel_objects (ribbonpanelitem vrpi_action, string vs_type, string vs_doc_status, boolean vb_editing, string vs_enable_buttons, boolean vb_change_4_edit)
 public function integer f_ctrl_enable_button (string vs_type, string vs_doc_status, boolean vb_editing, boolean vb_updatable, boolean vb_change_4_edit, string vs_enable_buttons, boolean vb_detail)
 public function integer f_enable_panel_action (ribbonpanelitem vrpi_action, string vs_type, string vs_doc_status, boolean vb_editing, boolean vb_updatable, boolean vb_change_4_edit, boolean vb_detail, string vs_enable_buttons)
+public function integer f_enable_panel_action_group (string vs_type, string vs_doc_status, boolean vb_editing, boolean vb_updatable, boolean vb_change_4_edit, boolean vb_detail, string vs_enable_buttons, ref ribbongroupitem r_rgi)
+public function integer f_enable_panel_action_panel (string vs_type, string vs_doc_status, boolean vb_editing, boolean vb_updatable, boolean vb_change_4_edit, boolean vb_detail, string vs_enable_buttons, ref ribbonpanelitem r_rpi)
+public function integer f_enable_panel_tab (ribbonpanelitem vrpi_tab, string vs_type, string vs_doc_status, boolean vb_editing, boolean vb_updatable, string vs_enable_buttons)
 end prototypes
 
 event ue_tabbutton(long al_handle);if  #CentralizedEventHandling = false then
@@ -293,43 +295,6 @@ End if
 Return li_rc
 end function
 
-public function integer f_enable_panel_tab (ribbonpanelitem vrpi_tab, string vs_type, string vs_doc_status, boolean vb_editing, boolean vb_updatable);
-String									ls_classname
-Integer								li_rc
-
-RibbonCategoryItem			l_rci
-RibbonPanelItem				l_rpi, l_rpi_action
-RibbonLargeButtonItem 		l_rlbi, l_rlbi_null
-RibbonMenu						l_rMenu		
-RibbonMenuItem				l_rmitem, l_rmitem_tmp
-RibbonGroupItem				l_rgi
-RibbonSmallButtonItem 		l_rsbi, l_rsbi_null
-
-//-- panel: tab --//
-if vs_type = 'document' then
-	if isnull(vs_doc_status) then	
-		this.getchilditembyindex( vrpi_tab.itemhandle, 1, l_rsbi)
-		l_rsbi.enabled = true
-		this.setsmallbutton( l_rsbi.itemhandle , l_rsbi)
-	else
-		this.getchilditembyindex( vrpi_tab.itemhandle, 1, l_rsbi)
-		l_rsbi.enabled = true
-		this.setsmallbutton( l_rsbi.itemhandle , l_rsbi)
-		this.getchilditembyindex( vrpi_tab.itemhandle, 2, l_rsbi)
-		l_rsbi.enabled = true
-		this.setsmallbutton( l_rsbi.itemhandle , l_rsbi)		
-	end if
-elseif vs_type = 'detail' then
-elseif vs_type = 'object' then
-	this.getchilditembyindex( vrpi_tab.itemhandle, 1, l_rsbi)
-	l_rsbi.enabled = true
-	this.setsmallbutton( l_rsbi.itemhandle , l_rsbi)	
-elseif vs_type = 'report' then
-end if
-
-Return li_rc
-end function
-
 public function integer f_enable_panel_copy (ribbonpanelitem vrpi_action, string vs_type, string vs_doc_status, boolean vb_editing, string vs_enable_buttons, boolean vb_change_4_edit);boolean								lb_enable
 String									ls_classname
 Integer								li_rc, li_idx, li_itemCnt, li_idx1
@@ -559,8 +524,10 @@ FOR li_idx = 1 to li_rc
 	this.getchilditembyindex( l_rci.itemhandle, li_idx, l_rpi)	
 	
 	if l_rpi.tag = 'Tabs' then
-		this.f_enable_panel_tab( l_rpi,  vs_type, vs_doc_status,  vb_editing, vb_updatable)
+		this.f_enable_panel_tab( l_rpi,  vs_type, vs_doc_status,  vb_editing, vb_updatable, vs_enable_buttons)
 	elseif l_rpi.tag = 'Actions' then
+		this.f_enable_panel_action( l_rpi,  vs_type, vs_doc_status,  vb_editing, vb_updatable,vb_change_4_edit, vb_detail,vs_enable_buttons)
+	elseif l_rpi.tag = 'Navigation' then
 		this.f_enable_panel_action( l_rpi,  vs_type, vs_doc_status,  vb_editing, vb_updatable,vb_change_4_edit, vb_detail,vs_enable_buttons)
 	elseif l_rpi.tag = 'Copy' then
 		this.f_enable_panel_copy( l_rpi,  vs_type, vs_doc_status,  vb_editing, vs_enable_buttons,vb_change_4_edit)
@@ -592,10 +559,35 @@ RibbonGroupItem				l_rgi
 RibbonSmallButtonItem 		l_rsbi, l_rsbi_null
 
 //-- panel: action --//
-this.getchilditembyindex( vrpi_action.itemhandle, 1, l_rgi)	
-li_rc = this.getchilditemcount( l_rgi.itemhandle )
+if this.getchilditembyindex( vrpi_action.itemhandle, 1, l_rgi)	= 1  then
+	this.f_enable_panel_action_group( vs_type, vs_doc_status, vb_editing, vb_updatable, vb_change_4_edit, vb_detail, vs_enable_buttons, l_rgi)
+	this.getchilditembyindex( vrpi_action.itemhandle, 2, l_rgi)
+	this.f_enable_panel_action_group( vs_type, vs_doc_status, vb_editing, vb_updatable, vb_change_4_edit, vb_detail, vs_enable_buttons, l_rgi)
+else
+	this.f_enable_panel_action_panel(  vs_type, vs_doc_status, vb_editing, vb_updatable, vb_change_4_edit, vb_detail, vs_enable_buttons, vrpi_action)
+end if
+
+
+
+Return li_rc
+end function
+
+public function integer f_enable_panel_action_group (string vs_type, string vs_doc_status, boolean vb_editing, boolean vb_updatable, boolean vb_change_4_edit, boolean vb_detail, string vs_enable_buttons, ref ribbongroupitem r_rgi);
+String									ls_classname
+Integer								li_rc, li_idx
+
+RibbonCategoryItem			l_rci
+RibbonPanelItem				l_rpi, l_rpi_action
+RibbonLargeButtonItem 		l_rlbi, l_rlbi_null
+RibbonMenu						l_rMenu		
+RibbonMenuItem				l_rmitem, l_rmitem_tmp
+//RibbonGroupItem				l_rgi
+RibbonSmallButtonItem 		l_rsbi, l_rsbi_null
+
+
+li_rc = this.getchilditemcount( r_rgi.itemhandle )
 FOR li_idx = 1 to li_rc
-	this.getchilditembyindex( l_rgi.itemhandle, li_idx , l_rsbi)
+	this.getchilditembyindex( r_rgi.itemhandle, li_idx , l_rsbi)
 	if  l_rsbi.tag= 'e_refresh'or  l_rsbi.tag = 'e_filter' or   l_rsbi.tag = 'e_book' then
 		if vb_editing then
 			l_rsbi.enabled =  false
@@ -612,6 +604,8 @@ FOR li_idx = 1 to li_rc
 						l_rsbi.enabled =  false
 					case 'e_insert'
 						l_rsbi.enabled =  vb_updatable and pos(vs_enable_buttons, 'e_add;') >0 and not vb_change_4_edit
+					case 'e_first','e_prior','e_prior','e_next','e_last','e_book','e_action_attach','e_user_trace','e_cancel'
+						l_rsbi.enabled =  false
 				end choose
 			elseif vs_doc_status = 'new' then
 				choose case l_rsbi.tag
@@ -625,6 +619,8 @@ FOR li_idx = 1 to li_rc
 						l_rsbi.enabled =  vb_updatable and not vb_editing and pos(vs_enable_buttons,  l_rsbi.tag+';')>0
 					case 'e_insert' 
 						l_rsbi.enabled =  vb_updatable and not vb_editing and not vb_change_4_edit and pos(vs_enable_buttons, 'e_add;')>0
+					case 'e_first','e_prior','e_prior','e_next','e_last','e_book','e_action_attach','e_user_trace','e_cancel'
+						l_rsbi.enabled =  true
 				end choose	
 			else
 				choose case l_rsbi.tag
@@ -632,6 +628,8 @@ FOR li_idx = 1 to li_rc
 						l_rsbi.enabled =  vb_updatable and pos(vs_enable_buttons,  l_rsbi.tag+';')>0
 					case 'e_modify','e_save','e_delete'
 						l_rsbi.enabled =  false
+					case 'e_first','e_prior','e_prior','e_next','e_last','e_book','e_action_attach','e_user_trace','e_cancel'
+						l_rsbi.enabled =  true
 				end choose				
 			end if
 		elseif vs_type = 'detail' then
@@ -647,6 +645,8 @@ FOR li_idx = 1 to li_rc
 							l_rsbi.enabled =  vb_editing and vb_updatable
 						case 'e_delete'
 							l_rsbi.enabled =  vb_updatable and vb_editing and pos(vs_enable_buttons, l_rsbi.tag+';')>0
+						case 'e_first','e_prior','e_prior','e_next','e_last','e_book','e_action_attach','e_user_trace','e_cancel'
+							l_rsbi.enabled =  true
 					end choose
 				else
 					choose case l_rsbi.tag
@@ -656,6 +656,8 @@ FOR li_idx = 1 to li_rc
 							l_rsbi.enabled =  vb_updatable and pos(vs_enable_buttons,  l_rsbi.tag+';')>0
 						case 'e_save'
 							l_rsbi.enabled =  vb_updatable
+						case 'e_first','e_prior','e_prior','e_next','e_last','e_book','e_action_attach','e_user_trace','e_cancel'
+							l_rsbi.enabled =  true
 					end choose	
 				end if						
 			elseif  vb_detail and not vb_change_4_edit then
@@ -669,6 +671,8 @@ FOR li_idx = 1 to li_rc
 							l_rsbi.enabled =  vb_editing and vb_updatable
 						case 'e_delete'
 							l_rsbi.enabled =  pos(vs_enable_buttons, 'e_delete;')>0 and vb_updatable
+						case 'e_first','e_prior','e_prior','e_next','e_last','e_book','e_action_attach','e_user_trace','e_cancel'
+							l_rsbi.enabled =  true
 					end choose
 				end if
 			else
@@ -678,6 +682,8 @@ FOR li_idx = 1 to li_rc
 							l_rsbi.enabled =  vb_updatable  and pos(vs_enable_buttons, 'e_add;')>0
 						case 'e_modify','e_save','e_delete'
 							l_rsbi.enabled =  false
+						case 'e_first','e_prior','e_prior','e_next','e_last','e_book','e_action_attach','e_user_trace','e_cancel'
+							l_rsbi.enabled =  true
 					end choose
 				else
 					choose case l_rsbi.tag
@@ -687,6 +693,8 @@ FOR li_idx = 1 to li_rc
 							l_rsbi.enabled =  vb_updatable  and pos(vs_enable_buttons,  l_rsbi.tag+';')>0							
 						case 'e_save'
 							l_rsbi.enabled =  vb_updatable 
+						case 'e_first','e_prior','e_prior','e_next','e_last','e_book','e_action_attach','e_user_trace','e_cancel'
+							l_rsbi.enabled =  true
 					end choose	
 				end if			
 			end if
@@ -696,48 +704,216 @@ FOR li_idx = 1 to li_rc
 	this.setsmallbutton( l_rsbi.itemhandle , l_rsbi)
 NEXT
 
-this.getchilditembyindex( vrpi_action.itemhandle, 2, l_rgi)	
-li_rc = this.getchilditemcount( l_rgi.itemhandle )
+
+Return li_rc
+end function
+
+public function integer f_enable_panel_action_panel (string vs_type, string vs_doc_status, boolean vb_editing, boolean vb_updatable, boolean vb_change_4_edit, boolean vb_detail, string vs_enable_buttons, ref ribbonpanelitem r_rpi);
+String									ls_classname
+Integer								li_rc, li_idx
+
+RibbonCategoryItem			l_rci
+RibbonPanelItem				l_rpi, l_rpi_action
+RibbonLargeButtonItem 		l_rlbi, l_rlbi_null
+RibbonMenu						l_rMenu		
+RibbonMenuItem				l_rmitem, l_rmitem_tmp
+//RibbonGroupItem				l_rgi
+RibbonSmallButtonItem 		l_rsbi, l_rsbi_null
+
+//-- panel: action --//
+//if this.getchilditembyindex( vrpi_action.itemhandle, 1, l_rgi)	= -1 then
+//	li_rc = this.getchilditemcount( l_rgi.itemhandle )
+//	this.getchilditembyindex( vrpi_action.itemhandle, 1, l_rlbi)
+//end if
+li_rc = this.getchilditemcount( r_rpi.itemhandle )
 FOR li_idx = 1 to li_rc
-	this.getchilditembyindex( l_rgi.itemhandle, li_idx , l_rsbi)
-	if vs_type = 'document' then
-		if isnull(vs_doc_status)  then
-			choose case l_rsbi.tag
-				case 'e_first','e_prior','e_prior','e_next','e_last','e_book','e_attach','e_user_trace','e_cancel'
-					l_rsbi.enabled =  false
-			end choose
+	this.getchilditembyindex( r_rpi.itemhandle, li_idx , l_rlbi)
+	if  l_rlbi.tag= 'e_refresh'or  l_rlbi.tag = 'e_filter' or   l_rlbi.tag = 'e_book' then
+		if vb_editing then
+			l_rlbi.enabled =  false
 		else
-			choose case l_rsbi.tag
-				case 'e_first','e_prior','e_prior','e_next','e_last','e_book','e_action_attach','e_user_trace'
-					l_rsbi.enabled =  true
-				case 'e_cancel'
-					if vs_doc_status = 'new' then
-						l_rsbi.enabled =  true
-					else
-						l_rsbi.enabled =  false
-					end if
-			end choose	
+			l_rlbi.enabled =  true
 		end if
-	elseif vs_type = 'detail' then
-	elseif vs_type = 'object' then
-		if isnull(vs_doc_status)  then
-			choose case l_rsbi.tag
-				case 'e_first','e_prior','e_prior','e_next','e_last','e_book','e_attach','e_user_trace'
-					l_rsbi.enabled =  false
-			end choose
-		else		
-			choose case l_rsbi.tag
-				case 'e_first','e_prior','e_prior','e_next','e_last','e_book','e_attach','e_user_trace'
-					l_rsbi.enabled =  true
-			end choose			
+	else
+		if vs_type = 'document' then
+			if vs_doc_status = '' or isnull(vs_doc_status)  then
+				choose case l_rlbi.tag
+					case 'e_add'
+						l_rlbi.enabled =  vb_updatable and pos(vs_enable_buttons, 'e_add;') >0 
+					case 'e_modify','e_save','e_delete','e_post'
+						l_rlbi.enabled =  false
+					case 'e_insert'
+						l_rlbi.enabled =  vb_updatable and pos(vs_enable_buttons, 'e_add;') >0 and not vb_change_4_edit
+					case 'e_first','e_prior','e_prior','e_next','e_last','e_book','e_action_attach','e_user_trace','e_cancel'
+						l_rlbi.enabled =  false
+				end choose
+			elseif vs_doc_status = 'new' then
+				choose case l_rlbi.tag
+					case 'e_add'
+						l_rlbi.enabled =  vb_updatable and not vb_editing and pos(vs_enable_buttons, 'e_add;')>0
+					case 'e_modify','e_delete'
+						l_rlbi.enabled =  vb_updatable  and pos(vs_enable_buttons,  l_rlbi.tag+';')>0
+					case 'e_save'
+						l_rlbi.enabled =  vb_updatable
+					case 'e_post'
+						l_rlbi.enabled =  vb_updatable and not vb_editing and pos(vs_enable_buttons,  l_rlbi.tag+';')>0
+					case 'e_insert' 
+						l_rlbi.enabled =  vb_updatable and not vb_editing and not vb_change_4_edit and pos(vs_enable_buttons, 'e_add;')>0
+					case 'e_first','e_prior','e_prior','e_next','e_last','e_book','e_action_attach','e_user_trace','e_cancel'
+						l_rlbi.enabled =  true
+				end choose	
+			else
+				choose case l_rlbi.tag
+					case 'e_add','e_insert','e_unpost'
+						l_rlbi.enabled =  vb_updatable and pos(vs_enable_buttons,  l_rlbi.tag+';')>0
+					case 'e_modify','e_save','e_delete'
+						l_rlbi.enabled =  false
+					case 'e_first','e_prior','e_prior','e_next','e_last','e_book','e_action_attach','e_user_trace','e_cancel'
+						l_rlbi.enabled =  true
+				end choose				
+			end if
+		elseif vs_type = 'detail' then
+		elseif vs_type = 'object' then
+			if vb_detail and vb_change_4_edit then
+				if isnull(vs_doc_status) or vs_doc_status = ''  then
+					choose case l_rlbi.tag
+						case 'e_add','e_insert'
+							if pos(vs_enable_buttons, l_rlbi.tag+';') = 0 then
+								this.DeleteLargeButton (l_rlbi.ItemHandle)
+							else
+								l_rlbi.enabled =  vb_updatable and vb_editing and pos(vs_enable_buttons, l_rlbi.tag+';')>0
+							end if
+						case 'e_modify' 
+							l_rlbi.enabled =  not vb_editing and vb_updatable
+						case 'e_save'
+							l_rlbi.enabled =  vb_editing and vb_updatable
+						case 'e_delete'
+							l_rlbi.enabled =  vb_updatable and vb_editing and pos(vs_enable_buttons, l_rlbi.tag+';')>0
+						case 'e_first','e_prior','e_prior','e_next','e_last','e_book','e_action_attach','e_user_trace','e_cancel'
+							l_rlbi.enabled =  true
+					end choose
+				else
+					choose case l_rlbi.tag
+						case 'e_add','e_insert'
+							if pos(vs_enable_buttons, l_rlbi.tag+';') = 0 then
+								this.DeleteLargeButton (l_rlbi.ItemHandle)
+							else
+								l_rlbi.enabled =  vb_updatable and vb_editing and pos(vs_enable_buttons, l_rlbi.tag+';')>0
+							end if
+						case 'e_modify','e_delete'
+							l_rlbi.enabled =  vb_updatable and pos(vs_enable_buttons,  l_rlbi.tag+';')>0
+						case 'e_save'
+							l_rlbi.enabled =  vb_updatable
+						case 'e_first','e_prior','e_prior','e_next','e_last','e_book','e_action_attach','e_user_trace','e_cancel'
+							l_rlbi.enabled =  true
+					end choose	
+				end if						
+			elseif  vb_detail and not vb_change_4_edit then
+				if isnull(vs_doc_status) or vs_doc_status = ''  then
+					choose case l_rlbi.tag
+						case 'e_add','e_insert'
+							if pos(vs_enable_buttons, l_rlbi.tag+';') = 0 then
+								this.DeleteLargeButton (l_rlbi.ItemHandle)
+							else
+								l_rlbi.enabled =  vb_updatable and vb_editing and pos(vs_enable_buttons, l_rlbi.tag+';')>0
+							end if
+						case 'e_modify' 
+							l_rlbi.enabled =  not vb_editing and vb_updatable  and pos(vs_enable_buttons, 'e_modify;')>0
+						case 'e_save'
+							l_rlbi.enabled =  vb_editing and vb_updatable
+						case 'e_delete'
+							l_rlbi.enabled =  pos(vs_enable_buttons, 'e_delete;')>0 and vb_updatable
+						case 'e_first','e_prior','e_prior','e_next','e_last','e_book','e_action_attach','e_user_trace','e_cancel'
+							l_rlbi.enabled =  true
+					end choose
+				end if
+			else
+				if isnull(vs_doc_status)  then
+					choose case l_rlbi.tag
+						case 'e_add','e_insert', 'e_okclose'
+							if pos(vs_enable_buttons, l_rlbi.tag+';') = 0 then
+								this.DeleteLargeButton (l_rlbi.ItemHandle)
+							else
+								l_rlbi.enabled =  vb_updatable and vb_editing and pos(vs_enable_buttons, l_rlbi.tag+';')>0
+							end if
+						case 'e_modify','e_save','e_delete'
+							l_rlbi.enabled =  false
+						case 'e_first','e_prior','e_prior','e_next','e_last','e_book','e_action_attach','e_user_trace','e_cancel'
+							l_rlbi.enabled =  true
+					end choose
+				else
+					choose case l_rlbi.tag
+						case 'e_add','e_insert', 'e_okclose'
+							if pos(vs_enable_buttons, l_rlbi.tag+';') = 0 then
+								this.DeleteLargeButton (l_rlbi.ItemHandle)
+							else
+								l_rlbi.enabled =  vb_updatable and vb_editing and pos(vs_enable_buttons, l_rlbi.tag+';')>0
+							end if
+						case 'e_modify','e_delete'
+							l_rlbi.enabled =  vb_updatable  and pos(vs_enable_buttons,  l_rlbi.tag+';')>0							
+						case 'e_save'
+							l_rlbi.enabled =  vb_updatable 
+						case 'e_first','e_prior','e_prior','e_next','e_last','e_book','e_action_attach','e_user_trace','e_cancel'
+							l_rlbi.enabled =  true
+					end choose	
+				end if			
+			end if
+		elseif vs_type = 'report' then
 		end if
-	elseif vs_type = 'report' then
 	end if
-	this.setsmallbutton( l_rsbi.itemhandle , l_rsbi)
+	this.setLargebutton( l_rlbi.itemhandle , l_rlbi)
 NEXT
 
+Return li_rc
+end function
 
+public function integer f_enable_panel_tab (ribbonpanelitem vrpi_tab, string vs_type, string vs_doc_status, boolean vb_editing, boolean vb_updatable, string vs_enable_buttons);
+String									ls_classname
+Integer								li_rc
 
+RibbonCategoryItem			l_rci
+RibbonPanelItem				l_rpi, l_rpi_action
+RibbonLargeButtonItem 		l_rlbi, l_rlbi_null
+RibbonMenu						l_rMenu		
+RibbonMenuItem				l_rmitem, l_rmitem_tmp
+RibbonGroupItem				l_rgi
+RibbonSmallButtonItem 		l_rsbi, l_rsbi_null
+
+//-- panel: tab --//
+if vs_type = 'document' then
+	if isnull(vs_doc_status) then	
+		this.getchilditembyindex( vrpi_tab.itemhandle, 1, l_rsbi)
+		l_rsbi.enabled = true
+//		this.setsmallbutton( l_rsbi.itemhandle , l_rsbi)
+	else
+		this.getchilditembyindex( vrpi_tab.itemhandle, 1, l_rsbi)
+		l_rsbi.enabled = true
+//		this.setsmallbutton( l_rsbi.itemhandle , l_rsbi)
+		this.getchilditembyindex( vrpi_tab.itemhandle, 2, l_rsbi)
+		l_rsbi.enabled = true
+//		this.setsmallbutton( l_rsbi.itemhandle , l_rsbi)		
+	end if
+elseif vs_type = 'detail' then
+elseif vs_type = 'object' then
+	if this.getchilditembyindex( vrpi_tab.itemhandle, 1, l_rsbi) = 1 then
+		l_rsbi.enabled = true
+		this.setsmallbutton( l_rsbi.itemhandle , l_rsbi)	
+	else
+		this.getchilditembyindex( vrpi_tab.itemhandle, 1, l_rlbi)
+		if pos(vs_enable_buttons, l_rlbi.tag +';') > 0 then
+			l_rlbi.enabled = true		
+		else
+			this.DeleteLargeButton (l_rlbi.ItemHandle)
+		end if
+		this.getchilditembyindex( vrpi_tab.itemhandle, 2, l_rlbi)
+		if pos(vs_enable_buttons, l_rlbi.tag +';') > 0 then
+			l_rlbi.enabled = true			
+		else
+			this.DeleteLargeButton (l_rlbi.ItemHandle)
+		end if		
+	end if
+elseif vs_type = 'report' then
+end if
 
 Return li_rc
 end function

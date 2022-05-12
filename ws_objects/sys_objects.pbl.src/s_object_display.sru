@@ -1244,7 +1244,7 @@ event type integer e_action_attach();t_dw_mpl		ldw_focus
 ldw_focus = this.iw_display.f_get_idwfocus( )
 if isvalid(ldw_focus) then
 	if ldw_focus.rowcount( ) > 0 then
-		this.iw_display.f_openchildwithparm( 's_w_multi_n_ex','u_attachment;0;')
+		this.iw_display.f_openchildwithparm( 's_w_multi_n_rb','u_attachment;0;')
 	end if
 end if
 return 1
@@ -6290,7 +6290,12 @@ FOR li_idx = 1 to li_cnt
 			rbb_handle.deletepanel(l_rpi.itemhandle )
 		end if		
 	elseif lsa_sub[li_idx] = 'b_update' then
-		rbb_handle.getchilditembyindex( l_rci.itemhandle, 6, l_rpi)	
+		if iw_display.classname( ) = 's_w_multi_rb' then
+			rbb_handle.getchilditembyindex( l_rci.itemhandle, 6, l_rpi)	
+		elseif iw_display.classname( ) = 's_w_multi_n_rb' then
+			rbb_handle.getchilditembyindex( l_rci.itemhandle, 4, l_rpi)	
+			
+		end if
 		li_bttn_cnt  = lc_string.f_stringtoarray(istr_actionpane[1].sa_sub_button[li_idx] , ';', lsa_bttn[])
 		li_bttn_cnt  = lc_string.f_stringtoarray(istr_actionpane[1].sa_subbutton_name[li_idx] , ';', lsa_bttn_nm[])
 		if li_bttn_cnt = 0 then
@@ -6321,7 +6326,7 @@ FOR li_idx = 1 to li_cnt
 				end if				
 				l_rsbi.text =  lsa_bttn_nm[li_idx1]
 				l_rsbi.Tag= lsa_bttn[li_idx1]
-				l_rsbi.clicked = "ue_tabbutton"				
+				l_rsbi.clicked = "ue_tabbutton"			
 				if lsa_bttn[li_idx1] = 'b_doc_trace' then
 					l_rsbi.picturename = "Browse1!"
 				elseif lsa_bttn[li_idx1] = 'b_complete'then
@@ -6330,6 +6335,12 @@ FOR li_idx = 1 to li_cnt
 					l_rsbi.picturename = "Custom027a!"
 				elseif lsa_bttn[li_idx1] = 'b_excel'then
 					l_rsbi.picturename = "Custom043!"
+				elseif lsa_bttn[li_idx1] = 'e_action_load_file' then
+					l_rsbi.picturename = "Browser!"
+				elseif  lsa_bttn[li_idx1] = 'e_action_link' then
+					l_rsbi.picturename = "Hyperlinkbig!"
+				elseif  lsa_bttn[li_idx1] = 'e_action_open_file' then
+					l_rsbi.picturename = "Preview1!"
 				end if
 				rbb_handle.InsertSmallButtonLast (l_rpi.itemhandle,l_rsbi)
 			next						

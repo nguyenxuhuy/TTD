@@ -151,7 +151,8 @@ if li_rtn = -1 then return -1
 //-- TẠO RIBBON --//
 //--------------------//
 //if ic_obj_handling.dynamic f_create_actionpane(tab_action) = -1 then return -1
-ic_obj_handling.f_update_ribbonbar( t_w_mdi.rbb_1)
+rbb_1.importfromxmlfile( "XmlFile2.xml")
+ic_obj_handling.f_update_ribbonbar( this.rbb_1)
 
 
 //-- gán dwo cho dw cùa window --//
@@ -185,10 +186,11 @@ if li_width > 0 and li_height > 0 then
 	this.height = li_height
 end if
 
+
 //-- post open --//
 if li_rtn <> -1 then this.post event e_postopen(li_rtn )
 
-rbb_1.importfromxmlfile( "XmlFile2.xml")
+
 
 end event
 
@@ -497,7 +499,7 @@ boolean #centralizedeventhandling = true
 end type
 
 event itemclicked;call super::itemclicked;int						li_rtn
-s_w_main				lw_active
+//s_w_main				lw_active
 s_object_display		lod_handle
 
 choose case itemtag
@@ -517,11 +519,11 @@ choose case itemtag
 			end if
 	case 'close'
 		close(parent)
-	case 'e_action_attach'
+	case 'e_action_load_file','e_action_link','e_action_open_file'
 //		lw_active = parent.getactivesheet( )
 //		if isvalid(lw_active) then
-//			lod_handle = lw_active.f_get_obj_handling( )
-//			lod_handle.triggerevent(itemtag )
+			lod_handle = parent.dynamic f_get_obj_handling( )
+			lod_handle.triggerevent(itemtag )
 //		end if				
 	case else //-- e_change_object_appeon --//
 //		lw_active = parent.getactivesheet( )
