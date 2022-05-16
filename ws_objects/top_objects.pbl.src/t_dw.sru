@@ -5753,7 +5753,7 @@ if this.getchild( vs_colname, ldwc) = -1 then return -1
 
 //-- build where theo gia trị phụ thuộc --//
 ls_dwo = vs_dwo
-if left(ls_dwo,2)= 'd_' then
+if left(ls_dwo,2)= 'd_' then 
 	ls_dwo =  left(ls_dwo, len(ls_dwo) - 5)
 end if
 if ls_dwo = this.getitemstring( 1, 'dwo') then return 0
