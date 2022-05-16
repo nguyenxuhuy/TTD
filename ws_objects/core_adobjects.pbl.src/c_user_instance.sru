@@ -53,6 +53,8 @@ public function integer f_init_ex (double vdb_id, ref t_transaction rt_transacti
 public function integer f_init_ex (string vs_code, ref t_transaction rt_transaction)
 public function integer f_init_policy_datastore_ex (ref t_transaction rt_transaction)
 public function integer f_set_role_ex (double vdb_user_id, ref t_transaction rt_transaction)
+public function string f_get_usercode_ex (double vdb_userid, ref t_transaction rt_transaction)
+public function string f_get_username_ex (double vdb_userid, ref t_transaction rt_transaction)
 end prototypes
 
 public function integer f_init (double vdb_id);select 
@@ -521,6 +523,42 @@ end if
 
 Destroy lds_datastore
 return ll_row
+end function
+
+public function string f_get_usercode_ex (double vdb_userid, ref t_transaction rt_transaction);string		ls_code
+int			li_cnt
+
+select count(ru.id) into :li_cnt
+from role_user ru 
+where ru.id = :vdb_userid using rt_transaction;
+
+if  li_cnt = 1 then
+	select ru.code into :ls_code 
+	from role_user ru 
+	where ru.id = :vdb_userid using rt_transaction;	
+	return ls_code
+else
+	setnull(ls_code)
+	return ls_code
+end if
+end function
+
+public function string f_get_username_ex (double vdb_userid, ref t_transaction rt_transaction);string		ls_name
+int			li_cnt
+
+select count(ru.id) into :li_cnt
+from role_user ru 
+where ru.id = :vdb_userid using rt_transaction;
+
+if  li_cnt = 1 then
+	select ru.name into :ls_name 
+	from role_user ru 
+	where ru.id = :vdb_userid using rt_transaction;	
+	return ls_name
+else
+	setnull(ls_name)
+	return ls_name
+end if
 end function
 
 on c_user_instance.create

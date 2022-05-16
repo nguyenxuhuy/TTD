@@ -1328,9 +1328,9 @@ end event
 event e_dw_e_postinsertrow;call super::e_dw_e_postinsertrow;t_dw_mpl		ldw_item
 
 if pos(rpo_dw.dataobject,'d_objects_item') > 0 then
-	ib_addnew = true
-	ldw_item = iw_display.dynamic f_get_dw('d_item_form')
-	ldw_item.event e_addrow()
+//	ib_addnew = true
+//	ldw_item = iw_display.dynamic f_get_dw('d_item_form')
+//	ldw_item.event e_addrow()
 elseif pos(rpo_dw.dataobject,'d_item_purchase_price_') > 0 then
 	rpo_dw.setitem(vl_currentrow, 'item_applied_type','spec')
 	rpo_dw.setitem(vl_currentrow, 'price_type','PURCHASE')

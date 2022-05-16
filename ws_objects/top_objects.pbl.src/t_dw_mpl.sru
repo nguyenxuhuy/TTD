@@ -1787,7 +1787,7 @@ lb_popup_data.is_drilldown_object = ls_drilldown_object
 lb_popup_data.is_where_rec = ls_where_rec
 ib_valuesetting = true
 if vs_objname = 'u_valueset' then
-	lw_parent.dynamic f_openchildwithparm('s_w_multi_n',lb_popup_data)				
+	lw_parent.dynamic f_openchildwithparm('s_w_multi_n_rb',lb_popup_data)				
 else
 	openwithparm(s_wr_multi, lb_popup_data)
 end if
@@ -9191,7 +9191,7 @@ if lc_last = '`' then
 		if li_rtn = 0 then return
 		if (ls_dwdatatype = 'valueset' or ls_dwdatatype = 'dwo' ) then
 			li_rtn = this.event e_popup_data(dwo.name, 'u_valueset' )
-			if this.inv_querymode.f_GetEnabled() then this.inv_querymode.event e_itemchanged( row, ls_colname,this.gettext( ) )
+//			if this.inv_querymode.f_GetEnabled() then this.inv_querymode.event e_itemchanged( row, ls_colname,this.gettext( ) )
 			if li_rtn = -1 then return 1		
 		elseif ls_dwdatatype = 'STRUCT_SEGMENT'  then
 		//-- Trường hợp structure --//
@@ -9759,8 +9759,9 @@ elseif key = keyT! and keyflags =  2 and this.ib_editing  then
 	end if
 elseif key = KeyEscape! then
 	this.f_getparentwindow(lw_parent)
-	if lw_parent.dynamic f_get_dw_actionpane('d_action_edit',ldw_actionpane) = 1 then
-		if  ldw_actionpane.dynamic f_is_button_active('b_saveclose') then
+	if this.ib_editing then
+		lpo_handling = lw_parent.f_get_obj_handling( )
+		if lpo_handling.f_get_ib_changed_dwo_4edit( ) then
 			lw_parent.dynamic event e_closeedit( )
 		else
 			close (lw_parent)

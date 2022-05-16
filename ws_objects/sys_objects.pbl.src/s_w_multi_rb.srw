@@ -7308,7 +7308,7 @@ t_dw_mpl		ldw_main
 
 if ic_obj_handling.dynamic f_is_changed_dwo_4edit()  then
 	connect using it_transaction;
-	
+	this.ib_saving = true
 	ldw_main = this.f_get_dwmain( )	
 	if isvalid(ldw_main) then
 		ldw_main.event e_rollback_modify( )
@@ -7317,7 +7317,7 @@ if ic_obj_handling.dynamic f_is_changed_dwo_4edit()  then
 		return -1
 	end if		
 	
-	this.event e_filteron_new( )
+	this.event e_filteron_rb( )
 	//-- set lại filter data nếu có--//
 	this.f_filter_dwmain_new( )
 //	if isvalid(ic_obj_handling.ids_filter_data ) then
@@ -7329,11 +7329,17 @@ if ic_obj_handling.dynamic f_is_changed_dwo_4edit()  then
 	
 	//--nếu đang copy thì sau khi save tắt chế độ copy--//
 	if ic_obj_handling.f_get_ib_copying( ) then ic_obj_handling.f_set_ib_copying( false)
-	ic_obj_handling.f_ctrl_actionbuttons( idw_focus)
-	this.event e_display_actionbutton( )
+	
+//	ic_obj_handling.f_ctrl_actionbuttons( idw_focus)
+//	this.event e_display_actionbutton( )
 	
 	disconnect using it_transaction;
-	return idw_focus.setfocus( )	
+	this.ib_saving =  false
+	idw_focus.setfocus( )	
+	//-- change button --//
+	ic_obj_handling.f_change_action_button(t_w_mdi.rbb_1, 'e_save')
+	//-- enbale button--//
+	ic_obj_handling.f_ctrl_enable_button(t_w_mdi.rbb_1 , ldw_main)
 	return 1
 end if
 
@@ -7515,9 +7521,11 @@ if not isnull(message.stringparm) and message.stringparm <> '' then
 
 	lc_obj_service.f_stringtoarray(ls_parm ,";",las_parm[])
 	ic_obj_main = create using las_parm[1]
-	ic_obj_main.f_set_menu_id(las_parm[2])	
-	ls_menu_code = lc_menu_item.f_get_menu_code_ex( double(las_parm[2]), it_transaction)
-	ic_obj_main.f_set_menu_code(ls_menu_code )
+	if las_parm[2] <> '0' then
+		ic_obj_main.f_set_menu_id(las_parm[2])	
+		ls_menu_code = lc_menu_item.f_get_menu_code_ex( double(las_parm[2]), it_transaction)
+		ic_obj_main.f_set_menu_code(ls_menu_code )
+	end if
 	//-- init dwsetup --//
 	if upper(ic_obj_main.classname( )) = 'U_VALUESET_ENTRY' then
 //		ic_obj_main.idwsetup_initial.f_init_ids_setup_dw( upper(ic_obj_main.classname( )) )
@@ -7536,7 +7544,11 @@ if not isnull(message.stringparm) and message.stringparm <> '' then
 		this.is_win_grp = las_parm[4]
 		this.is_sheet_type = las_parm[4]		
 	else
-		this.title = lc_menu_item.f_get_menu_label_ex(double(las_parm[2]), it_transaction )
+		if las_parm[2] <> '0' then
+			this.title = lc_menu_item.f_get_menu_label_ex(double(las_parm[2]), it_transaction )
+		else 
+			this.title = ic_obj_main.is_object_title
+		end if
 	end if
 	ic_obj_main.f_init_policy_datastore_exx(it_transaction )
 

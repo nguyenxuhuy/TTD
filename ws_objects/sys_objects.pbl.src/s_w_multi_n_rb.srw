@@ -87,8 +87,10 @@ if not isnull(message.stringparm) and message.stringparm <> '' then
 	lc_obj_service.f_stringtoarray(ls_parm ,";",las_parm[])
 	ic_obj_main = create using las_parm[1]
 	ic_obj_main.f_set_menu_id(las_parm[2])	
-	ls_menu_code = lc_menu_item.f_get_menu_code_ex( double(las_parm[2]), it_transaction)
-	ic_obj_main.f_set_menu_code(ls_menu_code )
+	if las_parm[2] <> '0' then
+		ls_menu_code = lc_menu_item.f_get_menu_code_ex( double(las_parm[2]), it_transaction)
+		ic_obj_main.f_set_menu_code(ls_menu_code )
+	end if
 	//-- init dwsetup --//
 	if upper(ic_obj_main.classname( )) = 'U_VALUESET_ENTRY' then
 //		ic_obj_main.idwsetup_initial.f_init_ids_setup_dw( upper(ic_obj_main.classname( )) )
@@ -107,7 +109,11 @@ if not isnull(message.stringparm) and message.stringparm <> '' then
 		this.is_win_grp = las_parm[4]
 		this.is_sheet_type = las_parm[4]		
 	else
-		this.title = lc_menu_item.f_get_menu_label_ex(double(las_parm[2]), it_transaction )
+		if las_parm[2] <> '0' then
+			this.title = lc_menu_item.f_get_menu_label_ex(double(las_parm[2]), it_transaction )
+		else 
+			this.title = ic_obj_main.is_object_title
+		end if		
 	end if
 	ic_obj_main.f_init_policy_datastore_exx(it_transaction )
 
@@ -503,22 +509,22 @@ event itemclicked;call super::itemclicked;int						li_rtn
 s_object_display		lod_handle
 
 choose case itemtag
-	case 'e_add','e_modify','e_delete','e_save','e_first','e_next','e_prior','e_last','e_okclose'
-			li_rtn = parent.triggerevent( itemtag)
-			if li_rtn = 1 then
-				choose case itemtag
-					case 'e_modify','e_save','e_post','e_unpost','e_add','e_insert'
-						this.f_change_action_button( itemhandle, index, 0)
-				end choose
-			end if			
+	case 'e_add','e_modify','e_delete','e_save','e_first','e_next','e_prior','e_last','e_okclose','e_close'
+
+		choose case itemtag
+			case 'e_modify','e_save','e_post','e_unpost','e_add','e_insert'
+				this.f_change_action_button( itemhandle, index, 0)
+		end choose
+		li_rtn = parent.triggerevent( itemtag)
+	
 	case 'e_filter'
 			if parent.ib_filter_on then
 				parent.triggerevent( 'e_filteroff')
 			else
 				parent.triggerevent( 'e_filteron_new')
 			end if
-	case 'close'
-		close(parent)
+//	case 'close'
+//		close(parent)
 	case 'e_action_load_file','e_action_link','e_action_open_file'
 //		lw_active = parent.getactivesheet( )
 //		if isvalid(lw_active) then

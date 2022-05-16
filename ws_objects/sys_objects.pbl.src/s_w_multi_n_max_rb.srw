@@ -52,8 +52,8 @@ event open;call super::open;rbb_1.importfromxmlfile( "XmlFile2.xml")
 
 end event
 
-type dw_filter from s_w_multi_rb`dw_filter within s_w_multi_n_max_rb
-end type
+event activate;// overrid--//
+end event
 
 type st_1 from s_w_multi_rb`st_1 within s_w_multi_n_max_rb
 end type
@@ -62,6 +62,9 @@ type tab_action from s_w_multi_rb`tab_action within s_w_multi_n_max_rb
 end type
 
 type gb_filter from s_w_multi_rb`gb_filter within s_w_multi_n_max_rb
+end type
+
+type dw_filter from s_w_multi_rb`dw_filter within s_w_multi_n_max_rb
 end type
 
 type dw_2 from s_w_multi_rb`dw_2 within s_w_multi_n_max_rb
@@ -338,6 +341,9 @@ end type
 type czkem from s_w_multi_rb`czkem within s_w_multi_n_max_rb
 integer taborder = 160
 string binarykey = "s_w_multi.win"
+end type
+
+type rte_1 from s_w_multi_rb`rte_1 within s_w_multi_n_max_rb
 end type
 
 type rbb_1 from u_rbb within s_w_multi_n_max_rb

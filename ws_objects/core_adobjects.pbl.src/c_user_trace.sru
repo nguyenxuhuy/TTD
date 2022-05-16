@@ -42,7 +42,7 @@ t_dw_mpl	ldw_focus, ldw_main
 datetime		ldt_created, ldt_last_mdf
 double		ldb_created_by, ldb_last_mdf_by
 string			ls_created_by, ls_last_mdf_by
-c_user		lc_user
+
 
 lw_parent = iw_display.dynamic f_getparentwindow()
 ldw_focus = lw_parent.dynamic f_get_idwfocus()
@@ -51,11 +51,8 @@ if  ldw_focus.f_get_ib_traceable( ) then
 	ldt_last_mdf = ldw_focus.getitemdatetime(ldw_focus.getrow(),'last_mdf_date' )
 	ldb_created_by = ldw_focus.getitemnumber(ldw_focus.getrow(),'created_by' )
 	ldb_last_mdf_by = ldw_focus.getitemnumber(ldw_focus.getrow(),'last_mdf_by' )
-
-	lc_user = create c_user
-	ls_created_by = lc_user.f_get_code(ldb_created_by)
-	ls_last_mdf_by = lc_user.f_get_code(ldb_last_mdf_by)
-	destroy	lc_user
+	ls_created_by =  g_user.f_get_usercode_ex( ldb_created_by, it_transaction)	
+	ls_last_mdf_by = g_user.f_get_usercode_ex(ldb_last_mdf_by, it_transaction)	
 end if
 ldw_main = iw_display.dynamic f_get_dwmain()
 ldw_main.insertrow(0)
@@ -78,5 +75,25 @@ ib_display_text = false
 is_object_title = 'User cập nhật dữ liệu'
 
 istr_actionpane[1].s_description = is_object_title
+
+istr_actionpane[1].s_button_name = 'e_close;'
+//istr_actionpane[1].s_button_name += 'b_doc_trace;e_add;e_modify;e_delete;'
+//istr_actionpane[1].s_button_has_sub ='b_update;'
+//istr_actionpane[1].sa_sub_button[1]='e_action_load_file;e_action_link;e_action_open_file;'
+//istr_actionpane[1].sa_subbutton_name[1]='Nạp file;Nạp link;Mở file;'
+
+//istr_actionpane[1].s_button_has_sub ='b_related_object;b_update;b_approve;b_view;b_copyt;b_copyf;'
+//istr_actionpane[1].sa_sub_button[1]='u_so;'
+//istr_actionpane[1].sa_subbutton_name[1]='Đơn bán hàng(SO);'
+//istr_actionpane[1].sa_sub_button[2]='b_complete;b_lose;b_excel;'
+//istr_actionpane[1].sa_subbutton_name[2]='Thành công;Không thành;Excel;'
+//istr_actionpane[1].sa_sub_button[3]=''	//'b_send_2_approve;b_approve;b_reject;'
+//istr_actionpane[1].sa_subbutton_name[3]=''	//'Gửi duyệt;Duyệt;Trả duyệt'
+//istr_actionpane[1].sa_sub_button[4]='b_view_qt;b_view_qt_kni_eng;'
+//istr_actionpane[1].sa_subbutton_name[4]='Chào giá;Chào giá ENG;'
+//istr_actionpane[1].sa_sub_button[5]=''
+//istr_actionpane[1].sa_subbutton_name[5]=''
+//istr_actionpane[1].sa_sub_button[6]=''
+//istr_actionpane[1].sa_subbutton_name[6]=''
 end event
 

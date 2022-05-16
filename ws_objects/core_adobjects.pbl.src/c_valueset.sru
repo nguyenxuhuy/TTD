@@ -319,7 +319,7 @@ s_w_main				lw_parent
 t_dw_mpl				ldw_focus
 any						la_data
 
-if iw_display.classname( ) = 's_w_multi' then return ancestorreturnvalue
+if iw_display.classname( ) = 's_w_multi_rb' then return ancestorreturnvalue
 
 lw_parent = iw_display.f_getparentwindow( )
 ldw_focus = lw_parent.f_get_idwfocus( )
@@ -334,7 +334,7 @@ if ldw_focus.describe( "p_1.x") <> '!' and ldw_focus.describe( "p_1.x") <> '?' t
 	end if
 end if
 
-iw_display.event e_filteron_new()
+iw_display.dynamic event e_filteron_rb()
 
 //-- tick các record theo current data --//
 if not isnull(is_currentdata) and is_currentdata<>'' then
@@ -374,7 +374,7 @@ iw_display.f_set_idwfocus(iw_display.dw_filter )
 ldw_focus = iw_display.f_get_idwfocus( )
 ls_first_column = ldw_focus.f_getfirstcolumn( true)
 ll_rc = ldw_focus.setcolumn( ls_first_column)
-
+iw_display.idw_focus = ldw_valueset
 return 1
 end event
 
@@ -382,6 +382,31 @@ event constructor;call super::constructor;
 ib_changed_dwo_4edit = false
 is_display_model ='1d'
 is_object_title = 'Bộ giá trị tìm kiếm'
+
+istr_actionpane[1].s_description = is_object_title
+
+
+istr_actionpane[1].s_button_name = 'e_okclose;e_close;e_action_new;e_refresh;e_filter;'
+//istr_actionpane[1].s_button_name += 'b_doc_trace;e_add;e_modify;e_delete;'
+if this.is_drilldown_object <> '' and not isnull(this.is_drilldown_object) then
+	istr_actionpane[1].s_button_has_sub ='b_update;'
+	istr_actionpane[1].sa_sub_button[1]='e_action_new;'
+	istr_actionpane[1].sa_subbutton_name[1]='Thêm mới;'
+end if
+
+//istr_actionpane[1].s_button_has_sub ='b_related_object;b_update;b_approve;b_view;b_copyt;b_copyf;'
+//istr_actionpane[1].sa_sub_button[1]='u_so;'
+//istr_actionpane[1].sa_subbutton_name[1]='Đơn bán hàng(SO);'
+//istr_actionpane[1].sa_sub_button[2]='b_complete;b_lose;b_excel;'
+//istr_actionpane[1].sa_subbutton_name[2]='Thành công;Không thành;Excel;'
+//istr_actionpane[1].sa_sub_button[3]=''	//'b_send_2_approve;b_approve;b_reject;'
+//istr_actionpane[1].sa_subbutton_name[3]=''	//'Gửi duyệt;Duyệt;Trả duyệt'
+//istr_actionpane[1].sa_sub_button[4]='b_view_qt;b_view_qt_kni_eng;'
+//istr_actionpane[1].sa_subbutton_name[4]='Chào giá;Chào giá ENG;'
+//istr_actionpane[1].sa_sub_button[5]=''
+//istr_actionpane[1].sa_subbutton_name[5]=''
+//istr_actionpane[1].sa_sub_button[6]=''
+//istr_actionpane[1].sa_subbutton_name[6]=''
 
 end event
 
@@ -683,11 +708,18 @@ return 0
 end event
 
 event e_window_e_close;//-- Override--//
+s_w_main			lw_parent
+datawindow			ldw_focus
 
 this.ipo_main.idwsetup_initial.ids_setup_dw.setfilter( "" )
 this.ipo_main.idwsetup_initial.ids_setup_dw.filter( )	
+lw_parent = iw_display.f_getparentwindow( )
+ldw_focus = lw_parent.f_get_idwfocus( )
+ldw_focus.dynamic f_set_ib_valuesetting(false)
 close(iw_display)	
 return 0
+
+
 end event
 
 event e_window_activate;call super::e_window_activate;return iw_display.event e_refresh( )

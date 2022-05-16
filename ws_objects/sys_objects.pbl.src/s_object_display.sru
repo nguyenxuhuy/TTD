@@ -376,6 +376,7 @@ public function decimal f_get_exchange_rate_ex (string vs_cur_code, date vd_tran
 public function integer f_update_ribbonbar (u_rbb rbb_handle)
 public function integer f_ctrl_enable_button (u_rbb vrbb_handle, t_dw_mpl vdw_focus)
 public function integer f_init_policy_datastore_exx (ref t_transaction rt_transaction)
+public function integer f_change_action_button (u_rbb vrbb_handle, string vs_button_tag)
 end prototypes
 
 event type integer e_tv_selectionchanged(ref treeview rpo_tv);return 0
@@ -6293,56 +6294,82 @@ FOR li_idx = 1 to li_cnt
 		if iw_display.classname( ) = 's_w_multi_rb' then
 			rbb_handle.getchilditembyindex( l_rci.itemhandle, 6, l_rpi)	
 		elseif iw_display.classname( ) = 's_w_multi_n_rb' then
-			rbb_handle.getchilditembyindex( l_rci.itemhandle, 4, l_rpi)	
-			
+			rbb_handle.getchilditembyindex( l_rci.itemhandle, 4, l_rpi)				
 		end if
 		li_bttn_cnt  = lc_string.f_stringtoarray(istr_actionpane[1].sa_sub_button[li_idx] , ';', lsa_bttn[])
 		li_bttn_cnt  = lc_string.f_stringtoarray(istr_actionpane[1].sa_subbutton_name[li_idx] , ';', lsa_bttn_nm[])
 		if li_bttn_cnt = 0 then
 			rbb_handle.deletepanel(l_rpi.itemhandle )
 		else
-			for li_idx1 = 1 to li_bttn_cnt
-				l_rsbi = l_rsbi_null
-				if lsa_bttn[li_idx1] = 'b_doc_trace' then 
-					//-- thêm nút ghi sổ và hủy: panel action --//
-					rbb_handle.getchilditembyindex( l_rci.itemhandle, 2, l_rpi_action)	
-					//-- add nút ghi sổ--//
-					rbb_handle.getchilditembyindex( l_rpi_action.itemhandle, 1, l_rgi)	
-					l_rsbi.picturename = "Edit!"
-					l_rsbi.clicked = "ue_tabbutton"
-					l_rsbi.PowerTipDescription="Ghi sổ Ctrl+G" 
-					l_rsbi.Tag="e_post"
-					l_rsbi.Shortcut="Ctrl+G"
-					rbb_handle.InsertSmallButtonLast (l_rgi.itemhandle,l_rsbi)
-					//-- add nút canel--//
-					rbb_handle.getchilditembyindex( l_rpi_action.itemhandle, 2, l_rgi)	
+			for li_idx1 = 1 to li_bttn_cnt			
+				if iw_display.classname( ) = 's_w_multi_rb' then	
 					l_rsbi = l_rsbi_null
-					l_rsbi.picturename = "Custom080!"
-					l_rsbi.clicked = "ue_tabbutton"
-					l_rsbi.PowerTipDescription="Hủy" 
-					l_rsbi.Tag="e_cancel"
-					rbb_handle.InsertSmallButtonLast (l_rgi.itemhandle,l_rsbi)			
-					l_rsbi = l_rsbi_null
-				end if				
-				l_rsbi.text =  lsa_bttn_nm[li_idx1]
-				l_rsbi.Tag= lsa_bttn[li_idx1]
-				l_rsbi.clicked = "ue_tabbutton"			
-				if lsa_bttn[li_idx1] = 'b_doc_trace' then
-					l_rsbi.picturename = "Browse1!"
-				elseif lsa_bttn[li_idx1] = 'b_complete'then
-					l_rsbi.picturename = "Custom026!"
-				elseif lsa_bttn[li_idx1] = 'b_lose'then
-					l_rsbi.picturename = "Custom027a!"
-				elseif lsa_bttn[li_idx1] = 'b_excel'then
-					l_rsbi.picturename = "Custom043!"
-				elseif lsa_bttn[li_idx1] = 'e_action_load_file' then
-					l_rsbi.picturename = "Browser!"
-				elseif  lsa_bttn[li_idx1] = 'e_action_link' then
-					l_rsbi.picturename = "Hyperlinkbig!"
-				elseif  lsa_bttn[li_idx1] = 'e_action_open_file' then
-					l_rsbi.picturename = "Preview1!"
+					if lsa_bttn[li_idx1] = 'b_doc_trace' then 
+						//-- thêm nút ghi sổ và hủy: panel action --//
+						rbb_handle.getchilditembyindex( l_rci.itemhandle, 2, l_rpi_action)	
+						//-- add nút ghi sổ--//
+						rbb_handle.getchilditembyindex( l_rpi_action.itemhandle, 1, l_rgi)	
+						l_rsbi.picturename = "Edit!"
+						l_rsbi.clicked = "ue_tabbutton"
+						l_rsbi.PowerTipDescription="Ghi sổ Ctrl+G" 
+						l_rsbi.Tag="e_post"
+						l_rsbi.Shortcut="Ctrl+G"
+						rbb_handle.InsertSmallButtonLast (l_rgi.itemhandle,l_rsbi)
+						//-- add nút canel--//
+						rbb_handle.getchilditembyindex( l_rpi_action.itemhandle, 2, l_rgi)	
+						l_rsbi = l_rsbi_null
+						l_rsbi.picturename = "Custom080!"
+						l_rsbi.clicked = "ue_tabbutton"
+						l_rsbi.PowerTipDescription="Hủy" 
+						l_rsbi.Tag="e_cancel"
+						rbb_handle.InsertSmallButtonLast (l_rgi.itemhandle,l_rsbi)			
+						l_rsbi = l_rsbi_null
+					end if							
+					l_rsbi.text =  lsa_bttn_nm[li_idx1]
+					l_rsbi.Tag= lsa_bttn[li_idx1]
+					l_rsbi.clicked = "ue_tabbutton"			
+					if lsa_bttn[li_idx1] = 'b_doc_trace' then
+						l_rsbi.picturename = "Browse1!"
+					elseif lsa_bttn[li_idx1] = 'b_complete'then
+						l_rsbi.picturename = "Custom026!"
+					elseif lsa_bttn[li_idx1] = 'b_lose'then
+						l_rsbi.picturename = "Custom027a!"
+					elseif lsa_bttn[li_idx1] = 'b_excel'then
+						l_rsbi.picturename = "Custom043!"
+					elseif lsa_bttn[li_idx1] = 'e_action_load_file' then
+						l_rsbi.picturename = "Browser!"
+					elseif  lsa_bttn[li_idx1] = 'e_action_link' then
+						l_rsbi.picturename = "Hyperlinkbig!"
+					elseif  lsa_bttn[li_idx1] = 'e_action_open_file' then
+						l_rsbi.picturename = "Preview1!"
+					elseif lsa_bttn[li_idx1] = 'e_action_new' then
+						l_rsbi.picturename = "NewfolderBig!"
+					end if
+					rbb_handle.InsertSmallButtonLast (l_rpi.itemhandle,l_rsbi)
+				elseif  iw_display.classname( ) = 's_w_multi_n_rb' then	
+					l_rlbi = l_rlbi_null
+					l_rlbi.text =  lsa_bttn_nm[li_idx1]
+					l_rlbi.Tag= lsa_bttn[li_idx1]
+					l_rlbi.clicked = "ue_tabbutton"			
+					if lsa_bttn[li_idx1] = 'b_doc_trace' then
+						l_rlbi.picturename = "Browse1!"
+					elseif lsa_bttn[li_idx1] = 'b_complete'then
+						l_rlbi.picturename = "Custom026!"
+					elseif lsa_bttn[li_idx1] = 'b_lose'then
+						l_rlbi.picturename = "Custom027a!"
+					elseif lsa_bttn[li_idx1] = 'b_excel'then
+						l_rlbi.picturename = "Custom043!"
+					elseif lsa_bttn[li_idx1] = 'e_action_load_file' then
+						l_rlbi.picturename = "Browser!"
+					elseif  lsa_bttn[li_idx1] = 'e_action_link' then
+						l_rlbi.picturename = "Hyperlinkbig!"
+					elseif  lsa_bttn[li_idx1] = 'e_action_open_file' then
+						l_rlbi.picturename = "Preview1!"
+					elseif lsa_bttn[li_idx1] = 'e_action_new' then
+						l_rlbi.picturename = "NewfolderBig!"
+					end if
+					rbb_handle.InsertLargeButtonLast (l_rpi.itemhandle,l_rlbi)					
 				end if
-				rbb_handle.InsertSmallButtonLast (l_rpi.itemhandle,l_rsbi)
 			next						
 		end if		
 	elseif lsa_sub[li_idx] = 'b_related_object' then
@@ -6469,6 +6496,14 @@ else
 	ids_policy_security.filter( )
 end if
 return 1
+end function
+
+public function integer f_change_action_button (u_rbb vrbb_handle, string vs_button_tag);
+RibbonSmallButtonItem		l_rsbi
+
+vrbb_handle.getitembytag(vs_button_tag, l_rsbi)
+return vrbb_handle.f_change_action_button(l_rsbi)
+
 end function
 
 on s_object_display.create
