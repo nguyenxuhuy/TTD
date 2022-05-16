@@ -44,7 +44,7 @@ long richtexteditx64type = 3
 long richtexteditversion = 1
 string richtexteditkey = ""
 string appicon = "Pics\cloud_ttd.ico"
-string appruntimeversion = "21.0.0.1506"
+string appruntimeversion = "21.0.0.1509"
 boolean manualsession = false
 boolean unsupportedapierror = true
 end type
