@@ -5619,7 +5619,7 @@ boolean		lb_isnumber = true
 c_string		lc_string
 
 
-li_colCnt = this.f_getcolumns(ls_colname[] )
+li_colCnt = this.f_getcolumns(ls_colname[] ) 
 
 FOR li_idx = 1 to li_colCnt
 	if ls_colname[li_idx] = 'gutter' then continue
@@ -5701,7 +5701,7 @@ c_dwservice					lc_dwservice
 s_object_display			lsod_handle
 
 if this.getchild( vs_colname, ldwc) = -1 then return -1
-
+ 
 if ldwc.rowcount( ) > 0 then return  ldwc.rowcount( )
 //-- build where theo gia trị phụ thuộc --//
 if this.f_getparentwindow( lw_parent) <> 1 then return 0
@@ -5754,7 +5754,7 @@ if this.getchild( vs_colname, ldwc) = -1 then return -1
 //-- build where theo gia trị phụ thuộc --//
 ls_dwo = vs_dwo
 if left(ls_dwo,2)= 'd_' then 
-	ls_dwo =  left(ls_dwo, len(ls_dwo) - 5)
+	ls_dwo =  left(ls_dwo, len(ls_dwo) - 5) 
 end if
 if ls_dwo = this.getitemstring( 1, 'dwo') then return 0
 
