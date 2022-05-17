@@ -2708,7 +2708,7 @@ public function integer f_add_where (string vs_columns, any va_data[]);string			
 int						li_colCount, li_idx
 c_dwservice			lc_dwservice
 c_sql					lc_sql
-c_string				lc_string
+c_string				lc_string 
 
 if this.dynamic f_getcurrentSQL( ls_currentSQL, ls_currentWhere) =1 then
 	li_colCount = lc_string.f_stringtoarray( vs_columns,';', las_columns[])
