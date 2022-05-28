@@ -5809,7 +5809,7 @@ long				ll_row_found, ll_row
 s_object_display	lod_handle
 s_w_main			lw_display
 
-is_lbttndown_colname = dwo.name
+is_lbttndown_colname = dwo.name 
 il_lbttndown_colX = long(this.describe( is_lbttndown_colname+".x"))
 
 //-- đóng w_menu --//
@@ -5818,7 +5818,7 @@ il_lbttndown_colX = long(this.describe( is_lbttndown_colname+".x"))
 //		t_w_menu.f_roll_in()
 //	end if
 //end if
-ldw_handling = this
+ldw_handling = this 
 this.f_getparentwindow( lw_display)
 lod_handle = lw_display.f_get_obj_handling( )
 if row > 0 then
