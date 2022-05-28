@@ -28,13 +28,18 @@ Boolean 		gbl_resize_old = false
 Boolean 		gbl_default_layout =  false
 
 
+//Token expiresin
+Long gl_Expiresin
+//Refresh token clockskew 
+Long gl_ClockSkew = 3
+
 c_user_instance			g_user
 sailjson						gjs_object_user
 end variables
 
 global type ttd from application
 string appname = "ttd"
-string themepath = "theme"
+string themepath = "theme190"
 string themename = "Do Not Use Themes"
 boolean nativepdfvalid = false
 boolean nativepdfincludecustomfont = false
@@ -43,7 +48,7 @@ long richtextedittype = 2
 long richtexteditx64type = 3
 long richtexteditversion = 1
 string richtexteditkey = ""
-string appicon = "Pics\cloud_ttd.ico"
+string appicon = "Pics\app.ico"
 string appruntimeversion = "21.0.0.1509"
 boolean manualsession = false
 boolean unsupportedapierror = true
@@ -57,7 +62,6 @@ public FUNCTION ulong SetWindowLongA( ulong hWnd, int nIndex, long newValue ) LI
 end prototypes
 
 type variables
-
 
 end variables
 

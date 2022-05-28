@@ -1,0 +1,61 @@
+﻿$PBExportHeader$f_authorization.srf
+global type f_authorization from function_object
+end type
+
+forward prototypes
+global function integer f_authorization ()
+end prototypes
+
+global function integer f_authorization ();//Integer f_Authorization() for password
+//UserName & Password are passed from the login window
+RestClient lrc_Client
+String  ls_url, ls_UserName, ls_UserPass, ls_PostData, ls_Response, ls_expires_in
+String  ls_TokenType, ls_AccessToken
+String  ls_type, ls_description, ls_uri, ls_state
+Integer li_Return, li_rtn
+JsonParser ljson_Parser
+
+li_rtn = -1
+ls_url = profilestring("CloudSetting.ini","setup","TokenURL","")
+
+//login window can be implemented to return username & password according to actual needs.
+//Open(w_login) 
+//Return UserName & Password
+
+ls_UserName = ProfileString("CloudSetting.ini", "users", "userName", "")
+ls_UserPass = ProfileString("CloudSetting.ini", "users", "userPass", "")
+
+If IsNull ( ls_UserName ) Or Len ( ls_UserName ) = 0 Then
+ MessageBox( "Tips", "UserName is empty!" )
+ Return li_rtn
+End If
+If IsNull ( ls_UserPass ) Or Len ( ls_UserPass ) = 0 Then
+ MessageBox( "Tips", "Password is empty!" )
+ Return li_rtn
+End If
+
+ls_PostData = '{"Username":"' + ls_UserName + '", "Password":"' + ls_UserPass + '"}'
+lrc_Client = Create RestClient
+lrc_Client.SetRequestHeader("Content-Type","application/json")
+li_Return = lrc_Client.GetJWTToken( ls_Url, ls_PostData, ls_Response )
+If li_Return = 1 and Pos ( ls_Response, "access_token" ) > 0 Then
+ ljson_Parser = Create JsonParser
+ ljson_Parser.LoadString(ls_Response)
+ ls_TokenType = ljson_Parser.GetItemString("/token_type")
+ ls_AccessToken = ljson_Parser.GetItemString("/access_token")
+ //Application Set Authorization Header
+ Getapplication().SetHttpRequesTheader("Authorization", ls_TokenType + " " +ls_AccessToken, true)
+ //Set Global Variables
+ gl_Expiresin = Long (ljson_Parser.GetItemNumber("/expires_in"))
+
+ li_rtn = 1
+Else
+ MessageBox( "AccessToken Falied", "Return :" + String ( li_Return ) )
+End If
+
+If IsValid ( ljson_Parser ) Then DesTroy ( ljson_Parser )
+If IsValid ( lrc_Client ) Then DesTroy ( lrc_Client )
+
+Return li_rtn
+end function
+
