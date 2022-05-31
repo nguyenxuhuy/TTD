@@ -7626,6 +7626,8 @@ if li_width > 0 and li_height > 0 then
 	this.height = li_height
 end if
 
+//messagebox('open','open')
+
 //-- post open --//
 if li_rtn <> -1 then this.post event e_postopen(li_rtn )
 

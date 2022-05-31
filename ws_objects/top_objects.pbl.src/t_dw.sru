@@ -5791,6 +5791,7 @@ end on
 
 event constructor;s_w_main		lw_parent
 
+
 if this.f_getparentwindow(lw_parent ) = 1 then
 	if not lw_parent.f_get_ib_object_changing( )  then
 		setnull(is_originalwhereClause)
