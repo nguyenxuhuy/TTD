@@ -630,9 +630,25 @@ ib_changed_dwo_4edit = true
 this.ib_keyboardlocked = true
 is_display_model = '1d'
 is_object_title = 'Khách hàng'
-istr_actionpane[1].s_button_name = 'b_add;b_insert;b_modify;b_save;b_query;b_execquery;b_filteron;b_refresh;b_delete;b_copyt_po;b_copyt_goods_receipt; b_copyt_pur_invoice;b_copyt_bank_voucher;b_copyt_receipt;b_copyt_payment;'
-istr_actionpane[1].s_objname_handling = this.classname( )
+
 istr_actionpane[1].s_description = is_object_title
+
+istr_actionpane[1].s_button_name = 'b_send_2_approve;b_approve;b_reject;'
+istr_actionpane[1].s_button_name += 'b_doc_trace;b_cancel;b_self_copy;e_add;e_modify;e_delete;'
+//istr_actionpane[1].s_button_has_sub ='b_related_object;b_update;b_approve;b_view;b_copyt;b_copyf;'
+//istr_actionpane[1].sa_sub_button[1]='u_so;'
+//istr_actionpane[1].sa_subbutton_name[1]='Đơn bán hàng(SO);'
+//istr_actionpane[1].sa_sub_button[2]='b_complete;b_lose;b_excel;'
+//istr_actionpane[1].sa_subbutton_name[2]='Thành công;Không thành;Excel;'
+//istr_actionpane[1].sa_sub_button[3]=''	//'b_send_2_approve;b_approve;b_reject;'
+//istr_actionpane[1].sa_subbutton_name[3]=''	//'Gửi duyệt;Duyệt;Trả duyệt'
+//istr_actionpane[1].sa_sub_button[4]='b_view_qt;b_view_qt_kni_eng;'
+//istr_actionpane[1].sa_subbutton_name[4]='Chào giá;Chào giá ENG;'
+//istr_actionpane[1].sa_sub_button[5]=''
+//istr_actionpane[1].sa_subbutton_name[5]=''
+//istr_actionpane[1].sa_sub_button[6]=''
+//istr_actionpane[1].sa_subbutton_name[6]=''
+
 
 end event
 
@@ -704,7 +720,7 @@ ldw_main = iw_display.dynamic f_get_dwmain()
 laa_value[1] = '=CUSTOMER'
 ldw_main.f_add_where('object_ref_table;',laa_value[])
 
-iw_display.event e_filteron_new( )
+iw_display.dynamic event e_filteron_rb( )
 return 0
 end event
 
@@ -771,13 +787,14 @@ if ldb_obj_id > 0 then
 		//-- update--//		
 		UPDATE business_address 
 		set address = :ls_addr ,
-			purpose = :ls_purpose
+			purpose = :ls_purpose,
+			name = 'addr1'
 		where id = :ldb_addr1 using it_transaction;
 	else
 		//-- insert--//
 		ldb_addr1 = lbo_ins.f_Create_id_ex( it_transaction )
-		INSERT into business_address (id, object_ref_id, object_ref_Table, created_by, created_Date, last_mdf_by, last_mdf_date, address, purpose)
-		VALUES (:ldb_addr1, :ldb_customer_id, 'CUSTOMER', :gi_userid, sysdate, :gi_userid, sysdate,:ls_addr, :ls_purpose)
+		INSERT into business_address (id, object_ref_id, object_ref_Table, created_by, created_Date, last_mdf_by, last_mdf_date, address, purpose,name)
+		VALUES (:ldb_addr1, :ldb_customer_id, 'CUSTOMER', :gi_userid, sysdate, :gi_userid, sysdate,:ls_addr, :ls_purpose, 'addr1')
 		using it_transaction;
 	end if		
 	
@@ -788,13 +805,14 @@ if ldb_obj_id > 0 then
 		//-- update--//		
 		UPDATE business_address 
 		set address = :ls_addr ,
-			purpose = :ls_purpose
+			purpose = :ls_purpose,
+			name = 'addr2'
 		where id = :ldb_addr2 using it_transaction;
 	else
 		//-- insert--//
 		ldb_addr2 = lbo_ins.f_Create_id_ex( it_transaction )
-		INSERT into business_address (id, object_ref_id, object_ref_Table, created_by, created_Date, last_mdf_by, last_mdf_date, address, purpose)
-		VALUES (:ldb_addr2, :ldb_customer_id, 'CUSTOMER', :gi_userid, sysdate, :gi_userid, sysdate,:ls_addr, :ls_purpose)
+		INSERT into business_address (id, object_ref_id, object_ref_Table, created_by, created_Date, last_mdf_by, last_mdf_date, address, purpose,name)
+		VALUES (:ldb_addr2, :ldb_customer_id, 'CUSTOMER', :gi_userid, sysdate, :gi_userid, sysdate,:ls_addr, :ls_purpose,'addr2')
 		using it_transaction;
 	end if			
 	//--POEPLE--//	

@@ -1,5 +1,5 @@
 ﻿$PBExportHeader$d_objects_customer_form.srd
-release 19;
+release 21;
 datawindow(units=0 timer_interval=0 color=1073741824 brushmode=0 transparency=0 gradient.angle=0 gradient.color=8421504 gradient.focus=0 gradient.repetition.count=0 gradient.repetition.length=100 gradient.repetition.mode=0 gradient.scale=100 gradient.spread=100 gradient.transparency=0 picture.blur=0 picture.clip.bottom=0 picture.clip.left=0 picture.clip.right=0 picture.clip.top=0 picture.mode=0 picture.scale.x=100 picture.scale.y=100 picture.transparency=0 processing=0 HTMLDW=no print.printername="" print.documentname="" print.orientation = 0 print.margin.left = 110 print.margin.right = 110 print.margin.top = 96 print.margin.bottom = 96 print.paper.source = 0 print.paper.size = 0 print.canusedefaultprinter=yes print.prompt=no print.buttons=no print.preview.buttons=no print.cliptext=no print.overrideprintjob=no print.collate=yes print.background=no print.preview.background=no print.preview.outline=yes hidegrayline=no showbackcoloronxp=no picture.file="" )
 header(height=0 color="536870912" transparency="0" gradient.color="8421504" gradient.transparency="0" gradient.angle="0" brushmode="0" gradient.repetition.mode="0" gradient.repetition.count="0" gradient.repetition.length="100" gradient.focus="0" gradient.scale="100" gradient.spread="100" )
 summary(height=0 color="536870912" transparency="0" gradient.color="8421504" gradient.transparency="0" gradient.angle="0" brushmode="0" gradient.repetition.mode="0" gradient.repetition.count="0" gradient.repetition.length="100" gradient.focus="0" gradient.scale="100" gradient.spread="100" )
@@ -143,8 +143,8 @@ LEFT JOIN ROLE_USER ON ROLE_USER.ID=OBJECT.HANDLED_BY
 LEFT JOIN OBJECT O_STAFF ON O_STAFF.ID=ROLE_USER.OBJECT_STAFF
 left join valueset_value vv3 on vv3.id= O_STAFF.MANAGE_GROUP
 left join organization org on org.object_ref_id = VD.id
-left join business_address ba1 on ba1.object_ref_id = VD.id
-left join business_address ba2 on ba2.object_ref_id = VD.id and ba2.id <> ba1.id
+left join business_address ba1 on ba1.object_ref_id = VD.id and ba1.name = 'addr1'
+left join business_address ba2 on ba2.object_ref_id = VD.id and ba2.name = 'addr2'
 left join people p on p.object_ref_id = VD.id
 left join people p_contact on p_contact.object_ref_id = ba1.id
 LEFT JOIN OBJECT O_parent ON O_parent.ID=OBJECT.OBJECT_LINK_ID

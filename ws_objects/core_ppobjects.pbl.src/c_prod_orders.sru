@@ -261,16 +261,16 @@ public subroutine f_set_dwo_window ();
 istr_dwo[1].s_dwo_default =  'd_document_prod_grid'
 istr_dwo[1].s_dwo_form = ''
 istr_dwo[1].s_dwo_grid = 'd_document_prod_grid'
-istr_dwo[1].b_master = true
+istr_dwo[1].b_master = false
 istr_dwo[1].b_detail = false
 istr_dwo[1].b_cascade_del = true
-istr_dwo[1].s_dwo_details = 'd_prod_hdr_form;'
+istr_dwo[1].s_dwo_details = ''
 istr_dwo[1].s_dwo_shared = ''
 istr_dwo[1].s_dwo_master = ''
 istr_dwo[1].s_master_keycol = ''
 istr_dwo[1].s_detail_keycol = ''
-istr_dwo[1].b_ref_table_yn  = true
-istr_dwo[1].s_ref_table_field = 'OBJECT_REF_TABLE;DOC_TYPE;VERSION_ID;'
+istr_dwo[1].b_ref_table_yn  = false
+istr_dwo[1].s_ref_table_field = ''
 istr_dwo[1].b_insert = true
 istr_dwo[1].b_update = true
 istr_dwo[1].b_delete = true
@@ -282,6 +282,7 @@ istr_dwo[1].b_keyboardlocked = true
 istr_dwo[1].s_description = 'Lệnh sản xuất'
 istr_dwo[1].s_gb_name = 'gb_6'
 
+/*
 istr_dwo[2].s_dwo_default =  'd_prod_hdr_form'
 istr_dwo[2].s_dwo_form = 'd_prod_hdr_form'
 istr_dwo[2].s_dwo_grid = ''
@@ -355,7 +356,7 @@ istr_dwo[4].b_traceable = true
 istr_dwo[4].b_keyboardlocked = true
 istr_dwo[4].b_focus_master = true
 istr_dwo[4].s_description = 'Thông tin ghi sổ'
-
+*/
 
 end subroutine
 
@@ -1348,18 +1349,26 @@ end on
 event constructor;call super::constructor;is_table = 'DOCUMENT'
 ib_changed_dwo_4edit = false
 this.ib_keyboardlocked = true
-is_display_model = 'up_gp_2d_lo_tb'
+is_display_model = 'up_1d_lo_tb'
 is_object_title = 'Lệnh sản xuất'
-istr_actionpane[1].s_button_name = 'b_add_multi;b_modify;b_filteron;b_query;b_refresh;b_delete;b_cancel;b_post;b_unpost;b_estimate;b_copyt_po;b_view_multi;b_process;'
-istr_actionpane[1].s_button_has_sub = 'b_add_multi;b_view_multi;'
-istr_actionpane[1].sa_sub_button[1]='b_add;b_copyf_pr;b_copyf_so;'
-istr_actionpane[1].sa_sub_button[2]='b_view_prod_order;'
-
-
-istr_actionpane[1].sa_enabled_subbutton[]= istr_actionpane[1].sa_sub_button[]
-
 istr_actionpane[1].s_description = is_object_title
 is_exrate_type = 'buy'
+
+istr_actionpane[1].s_button_name = 'b_preview;b_view_qt;b_view_qt_kni_eng;b_send_2_approve;b_approve;b_reject;b_complete;b_lose;b_excel;'
+istr_actionpane[1].s_button_name += 'b_doc_trace;b_cancel;b_self_copy;e_add;e_modify;e_delete;'
+istr_actionpane[1].s_button_has_sub ='b_related_object;b_update;b_approve;b_view;b_copyt;b_copyf;'
+istr_actionpane[1].sa_sub_button[1]='u_so;'
+istr_actionpane[1].sa_subbutton_name[1]='Đơn bán hàng(SO);'
+istr_actionpane[1].sa_sub_button[2]='b_complete;b_lose;b_excel;'
+istr_actionpane[1].sa_subbutton_name[2]='Thành công;Không thành;Excel;'
+istr_actionpane[1].sa_sub_button[3]=''	//'b_send_2_approve;b_approve;b_reject;'
+istr_actionpane[1].sa_subbutton_name[3]=''	//'Gửi duyệt;Duyệt;Trả duyệt'
+istr_actionpane[1].sa_sub_button[4]='b_view_qt;b_view_qt_kni_eng;'
+istr_actionpane[1].sa_subbutton_name[4]='Chào giá;Chào giá ENG;'
+istr_actionpane[1].sa_sub_button[5]=''
+istr_actionpane[1].sa_subbutton_name[5]=''
+istr_actionpane[1].sa_sub_button[6]=''
+istr_actionpane[1].sa_subbutton_name[6]=''
 end event
 
 event e_action_ctrl_bttn;call super::e_action_ctrl_bttn;datawindow				ldw_focus
@@ -1412,8 +1421,7 @@ end event
 
 event e_window_e_preopen;call super::e_window_e_preopen;//--resize parm --//
 
-iw_display.f_set_ii_upperpart_height(iw_display.ii_resize_height*2/5 )
-iw_display.f_set_ii_fixedpart1_height( iw_display.ii_resize_height*2/5 *1/3)
+iw_display.f_set_ii_upperpart_height(1/2 )
 
 
 return 0
