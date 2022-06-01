@@ -1326,6 +1326,7 @@ event itemclicked;call super::itemclicked;int					li_rtn
 t_w_main		lw_handle, lw_sheet_close
 s_w_main		lw_active
 s_object_display		lod_handle
+t_dw_mpl				ldw_main
 
 choose case itemtag
 	case 'signout'
@@ -1373,13 +1374,16 @@ choose case itemtag
 	case 'e_add','e_modify','e_delete','e_cancel','e_save','e_post','e_unpost','e_detail','e_refresh','e_book'
 		lw_handle = parent.getactivesheet( )
 		if isvalid(lw_handle) then
-			li_rtn = lw_handle.triggerevent( itemtag)
-		end if
-		if li_rtn = 1 then
 			choose case itemtag
-				case 'e_modify','e_save','e_post','e_unpost','e_add','e_insert'
+				case 'e_modify','e_save','e_post','e_unpost'
 					this.f_change_action_button( itemhandle, index, 0)
-			end choose
+				case 'e_add','e_insert'
+					ldw_main = lw_handle.dynamic f_get_dwmain()
+					if not ldw_main.f_get_ib_editing( ) then		
+						this.f_change_action_button( itemhandle, index, 0)
+					end if		
+			end choose				
+			li_rtn = lw_handle.triggerevent( itemtag)
 		end if
 	case 'e_self_copy'
 		lw_handle = parent.getactivesheet( )

@@ -193,7 +193,7 @@ IF li_rc = 1 THEN
 				smallbutton.tag = 'e_save'
 				smallbutton.picturename = 'SaveBig!'
 				smallbutton.shortcut = "Ctrl+S"
-				smallbutton.powertipdescription = "Lưu Ctrl+S"
+				smallbutton.powertipdescription = "Lưu Ctrl+S"	
 				this.setsmallbutton(al_handle , smallbutton)
 			elseif smallbutton.tag = 'e_save' then
 				smallbutton.tag = 'e_modify'
