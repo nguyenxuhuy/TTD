@@ -1331,6 +1331,7 @@ if pos(rpo_dw.dataobject,'d_objects_item') > 0 then
 //	ib_addnew = true
 //	ldw_item = iw_display.dynamic f_get_dw('d_item_form')
 //	ldw_item.event e_addrow()
+	rpo_dw.setitem(vl_currentrow, 'object_ref_table','ITEM')
 elseif pos(rpo_dw.dataobject,'d_item_purchase_price_') > 0 then
 	rpo_dw.setitem(vl_currentrow, 'item_applied_type','spec')
 	rpo_dw.setitem(vl_currentrow, 'price_type','PURCHASE')

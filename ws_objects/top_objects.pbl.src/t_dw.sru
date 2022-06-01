@@ -5977,7 +5977,7 @@ if li_rtn = 0 then
 		end if
 	elseif  'm_edit_obj_label' = lm_popup.is_clicked_menu  then
 		if this.f_getparentwindow( lw_parent) = 1 then
-			lw_parent.f_openchildwithparm('s_w_multi_n','c_label_object;0;' + this.dataobject )
+			lw_parent.f_openchildwithparm('s_w_multi_rb','c_label_object;0;' + this.dataobject )
 		end if		
 	elseif 'm_excel' = lm_popup.is_clicked_menu  then
 		ldw_request.dynamic event e_saveas( "excelwithlayout")
@@ -6007,7 +6007,7 @@ if li_rtn = 0 then
 	elseif 'm_setup_deligate' = lm_popup.is_clicked_menu  then
 		//--mở form ủy quyền--//
 		if this.f_getparentwindow( lw_parent) = 1 then
-			lw_parent.f_openchildwithparm('s_w_multi_n','u_appli_deligate;0;' + this.dataobject)
+			lw_parent.f_openchildwithparm('s_w_multi_rb','u_appli_deligate;0;' + this.dataobject)
 		end if
 	elseif 'm_setup_alert' = lm_popup.is_clicked_menu  then		
 	elseif 'm_setup_dw' = lm_popup.is_clicked_menu  then
