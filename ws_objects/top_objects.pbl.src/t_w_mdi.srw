@@ -589,6 +589,9 @@ if  ls_parm[2] = 's_w_background' then
 elseif li_win_num = 1 then
 	li_win_num = 2
 end if
+
+//Messagebox( "Parameter : " + as_win_param, "System can't find corresponding window !")
+
 lw_refer = wf_get_sheet_grp('DOC')
 
 if isvalid( lw_refer )  then	

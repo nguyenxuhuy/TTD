@@ -182,7 +182,7 @@ if ic_obj_handling.dynamic f_is_changed_dwo_4edit()  then
 	ldw_main = this.f_get_dwmain( )	
 	if isvalid(ldw_main) then
 		ldw_main.event e_rollback_modify( )
-		ldw_main.f_close_edit()
+		ldw_main.dynamic f_close_edit()
 	else
 		return -1
 	end if		
@@ -377,7 +377,7 @@ ldw_main = this.f_get_dwmain( )
 dw_filter.accepttext( )
 li_colCount = upperbound(vas_colname[])
 FOR li_idx =1 to li_colCount
-	la_data[li_idx] = dw_filter.f_getitemany( 1, vas_colname[li_idx])
+	la_data[li_idx] = dw_filter.dynamic f_getitemany( 1, vas_colname[li_idx])
 	ls_rtn= dw_filter.modify(vas_colname[li_idx]+".visible='0'" )
 NEXT
 
@@ -417,9 +417,9 @@ string					las_colname_in_taborder[]
 //-- resize gb_filter va dw_filter --//
 li_filter_space = ii_filter_space
 ldw_main = this.f_get_dwmain( )
-li_rtn = ldw_main.f_getdwshared( ladw_share)
+li_rtn = ldw_main.dynamic f_getdwshared( ladw_share)
 
-if ldw_main.f_isgrid() and li_rtn = 0 then
+if ldw_main.dynamic f_isgrid() and li_rtn = 0 then
 	ii_filter_space = 160
 //	dw_filter.modify( "datawindow.header.height = 0" )		
 else
@@ -437,8 +437,8 @@ dw_filter.height = gb_filter.height - 76
 
 //-- modify display --//
 
-if ldw_main.f_isgrid() and li_rtn = 0 and  dw_filter.is_filter_type = '2' then
-	ldw_main.f_get_colname_in_taborder(las_colname_in_taborder[])
+if ldw_main.dynamic f_isgrid() and li_rtn = 0 and  dw_filter.is_filter_type = '2' then
+	ldw_main.dynamic f_get_colname_in_taborder(las_colname_in_taborder[])
 	this.event e_filter_modify_display( las_colname_in_taborder[]) // new không dùng --//
 end if
 
@@ -554,7 +554,7 @@ else
 	
 	//-- Nếu chuyển từ main obj qua related obj thì setnull originalwhere va reset current where --//
 	if not lb_return_2_main then
-		ldw_main.f_getcurrentsql( ls_sqlnowhere, ls_currentwhere)
+		ldw_main.dynamic f_getcurrentsql( ls_sqlnowhere, ls_currentwhere)
 		ls_modify = 'Datawindow.Table.Select= "' + ls_sqlnowhere +'"'
 		ls_rtn =ldw_main.modify(ls_modify )	
 		setnull(ldw_main.is_originalwhereclause)
@@ -589,7 +589,7 @@ else
 		ldw_main.dataobject = ls_dwo_view
 		this.f_get_transaction( lc_transaction)
 		ldw_main.settransobject( lc_transaction)
-		ldw_main.f_set_properties( )
+		ldw_main.dynamic f_set_properties( )
 	end if
 	
 	
@@ -822,7 +822,7 @@ ii_dwfilter_header = integer(dw_filter.describe( "datawindow.header.height"))
 li_cnt = dw_filter.insertrow( 0)
 dw_filter.scrolltorow(li_cnt)
 ib_filter_on = true
-dw_filter.f_retrieve_dwc_dwfilter( 'colname')
+dw_filter.dynamic f_retrieve_dwc_dwfilter( 'colname')
 this.event e_filter_resize_new( )
 
 
@@ -857,9 +857,9 @@ string					las_colname_in_taborder[], ls_vpos_max
 //-- resize gb_filter va dw_filter --//
 li_filter_space = ii_filter_space
 ldw_main = this.f_get_dwmain( )
-li_rtn = ldw_main.f_getdwshared( ladw_share)
+li_rtn = ldw_main.dynamic f_getdwshared( ladw_share)
 
-if ldw_main.f_isgrid() and li_rtn = 0 then
+if ldw_main.dynamic f_isgrid() and li_rtn = 0 then
 	ii_filter_space = 160
 	if dw_filter.is_filter_type = '2' then
 		dw_filter.modify( "datawindow.header.height = 0" )		
@@ -881,7 +881,7 @@ dw_filter.height = gb_filter.height - 76
 //-- modify display --//
 
 if dw_filter.is_filter_type = '2' then
-	ldw_main.f_get_colname_in_taborder(las_colname_in_taborder[])
+	ldw_main.dynamic f_get_colname_in_taborder(las_colname_in_taborder[])
 	this.event e_filter_modify_display( las_colname_in_taborder[])		
 end if
 
@@ -1219,7 +1219,7 @@ FOR li_idx1 = 1 to upperbound(this.control[])
 				ladw_all[li_idx2].is_col_target = lc_s_dwo[li_idx2].s_col_target
 				
 				//-- set dw propeties --//
-				ladw_all[li_idx2].f_set_properties()	
+				ladw_all[li_idx2].dynamic f_set_properties()	
 				//-- set sort --//
 				ladw_all[li_idx2].inv_sort.f_setrequestor(ladw_all[li_idx2])
 				ladw_all[li_idx2].inv_sort.f_init( )				
@@ -2261,12 +2261,12 @@ FOR li_idx = 1 to li_objCount
 				if upperbound(rstr_data_related[li_idx].s_data[]) = li_col then							
 					if rstr_data_related[li_idx].s_data[li_col] <> '' then rstr_data_related[li_idx].s_data[li_col] += ','
 				end if			
-				ls_data = string(ldw_related.f_getitemany(ldw_related.getrow( ) , las_main_obj_column[li_col]))	
+				ls_data = string(ldw_related.dynamic f_getitemany(ldw_related.getrow( ) , las_main_obj_column[li_col]))	
 				if isnull(ls_data) then ls_data = ''
 				rstr_data_related[li_idx].s_data[li_col] += ls_data		
 				//-- set data related cho dw drilldown --//
 				if rstr_data_related[li_idx].s_related_obj_dwo = rstr_data_related[li_idx].s_related_obj_dwo_copy[1] then
-					rstr_drilldown_data.aa_data[li_col] = ldw_related.f_getitemany(ldw_related.getrow( ) , las_main_obj_column[li_col])
+					rstr_drilldown_data.aa_data[li_col] = ldw_related.dynamic f_getitemany(ldw_related.getrow( ) , las_main_obj_column[li_col])
 				end if				
 			end if			
 
@@ -2357,7 +2357,7 @@ FOR li_idx = 1 to li_objCount
 	ldw_parm = this.f_get_dw(rstr_data_related[li_idx].s_main_obj_dwo_copy[1])	
 	li_colCount = lc_string.f_stringtoarray(rstr_data_related[li_idx].s_main_obj_column_copy[1] , ';', las_main_obj_column[]) 
 	FOR li_idx = 1 to li_colCount
-		rstr_drilldown_data.aa_data[upperbound(rstr_drilldown_data.aa_data[])+1] = ldw_parm.f_getitemany(ldw_parm.getrow( ) , las_main_obj_column[li_idx])	
+		rstr_drilldown_data.aa_data[upperbound(rstr_drilldown_data.aa_data[])+1] = ldw_parm.dynamic f_getitemany(ldw_parm.getrow( ) , las_main_obj_column[li_idx])	
 	NEXT
 NEXT
 
@@ -3736,7 +3736,7 @@ FOR li_bttn_idx = 1 to li_bttnCount
 						 rstr_actionpane.s_enabled_buttons = lc_string.f_globalreplace( rstr_actionpane.s_enabled_buttons, las_button[li_bttn_idx]+';' , '') 
 					else					
 						if idw_focus.dynamic f_get_ib_insert() = false  &
-							OR (idw_focus = ldw_main and  idw_focus.dynamic f_get_ib_editing() and not ldw_main.f_isgrid( ) ) &
+							OR (idw_focus = ldw_main and  idw_focus.dynamic f_get_ib_editing() and not ldw_main.dynamic f_isgrid( ) ) &
 							OR  (idw_focus.dynamic f_get_ib_detail() and not idw_focus.dynamic f_get_ib_editing() ) then // and ic_obj_handling.f_get_ib_changed_dwo_4edit( )
 							 rstr_actionpane.s_enabled_buttons = lc_string.f_globalreplace( rstr_actionpane.s_enabled_buttons, las_button[li_bttn_idx]+';' , '') 
 						end if

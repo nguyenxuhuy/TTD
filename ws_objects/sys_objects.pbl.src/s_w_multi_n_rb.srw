@@ -200,7 +200,7 @@ if li_rtn <> -1 then this.post event e_postopen(li_rtn )
 
 end event
 
-event activate;// overrid--//
+event activate;// overrid--// /
 end event
 
 type st_1 from s_w_multi_rb`st_1 within s_w_multi_n_rb
@@ -302,181 +302,6 @@ end type
 type dw_3 from s_w_multi_rb`dw_3 within s_w_multi_n_rb
 end type
 
-type czkem_1 from s_w_multi_rb`czkem_1 within s_w_multi_n_rb
-integer taborder = 100
-string binarykey = "s_w_multi.win"
-end type
-
-type czkem_2 from s_w_multi_rb`czkem_2 within s_w_multi_n_rb
-integer taborder = 120
-string binarykey = "s_w_multi.win"
-end type
-
-type czkem_3 from s_w_multi_rb`czkem_3 within s_w_multi_n_rb
-integer taborder = 130
-string binarykey = "s_w_multi.win"
-end type
-
-type czkem_4 from s_w_multi_rb`czkem_4 within s_w_multi_n_rb
-integer taborder = 180
-string binarykey = "s_w_multi.win"
-end type
-
-type czkem_5 from s_w_multi_rb`czkem_5 within s_w_multi_n_rb
-integer taborder = 190
-string binarykey = "s_w_multi.win"
-end type
-
-type czkem_6 from s_w_multi_rb`czkem_6 within s_w_multi_n_rb
-integer taborder = 140
-string binarykey = "s_w_multi.win"
-end type
-
-type czkem_7 from s_w_multi_rb`czkem_7 within s_w_multi_n_rb
-integer taborder = 150
-string binarykey = "s_w_multi.win"
-end type
-
-type czkem_8 from s_w_multi_rb`czkem_8 within s_w_multi_n_rb
-integer taborder = 200
-string binarykey = "s_w_multi.win"
-end type
-
-type czkem_9 from s_w_multi_rb`czkem_9 within s_w_multi_n_rb
-integer taborder = 210
-string binarykey = "s_w_multi.win"
-end type
-
-type czkem_10 from s_w_multi_rb`czkem_10 within s_w_multi_n_rb
-integer taborder = 260
-string binarykey = "s_w_multi.win"
-end type
-
-type czkem_11 from s_w_multi_rb`czkem_11 within s_w_multi_n_rb
-integer taborder = 220
-string binarykey = "s_w_multi.win"
-end type
-
-type czkem_12 from s_w_multi_rb`czkem_12 within s_w_multi_n_rb
-integer taborder = 230
-string binarykey = "s_w_multi.win"
-end type
-
-type czkem_13 from s_w_multi_rb`czkem_13 within s_w_multi_n_rb
-integer taborder = 240
-string binarykey = "s_w_multi.win"
-end type
-
-type czkem_14 from s_w_multi_rb`czkem_14 within s_w_multi_n_rb
-integer taborder = 270
-string binarykey = "s_w_multi.win"
-end type
-
-type czkem_15 from s_w_multi_rb`czkem_15 within s_w_multi_n_rb
-integer taborder = 280
-string binarykey = "s_w_multi.win"
-end type
-
-type czkem_16 from s_w_multi_rb`czkem_16 within s_w_multi_n_rb
-integer taborder = 290
-string binarykey = "s_w_multi.win"
-end type
-
-type czkem_17 from s_w_multi_rb`czkem_17 within s_w_multi_n_rb
-integer taborder = 300
-string binarykey = "s_w_multi.win"
-end type
-
-type czkem_18 from s_w_multi_rb`czkem_18 within s_w_multi_n_rb
-integer taborder = 310
-string binarykey = "s_w_multi.win"
-end type
-
-type czkem_19 from s_w_multi_rb`czkem_19 within s_w_multi_n_rb
-integer taborder = 320
-string binarykey = "s_w_multi.win"
-end type
-
-type czkem_20 from s_w_multi_rb`czkem_20 within s_w_multi_n_rb
-integer taborder = 340
-string binarykey = "s_w_multi.win"
-end type
-
-type czkem_21 from s_w_multi_rb`czkem_21 within s_w_multi_n_rb
-integer taborder = 350
-string binarykey = "s_w_multi.win"
-end type
-
-type czkem_22 from s_w_multi_rb`czkem_22 within s_w_multi_n_rb
-integer taborder = 360
-string binarykey = "s_w_multi.win"
-end type
-
-type czkem_23 from s_w_multi_rb`czkem_23 within s_w_multi_n_rb
-integer taborder = 370
-string binarykey = "s_w_multi.win"
-end type
-
-type czkem_24 from s_w_multi_rb`czkem_24 within s_w_multi_n_rb
-integer taborder = 380
-string binarykey = "s_w_multi.win"
-end type
-
-type czkem_25 from s_w_multi_rb`czkem_25 within s_w_multi_n_rb
-integer taborder = 390
-string binarykey = "s_w_multi.win"
-end type
-
-type czkem_26 from s_w_multi_rb`czkem_26 within s_w_multi_n_rb
-integer taborder = 410
-string binarykey = "s_w_multi.win"
-end type
-
-type czkem_27 from s_w_multi_rb`czkem_27 within s_w_multi_n_rb
-integer taborder = 420
-string binarykey = "s_w_multi.win"
-end type
-
-type czkem_28 from s_w_multi_rb`czkem_28 within s_w_multi_n_rb
-integer taborder = 430
-string binarykey = "s_w_multi.win"
-end type
-
-type czkem_29 from s_w_multi_rb`czkem_29 within s_w_multi_n_rb
-integer taborder = 440
-string binarykey = "s_w_multi.win"
-end type
-
-type czkem_30 from s_w_multi_rb`czkem_30 within s_w_multi_n_rb
-integer taborder = 450
-string binarykey = "s_w_multi.win"
-end type
-
-type czkem_31 from s_w_multi_rb`czkem_31 within s_w_multi_n_rb
-integer taborder = 470
-string binarykey = "s_w_multi.win"
-end type
-
-type czkem_32 from s_w_multi_rb`czkem_32 within s_w_multi_n_rb
-integer taborder = 480
-string binarykey = "s_w_multi.win"
-end type
-
-type czkem_33 from s_w_multi_rb`czkem_33 within s_w_multi_n_rb
-integer taborder = 490
-string binarykey = "s_w_multi.win"
-end type
-
-type czkem_34 from s_w_multi_rb`czkem_34 within s_w_multi_n_rb
-integer taborder = 500
-string binarykey = "s_w_multi.win"
-end type
-
-type czkem_35 from s_w_multi_rb`czkem_35 within s_w_multi_n_rb
-integer taborder = 510
-string binarykey = "s_w_multi.win"
-end type
-
 type rb_1 from s_w_multi_rb`rb_1 within s_w_multi_n_rb
 end type
 
@@ -484,14 +309,6 @@ type rb_2 from s_w_multi_rb`rb_2 within s_w_multi_n_rb
 end type
 
 type rb_3 from s_w_multi_rb`rb_3 within s_w_multi_n_rb
-end type
-
-type czkem from s_w_multi_rb`czkem within s_w_multi_n_rb
-integer taborder = 160
-string binarykey = "s_w_multi.win"
-end type
-
-type rte_1 from s_w_multi_rb`rte_1 within s_w_multi_n_rb
 end type
 
 type rbb_1 from u_rbb within s_w_multi_n_rb

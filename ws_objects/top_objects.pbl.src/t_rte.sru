@@ -40,10 +40,6 @@ if isvalid(t_w_mdi) then
 end if 
 end event
 
-event constructor;// set user profile
-
-end event
-
 event rbuttondown;//c_popmenu_srv lc_popmenu_srv
 t_w_main lw_parent
 //lc_popmenu_srv.f_getparentwindow(this, lw_parent)

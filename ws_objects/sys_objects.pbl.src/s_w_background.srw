@@ -471,7 +471,9 @@ if handle > 0 then
 		setpointer(hourglass!)
 //		t_w_mdi.setredraw(false)				
 //		t_w_mdi.w[1].hide()	
-//		t_w_mdi.setredraw(true)		
+//		t_w_mdi.setredraw(true)	
+//		messagebox('op',ls_parm[2])
+		
 		t_w_mdi.post wf_open_sheet_doc(ls_parm[1]+";"+ls_parm[2]+";"+ string(lc_menu_item.istr_tv.db_id)+';'+ lc_menu_item.istr_tv.s_label)							
 		li_rtn = t_w_mdi.rbb_1.SetActiveCategoryByIndex ( 1 )
 //		close(t_w_mdi.w[1])
