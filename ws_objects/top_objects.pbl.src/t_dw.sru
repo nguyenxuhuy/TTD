@@ -5974,7 +5974,7 @@ if li_rtn = 0 then
 	//-- xử lý khi user click chọn popmenu --//
 	if 'm_edit_window_label' = lm_popup.is_clicked_menu  then
 		if this.f_getparentwindow( lw_parent) = 1 then
-			lw_parent.f_openchildwithparm('s_w_multi_popup','c_label_window;0;' + this.dataobject)
+			lw_parent.f_openchildwithparm('s_w_multi_popup_rb','c_label_window;0;' + this.dataobject)
 		end if
 	elseif  'm_edit_obj_label' = lm_popup.is_clicked_menu  then
 		if this.f_getparentwindow( lw_parent) = 1 then

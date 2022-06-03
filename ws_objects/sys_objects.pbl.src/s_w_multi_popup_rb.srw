@@ -329,7 +329,7 @@ event itemclicked;call super::itemclicked;int						li_rtn
 s_object_display		lod_handle
 
 choose case itemtag
-	case 'e_add','e_modify','e_delete','e_save','e_first','e_next','e_prior','e_last','e_okclose','e_close'
+	case 'e_add','e_modify','e_delete','e_save','e_first','e_next','e_prior','e_last','e_okclose','e_close','e_refresh'
 
 		choose case itemtag
 			case 'e_modify','e_save','e_post','e_unpost','e_add','e_insert'

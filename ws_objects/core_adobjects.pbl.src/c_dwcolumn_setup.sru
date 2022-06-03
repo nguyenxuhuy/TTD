@@ -161,11 +161,13 @@ la_value[1] = '=' + ls_objname
 la_value[2] = ls_dwo_trim
 la_value[3] = '=' + gs_user_lang
 lds_label_chk.f_add_where( 'subcode;code;lang',la_value[])
+
 lds_label_chk.settransobject( it_transaction)
 if lds_label_chk.retrieve( ) = 0 then
 	gf_messagebox('m.c_dwcolumn_setup.01','Thông báo','Chưa chạy nhãn cho DW:@'+ls_dwo_trim,'exclamation','ok',1)
 	return -1
 end if
+
 
 li_colCnt = lds_dwo.f_getcolumns( las_column[])
 For li_idx = 1 To li_colCnt
@@ -208,7 +210,9 @@ else
 		End If
 	Next
 end if
+disconnect using it_transaction; // kết thúc refresh
 this.iw_display.dynamic event e_save()
+connect using it_transaction; // kết nối lại refresh
 destroy lds_dwo
 destroy lds_dwsetup_temp
 Return 1

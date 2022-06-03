@@ -175,7 +175,7 @@ end type
 
 event itemclicked;call super::itemclicked;int			li_rtn
 choose case itemtag
-	case 'e_add','e_modify','e_delete','e_save','e_first','e_next','e_prior','e_last'
+	case 'e_add','e_modify','e_delete','e_save','e_first','e_next','e_prior','e_last','e_refresh'
 			li_rtn = parent.triggerevent( itemtag)		
 			if li_rtn = 1 then
 				choose case itemtag
