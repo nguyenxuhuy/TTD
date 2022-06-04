@@ -30,6 +30,7 @@ type variables
 boolean		ib_saving
 int				ii_dw_2_height = 600
 end variables
+
 forward prototypes
 public function treeview f_get_tv ()
 public function datawindow f_get_dwmain ()
@@ -47,16 +48,17 @@ end function
 public function datawindow f_get_dw_2 ();return dw_2
 end function
 
-public function integer f_update_userprofile ();
-c_dwservice			lc_dwservice
-
-if lc_dwservice.f_update_dwtabseq_ex( ic_obj_handling, dw_1, iadw_none_md[], it_transaction) = -1 then
+public function integer f_update_userprofile ();c_dwservice			lc_dwservice
+connect using it_transaction;
+if lc_dwservice.f_update_dwtabseq_ex( ic_obj_handling, dw_1, iadw_none_md[], it_transaction ) = -1 then
+	disconnect using it_transaction;
 	return -1
 end if
 if lc_dwservice.f_update_resize_parm_ex( ic_obj_handling, it_transaction) = -1 then
+	disconnect using it_transaction;
 	return -1
 end if
-
+disconnect using it_transaction;
 return 1
 end function
 

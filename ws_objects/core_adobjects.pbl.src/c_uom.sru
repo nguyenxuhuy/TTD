@@ -163,3 +163,16 @@ end if
 return 0
 end event
 
+event e_dw_e_predelete;call super::e_dw_e_predelete;double 			ldb_id
+int					li_cnt
+ldb_id = rpo_dw.getitemnumber( vl_currentrow, 'ID')
+
+select count(id) into :li_cnt from item where stock_uom = :ldb_id using it_transaction;
+
+if li_cnt > 0 then
+	gf_messagebox('m.c_uom.e_dw_e_predelete.01','Thông báo','Đơn vị đã dùng trong khai báo đơn vị tồn kho của hàng hoá sản phẩm. Không được xoá !','exclamtion','ok',1)
+	return -1
+end if
+return ancestorreturnvalue
+end event
+

@@ -845,7 +845,7 @@ iastr_dwo_tabpage[4].str_dwo[1].b_print = true
 iastr_dwo_tabpage[4].str_dwo[1].b_excel = true
 iastr_dwo_tabpage[4].str_dwo[1].b_traceable = true
 iastr_dwo_tabpage[4].str_dwo[1].b_keyboardlocked = true
-iastr_dwo_tabpage[4].str_dwo[1].s_description ='Tên dùng khác'
+iastr_dwo_tabpage[4].str_dwo[1].s_description ='Mã hàng liên kết'
 
 
 
