@@ -27,10 +27,9 @@ end type
 global s_w_tv_md_rb s_w_tv_md_rb
 
 type variables
-
+boolean		ib_saving
 int				ii_dw_2_height = 600
 end variables
-
 forward prototypes
 public function treeview f_get_tv ()
 public function datawindow f_get_dwmain ()
@@ -385,7 +384,7 @@ idw_focus.setfocus( )
 this.f_ctrl_enable_button(  idw_focus)
 //this.event e_display_actionbutton( )
 ib_opening = false
-//this.setredraw( true)
+disconnect using it_transaction;
 return li_rtn
 
 end event
@@ -432,8 +431,114 @@ end event
 event activate;call super::activate;this.f_ctrl_enable_button(  idw_focus)
 end event
 
-type dw_filter from s_w_main`dw_filter within s_w_tv_md_rb
-end type
+event e_postadd;//-- Thực hiện sau khi tạo mớ: set focus cho control và gọi điều khiển action --//
+//-- Override --//
+
+int				li_rtn
+
+li_rtn = ic_obj_handling.dynamic event e_window( 'e_postadd')
+if li_rtn = -1 then 
+	return -1
+end if
+//ic_obj_handling.f_ctrl_actionbuttons( idw_focus)
+//this.event e_display_actionbutton( )
+ this.f_ctrl_enable_button(  idw_focus)
+return idw_focus.setfocus( )
+end event
+
+event e_add;//--overide--//
+//-- Tạo đối tượng mới, return row number , -1 lỗi --//
+long			ll_rtn
+t_dw_mpl	ldw_main
+
+
+setpointer(appstarting!)
+
+connect using it_transaction; 
+
+ldw_main = this.f_get_dwmain( )
+if idw_focus.classname( ) = 'dw_filter' then
+	this.f_set_idwfocus(ldw_main )
+end if
+//-- Trước khi add: Thay đổi giao diện dw sang edit --//
+ll_rtn = this.event e_preadd( )
+
+if ll_rtn <> -1 then
+	//-- add record --//
+	ll_rtn = idw_focus.dynamic event e_addrow()
+
+	//-- set focus và goi object điều khiễn nút --//
+	this.event e_postadd( )
+end if
+setpointer(arrow!)
+
+disconnect using it_transaction;
+
+return ll_rtn
+end event
+
+event e_save;//-- OVERRIDE --//
+
+//-- Thực hiện lưu dữ liệu, return 1 ok, -1 lỗi --//
+int 		li_rtn
+t_ds_db	lds_matching
+t_dw_mpl	ldw_main
+
+if ic_obj_handling.dynamic f_is_changed_dwo_4edit()  then
+	
+	return event e_saveclose( )
+	
+else
+	connect using it_transaction;
+	
+	if idw_focus.classname( ) = 'dw_filter' then
+		ldw_main = this.f_get_dwmain( )
+		this.f_set_idwfocus(ldw_main )
+	end if
+	
+	//-- Trước khi lưu --//
+	li_rtn = this.event e_presave( )
+	
+	//-- Yêu cầu thực hiện lưu --//
+	if li_rtn <> -1 then
+		li_rtn = idw_focus.dynamic event e_save()
+		if li_rtn <> -1 then
+			li_rtn = idw_focus.dynamic event e_resetupdate()	
+			if li_rtn = 1 then
+				lds_matching = ic_obj_handling.dynamic f_get_ids_matching()
+				if isvalid(lds_matching) then
+	//				if lds_matching.rowcount( ) > 0 then
+	//					li_rtn = lds_matching.update( true,false)
+	//					if li_rtn = 1 then 
+	//						lds_matching.resetupdate( )
+	//					else
+	//						rollback using it_transaction;
+	//					end if
+	//				end if
+					lds_matching.reset()
+					ic_obj_handling.ib_copying = false
+					ic_obj_handling.ib_copy_tax = false
+				end if
+				if li_rtn = 1 then 
+					commit using it_transaction;
+				end if
+				if it_transaction.sqlcode = 0 then
+				else
+					messagebox('ERROR','s_w_main.e_save(commit)')
+				end if
+			else
+				rollback using it_transaction;
+			end if
+		else
+			rollback using it_transaction;
+		end if
+		this.event e_postsave( li_rtn)
+	end if
+	
+	disconnect using it_transaction;
+	return li_rtn
+end if
+end event
 
 type st_1 from s_w_main`st_1 within s_w_tv_md_rb
 end type
@@ -451,6 +556,9 @@ event tab_action::selectionchanging;//-- override //
 end event
 
 type gb_filter from s_w_main`gb_filter within s_w_tv_md_rb
+end type
+
+type dw_filter from s_w_main`dw_filter within s_w_tv_md_rb
 end type
 
 type dw_2 from t_dw_mpl within s_w_tv_md_rb

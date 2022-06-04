@@ -42,6 +42,7 @@ public function integer f_enable_panel_action_group (string vs_type, string vs_d
 public function integer f_enable_panel_action_panel (string vs_type, string vs_doc_status, boolean vb_editing, boolean vb_updatable, boolean vb_change_4_edit, boolean vb_detail, string vs_enable_buttons, ref ribbonpanelitem r_rpi)
 public function integer f_enable_panel_tab (ribbonpanelitem vrpi_tab, string vs_type, string vs_doc_status, boolean vb_editing, boolean vb_updatable, string vs_enable_buttons)
 public function integer f_change_action_button (powerobject po)
+public function integer f_change_action_button (string vs_clicktag)
 end prototypes
 
 event ue_tabbutton(long al_handle);if  #CentralizedEventHandling = false then
@@ -1074,6 +1075,131 @@ Integer								li_rc, al_handle
 	End Choose
 	
 //End if
+
+Return li_rc
+end function
+
+public function integer f_change_action_button (string vs_clicktag);PowerObject						po
+RibbonTabButtonItem 			tabbutton
+RibbonSmallButtonItem			smallbutton
+RibbonLargeButtonItem			largebutton
+RibbonApplicationButtonItem 	appbutton
+RibbonMenu 						lr_Menu
+RibbonMenuItem 					menuitem
+RibbonApplicationMenu 			appmenu
+String									ls_classname
+Integer								li_rc
+
+li_rc = this.getitembytag ( vs_clickTag, po )
+
+IF li_rc = 1 THEN
+	ls_classname = po.ClassName()
+	Choose Case ls_classname
+		Case "ribbonsmallbuttonitem"	
+			smallbutton = po
+			if smallbutton.tag = 'e_modify' then
+				smallbutton.tag = 'e_save'
+				smallbutton.picturename = 'SaveBig!'
+				smallbutton.shortcut = "Ctrl+S"
+				smallbutton.powertipdescription = "Lưu Ctrl+S"	
+				this.setsmallbutton(smallbutton.itemhandle  , smallbutton)
+			elseif smallbutton.tag = 'e_save' then
+				smallbutton.tag = 'e_modify'
+				smallbutton.picturename = 'ModifySmall!'
+				smallbutton.shortcut = "Ctrl+M"
+				smallbutton.powertipdescription = "Chỉnh sửa Ctrl+M"
+				this.setsmallbutton(smallbutton.itemhandle  , smallbutton)		
+			elseif  smallbutton.tag = 'e_add' or smallbutton.tag = 'e_insert'  then
+				this.getitembytag(  'e_modify', po)
+				smallbutton = po 
+				smallbutton.tag = 'e_save'
+				smallbutton.picturename = 'SaveBig!'
+				smallbutton.shortcut = "Ctrl+S"
+				smallbutton.powertipdescription = "Lưu Ctrl+S"
+				this.setsmallbutton(smallbutton.itemhandle , smallbutton)				
+			elseif smallbutton.tag = 'e_post' then
+				smallbutton.tag = 'e_unpost'
+				smallbutton.picturename = 'Custom094!'
+				smallbutton.shortcut = ""
+				smallbutton.powertipdescription = "Sửa ghi sổ"
+				this.setsmallbutton(smallbutton.itemhandle  , smallbutton)							
+			elseif smallbutton.tag = 'e_unpost' then
+				smallbutton.tag = 'e_post'
+				smallbutton.picturename = 'Edit!'
+				smallbutton.shortcut = "Ctrl+G"
+				smallbutton.powertipdescription = "Ghi sổ Ctrl+G"
+				this.setsmallbutton(smallbutton.itemhandle  , smallbutton)			
+			elseif smallbutton.tag = 'e_filter' then
+				if smallbutton.picturename = 'filterbig!' then
+					smallbutton.picturename = 'Pics\filter4.jpg'
+				else
+					smallbutton.picturename = 'filterbig!'
+				end if
+				this.setsmallbutton(smallbutton.itemhandle  , smallbutton)						
+			elseif smallbutton.tag = 'e_send_2_approve' then
+			elseif smallbutton.tag = 'e_request_2_change' then
+			end if
+			
+		Case "ribbonlargebuttonitem"
+
+			largebutton = po			
+			if largebutton.tag = 'e_modify' then
+				largebutton.tag = 'e_save'
+				largebutton.picturename = 'SaveBig!'
+				largebutton.shortcut = "Ctrl+S"
+				largebutton.powertipdescription = "Lưu Ctrl+S"
+				largebutton.text = 'Lưu'
+				this.setlargebutton(largebutton.itemhandle  , largebutton)
+			elseif largebutton.tag = 'e_save' then
+				largebutton.tag = 'e_modify'
+				largebutton.picturename = 'ModifySmall!'
+				largebutton.shortcut = "Ctrl+M"
+				largebutton.text = 'Chỉnh sửa'				
+				largebutton.powertipdescription = "Chỉnh sửa Ctrl+M"
+				this.setlargebutton(largebutton.itemhandle , largebutton)		
+			elseif  largebutton.tag = 'e_add' or largebutton.tag = 'e_insert'  then
+				this.getitembytag(  'e_modify', po)
+				largebutton = po 
+				largebutton.tag = 'e_save'
+				largebutton.picturename = 'SaveBig!'
+				largebutton.shortcut = "Ctrl+S"
+				largebutton.powertipdescription = "Lưu Ctrl+S"
+				largebutton.text = 'Lưu'
+				this.setlargebutton(largebutton.itemhandle , largebutton)				
+			elseif largebutton.tag = 'e_post' then
+				largebutton.tag = 'e_unpost'
+				largebutton.picturename = 'Custom094!'
+				largebutton.shortcut = ""
+				largebutton.powertipdescription = "Sửa ghi sổ"
+				largebutton.text = 'Sửa ghi sổ'
+				this.setlargebutton(largebutton.itemhandle , largebutton)							
+			elseif largebutton.tag = 'e_unpost' then
+				largebutton.tag = 'e_post'
+				largebutton.picturename = 'Edit!'
+				largebutton.shortcut = "Ctrl+G"
+				largebutton.powertipdescription = "Ghi sổ Ctrl+G"
+				largebutton.text = 'Ghi sổ'
+				this.setlargebutton(largebutton.itemhandle , largebutton)			
+			elseif largebutton.tag = 'e_filter' then
+				if largebutton.picturename = 'filterbig!' then
+					largebutton.picturename = 'Pics\filter4.jpg'
+				else
+					largebutton.picturename = 'filterbig!'
+				end if
+				this.setlargebutton(largebutton.itemhandle , largebutton)						
+			elseif largebutton.tag = 'e_send_2_approve' then
+			elseif largebutton.tag = 'e_request_2_change' then
+			end if			
+		Case "ribbontabbuttonitem"			
+			tabbutton = po
+
+		Case "ribbonapplicationbuttonitem"
+			appbutton = po
+			appbutton.getmenu( appmenu)
+
+	End Choose
+	
+End if
 
 Return li_rc
 end function

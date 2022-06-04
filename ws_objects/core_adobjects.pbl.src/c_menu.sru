@@ -353,14 +353,21 @@ end if
 return 0
 end event
 
-event e_tv_selectionchanged;call super::e_tv_selectionchanged;
+event e_tv_selectionchanged;call super::e_tv_selectionchanged;int  li_rtn
 datawindow		ldw_handling
 
 if isvalid(iw_display) then
 	ldw_handling = iw_display.dynamic f_get_dwmain()
 	if isvalid(ldw_handling) then
 		iw_display.dynamic f_set_idwfocus(ldw_handling)
-		return ldw_handling.triggerevent('e_retrieve')		
+		if not iw_display.ib_opening then 
+			connect using it_transaction;
+		end if
+		li_rtn = ldw_handling.triggerevent('e_retrieve')		
+		if not iw_display.ib_opening then 
+			disconnect using it_transaction;
+		end if
+		return li_rtn
 	else
 		return -1
 	end if
@@ -451,6 +458,7 @@ if rm_popup.dynamic f_get_clickedmenu() = 'm_add_submenu' then
 		ldw_main = iw_display.dynamic f_get_dwmain()
 		iw_display.dynamic f_set_idwfocus(ldw_main)
 		this.ib_add_submenu = true
+		t_w_mdi.rbb_1.f_change_action_button('e_add')
 		iw_display.dynamic event e_add()
 		rm_popup.dynamic f_set_clickedmenu("")
 	end if
