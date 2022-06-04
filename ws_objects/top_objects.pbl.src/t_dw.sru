@@ -5537,7 +5537,9 @@ if lb_firstdrop then
 	ls_rtn = this.Modify( vs_colname+ '.dddw.percentwidth='+string(ll_percent) )
 end if
 
-connect using lt_transaction;
+if not this.ib_inserting then 
+	connect using lt_transaction;
+end if
 ldwc.settransobject(lt_transaction)
 //ls_dwc_filter = this.gettext( )
 //if isnull(ls_dwc_filter) then ls_dwc_filter =''
@@ -5547,7 +5549,9 @@ ldwc.settransobject(lt_transaction)
 	ldwc.setfilter( "")
 //end if
 ll_rowcount = ldwc.retrieve( )
-disconnect using lt_transaction;
+if not this.ib_inserting then 
+	disconnect using lt_transaction;
+end if
 lc_dwservice.f_set_gutter_rowcount(ldwc)
 
 //lod_handling.idwsetup_initial.ids_setup_dw.setfilter( "")
