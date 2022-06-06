@@ -241,8 +241,22 @@ is_display_model = 'up_gp_2d1tv_lo_tb'
 is_object_title = 'Định mức nhân công'
 
 
-istr_actionpane[1].s_button_name = 'b_add;b_modify;b_filteron;b_query;b_refresh;b_delete;'
-istr_actionpane[1].s_button_has_sub = ''
+istr_actionpane[1].s_description = is_object_title
+istr_actionpane[1].s_button_name = 'b_preview;b_view_qt;b_view_qt_kni_eng;b_send_2_approve;b_approve;b_reject;b_complete;b_lose;b_excel;'
+istr_actionpane[1].s_button_name += 'b_doc_trace;b_cancel;b_self_copy;e_add;e_modify;e_delete;'
+istr_actionpane[1].s_button_has_sub ='b_related_object;b_update;b_approve;b_view;b_copyt;b_copyf;'
+istr_actionpane[1].sa_sub_button[1]='u_so;'
+istr_actionpane[1].sa_subbutton_name[1]='Đơn bán hàng(SO);'
+istr_actionpane[1].sa_sub_button[2]='b_complete;b_lose;b_excel;'
+istr_actionpane[1].sa_subbutton_name[2]='Thành công;Không thành;Excel;'
+istr_actionpane[1].sa_sub_button[3]=''	//'b_send_2_approve;b_approve;b_reject;'
+istr_actionpane[1].sa_subbutton_name[3]=''	//'Gửi duyệt;Duyệt;Trả duyệt'
+istr_actionpane[1].sa_sub_button[4]='b_view_qt;b_view_qt_kni_eng;'
+istr_actionpane[1].sa_subbutton_name[4]='Chào giá;Chào giá ENG;'
+istr_actionpane[1].sa_sub_button[5]=''
+istr_actionpane[1].sa_subbutton_name[5]=''
+istr_actionpane[1].sa_sub_button[6]=''
+istr_actionpane[1].sa_subbutton_name[6]=''
 
 istr_tvo[1].ds_tv_item = create datastore
 istr_tvo[1].ds_tv_item.dataobject = 'ds_route_tv'
@@ -251,9 +265,9 @@ istr_tvo[1].s_popmenu_items = ''
 end event
 
 event e_window_e_preopen;call super::e_window_e_preopen;
-iw_display.f_set_ii_upperpart_height(iw_display.ii_resize_height*1/2 )
-iw_display.f_set_ii_leftpart_width( iw_display.ii_resize_width*4/5 )
-iw_display.f_set_ii_fixedpart1_height( iw_display.ii_resize_height*1/2 *1/5)
+iw_display.f_set_ii_upperpart_height(1/2 )
+iw_display.f_set_ii_leftpart_width( 4/5 )
+iw_display.f_set_ii_fixedpart1_height(1/2 *1/5)
 
 
 return 0

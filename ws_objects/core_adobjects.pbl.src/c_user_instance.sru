@@ -34,11 +34,9 @@ string		MANAGER_NAME
 string		DEPT_CODE
 string		DEPT_NAME
 string		DEFAULT_SOB
-
 double	idb_role_id[]
 
 end variables
-
 forward prototypes
 public function integer f_init (double vdb_id)
 public function integer f_init (string vs_code)
@@ -118,7 +116,7 @@ end function
 public function integer f_init (string vs_code);select 
   RU.ID   ,
   OBJ.ID,
-  OBJ.CODE  ,
+  RU.CODE  ,
   OBJ.NAME   ,
    RU.PASSWORD,
    RU.DEFAULT_COMP ,

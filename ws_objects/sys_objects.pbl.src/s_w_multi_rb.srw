@@ -5216,47 +5216,47 @@ end function
 public function integer f_resize_up_gp_1d2d1tv_lo_tb ();
 //-- resize gb_6 --//
 gb_6.move( tab_action.x, tab_action.y + tab_action.height + ii_text_spaceheight + ii_filter_space + ii_spare_space)
-gb_6.width = ii_leftpart_width 
-gb_6.height = ii_upperpart_height
+gb_6.width = ii_leftpart_width *ii_resize_width
+gb_6.height = ii_upperpart_height * ii_resize_height
 //-- resize dw_1 --//
 dw_1.move(gb_6.x + 25, gb_6.y + 75 )
-dw_1.width = ii_leftpart_width - 50
-dw_1.height = ii_upperpart_height - 90
+dw_1.width = ii_leftpart_width*ii_resize_width - 50
+dw_1.height = ii_upperpart_height * ii_resize_height - 90
 
 
 
 //-- resize gb_1 --//
-gb_1.move(gb_6.x + ii_leftpart_width , tab_action.y + tab_action.height + ii_spare_space + ii_filter_space + ii_text_spaceheight)
-gb_1.height = ii_upperpart_height
+gb_1.move(gb_6.x + ii_leftpart_width*ii_resize_width , tab_action.y + tab_action.height + ii_spare_space + ii_filter_space + ii_text_spaceheight)
+gb_1.height = ii_upperpart_height * ii_resize_height
 gb_1.width = 24
 
 //-- resize gb_7 --//
 gb_7.move( gb_1.x +gb_1.width, tab_action.y + tab_action.height + ii_text_spaceheight + ii_filter_space + ii_spare_space)
-gb_7.width = ii_midpart_width 
-gb_7.height = ii_fixedpart1_height
+gb_7.width = ii_midpart_width *ii_resize_width 
+gb_7.height = ii_fixedpart1_height * ii_resize_height
 //-- resize dw_2 --//
 dw_2.move( gb_7.x + 25, gb_7.y + 75)
-dw_2.width =  ii_midpart_width - 50
-dw_2.height = ii_fixedpart1_height  - 90
+dw_2.width =  ii_midpart_width*ii_resize_width  - 50
+dw_2.height = ii_fixedpart1_height  * ii_resize_height - 90
 
 //-- resize gb_8 --//
 gb_8.move( gb_1.x +gb_1.width,  gb_7.y + gb_7.height )
-gb_8.width = ii_midpart_width 
-gb_8.height = ii_upperpart_height - ii_fixedpart1_height
+gb_8.width = ii_midpart_width *ii_resize_width 
+gb_8.height = ii_upperpart_height  * ii_resize_height - ii_fixedpart1_height * ii_resize_height
 //-- resize dw_3 --//
 dw_3.move(gb_8.x + 25, gb_8.y + 75)
-dw_3.width =  ii_midpart_width - 50
-dw_3.height =  ii_upperpart_height - ii_fixedpart1_height - 90
+dw_3.width =  ii_midpart_width  *ii_resize_width - 50
+dw_3.height =  ii_upperpart_height  * ii_resize_height - ii_fixedpart1_height  * ii_resize_height - 90
 
 //-- resize gb_1 --//
-gb_10.move(gb_8.x + ii_midpart_width , tab_action.y + tab_action.height + ii_spare_space + ii_filter_space + ii_text_spaceheight)
-gb_10.height = ii_upperpart_height
+gb_10.move(gb_8.x + ii_midpart_width *ii_resize_width  , tab_action.y + tab_action.height + ii_spare_space + ii_filter_space + ii_text_spaceheight)
+gb_10.height = ii_upperpart_height* ii_resize_height
 gb_10.width = 24
 
 //-- resize tv_1 --//
 tv_1.move(gb_10.x + gb_10.width , tab_action.y + tab_action.height + ii_spare_space + ii_filter_space + ii_text_spaceheight)
 tv_1.width =   ii_resize_width -  gb_10.x -  gb_10.width - this.ii_vscrollbar
-tv_1.height = ii_upperpart_height 
+tv_1.height = ii_upperpart_height * ii_resize_height
 
 
 //-- resize horizontal line --//
@@ -5279,35 +5279,35 @@ end function
 public function integer f_resize_up_gp_2d1tv_lo_tb ();
 //-- resize gb_6 --//
 gb_6.move( tab_action.x, tab_action.y + tab_action.height + ii_text_spaceheight + ii_filter_space + ii_spare_space)
-gb_6.width = ii_leftpart_width 
-gb_6.height = ii_upperpart_height - ii_fixedpart1_height
+gb_6.width = ii_leftpart_width * ii_resize_width
+gb_6.height = ii_upperpart_height *ii_resize_height - ii_fixedpart1_height * ii_resize_height
 //-- resize dw_1 --//
 dw_1.move(gb_6.x + 25, gb_6.y + 75 )
-dw_1.width = ii_leftpart_width - 50
-dw_1.height = ii_upperpart_height -ii_fixedpart1_height  - 90
+dw_1.width = ii_leftpart_width * ii_resize_width - 50
+dw_1.height = ii_upperpart_height  * ii_resize_height - ii_fixedpart1_height  * ii_resize_height - 90
 
 
 
 //-- resize gb_7 --//
 gb_7.move( tab_action.x , gb_6.y + gb_6.height )
-gb_7.width = ii_leftpart_width 
-gb_7.height = ii_fixedpart1_height
+gb_7.width = ii_leftpart_width  * ii_resize_width
+gb_7.height = ii_fixedpart1_height * ii_resize_height
 //-- resize dw_2 --//
 dw_2.move( gb_7.x + 25, gb_7.y + 75)
-dw_2.width =  ii_leftpart_width - 50
-dw_2.height = ii_fixedpart1_height  - 90
+dw_2.width =  ii_leftpart_width * ii_resize_width - 50
+dw_2.height = ii_fixedpart1_height * ii_resize_height  - 90
 
 
 
 //-- resize gb_1 --//
-gb_1.move(gb_7.x + ii_leftpart_width , tab_action.y + tab_action.height + ii_spare_space + ii_filter_space + ii_text_spaceheight)
-gb_1.height = ii_upperpart_height
+gb_1.move(gb_7.x + ii_leftpart_width * ii_resize_width , tab_action.y + tab_action.height + ii_spare_space + ii_filter_space + ii_text_spaceheight)
+gb_1.height = ii_upperpart_height* ii_resize_height 
 gb_1.width = 24
 
 //-- resize tv_1 --//
 tv_1.move(gb_1.x + gb_1.width , tab_action.y + tab_action.height + ii_spare_space + ii_filter_space + ii_text_spaceheight)
 tv_1.width =   ii_resize_width -  gb_1.x -  gb_1.width 
-tv_1.height = ii_upperpart_height 
+tv_1.height = ii_upperpart_height * ii_resize_height 
 
 
 //-- resize horizontal line --//
@@ -5710,55 +5710,55 @@ end function
 public function integer f_resize_up_gp_1d3d1tv_lo_tb ();
 //-- resize gb_6 --//
 gb_6.move( tab_action.x, tab_action.y + tab_action.height + ii_text_spaceheight + ii_filter_space + ii_spare_space)
-gb_6.width = ii_leftpart_width 
-gb_6.height = ii_upperpart_height
+gb_6.width = ii_leftpart_width * ii_resize_width
+gb_6.height = ii_upperpart_height * ii_resize_height
 //-- resize dw_1 --//
 dw_1.move(gb_6.x + 25, gb_6.y + 75 )
-dw_1.width = ii_leftpart_width - 50
-dw_1.height = ii_upperpart_height - 90
+dw_1.width = ii_leftpart_width * ii_resize_width - 50
+dw_1.height = ii_upperpart_height * ii_resize_height - 90
 
 
 //-- resize gb_1 --//
-gb_1.move(gb_6.x + ii_leftpart_width , tab_action.y + tab_action.height + ii_spare_space + ii_filter_space + ii_text_spaceheight)
-gb_1.height = ii_upperpart_height
+gb_1.move(gb_6.x + ii_leftpart_width* ii_resize_width , tab_action.y + tab_action.height + ii_spare_space + ii_filter_space + ii_text_spaceheight)
+gb_1.height = ii_upperpart_height * ii_resize_height
 gb_1.width = 24
 
 //-- resize gb_7 --//
 gb_7.move( gb_1.x +gb_1.width, tab_action.y + tab_action.height + ii_text_spaceheight + ii_filter_space + ii_spare_space)
-gb_7.width = ii_midpart_width 
-gb_7.height = ii_fixedpart1_height
+gb_7.width = ii_midpart_width * ii_resize_width
+gb_7.height = ii_fixedpart1_height* ii_resize_height
 //-- resize dw_2 --//
 dw_2.move( gb_7.x + 25, gb_7.y + 75)
-dw_2.width =  ii_midpart_width - 50
-dw_2.height = ii_fixedpart1_height  - 90
+dw_2.width =  ii_midpart_width * ii_resize_width - 50
+dw_2.height = ii_fixedpart1_height * ii_resize_height - 90
 
 //-- resize gb_8 --//
 gb_8.move( gb_1.x +gb_1.width,  gb_7.y + gb_7.height )
-gb_8.width = ii_midpart_width 
-gb_8.height = ii_fixedpart2_height
+gb_8.width = ii_midpart_width * ii_resize_width
+gb_8.height = ii_fixedpart2_height* ii_resize_height
 //-- resize dw_3 --//
 dw_3.move(gb_8.x + 25, gb_8.y + 75)
-dw_3.width =  ii_midpart_width - 50
-dw_3.height = ii_fixedpart2_height - 90
+dw_3.width =  ii_midpart_width* ii_resize_width - 50
+dw_3.height = ii_fixedpart2_height* ii_resize_height  - 90
 
 //-- resize gb_9 --//
 gb_9.move( gb_1.x +gb_1.width,  gb_8.y + gb_8.height )
-gb_9.width = ii_midpart_width 
-gb_9.height = ii_upperpart_height - ii_fixedpart1_height - ii_fixedpart2_height 
+gb_9.width = ii_midpart_width * ii_resize_width 
+gb_9.height = ii_upperpart_height * ii_resize_height - ii_fixedpart1_height* ii_resize_height  - ii_fixedpart2_height * ii_resize_height 
 //-- resize dw_3 --//
 dw_4.move(gb_9.x + 25, gb_9.y + 75)
-dw_4.width =  ii_midpart_width - 50
-dw_4.height =  ii_upperpart_height - ii_fixedpart1_height - ii_fixedpart2_height - 90
+dw_4.width =  ii_midpart_width* ii_resize_width  - 50
+dw_4.height =  ii_upperpart_height * ii_resize_height - ii_fixedpart1_height* ii_resize_height - ii_fixedpart2_height* ii_resize_height - 90
 
 //-- resize gb_1 --//
-gb_10.move(gb_8.x + ii_midpart_width , tab_action.y + tab_action.height + ii_spare_space + ii_filter_space + ii_text_spaceheight)
-gb_10.height = ii_upperpart_height
+gb_10.move(gb_8.x + ii_midpart_width* ii_resize_width  , tab_action.y + tab_action.height + ii_spare_space + ii_filter_space + ii_text_spaceheight)
+gb_10.height = ii_upperpart_height* ii_resize_height
 gb_10.width = 24
 
 //-- resize tv_1 --//
 tv_1.move(gb_10.x + gb_10.width , tab_action.y + tab_action.height + ii_spare_space + ii_filter_space + ii_text_spaceheight)
 tv_1.width =   ii_resize_width -  gb_10.x -  gb_10.width - this.ii_vscrollbar
-tv_1.height = ii_upperpart_height 
+tv_1.height = ii_upperpart_height * ii_resize_height
 
 
 //-- resize horizontal line --//
