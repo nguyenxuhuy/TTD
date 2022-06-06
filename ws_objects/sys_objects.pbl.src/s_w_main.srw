@@ -1632,6 +1632,8 @@ choose case vs_display_model
 		this.dynamic f_resize_up_2d1d_lo_1tb()		
 	case 'up_1d_lo_tb'
 		this.dynamic f_resize_up_1d_lo_tb()
+	case 'up_1d_lo_1d_tb'
+		this.dynamic f_resize_up_1d_lo_1d_tb()
 	case '1tv_2d'
 		this.dynamic f_resize_1tv_2d()
 	case '2ddlb_2d'

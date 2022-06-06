@@ -1160,7 +1160,7 @@ end on
 
 event open;//t_m_mdi 				lm_menu
 b_obj_instantiate		lboi_handle
-string						ls_company_code, ls_brand_code
+string						ls_company_code, ls_brand_code, ls_user
 
 //messagebox('tmdi_open',gi_userid)
 
@@ -1211,13 +1211,15 @@ this.f_open_w_background( )
 
 ls_company_code =lboi_handle.f_get_branch_name( gi_user_comp_id )
 ls_brand_code=lboi_handle.f_get_branch_name( gdb_branch )
+ls_user = g_user.name
 if isnull(ls_brand_code) then ls_brand_code = '[Chi nhánh]'
 if isnull(ls_company_code) then ls_company_code = '[Công ty]'
+if isnull(ls_user) then ls_user = g_user.code
 //-- set title window MDI --//
 if gs_user_lang = 'vi-vn' then 	
-	this.title = ls_company_code + ' | '+ ls_brand_code + ' | ' + g_user.name +' | Phiên bản: '+string(gdt_appUpdate_date)
+	this.title = ls_company_code + ' | '+ ls_brand_code + ' | ' + ls_user //+' | Phiên bản: '+string(gdt_appUpdate_date)
 elseif gs_user_lang = 'en-us' then 
-	this.title = ls_company_code + ' | '+ ls_brand_code + ' | ' + g_user.name +' | Version: '+string(gdt_appUpdate_date)	
+	this.title = ls_company_code + ' | '+ ls_brand_code + ' | ' + ls_user //+' | Version: '+string(gdt_appUpdate_date)	
 end if
 
 

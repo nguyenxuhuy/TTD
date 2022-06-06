@@ -9,15 +9,11 @@ type st_2 from t_st within c_w_logon
 end type
 type st_1 from statictext within c_w_logon
 end type
-type st_5 from t_st within c_w_logon
-end type
 type sle_usr from t_sle within c_w_logon
 end type
 type sle_pwd from t_sle within c_w_logon
 end type
 type ddlb_lang from t_ddlb within c_w_logon
-end type
-type st_3 from t_st within c_w_logon
 end type
 type p_1 from picture within c_w_logon
 end type
@@ -32,20 +28,17 @@ boolean clientedge = true
 st_4 st_4
 st_2 st_2
 st_1 st_1
-st_5 st_5
 sle_usr sle_usr
 sle_pwd sle_pwd
 ddlb_lang ddlb_lang
-st_3 st_3
 p_1 p_1
 end type
 global c_w_logon c_w_logon
 
 type variables
-
+//
 string		is_update_date
 end variables
-
 forward prototypes
 public function string f_get_compile_str ()
 end prototypes
@@ -90,22 +83,18 @@ call super::create
 this.st_4=create st_4
 this.st_2=create st_2
 this.st_1=create st_1
-this.st_5=create st_5
 this.sle_usr=create sle_usr
 this.sle_pwd=create sle_pwd
 this.ddlb_lang=create ddlb_lang
-this.st_3=create st_3
 this.p_1=create p_1
 iCurrent=UpperBound(this.Control)
 this.Control[iCurrent+1]=this.st_4
 this.Control[iCurrent+2]=this.st_2
 this.Control[iCurrent+3]=this.st_1
-this.Control[iCurrent+4]=this.st_5
-this.Control[iCurrent+5]=this.sle_usr
-this.Control[iCurrent+6]=this.sle_pwd
-this.Control[iCurrent+7]=this.ddlb_lang
-this.Control[iCurrent+8]=this.st_3
-this.Control[iCurrent+9]=this.p_1
+this.Control[iCurrent+4]=this.sle_usr
+this.Control[iCurrent+5]=this.sle_pwd
+this.Control[iCurrent+6]=this.ddlb_lang
+this.Control[iCurrent+7]=this.p_1
 end on
 
 on c_w_logon.destroy
@@ -113,11 +102,9 @@ call super::destroy
 destroy(this.st_4)
 destroy(this.st_2)
 destroy(this.st_1)
-destroy(this.st_5)
 destroy(this.sle_usr)
 destroy(this.sle_pwd)
 destroy(this.ddlb_lang)
-destroy(this.st_3)
 destroy(this.p_1)
 end on
 
@@ -158,9 +145,9 @@ if ls_def_lang = 'en-us' then
 //	st_3.text = 'Database'
 	st_4.text = 'Language'
 	this.title = 'Logon'
-	st_5.text = 'Updated on ' + string(day(date(is_update_date))) + ' / ' +string(month(date(is_update_date))) +' /' + string(year(date(is_update_date)))	
+//	st_5.text = 'Updated on ' + string(day(date(is_update_date))) + ' / ' +string(month(date(is_update_date))) +' /' + string(year(date(is_update_date)))	
 elseif ls_def_lang = 'vi-vn' then
-	st_5.text = 'Cập nhật ngày ' + string(day(date(is_update_date))) + ' tháng ' +string(month(date(is_update_date))) +' năm ' + string(year(date(is_update_date)))		
+//	st_5.text = 'Cập nhật ngày ' + string(day(date(is_update_date))) + ' tháng ' +string(month(date(is_update_date))) +' năm ' + string(year(date(is_update_date)))		
 end if
 
 
@@ -175,9 +162,9 @@ ddlb_lang.selectitem( 1)
 if ls_multi_lang = 'No' then
 	ddlb_lang.enabled = false
 end if
-if ls_import = 'No' then
-	st_3.enabled = false
-end if
+//if ls_import = 'No' then
+//	st_3.enabled = false
+//end if
 
 this.sle_usr.text = ProfileString(ls_inifile,'login','username','')
 this.sle_usr.setposition( Totop!)
@@ -188,9 +175,9 @@ this.ddlb_lang.setposition( toTop!)
 
 this.st_1.setposition( Totop!)
 this.st_2.setposition( totop!)
-this.st_3.setposition( toTop!)
+//this.st_3.setposition( toTop!)
 this.st_4.setposition( toTop!)
-this.st_5.setposition( toTop!)
+//this.st_5.setposition( toTop!)
 this.setredraw( true)
 this.sle_usr.setfocus( )
 this.sle_usr.selecttext( 1, len(sle_usr.text ))
@@ -328,25 +315,6 @@ string text = "Tên đăng nhập"
 boolean focusrectangle = false
 end type
 
-type st_5 from t_st within c_w_logon
-string accessibledescription = "loglang"
-integer y = 8
-integer width = 1655
-integer height = 96
-integer textsize = -9
-long backcolor = 553648127
-string text = "Ngày cập nhật"
-alignment alignment = center!
-end type
-
-event constructor;//override
-
-end event
-
-event getfocus;//
-
-end event
-
 type sle_usr from t_sle within c_w_logon
 event e_keydown pbm_keydown
 integer x = 741
@@ -443,7 +411,7 @@ parent.setredraw(false)
 st_1.setredraw( false)
 st_2.setredraw( false)
 st_4.setredraw( false)
-st_5.setredraw( false)
+//st_5.setredraw( false)
 ls_def_lang = this.text(index)
 if ls_def_lang = 'en-us' then
 	st_1.text = 'Username'
@@ -451,14 +419,14 @@ if ls_def_lang = 'en-us' then
 //	st_3.text = 'Database'
 	st_4.text = 'Language'
 	parent.title = 'Logon'
-	parent.st_5.text = 'Updated on ' + string(day(date(is_update_date))) + ' / ' +string(month(date(is_update_date))) +' /' + string(year(date(is_update_date)))		
+//	parent.st_5.text = 'Updated on ' + string(day(date(is_update_date))) + ' / ' +string(month(date(is_update_date))) +' /' + string(year(date(is_update_date)))		
 elseif ls_def_lang = 'vi-vn' then
 	st_1.text = 'Người dùng'
 	st_2.text = 'Mật mã'
 //	st_3.text = 'Database'
 	st_4.text = 'Ngôn ngữ'	
 	parent.title = 'Đăng nhập'
-	st_5.text = 'Cập nhật ngày ' + string(day(date(is_update_date))) + ' tháng ' +string(month(date(is_update_date))) +' năm ' + string(year(date(is_update_date)))		
+//	st_5.text = 'Cập nhật ngày ' + string(day(date(is_update_date))) + ' tháng ' +string(month(date(is_update_date))) +' năm ' + string(year(date(is_update_date)))		
 end if
 //parent.st_1.setposition( Totop!)
 //parent.st_2.setposition( totop!)
@@ -466,129 +434,13 @@ end if
 st_1.setredraw( true)
 st_2.setredraw( true)
 st_4.setredraw( true)
-st_5.setredraw( true)
+//st_5.setredraw( true)
 parent.setredraw( true)
 
 
 
 
 parent.sle_usr.setfocus( )
-end event
-
-type st_3 from t_st within c_w_logon
-integer x = 745
-integer y = 704
-integer width = 631
-integer height = 88
-boolean bringtotop = true
-integer textsize = -12
-boolean underline = true
-long textcolor = 0
-string text = "Import database"
-end type
-
-event e_mousemove;call super::e_mousemove;
-this.textcolor = rgb(0,217,0)
-
-end event
-
-event constructor;// override //
-end event
-
-event clicked;call super::clicked;string		ls_curdir, ls_path_name, ls_file_name, ls_dos_file, ls_create_dir, ls_import_str, ls_compile
-int			li_rtn, li_ret, li_length, li_cnt
-c_connect_srv		lc_connect_srv
-
-
-//rào lại bời Long 19/12/2016 08:55:00
-// tránh user thường drop database
-if Messagebox('Thông báo','CHỨC NĂNG NÀY CHỈ THỰC HIỆN ĐƯỢC TRÊN MÁY CÓ CÀI ĐẶT DATABASE. Đây có phải là máy được cài đặt DATABASE không?', Question!, Yesno!,2) = 2 then return
-
-
-ls_curdir = GetCurrentDirectory()
-li_rtn = GetFileOpenName("Select File", ls_path_name, ls_file_name, "DMP","DB file (*.DMP),*.DMP")
-If li_rtn < 1 Then return -1
-ChangeDirectory(ls_curdir)
- setpointer(hourglass!)
- 
-ls_path_name = mid(ls_path_name, 1, pos(ls_path_name, ls_file_name)-2)
-if lc_connect_srv.f_connection_import( ) = 1 then
-	
-	select count(username) into :li_cnt from all_users where username = 'AD' using SQLCA;
-	if li_cnt > 0 then 
-		EXECUTE IMMEDIATE " DROP USER ad CASCADE" using SQLCA;
-	end if
-	select count(username) into :li_cnt from all_users where username = 'CST' using SQLCA;
-	if li_cnt > 0 then
-		EXECUTE IMMEDIATE " DROP USER cst CASCADE" using SQLCA;
-	end if
-	select count(username) into :li_cnt from all_users where username = 'GL' using SQLCA;
-	if li_cnt > 0 then 
-		EXECUTE IMMEDIATE " DROP USER gl CASCADE" using SQLCA;
-	end if
-	select count(username) into :li_cnt from all_users where username = 'IM' using SQLCA;
-	if li_cnt > 0 then 
-		EXECUTE IMMEDIATE " DROP USER im CASCADE" using SQLCA;
-	end if
-	select count(username) into :li_cnt from all_users where username = 'PD' using SQLCA;
-	if li_cnt > 0 then 
-		EXECUTE IMMEDIATE " DROP USER pd CASCADE" using SQLCA;
-	end if
-	select count(username) into :li_cnt from all_users where username = 'PM' using SQLCA;	
-	if li_cnt > 0 then 
-		EXECUTE IMMEDIATE " DROP USER pm CASCADE" using SQLCA;
-	end if
-	select count(username) into :li_cnt from all_users where username = 'SM' using SQLCA;
-	if li_cnt > 0 then 
-		EXECUTE IMMEDIATE " DROP USER sm CASCADE" using SQLCA;
-	end if
-	select count(username) into :li_cnt from all_users where username = 'RP' using SQLCA;
-	if li_cnt > 0 then 
-		EXECUTE IMMEDIATE " DROP USER rp CASCADE" using SQLCA;
-	end if
-	select count(username) into :li_cnt from all_users where username = 'TTD' using SQLCA;
-	if li_cnt > 0 then 
-		EXECUTE IMMEDIATE " DROP USER ttd CASCADE" using SQLCA;
-	end if
-	ls_create_dir =  " Create or replace directory import_ttd as ~'"+ls_path_name+"~'"
-	EXECUTE IMMEDIATE :ls_create_dir using SQLCA;
-end if
-
-
-ls_dos_file = ls_path_name + "\Import_script.cmd"
-li_ret = FileOpen(ls_dos_file, TextMode!, Write!, LockWrite!, Replace!, EncodingANSI!)
-
-ls_import_str = " impdp system/system@"+gs_dbname+" directory = import_ttd dumpfile = "+ls_file_name+" logfile= import_ttd.log schemas=(ttd,ad,pd,sm,pm,im,gl,rp,cst)"
-
-li_length = FileWriteEx(li_ret, ls_import_str) 
-if li_length = -1 then
-	messagebox('ERROR','ERROR when creating import file')
-	return
-end if
-
-if fileclose(li_ret) = -1 then 
-	messagebox('ERROR','ERROR when creating import file')
-	return
-end if
-
-li_rtn = run(ls_dos_file)
-if li_rtn = -1 then
-	messagebox('ERROR','ERROR when running import file')
-	return 
-end if
-	
-sleep(120)
-	
-if Filedelete(ls_dos_file) = false then
-	messagebox('ERROR','ERROR when deleting import file')
-end if
-
-ls_compile = parent.f_get_compile_str( )
-EXECUTE IMMEDIATE :ls_compile using SQLCA;
-disconnect using SQLCA;
-
-messagebox('Thông báo','Import HOÀN TẤT')
-
 end event
 
 type p_1 from picture within c_w_logon
@@ -602,7 +454,7 @@ boolean focusrectangle = false
 end type
 
 event e_mousemove;
-st_3.textcolor = rgb(0,0,0)
+//st_3.textcolor = rgb(0,0,0)
 end event
 
 event clicked;this.post setredraw( false)

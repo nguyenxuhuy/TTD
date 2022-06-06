@@ -221,6 +221,7 @@ public function integer f_set_data_copied (t_ds_db vds_copied[], s_str_dwo_relat
 public function integer f_ctrl_enable_button (t_dw_mpl vdw_focus)
 public function integer f_filter_dwmain_new ()
 public function integer f_filter_dwmain ()
+public function integer f_resize_up_1d_lo_1d_tb ()
 end prototypes
 
 event e_copy_to(string vs_btn_name);s_str_dwo_related		lstr_related[], lstr_data_related[]
@@ -2183,7 +2184,13 @@ choose case vs_display_model
 	case 'up_1d_lo_tb'
 		dw_1.show( ) //visible = true
 		gb_2.show( ) //visible = true
-		tab_1.show( ) //visible = true						
+		tab_1.show( ) //visible = true	
+	case 'up_1d_lo_1d_tb'
+		dw_1.show( ) //visible = true
+		gb_2.show( ) //visible = true
+		tab_1.show( ) //visible = true		
+		dw_2.show( ) //visible = true
+		gb_1.show( ) //visible = true
 	case '1tv_2d'
 		tv_1.show( ) //visible = true
 		gb_1.show( ) //visible = true
@@ -6459,6 +6466,41 @@ end if
 ic_obj_handling.is_dwmain_filter = ls_filterstring
 
 return 0
+end function
+
+public function integer f_resize_up_1d_lo_1d_tb ();
+//-- resize dw_1 --//
+dw_1.move( tab_action.x, tab_action.y + tab_action.height + ii_spare_space + ii_filter_space + ii_text_spaceheight)
+dw_1.width =  ii_resize_width - this.ii_vscrollbar
+dw_1.height = ii_upperpart_height * ii_resize_height
+
+//-- resize horizontal line --//
+gb_2.move( tab_action.x, tab_action.y + tab_action.height + ii_spare_space + ii_filter_space + ii_text_spaceheight + dw_1.height)
+gb_2.width =   ii_resize_width - this.ii_vscrollbar
+if gb_2.text = '^' then
+	gb_2.height = 35
+else
+	gb_2.height = 50
+end if
+
+//-- resize dw_2 --//
+dw_2.move( tab_action.x, gb_2.y + gb_2.height)
+dw_2.width = ii_leftpart_width * ii_resize_width
+dw_2.height = max(ii_resize_height - this.ii_hscrollbar - (gb_2.y + gb_2.height ), 0)	
+
+
+//-- resize gb_1 --//
+gb_1.move(dw_2.x + ii_leftpart_width* ii_resize_width, gb_2.y + gb_2.height)
+gb_1.height = max(ii_resize_height - this.ii_hscrollbar - (gb_2.y + gb_2.height ), 0)	
+gb_1.width = 24
+
+
+//-- resize tab --//
+tab_1.move( gb_1.x +gb_1.width, gb_2.y + gb_2.height )
+tab_1.width =   ii_resize_width  - gb_1.x - gb_1.width  - this.ii_vscrollbar
+tab_1.height =  max(ii_resize_height - this.ii_hscrollbar - (gb_2.y + gb_2.height ), 0)		
+
+return 1
 end function
 
 on s_w_multi_rb.create

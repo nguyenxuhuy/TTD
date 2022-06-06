@@ -261,10 +261,10 @@ public subroutine f_set_dwo_window ();
 istr_dwo[1].s_dwo_default =  'd_document_prod_grid'
 istr_dwo[1].s_dwo_form = ''
 istr_dwo[1].s_dwo_grid = 'd_document_prod_grid'
-istr_dwo[1].b_master = false
+istr_dwo[1].b_master = true
 istr_dwo[1].b_detail = false
 istr_dwo[1].b_cascade_del = true
-istr_dwo[1].s_dwo_details = ''
+istr_dwo[1].s_dwo_details = 'd_prod_line_kd_grid;'
 istr_dwo[1].s_dwo_shared = ''
 istr_dwo[1].s_dwo_master = ''
 istr_dwo[1].s_master_keycol = ''
@@ -282,20 +282,20 @@ istr_dwo[1].b_keyboardlocked = true
 istr_dwo[1].s_description = 'Lệnh sản xuất'
 istr_dwo[1].s_gb_name = 'gb_6'
 
-/*
-istr_dwo[2].s_dwo_default =  'd_prod_hdr_form'
-istr_dwo[2].s_dwo_form = 'd_prod_hdr_form'
-istr_dwo[2].s_dwo_grid = ''
+
+istr_dwo[2].s_dwo_default =  'd_prod_line_kd_grid'
+istr_dwo[2].s_dwo_form = ''
+istr_dwo[2].s_dwo_grid = 'd_prod_line_kd_grid'
 istr_dwo[2].b_master = true
 istr_dwo[2].b_detail = true
 istr_dwo[2].b_cascade_del = true
 istr_dwo[2].s_dwo_master = 'd_document_prod_grid;'
-istr_dwo[2].s_dwo_details = 'd_prod_line_grid;d_prod_consumption_grid;'
+istr_dwo[2].s_dwo_details = 'd_lot_line_kd_grid;d_prod_material_grid;d_prod_resource_grid'
 istr_dwo[2].s_master_keycol = 'ID;'
 istr_dwo[2].s_detail_keycol = 'OBJECT_REF_ID;'
-istr_dwo[2].b_ref_table_yn  = true
-istr_dwo[2].s_ref_table_field = 'OBJECT_REF_TABLE;DOC_TYPE;ID'
-istr_dwo[2].b_relation_1_1 = true
+istr_dwo[2].b_ref_table_yn  = false
+istr_dwo[2].s_ref_table_field = 'OBJECT_REF_TABLE;'
+istr_dwo[2].b_relation_1_1 = false
 istr_dwo[2].b_insert = true
 istr_dwo[2].b_update = true
 istr_dwo[2].b_delete = true
@@ -308,7 +308,7 @@ istr_dwo[2].b_focus_master = true
 istr_dwo[2].s_gb_name = 'gb_7'
 istr_dwo[2].s_description = 'Thông tin SX'
 
-
+/*
 istr_dwo[3].s_dwo_default =  'd_post_line_charge_grid'
 istr_dwo[3].s_dwo_form = ''
 istr_dwo[3].s_dwo_grid = 'd_post_line_charge_grid'
@@ -446,15 +446,15 @@ end subroutine
 public subroutine f_set_dwo_tabpage ();iastr_dwo_tabpage[1].s_tp_name = 's_tp_multi'
 iastr_dwo_tabpage[1].s_display_model = '1d'
 iastr_dwo_tabpage[1].i_index = 1
-iastr_dwo_tabpage[1].str_dwo[1].s_dwo_default =  'd_prod_line_grid'
+iastr_dwo_tabpage[1].str_dwo[1].s_dwo_default =  'd_lot_line_kd_grid'
 iastr_dwo_tabpage[1].str_dwo[1].s_dwo_form = ''
-iastr_dwo_tabpage[1].str_dwo[1].s_dwo_grid = 'd_prod_line_grid'
+iastr_dwo_tabpage[1].str_dwo[1].s_dwo_grid = 'd_lot_line_kd_grid'
 iastr_dwo_tabpage[1].str_dwo[1].s_popmenu_items = ''
 iastr_dwo_tabpage[1].str_dwo[1].b_master = true
-iastr_dwo_tabpage[1].str_dwo[1].b_detail = true
+iastr_dwo_tabpage[1].str_dwo[1].b_detail = false
 iastr_dwo_tabpage[1].str_dwo[1].b_cascade_del = true
-iastr_dwo_tabpage[1].str_dwo[1].s_dwo_master = 'd_prod_hdr_form;'
-iastr_dwo_tabpage[1].str_dwo[1].s_dwo_details = 'd_prod_material_grid;d_prod_product_grid'
+iastr_dwo_tabpage[1].str_dwo[1].s_dwo_master = 'd_prod_line_kd_grid;'
+iastr_dwo_tabpage[1].str_dwo[1].s_dwo_details = ''
 iastr_dwo_tabpage[1].str_dwo[1].s_dwo_shared = ''
 iastr_dwo_tabpage[1].str_dwo[1].s_master_keycol = 'ID;'
 iastr_dwo_tabpage[1].str_dwo[1].s_detail_keycol = 'OBJECT_REF_ID;'
@@ -468,7 +468,7 @@ iastr_dwo_tabpage[1].str_dwo[1].b_print = true
 iastr_dwo_tabpage[1].str_dwo[1].b_excel = true
 iastr_dwo_tabpage[1].str_dwo[1].b_keyboardlocked = true
 iastr_dwo_tabpage[1].str_dwo[1].b_traceable = true
-iastr_dwo_tabpage[1].str_dwo[1].s_description ='Chi tiết SX'
+iastr_dwo_tabpage[1].str_dwo[1].s_description ='Chi tiết SIZE'
 
 iastr_dwo_tabpage[2].s_tp_name = 's_tp_multi'
 iastr_dwo_tabpage[2].s_display_model = '1d'
@@ -477,10 +477,10 @@ iastr_dwo_tabpage[2].str_dwo[1].s_dwo_default =  'd_prod_material_grid'
 iastr_dwo_tabpage[2].str_dwo[1].s_dwo_form = ''
 iastr_dwo_tabpage[2].str_dwo[1].s_dwo_grid = 'd_prod_material_grid'
 iastr_dwo_tabpage[2].str_dwo[1].b_master = true
-iastr_dwo_tabpage[2].str_dwo[1].b_detail = true
+iastr_dwo_tabpage[2].str_dwo[1].b_detail = false
 iastr_dwo_tabpage[2].str_dwo[1].b_cascade_del = true
-iastr_dwo_tabpage[2].str_dwo[1].s_dwo_master = 'd_prod_line_grid;'
-iastr_dwo_tabpage[2].str_dwo[1].s_dwo_details = 'd_post_line_charge_grid'
+iastr_dwo_tabpage[2].str_dwo[1].s_dwo_master = 'd_prod_line_kd_grid;'
+iastr_dwo_tabpage[2].str_dwo[1].s_dwo_details = ''
 iastr_dwo_tabpage[2].str_dwo[1].s_dwo_shared = ''
 iastr_dwo_tabpage[2].str_dwo[1].s_master_keycol = 'ID;'
 iastr_dwo_tabpage[2].str_dwo[1].s_detail_keycol = 'OBJECT_REF_ID;'
@@ -496,17 +496,18 @@ iastr_dwo_tabpage[2].str_dwo[1].b_keyboardlocked = true
 iastr_dwo_tabpage[2].str_dwo[1].b_traceable = true
 iastr_dwo_tabpage[2].str_dwo[1].s_description ='Nguyên liệu chính'
 
+
 iastr_dwo_tabpage[3].s_tp_name = 's_tp_multi'
 iastr_dwo_tabpage[3].s_display_model = '1d'
 iastr_dwo_tabpage[3].i_index = 3
-iastr_dwo_tabpage[3].str_dwo[1].s_dwo_default =  'd_prod_consumption_grid'
+iastr_dwo_tabpage[3].str_dwo[1].s_dwo_default =  'd_prod_resource_grid'
 iastr_dwo_tabpage[3].str_dwo[1].s_dwo_form = ''
-iastr_dwo_tabpage[3].str_dwo[1].s_dwo_grid = 'd_prod_consumption_grid'
+iastr_dwo_tabpage[3].str_dwo[1].s_dwo_grid = 'd_prod_resource_grid'
 iastr_dwo_tabpage[3].str_dwo[1].b_master = true
-iastr_dwo_tabpage[3].str_dwo[1].b_detail = true
+iastr_dwo_tabpage[3].str_dwo[1].b_detail = false
 iastr_dwo_tabpage[3].str_dwo[1].b_cascade_del = true
-iastr_dwo_tabpage[3].str_dwo[1].s_dwo_master = 'd_prod_hdr_form;'
-iastr_dwo_tabpage[3].str_dwo[1].s_dwo_details = 'd_post_line_tax_grid;'
+iastr_dwo_tabpage[3].str_dwo[1].s_dwo_master = 'd_prod_line_kd_grid;'
+iastr_dwo_tabpage[3].str_dwo[1].s_dwo_details = ''
 iastr_dwo_tabpage[3].str_dwo[1].s_dwo_shared = ''
 iastr_dwo_tabpage[3].str_dwo[1].s_master_keycol = 'ID;'
 iastr_dwo_tabpage[3].str_dwo[1].s_detail_keycol = 'OBJECT_REF_ID;'
@@ -520,8 +521,9 @@ iastr_dwo_tabpage[3].str_dwo[1].b_print = true
 iastr_dwo_tabpage[3].str_dwo[1].b_excel = true
 iastr_dwo_tabpage[3].str_dwo[1].b_keyboardlocked = true
 iastr_dwo_tabpage[3].str_dwo[1].b_traceable = true
-iastr_dwo_tabpage[3].str_dwo[1].s_description ='Nguyên liệu tiêu hao chung'
+iastr_dwo_tabpage[3].str_dwo[1].s_description ='Lưu ý cách làm'
 
+/*
 iastr_dwo_tabpage[4].s_tp_name = 's_tp_multi'
 iastr_dwo_tabpage[4].s_display_model = '1d'
 iastr_dwo_tabpage[4].i_index = 4
@@ -573,7 +575,7 @@ iastr_dwo_tabpage[5].str_dwo[1].b_excel = true
 iastr_dwo_tabpage[5].str_dwo[1].b_keyboardlocked = true
 iastr_dwo_tabpage[5].str_dwo[1].b_traceable = true
 iastr_dwo_tabpage[5].str_dwo[1].s_description ='Máy móc-Nhân lực'
-
+*/
 end subroutine
 
 public subroutine f_set_dwo_related ();istr_dwo_related[1].s_related_obj_name = 'b_view'				// đối tượng copy đến
@@ -1349,7 +1351,7 @@ end on
 event constructor;call super::constructor;is_table = 'DOCUMENT'
 ib_changed_dwo_4edit = false
 this.ib_keyboardlocked = true
-is_display_model = 'up_1d_lo_tb'
+is_display_model = 'up_1d_lo_1d_tb'
 is_object_title = 'Lệnh sản xuất'
 istr_actionpane[1].s_description = is_object_title
 is_exrate_type = 'buy'
@@ -1423,6 +1425,7 @@ event e_window_e_preopen;call super::e_window_e_preopen;//--resize parm --//
 
 iw_display.f_set_ii_upperpart_height(1/2 )
 
+iw_display.f_set_ii_leftpart_width( 1/5)
 
 return 0
 end event
@@ -1479,6 +1482,7 @@ string				ls_change_yn
 t_transaction	lt_transaction
 
 if ancestorreturnvalue = 1 then return 1
+/*
 if pos(rpo_dw.dataobject, 'd_prod_line_') > 0  then
 	//-- update  --//
 	
@@ -1524,6 +1528,7 @@ elseif pos(rpo_dw.dataobject, 'd_prod_material_') > 0  then
 		rpo_dw.setitem(vl_currentrow, 'changed_qty', ic_unit_instance.f_round( lt_transaction, ldb_round,ldb_act_qty ))
 	end if
 end if
+*/
 return 0
 end event
 
