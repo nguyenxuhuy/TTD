@@ -9240,8 +9240,8 @@ string 				ls_colname
 int						li_idx, li_rtn
 
 //-- Kiểm tra query mode --//
-lb_querymode = inv_QueryMode.f_GetEnabled()
-If lb_querymode Then Return
+//lb_querymode = inv_QueryMode.f_GetEnabled()
+//If lb_querymode Then Return
 //-- kiểm tra có đang bị lỗi nhập liệu --//
 if this.ib_dataerror then
 	this.ib_dataerror =false

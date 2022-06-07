@@ -146,3 +146,11 @@ end if
 return 0
 end event
 
+event e_dw_e_save;call super::e_dw_e_save;
+b_obj_instantiate			lbo_ins
+	
+if lbo_ins.f_update_line_no( rpo_dw ) = -1 then return -1
+
+return 1
+end event
+
