@@ -1643,6 +1643,11 @@ elseif pos(rpo_dw.dataobject, 'd_objects_item_') > 0 then
 	 if li_cnt> 0 then
 		gf_messagebox('m.e_dw_e_preinsertrow.01','Thông báo','Mặt hàng đã có giao dịch, không thể xoá quy cách','exclamation','ok',1)
 		return -1
+	else
+		delete from item_spec where object_ref_id = :ldb_item_id using it_transaction ;
+		delete from item_barcode where object_ref_id = :ldb_item_id using it_transaction ;
+		delete from item_lot where object_ref_id = :ldb_item_id using it_transaction ;
+		delete from item where object_ref_id = :ldb_item_id using it_transaction ;
 	end if		
 end if
 
@@ -1675,7 +1680,7 @@ int					li_rtn
 return li_rtn
 end event
 
-event e_dw_e_postsave;call super::e_dw_e_postsave;double		ldb_item_id, ldb_stock_uom, ldb_round_id, ldb_min_stock, ldb_max_stock, ldb_obj_id, ldb_barcode_id, ldb_bom_id
+event e_dw_e_postsave;call super::e_dw_e_postsave;double		ldb_item_id, ldb_stock_uom, ldb_round_id, ldb_min_stock, ldb_max_stock, ldb_obj_id, ldb_barcode_id, ldb_bom_id, ldb_size_id
 string			ls_value_yn, ls_quantity_yn, ls_lot_yn, ls_manufacturers, ls_ingredient, ls_spec_desc, ls_origin, ls_abc_rank, ls_barcode
 
 b_obj_instantiate		lbo_ins
@@ -1698,11 +1703,12 @@ if rpo_dw.dataobject = 'd_objects_item_form' then
 		ls_origin = rpo_dw.getitemstring(rpo_dw.getrow(), 'origin')
 		ls_abc_rank = rpo_dw.getitemstring(rpo_dw.getrow(), 'abc_rank')
 		ldb_bom_id = rpo_dw.getitemnumber(rpo_dw.getrow(), 'bom_id') 
+		ldb_size_id = rpo_dw.getitemnumber(rpo_dw.getrow(), 'size_id') 
 //		
 		if ldb_item_id > 0 then
 			//-- update--//		
 			UPDATE item 
-			set stock_uom = :ldb_stock_uom , round_id = :ldb_round_id, min_stock = :ldb_min_stock, 
+			set stock_uom = :ldb_stock_uom , round_id = :ldb_round_id, min_stock = :ldb_min_stock, size_id = :ldb_size_id,
 				 max_stock = :ldb_max_stock , value_yn = :ls_value_yn, quantity_yn = :ls_quantity_yn, bom_id = :ldb_bom_id,
 				 lot_yn = :ls_lot_yn , manufacturers = :ls_manufacturers , ingredient = :ls_ingredient , spec_desc = :ls_spec_desc , origin = :ls_origin , abc_rank = :ls_abc_rank
 			where object_ref_id = :ldb_obj_id using it_transaction;
@@ -1710,9 +1716,9 @@ if rpo_dw.dataobject = 'd_objects_item_form' then
 			//-- insert--//
 			ldb_item_id = lbo_ins.f_Create_id_ex( it_transaction )
 			INSERT into item (id, object_ref_id, object_ref_Table, company_id, branch_id, created_by, created_Date, last_mdf_by, last_mdf_date,
-										stock_uom, round_id, min_stock, max_stock, value_yn, quantity_yn, lot_yn, manufacturers, ingredient, spec_desc, origin, abc_rank, bom_id )
+										stock_uom, round_id, min_stock, max_stock, value_yn, quantity_yn, lot_yn, manufacturers, ingredient, spec_desc, origin, abc_rank, bom_id, size_id )
 			VALUES (:ldb_item_id, :ldb_obj_id, 'OBJECT',:gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,
-						:ldb_stock_uom, :ldb_round_id, :ldb_min_stock, :ldb_max_stock, :ls_value_yn, :ls_quantity_yn, :ls_lot_yn, :ls_manufacturers, :ls_ingredient, :ls_spec_desc, :ls_origin, :ls_abc_rank, :ldb_bom_id  )
+						:ldb_stock_uom, :ldb_round_id, :ldb_min_stock, :ldb_max_stock, :ls_value_yn, :ls_quantity_yn, :ls_lot_yn, :ls_manufacturers, :ls_ingredient, :ls_spec_desc, :ls_origin, :ls_abc_rank, :ldb_bom_id, :ldb_size_id  )
 			using it_transaction;
 		end if
 		//-- table ITEM_BARCODE --//
