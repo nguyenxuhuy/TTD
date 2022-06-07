@@ -376,28 +376,16 @@ if rpo_dw.dataobject = 'd_object_route_grid' then
 	ll_row = ldw_handle.event e_addrow( )
 	ldw_handle.setitem( ll_row, 'version_no', 1)
 elseif rpo_dw.dataobject = 'd_route_line_grid' then
-	this.f_update_line_no( rpo_dw, vl_currentrow , 'line_no')
+//	this.f_update_line_no( rpo_dw, vl_currentrow , 'line_no')
 elseif rpo_dw.dataobject = 'd_route_machine_grid' then
 	rpo_dw.setitem(vl_currentrow, 'item_type', 'MACHINERY')
-	this.f_update_line_no( rpo_dw, vl_currentrow , 'line_no')
+//	this.f_update_line_no( rpo_dw, vl_currentrow , 'line_no')
 elseif  rpo_dw.dataobject = 'd_route_labour_grid' then
 	rpo_dw.setitem(vl_currentrow, 'item_type', 'LABOUR')
-	this.f_update_line_no( rpo_dw, vl_currentrow , 'line_no')	
+//	this.f_update_line_no( rpo_dw, vl_currentrow , 'line_no')	
 elseif rpo_dw.dataobject = 'd_route_energy_grid' then
 	//-- insert line_no --//
-	this.f_update_line_no( rpo_dw, vl_currentrow , 'line_no')
-end if
-return 0
-end event
-
-event e_dw_updatestart;call super::e_dw_updatestart;
-
-if rdw_requester.dataobject = 'd_route_line_grid' &
-	or rdw_requester.dataobject = 'd_route_machine_grid' &
-	or rdw_requester.dataobject = 'd_route_labour_grid' &
-	or rdw_requester.dataobject = 'd_route_energy_grid' then
-	//-- insert line_no --//
-	this.f_update_line_no( rdw_requester, 1 , 'line_no')
+//	this.f_update_line_no( rpo_dw, vl_currentrow , 'line_no')
 end if
 return 0
 end event
@@ -420,5 +408,14 @@ end if
 
 
 return 0
+end event
+
+event e_dw_e_save;call super::e_dw_e_save;
+
+b_obj_instantiate			lbo_ins
+if rpo_dw.dataobject = 'd_route_line_grid' then
+	if lbo_ins.f_update_line_no( rpo_dw ) = -1 then return -1
+end if
+return ancestorreturnvalue
 end event
 

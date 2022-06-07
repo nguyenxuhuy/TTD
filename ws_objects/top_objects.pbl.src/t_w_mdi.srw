@@ -1200,7 +1200,7 @@ this.f_open_w_background( )
 //lm_menu.item[6].text = gs_branch
 //if gs_sob = 'T' then lm_menu.item[8].text = '[Thuế]'
 //lm_menu.f_set_security_module( )
-//gd_session_date = today()
+
 //
 //if gs_user_lang = 'vi-vn' then 
 //	lm_menu.m_sessiondate.text = '[Ngày giao dich: '+string(today(),gs_w_date_format)+']'
@@ -1221,7 +1221,9 @@ if gs_user_lang = 'vi-vn' then
 elseif gs_user_lang = 'en-us' then 
 	this.title = ls_company_code + ' | '+ ls_brand_code + ' | ' + ls_user //+' | Version: '+string(gdt_appUpdate_date)	
 end if
+gd_session_date = today()
 
+this.title = this.title+ ' | Ngày giao dich: '+string(today(),gs_w_date_format)
 
 //-- open systray --//
 //this.post f_open_systray()

@@ -5,32 +5,32 @@ header(height=108 color="536870912" transparency="0" gradient.color="8421504" gr
 summary(height=0 color="536870912" transparency="0" gradient.color="8421504" gradient.transparency="0" gradient.angle="0" brushmode="0" gradient.repetition.mode="0" gradient.repetition.count="0" gradient.repetition.length="100" gradient.focus="0" gradient.scale="100" gradient.spread="100" )
 footer(height=0 color="536870912" transparency="0" gradient.color="8421504" gradient.transparency="0" gradient.angle="0" brushmode="0" gradient.repetition.mode="0" gradient.repetition.count="0" gradient.repetition.length="100" gradient.focus="0" gradient.scale="100" gradient.spread="100" )
 detail(height=92 color="536870912" transparency="0" gradient.color="8421504" gradient.transparency="0" gradient.angle="0" brushmode="0" gradient.repetition.mode="0" gradient.repetition.count="0" gradient.repetition.length="100" gradient.focus="0" gradient.scale="100" gradient.spread="100" )
-table(column=(type=number update=yes updatewhereclause=yes key=yes name=id dbname="lot_line.id" )
- column=(type=number update=yes updatewhereclause=yes name=object_ref_id dbname="lot_line.object_ref_id" )
- column=(type=char(50) update=yes updatewhereclause=yes name=object_ref_table dbname="lot_line.object_ref_table" )
- column=(type=number update=yes updatewhereclause=yes name=company_id dbname="lot_line.company_id" )
- column=(type=number update=yes updatewhereclause=yes name=branch_id dbname="lot_line.branch_id" )
- column=(type=number updatewhereclause=yes name=created_by dbname="lot_line.created_by" )
- column=(type=datetime updatewhereclause=yes name=created_date dbname="lot_line.created_date" )
- column=(type=number updatewhereclause=yes name=last_mdf_by dbname="lot_line.last_mdf_by" )
- column=(type=datetime updatewhereclause=yes name=last_mdf_date dbname="lot_line.last_mdf_date" )
- column=(type=char(100) update=yes updatewhereclause=yes name=lot_no dbname="lot_line.lot_no" )
- column=(type=datetime update=yes updatewhereclause=yes name=manufacture_date dbname="lot_line.manufacture_date" )
- column=(type=datetime update=yes updatewhereclause=yes name=best_b4_date dbname="lot_line.best_b4_date" )
- column=(type=number update=yes updatewhereclause=yes name=qty dbname="lot_line.qty" )
- column=(type=char(100) update=yes updatewhereclause=yes name=serial_no dbname="lot_line.serial_no" )
- column=(type=number update=yes updatewhereclause=yes name=out_qty dbname="lot_line.out_qty" )
- column=(type=number update=yes updatewhereclause=yes name=qty_sku dbname="lot_line.qty_sku" )
- column=(type=number update=yes updatewhereclause=yes name=out_qty_sku dbname="lot_line.out_qty_sku" )
- column=(type=number update=yes updatewhereclause=yes name=invoiced_qty dbname="lot_line.invoiced_qty" )
- column=(type=number update=yes updatewhereclause=yes name=doc_version dbname="lot_line.doc_version" )
+table(column=(type=number update=yes updatewhereclause=yes key=yes name=id dbname="lot_line.id" dbalias=".id" )
+ column=(type=number update=yes updatewhereclause=yes name=object_ref_id dbname="lot_line.object_ref_id" dbalias=".object_ref_id" )
+ column=(type=char(50) update=yes updatewhereclause=yes name=object_ref_table dbname="lot_line.object_ref_table" dbalias=".object_ref_table" )
+ column=(type=number update=yes updatewhereclause=yes name=company_id dbname="lot_line.company_id" dbalias=".company_id" )
+ column=(type=number update=yes updatewhereclause=yes name=branch_id dbname="lot_line.branch_id" dbalias=".branch_id" )
+ column=(type=number updatewhereclause=yes name=created_by dbname="lot_line.created_by" dbalias=".created_by" )
+ column=(type=datetime updatewhereclause=yes name=created_date dbname="lot_line.created_date" dbalias=".created_date" )
+ column=(type=number updatewhereclause=yes name=last_mdf_by dbname="lot_line.last_mdf_by" dbalias=".last_mdf_by" )
+ column=(type=datetime updatewhereclause=yes name=last_mdf_date dbname="lot_line.last_mdf_date" dbalias=".last_mdf_date" )
+ column=(type=char(100) update=yes updatewhereclause=yes name=lot_no dbname="lot_line.lot_no" dbalias=".lot_no" )
+ column=(type=datetime update=yes updatewhereclause=yes name=manufacture_date dbname="lot_line.manufacture_date" dbalias=".manufacture_date" )
+ column=(type=datetime update=yes updatewhereclause=yes name=best_b4_date dbname="lot_line.best_b4_date" dbalias=".best_b4_date" )
+ column=(type=number update=yes updatewhereclause=yes name=qty dbname="lot_line.qty" dbalias=".qty" )
+ column=(type=char(100) update=yes updatewhereclause=yes name=serial_no dbname="lot_line.serial_no" dbalias=".serial_no" )
+ column=(type=number update=yes updatewhereclause=yes name=out_qty dbname="lot_line.out_qty" dbalias=".out_qty" )
+ column=(type=number update=yes updatewhereclause=yes name=qty_sku dbname="lot_line.qty_sku" dbalias=".qty_sku" )
+ column=(type=number update=yes updatewhereclause=yes name=out_qty_sku dbname="lot_line.out_qty_sku" dbalias=".out_qty_sku" )
+ column=(type=number update=yes updatewhereclause=yes name=invoiced_qty dbname="lot_line.invoiced_qty" dbalias=".invoiced_qty" )
+ column=(type=number update=yes updatewhereclause=yes name=doc_version dbname="lot_line.doc_version" dbalias=".doc_version" )
  retrieve="select       
                 LOT_LINE.ID                ,
                 LOT_LINE.OBJECT_REF_ID     ,
                 LOT_LINE.OBJECT_REF_TABLE  ,
                 LOT_LINE.COMPANY_ID        ,
                 LOT_LINE.BRANCH_ID         ,
-                LOT_LINE.CREATED_BY        ,
+                LOT_LINE.CREATED_BY        , 
                 LOT_LINE.CREATED_DATE      ,
                 LOT_LINE.LAST_MDF_BY       ,
                 LOT_LINE.LAST_MDF_DATE     , 

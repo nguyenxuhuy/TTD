@@ -450,8 +450,8 @@ iastr_dwo_tabpage[1].str_dwo[1].s_dwo_default =  'd_lot_line_kd_grid'
 iastr_dwo_tabpage[1].str_dwo[1].s_dwo_form = ''
 iastr_dwo_tabpage[1].str_dwo[1].s_dwo_grid = 'd_lot_line_kd_grid'
 iastr_dwo_tabpage[1].str_dwo[1].s_popmenu_items = ''
-iastr_dwo_tabpage[1].str_dwo[1].b_master = true
-iastr_dwo_tabpage[1].str_dwo[1].b_detail = false
+iastr_dwo_tabpage[1].str_dwo[1].b_master = false
+iastr_dwo_tabpage[1].str_dwo[1].b_detail = true
 iastr_dwo_tabpage[1].str_dwo[1].b_cascade_del = true
 iastr_dwo_tabpage[1].str_dwo[1].s_dwo_master = 'd_prod_line_kd_grid;'
 iastr_dwo_tabpage[1].str_dwo[1].s_dwo_details = ''
@@ -476,8 +476,8 @@ iastr_dwo_tabpage[2].i_index = 2
 iastr_dwo_tabpage[2].str_dwo[1].s_dwo_default =  'd_prod_material_grid'
 iastr_dwo_tabpage[2].str_dwo[1].s_dwo_form = ''
 iastr_dwo_tabpage[2].str_dwo[1].s_dwo_grid = 'd_prod_material_grid'
-iastr_dwo_tabpage[2].str_dwo[1].b_master = true
-iastr_dwo_tabpage[2].str_dwo[1].b_detail = false
+iastr_dwo_tabpage[2].str_dwo[1].b_master = false
+iastr_dwo_tabpage[2].str_dwo[1].b_detail = true
 iastr_dwo_tabpage[2].str_dwo[1].b_cascade_del = true
 iastr_dwo_tabpage[2].str_dwo[1].s_dwo_master = 'd_prod_line_kd_grid;'
 iastr_dwo_tabpage[2].str_dwo[1].s_dwo_details = ''
@@ -503,8 +503,8 @@ iastr_dwo_tabpage[3].i_index = 3
 iastr_dwo_tabpage[3].str_dwo[1].s_dwo_default =  'd_prod_resource_grid'
 iastr_dwo_tabpage[3].str_dwo[1].s_dwo_form = ''
 iastr_dwo_tabpage[3].str_dwo[1].s_dwo_grid = 'd_prod_resource_grid'
-iastr_dwo_tabpage[3].str_dwo[1].b_master = true
-iastr_dwo_tabpage[3].str_dwo[1].b_detail = false
+iastr_dwo_tabpage[3].str_dwo[1].b_master = false
+iastr_dwo_tabpage[3].str_dwo[1].b_detail = true
 iastr_dwo_tabpage[3].str_dwo[1].b_cascade_del = true
 iastr_dwo_tabpage[3].str_dwo[1].s_dwo_master = 'd_prod_line_kd_grid;'
 iastr_dwo_tabpage[3].str_dwo[1].s_dwo_details = ''
@@ -1430,35 +1430,47 @@ iw_display.f_set_ii_leftpart_width( 1/5)
 return 0
 end event
 
-event e_dw_e_postinsertrow;call super::e_dw_e_postinsertrow;long				ll_row
-t_dw_mpl 		ldw_handle
+event e_dw_e_postinsertrow;call super::e_dw_e_postinsertrow;//-- OVERRIDE --//
+any							laa_retrieve[], laa_data[]
+double						ldb_version_id, ldb_branch
+b_obj_instantiate			lbo_ins
+s_str_data					lstr_data
 
 
 if rpo_dw.dataobject = 'd_document_prod_grid' then
-	ldw_handle = iw_display.f_get_dw('d_prod_hdr_form')	
-	ll_row = ldw_handle.event e_addrow( )
-	ldw_handle.setitem( ll_row, 'doc_type', 'PROD_ORDERS')
-	ldw_handle.setitem( ll_row, 'version_no',1)
-	ldw_handle.setitem( ll_row, 'trans_date', date(gd_session_date))
-elseif rpo_dw.dataobject= 'd_prod_material_grid' or  rpo_dw.dataobject= 'd_prod_product_grid'  or  rpo_dw.dataobject= 'd_prod_consumption_grid'  then
+	ldb_version_id = lbo_ins.f_Create_id_ex( it_transaction )
+	rpo_dw.setitem(vl_currentrow,'doc_type','PROD_ORDERS')
+	rpo_dw.setitem(vl_currentrow,'object_ref_table','BOOKED_SLIP')
+	rpo_dw.setitem(vl_currentrow,'version_id',ldb_version_id)
+	rpo_dw.setitem(vl_currentrow,'handled_by',gi_userid)
+	rpo_dw.setitem(vl_currentrow,'object_name', g_user.f_get_name_of_userid_ex(gi_userid, it_transaction ) )
+	rpo_dw.setitem(vl_currentrow,'status','new')
+	rpo_dw.setitem(vl_currentrow,'document_date',date(gd_session_date))
+	rpo_dw.setitem(vl_currentrow,'TRANS_DATE',date(gd_session_date))	
+	
+	laa_retrieve[1] = upper(mid(this.classname(),3))
+	if  lbo_ins.f_is_branch_yn_ex('u_trans_setup', it_transaction )then
+		ldb_branch = gdb_branch
+	else
+		ldb_branch = 0
+	end if			
+	if this.f_get_dfl_trans_info(laa_retrieve[1]  , ldb_branch, lstr_data,it_transaction ) > 0 then
+		idb_trans_id = lstr_data.db_data
+		if not isnull(idb_trans_id) and idb_trans_id > 0 then 
+			laa_data[1] = idb_trans_id
+			this.f_init_object_table(ids_trans_setup, 'd_trans_setup_grid', 'object_ref_id;',laa_data[],laa_retrieve[], it_transaction)
+			rpo_dw.setitem(vl_currentrow,'trans_hdr_id',idb_trans_id)
+			rpo_dw.setitem(vl_currentrow,'trans_desc',lstr_data.as_data[1] )
+			rpo_dw.setitem( vl_currentrow,'QUANTITY_YN',lstr_data.as_data[2] )
+			rpo_dw.setitem( vl_currentrow,'VALUE_YN',lstr_data.as_data[3] )	
+		end if
+	end if	
+elseif rpo_dw.dataobject= 'd_prod_line_kd_grid'  then
 	//-- insert line_no --//
-	this.f_update_line_no( rpo_dw, vl_currentrow , 'line_no')
+//	this.f_update_line_no( rpo_dw, vl_currentrow , 'line_no')
 end if
-return vl_currentrow
-end event
 
-event e_dw_updatestart;call super::e_dw_updatestart;double	 ldb_amount
-long		ll_row
-if rdw_requester.dataobject= 'd_prod_material_grid' or  rdw_requester.dataobject= 'd_prod_product_grid'   then
-	//-- insert line_no --//
-	this.f_update_line_no( rdw_requester, 1 , 'line_no')
-elseif pos(rdw_requester.dataobject,'d_prod_line_') > 0 then
-	FOr ll_row = 1 to rdw_requester.rowcount()
-		ldb_amount =rdw_requester.getitemnumber(ll_row, 'amount')
-		rdw_requester.setitem(ll_row, 'base_amount',ldb_amount)
-	NEXT
-end if
-return 0
+return vl_currentrow
 end event
 
 event e_window_e_prepost;call super::e_window_e_prepost;string				ls_status
@@ -1477,58 +1489,47 @@ if isvalid(ldw_main) then
 end if
 end event
 
-event e_dw_e_itemchanged;call super::e_dw_e_itemchanged;double			ldb_price, ldb_qty,ldb_changed_qty,ldb_act_qty,ldb_bom_qty,ldb_difference_qty,ldb_item_id,ldb_uom,ldb_round
+event e_dw_e_itemchanged;call super::e_dw_e_itemchanged;double			ldb_size, ldb_item_id, ldb_bom_id
 string				ls_change_yn
-t_transaction	lt_transaction
+long				ll_cnt
 
 if ancestorreturnvalue = 1 then return 1
-/*
+
 if pos(rpo_dw.dataobject, 'd_prod_line_') > 0  then
 	//-- update  --//
 	
-	if vs_colname = 'input_qty' then
-		ldb_price = rpo_dw.getitemnumber(vl_currentrow,'price')
-		if isnull(ldb_price) then ldb_price = 0
-		if vs_editdata = '' or isnull(vs_editdata) then
-			ldb_qty = 0 
-		else
-			ldb_qty = double(vs_editdata)
+	if vs_colname = 'object_code' then
+		ldb_bom_id =  rpo_dw.getitemnumber(vl_currentrow,'bom_id')
+		ldb_item_id =  rpo_dw.getitemnumber(vl_currentrow,'object_id')
+		//-- retrieve: size --//
+		select count(t.id) into :ll_cnt from flexible_data t join object o on o.OBJECT_REF_NAME = t.code and o.id = :ldb_item_id using it_transaction;		
+		if ll_cnt = 1 then
+			select t.id into :ldb_size from flexible_data t join object o on o.OBJECT_REF_NAME = t.code and o.id = :ldb_item_id using it_transaction;
 		end if
-		rpo_dw.setitem(vl_currentrow, 'amount', ldb_qty*ldb_price)
-		rpo_dw.setitem(vl_currentrow, 'base_amount', ldb_qty*ldb_price)
-	elseif vs_colname = 'price' then
-		ldb_qty = rpo_dw.getitemnumber(vl_currentrow,'input_qty')
-		if isnull(ldb_qty) then ldb_qty = 0
-		if vs_editdata = '' or isnull(vs_editdata) then
-			ldb_price = 0 
-		else
-			ldb_price = double(vs_editdata)
-		end if
-		rpo_dw.setitem(vl_currentrow, 'amount', ldb_qty*ldb_price)
-		rpo_dw.setitem(vl_currentrow, 'base_amount', ldb_qty*ldb_price)
-	elseif vs_colname = 'act_qty' then
+		//-- retrieve: material --//
 		
+		//-- retrieve: route --//
 	end if
-elseif pos(rpo_dw.dataobject, 'd_prod_material_') > 0  then
-	if vs_colname = 'change_qty_yn' then
-		ls_change_yn = vs_editdata
-	else
-		ls_change_yn = rpo_dw.getitemstring(vl_currentrow,'change_qty_yn')
-	end if
-	ldb_act_qty =  rpo_dw.getitemnumber(vl_currentrow,'act_qty')
-	ldb_item_id =  rpo_dw.getitemnumber(vl_currentrow,'item_id')
-	ldb_uom =  rpo_dw.getitemnumber(vl_currentrow,'uom_id')
-	ldb_bom_qty = rpo_dw.getitemnumber(vl_currentrow,'BOM_QTY')
-	iw_display.f_get_transaction( lt_transaction)
-	ldb_round = this.ic_unit_instance.f_get_round_id(ldb_uom, ldb_item_id, 'item')		
-	ldb_difference_qty = rpo_dw.getitemnumber(vl_currentrow,'difference_qty')
-	if ls_change_yn = 'Y' then
-		rpo_dw.setitem(vl_currentrow, 'changed_qty', ic_unit_instance.f_round( lt_transaction, ldb_round,ldb_difference_qty + ldb_act_qty ))
-	else
-		rpo_dw.setitem(vl_currentrow, 'changed_qty', ic_unit_instance.f_round( lt_transaction, ldb_round,ldb_act_qty ))
-	end if
+//elseif pos(rpo_dw.dataobject, 'd_prod_material_') > 0  then
+//	if vs_colname = 'change_qty_yn' then
+//		ls_change_yn = vs_editdata
+//	else
+//		ls_change_yn = rpo_dw.getitemstring(vl_currentrow,'change_qty_yn')
+//	end if
+//	ldb_act_qty =  rpo_dw.getitemnumber(vl_currentrow,'act_qty')
+//	ldb_item_id =  rpo_dw.getitemnumber(vl_currentrow,'item_id')
+//	ldb_uom =  rpo_dw.getitemnumber(vl_currentrow,'uom_id')
+//	ldb_bom_qty = rpo_dw.getitemnumber(vl_currentrow,'BOM_QTY')
+//	iw_display.f_get_transaction( lt_transaction)
+//	ldb_round = this.ic_unit_instance.f_get_round_id(ldb_uom, ldb_item_id, 'item')		
+//	ldb_difference_qty = rpo_dw.getitemnumber(vl_currentrow,'difference_qty')
+//	if ls_change_yn = 'Y' then
+//		rpo_dw.setitem(vl_currentrow, 'changed_qty', ic_unit_instance.f_round( lt_transaction, ldb_round,ldb_difference_qty + ldb_act_qty ))
+//	else
+//		rpo_dw.setitem(vl_currentrow, 'changed_qty', ic_unit_instance.f_round( lt_transaction, ldb_round,ldb_act_qty ))
+//	end if
 end if
-*/
+
 return 0
 end event
 
@@ -1544,5 +1545,133 @@ else
 	this.f_doc_filter(  'd_prod_consumption_grid', false)
 end if
 return 0
+end event
+
+event e_dw_e_postsave;call super::e_dw_e_postsave;double		ldb_customer_id, ldb_doc_id, ldb_extend_id, ldb_base_curr_id, ldb_item_id, ldb_spec_id, ldb_line_id, ldb_lot_id
+long			ll_scrap_pct, ll_row
+int				li_cnt, li_idx
+string			ls_alloc_yn, ls_currCode, ls_currName, ls_qty_yn, ls_val_yn, ls_ref_no
+
+b_obj_instantiate		lbo_ins
+t_dw_mpl				ldw_main
+
+if rpo_dw.dataobject = 'd_document_prod_grid' then
+	ldb_doc_id =  rpo_dw.getitemnumber(rpo_dw.getrow(), 'id') 
+	ldb_extend_id = rpo_dw.getitemnumber(rpo_dw.getrow(), 'extend_id') 
+	ldb_customer_id = rpo_dw.getitemnumber(rpo_dw.getrow(), 'dr_cr_object') 
+	ls_alloc_yn = rpo_dw.getitemstring(rpo_dw.getrow(), 'allocation_yn') 
+	ls_qty_yn = rpo_dw.getitemstring(rpo_dw.getrow(), 'quantity_yn') 
+	ls_val_yn = rpo_dw.getitemstring(rpo_dw.getrow(), 'value_yn') 
+	ll_scrap_pct = rpo_dw.getitemnumber(rpo_dw.getrow(), 'qty') 
+	ic_unit_instance.f_get_base_cur_ex( ldb_base_curr_id, ls_currCode, ls_currName, it_transaction)
+	//-- BOOKED_SLIP --//
+	if ldb_extend_id > 0 then
+		//-- update--//		
+		UPDATE booked_slip 
+		set dr_cr_object = :ldb_customer_id , invoice_object = :ldb_customer_id, allocation_yn = :ls_alloc_yn, 
+			 qty = :ll_scrap_pct 
+		where id = :ldb_extend_id using it_transaction;		
+	else 
+		//-- insert--//
+		ldb_extend_id = rpo_dw.getitemnumber(rpo_dw.getrow(), 'version_id') 
+		INSERT into booked_slip (id, object_ref_id, object_ref_Table, company_id, branch_id, created_by, created_Date, last_mdf_by, last_mdf_date,
+									value_yn, quantity_yn, CURRENCY_ID, exchange_rate, dr_cr_object, invoice_object, allocation_yn, qty, doc_type)
+		VALUES (:ldb_extend_id, :ldb_doc_id, 'DOCUMENT',:gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,
+					:ls_val_yn, :ls_qty_yn, :ldb_base_curr_id, 1, :ldb_customer_id, :ldb_customer_id, :ls_alloc_yn, :ll_scrap_pct, 'PROD_ORDERS')
+		using it_transaction;		
+	end if
+elseif rpo_dw.dataobject= 'd_prod_line_kd_grid'  then
+	ldw_main = rpo_dw.dynamic f_get_idw_master()
+	ldb_customer_id = ldw_main.getitemnumber(ldw_main.getrow(), 'dr_cr_object') 
+	if isnull(ldb_customer_id) then
+		gf_messagebox('m.c_rpod_orders.e_dw_e_postsave.01','Thông báo','Chưa chọn khách hàng !','exclamation','ok',1)
+		return -1
+	end if
+
+	FOR ll_row = 1 to rpo_dw.rowcount()
+		ldb_line_id = rpo_dw.getitemnumber(ll_row, 'id') 
+		ldb_item_id = rpo_dw.getitemnumber(ll_row, 'object_id') 
+		ldb_spec_id = rpo_dw.getitemnumber(ll_row, 'spec_id') 
+		ls_ref_no = rpo_dw.getitemstring(ll_row, 'oper_name') 
+		
+		//-- check and update SPEC --//
+		if isnull(ldb_spec_id) then
+			select count(id) into :li_cnt
+			from item_spec where object_ref_id = :ldb_item_id and spec_group = :ldb_customer_id using it_transaction;
+			if li_cnt = 1 then
+				select id into :ldb_spec_id
+				from item_spec where object_ref_id = :ldb_item_id and spec_group = :ldb_customer_id using it_transaction;
+			elseif li_cnt = 0 then
+				ldb_spec_id= lbo_ins.f_create_id_ex( it_transaction)
+				INSERT into item_spec (id,company_id,branch_id,created_by,created_date,last_mdf_by, last_mdf_date,object_ref_id,object_ref_table,spec_group)
+					VALUES(:ldb_spec_id, :gi_user_comp_id, :gdb_branch, :gi_userid,sysdate,:gi_userid,sysdate,:ldb_item_id ,'OBJECT',:ldb_customer_id)
+					using it_transaction;
+			end if
+			UPDATE production_line set spec_id = :ldb_spec_id where id = :ldb_line_id using it_transaction;
+		else
+			select count(id) into :li_cnt
+			from item_spec where id = :ldb_spec_id and spec_group = :ldb_customer_id using it_transaction;
+			if li_cnt = 0 then
+				UPDATE item_spec set spec_group = :ldb_customer_id where id = :ldb_spec_id using it_transaction;
+			end if
+		end if
+		//-- check and update ITEM LOT --//
+		if trim(ls_ref_no) <> '' then
+			select count(id) into :li_cnt
+			from item_lot where object_ref_id = :ldb_item_id and lot_no = :ls_ref_no using it_transaction;	
+			if li_cnt = 0 then
+				ldb_lot_id= lbo_ins.f_create_id_ex( it_transaction)
+				INSERT into item_lot (id,company_id,branch_id,created_by,created_date,last_mdf_by, last_mdf_date,object_ref_id,object_ref_table,lot_no)
+					VALUES(:ldb_lot_id, :gi_user_comp_id, :gdb_branch, :gi_userid,sysdate,:gi_userid,sysdate,:ldb_item_id ,'OBJECT',:ls_ref_no)
+					using it_transaction;
+			end if
+		end if
+	NEXT
+end if
+
+return 0
+end event
+
+event e_dw_getfocus;call super::e_dw_getfocus;double				ldb_item_id, ldb_object_ref_id, ldb_size_id, ldb_bom_id
+t_dw_mpl			ldw_master
+
+if rdw_handling.dataobject  = 'd_lot_line_kd_grid' then
+	if rdw_handling.rowcount() = 0 then
+		ldw_master = rdw_handling.f_get_idw_master()
+		ldb_object_ref_id = ldw_master.getitemnumber( ldw_master.getrow(), 'id')
+		ldb_item_id = ldw_master.getitemnumber( ldw_master.getrow(), 'object_id')
+		if isnull(ldb_item_id) or ldb_item_id = 0 then
+			gf_messagebox('m.c_prod_orders.e_dw_getfocus.01','Thông báo','Chưa có thành phẩm SX !','exclamation','ok',1)
+			return 0
+		end if
+		//-- lấy size của item --//
+		
+		//-- insert size --//
+		INSERT into lot_line(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,
+									lot_no,serial_no)
+		SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'PRODUCTION_LINE',
+					'Đôi', vv.code
+				from valueset_value vv where object_ref_id = :ldb_size_id using it_transaction;
+	end if
+elseif rdw_handling.dataobject  = 'd_prod_material_grid' then
+		//-- lấy size của item --//
+		
+		//-- insert size --//
+		INSERT into lot_line(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,
+									lot_no,serial_no)
+		SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'PRODUCTION_LINE',
+					'Đôi', vv.code
+				from valueset_value vv where object_ref_id = :ldb_size_id using it_transaction;	
+elseif rdw_handling.dataobject  = 'd_prod_resource_grid' then
+		//-- lấy size của item --//
+		
+		//-- insert size --//
+		INSERT into lot_line(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,
+									lot_no,serial_no)
+		SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'PRODUCTION_LINE',
+					'Đôi', vv.code
+				from valueset_value vv where object_ref_id = :ldb_size_id using it_transaction;	
+end if
+return ancestorreturnvalue
 end event
 
