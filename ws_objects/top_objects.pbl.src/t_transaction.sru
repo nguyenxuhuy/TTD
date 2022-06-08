@@ -57,7 +57,6 @@ choose case code
 	case 1843, 1840
 		return -1		
 	case else
-		messagebox('Thông báo', string(code) +';'+ string(this.sqldbcode) )
 		messagebox('Thông báo','Lỗi dữ liệu: chương trình tự đóng sau khi bấm OK <'+sqlerrortext+'>', stopsign!, ok!,1)
 //		HALT CLOSE
 		if this.database = 'multithread' then

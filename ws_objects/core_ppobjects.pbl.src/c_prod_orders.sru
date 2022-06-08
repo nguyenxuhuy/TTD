@@ -304,7 +304,7 @@ istr_dwo[2].b_print = true
 istr_dwo[2].b_excel = true
 istr_dwo[2].b_traceable = true
 istr_dwo[2].b_keyboardlocked = true
-istr_dwo[2].b_focus_master = true
+istr_dwo[2].b_focus_master = false
 istr_dwo[2].s_gb_name = 'gb_7'
 istr_dwo[2].s_description = 'Thông tin SX'
 
@@ -460,9 +460,9 @@ iastr_dwo_tabpage[1].str_dwo[1].s_master_keycol = 'ID;'
 iastr_dwo_tabpage[1].str_dwo[1].s_detail_keycol = 'OBJECT_REF_ID;'
 iastr_dwo_tabpage[1].str_dwo[1].b_ref_table_yn  = false
 iastr_dwo_tabpage[1].str_dwo[1].s_ref_table_field = 'OBJECT_REF_TABLE;'
-iastr_dwo_tabpage[1].str_dwo[1].b_insert = true
+iastr_dwo_tabpage[1].str_dwo[1].b_insert = false
 iastr_dwo_tabpage[1].str_dwo[1].b_update = true
-iastr_dwo_tabpage[1].str_dwo[1].b_delete = true
+iastr_dwo_tabpage[1].str_dwo[1].b_delete = false
 iastr_dwo_tabpage[1].str_dwo[1].b_query = true
 iastr_dwo_tabpage[1].str_dwo[1].b_print = true
 iastr_dwo_tabpage[1].str_dwo[1].b_excel = true
@@ -1498,18 +1498,18 @@ if ancestorreturnvalue = 1 then return 1
 if pos(rpo_dw.dataobject, 'd_prod_line_') > 0  then
 	//-- update  --//
 	
-	if vs_colname = 'object_code' then
-		ldb_bom_id =  rpo_dw.getitemnumber(vl_currentrow,'bom_id')
-		ldb_item_id =  rpo_dw.getitemnumber(vl_currentrow,'object_id')
-		//-- retrieve: size --//
-		select count(t.id) into :ll_cnt from flexible_data t join object o on o.OBJECT_REF_NAME = t.code and o.id = :ldb_item_id using it_transaction;		
-		if ll_cnt = 1 then
-			select t.id into :ldb_size from flexible_data t join object o on o.OBJECT_REF_NAME = t.code and o.id = :ldb_item_id using it_transaction;
-		end if
-		//-- retrieve: material --//
-		
-		//-- retrieve: route --//
-	end if
+//	if vs_colname = 'object_code' then
+//		ldb_bom_id =  rpo_dw.getitemnumber(vl_currentrow,'bom_id')
+//		ldb_item_id =  rpo_dw.getitemnumber(vl_currentrow,'object_id')
+//		//-- retrieve: size --//
+//		select count(t.id) into :ll_cnt from flexible_data t join object o on o.OBJECT_REF_NAME = t.code and o.id = :ldb_item_id using it_transaction;		
+//		if ll_cnt = 1 then
+//			select t.id into :ldb_size from flexible_data t join object o on o.OBJECT_REF_NAME = t.code and o.id = :ldb_item_id using it_transaction;
+//		end if
+//		//-- retrieve: material --//
+//		
+//		//-- retrieve: route --//
+//	end if
 //elseif pos(rpo_dw.dataobject, 'd_prod_material_') > 0  then
 //	if vs_colname = 'change_qty_yn' then
 //		ls_change_yn = vs_editdata
@@ -1632,45 +1632,123 @@ end if
 return 0
 end event
 
-event e_dw_getfocus;call super::e_dw_getfocus;double				ldb_item_id, ldb_object_ref_id, ldb_size_id, ldb_bom_id
+event e_dw_getfocus;call super::e_dw_getfocus;double				ldb_item_id, ldb_object_ref_id, ldb_size_id, ldb_bom_id, ldb_route_id
 t_dw_mpl			ldw_master
 
 if rdw_handling.dataobject  = 'd_lot_line_kd_grid' then
 	if rdw_handling.rowcount() = 0 then
 		ldw_master = rdw_handling.f_get_idw_master()
-		ldb_object_ref_id = ldw_master.getitemnumber( ldw_master.getrow(), 'id')
-		ldb_item_id = ldw_master.getitemnumber( ldw_master.getrow(), 'object_id')
-		if isnull(ldb_item_id) or ldb_item_id = 0 then
-			gf_messagebox('m.c_prod_orders.e_dw_getfocus.01','Thông báo','Chưa có thành phẩm SX !','exclamation','ok',1)
-			return 0
+		if ldw_master.getrow( ) > 0 then
+			ldb_object_ref_id = ldw_master.getitemnumber( ldw_master.getrow(), 'id')
+			ldb_item_id = ldw_master.getitemnumber( ldw_master.getrow(), 'object_id')
+			if isnull(ldb_item_id) or ldb_item_id = 0 then
+				gf_messagebox('m.c_prod_orders.e_dw_getfocus.01','Thông báo','Chưa có thành phẩm SX !','exclamation','ok',1)
+				return 0
+			end if
+			//-- lấy size của item --//
+			connect using it_transaction;
+			select size_id into :ldb_size_id from item where object_ref_id = :ldb_item_id using it_transaction;
+			if ldb_size_id = 0 or isnull(ldb_size_id) then
+				gf_messagebox('m.c_prod_orders.e_dw_getfocus.02','Thông báo','Chưa chọn loại size cho sản phẩm !','exclamation','ok',1)
+				return 0
+			end if
+			//-- insert size --//
+			INSERT into lot_line(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,
+										lot_no,serial_no,line_no)
+			SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'PRODUCTION_LINE',
+						'Đôi', vv.code,vv.line_no
+					from valueset_value vv where object_ref_id = :ldb_size_id using it_transaction;
+			commit using it_transaction;
+			rdw_handling.event e_retrieve()
+			disconnect using it_transaction;			
 		end if
-		//-- lấy size của item --//
-		
-		//-- insert size --//
-		INSERT into lot_line(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,
-									lot_no,serial_no)
-		SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'PRODUCTION_LINE',
-					'Đôi', vv.code
-				from valueset_value vv where object_ref_id = :ldb_size_id using it_transaction;
 	end if
 elseif rdw_handling.dataobject  = 'd_prod_material_grid' then
-		//-- lấy size của item --//
-		
-		//-- insert size --//
-		INSERT into lot_line(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,
-									lot_no,serial_no)
-		SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'PRODUCTION_LINE',
-					'Đôi', vv.code
-				from valueset_value vv where object_ref_id = :ldb_size_id using it_transaction;	
+	if rdw_handling.rowcount() = 0 then
+		ldw_master = rdw_handling.f_get_idw_master()
+		if ldw_master.getrow( ) > 0 then
+			ldb_object_ref_id = ldw_master.getitemnumber( ldw_master.getrow(), 'id')
+			ldb_item_id = ldw_master.getitemnumber( ldw_master.getrow(), 'object_id')
+			if isnull(ldb_item_id) or ldb_item_id = 0 then
+				gf_messagebox('m.c_prod_orders.e_dw_getfocus.01','Thông báo','Chưa có thành phẩm SX !','exclamation','ok',1)
+				return 0
+			end if
+			//-- lấy BOM_ID của item --//
+			connect using it_transaction;
+			select bom_id into :ldb_bom_id from item where object_ref_id = :ldb_item_id using it_transaction;
+			if ldb_bom_id = 0 or isnull(ldb_bom_id) then
+				gf_messagebox('m.c_prod_orders.e_dw_getfocus.03','Thông báo','Chưa chọn Công thức NVL cho sản phẩm !','exclamation','ok',1)
+				return 0
+			end if
+			//-- insert size --//
+			INSERT into PRODUCTION_DETAIL(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,
+										LINE_NO,BOM_REF_ID,BOM_REF_TABLE, INPUT_OUTPUT)
+			SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'PRODUCTION_LINE',
+						bio.line_no,bio.item_id,'OBJECT', 'I'
+					from BOM_INOUT_PUT bio join bom_line bl on bl.id = bio.object_ref_id
+                                                     join item i on i.id = bl.object_ref_id
+                                                     join object o on o.id = i.object_ref_id  and o.object_ref_table = 'BOM'
+                                                     where o.id = :ldb_bom_id using it_transaction;
+			commit using it_transaction;
+			rdw_handling.event e_retrieve()
+			disconnect using it_transaction;			
+		end if
+	end if
 elseif rdw_handling.dataobject  = 'd_prod_resource_grid' then
-		//-- lấy size của item --//
-		
-		//-- insert size --//
-		INSERT into lot_line(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,
-									lot_no,serial_no)
-		SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'PRODUCTION_LINE',
-					'Đôi', vv.code
-				from valueset_value vv where object_ref_id = :ldb_size_id using it_transaction;	
+	if rdw_handling.rowcount() = 0 then
+		ldw_master = rdw_handling.f_get_idw_master()
+		if ldw_master.getrow( ) > 0 then
+			ldb_object_ref_id = ldw_master.getitemnumber( ldw_master.getrow(), 'id')
+			ldb_item_id = ldw_master.getitemnumber( ldw_master.getrow(), 'object_id')
+			if isnull(ldb_item_id) or ldb_item_id = 0 then
+				gf_messagebox('m.c_prod_orders.e_dw_getfocus.01','Thông báo','Chưa có thành phẩm SX !','exclamation','ok',1)
+				return 0
+			end if
+			//-- lấy BOM_ID của item --//
+			connect using it_transaction;
+			select bom_id into :ldb_bom_id from item where object_ref_id = :ldb_item_id using it_transaction;
+			if ldb_bom_id = 0 or isnull(ldb_bom_id) then
+				gf_messagebox('m.c_prod_orders.e_dw_getfocus.03','Thông báo','Chưa chọn Công thức NVL cho sản phẩm !','exclamation','ok',1)
+				return 0
+			end if
+			//-- lấy ROUTE_ID của item --//
+			select bl.route_id into :ldb_route_id from bom_line bl 
+                                                     join item i on i.id = bl.object_ref_id
+                                                     join object o on o.id = i.object_ref_id  and o.object_ref_table = 'BOM'
+                                                     where o.id = :ldb_bom_id using it_transaction;			
+			//-- insert resource line --//
+			INSERT into PRODUCTION_RESOURCE(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,
+										LINE_NO,ITEM_TYPE,OBJECT_ID, NOTE)
+			SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'PRODUCTION_LINE',
+						bl.line_no, bl.LINE_TYPE, bl.route_id, coalesce(vv.name, o_subRoute.name)
+									from bom_line bl 
+                                                     join bom_hdr bh on bh.id = bl.object_ref_id
+                                                     join object o on o.id = bh.object_ref_id  and o.object_ref_table = 'ROUTE'
+                                                     left join valueset_value vv on vv.id = bl.route_id and bl.line_type = 'OPERATION'
+                                                     left join object o_subRoute on o_subRoute.id = bl.route_id  and o_subRoute.object_ref_table = bl.line_type
+                                                     where o.id = :ldb_route_id using it_transaction;
+			commit using it_transaction;
+			rdw_handling.event e_retrieve()
+			disconnect using it_transaction;			
+		end if
+	end if	
+end if
+return ancestorreturnvalue
+end event
+
+event e_dw_e_save;call super::e_dw_e_save;long		ll_row
+double	ldb_qty, ldb_id
+b_obj_instantiate			lbo_ins	
+if rpo_dw.dataobject = 'd_lot_line_kd_grid' then
+	if rpo_dw.accepttext() = -1 then return -1
+	for ll_row = 1 to rpo_dw.rowcount()
+		ldb_id = rpo_dw.getitemnumber(ll_row, 'id')
+		ldb_qty = rpo_dw.getitemnumber(ll_row, 'qty')
+		Update lot_line set qty = :ldb_qty where id = :ldb_id using it_transaction;
+	next
+	return 0
+elseif rpo_dw.dataobject = 'd_prod_material_grid' or  rpo_dw.dataobject = 'd_prod_resource_grid'  then		
+	if lbo_ins.f_update_line_no( rpo_dw ) = -1 then return -1
 end if
 return ancestorreturnvalue
 end event

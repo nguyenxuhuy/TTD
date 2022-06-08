@@ -6427,11 +6427,11 @@ else
 	lb_editing = vdw_focus.f_get_ib_editing()
 	lstr_rule_attr = vdw_focus.dynamic f_get_rule_attr()
 	lstr_security_attr = vdw_focus.dynamic f_get_security_attr()
-	lb_updatable = lstr_rule_attr.b_update and lstr_security_attr.b_update
+	lb_updatable = lstr_rule_attr.b_update and lstr_security_attr.b_update 
 	lb_detail = vdw_focus.f_get_ib_detail()
 end if
 
-vrbb_handle.f_ctrl_enable_button(ls_type, ls_status, lb_editing, lb_updatable, this.ib_Changed_dwo_4edit, is_enable_buttons,  lb_detail)
+vrbb_handle.f_ctrl_enable_button(ls_type, ls_status, lb_editing, lb_updatable, this.ib_Changed_dwo_4edit, is_enable_buttons,  lb_detail, vdw_focus)
 return 1
 end function
 

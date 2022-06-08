@@ -43,6 +43,10 @@ public function integer f_enable_panel_action_panel (string vs_type, string vs_d
 public function integer f_enable_panel_tab (ribbonpanelitem vrpi_tab, string vs_type, string vs_doc_status, boolean vb_editing, boolean vb_updatable, string vs_enable_buttons)
 public function integer f_change_action_button (powerobject po)
 public function integer f_change_action_button (string vs_clicktag)
+public function integer f_enable_panel_action_panel (string vs_type, string vs_doc_status, boolean vb_editing, boolean vb_updatable, boolean vb_change_4_edit, boolean vb_detail, string vs_enable_buttons, ref ribbonpanelitem r_rpi, t_dw_mpl vdw_focus)
+public function integer f_enable_panel_action_group (string vs_type, string vs_doc_status, boolean vb_editing, boolean vb_updatable, boolean vb_change_4_edit, boolean vb_detail, string vs_enable_buttons, ref ribbongroupitem r_rgi, t_dw_mpl vdw_focus)
+public function integer f_ctrl_enable_button (string vs_type, string vs_doc_status, boolean vb_editing, boolean vb_updatable, boolean vb_change_4_edit, string vs_enable_buttons, boolean vb_detail, t_dw_mpl vdw_focus)
+public function integer f_enable_panel_action (ribbonpanelitem vrpi_action, string vs_type, string vs_doc_status, boolean vb_editing, boolean vb_updatable, boolean vb_change_4_edit, boolean vb_detail, string vs_enable_buttons, t_dw_mpl vdw_focus)
 end prototypes
 
 event ue_tabbutton(long al_handle);if  #CentralizedEventHandling = false then
@@ -1200,6 +1204,413 @@ IF li_rc = 1 THEN
 	End Choose
 	
 End if
+
+Return li_rc
+end function
+
+public function integer f_enable_panel_action_panel (string vs_type, string vs_doc_status, boolean vb_editing, boolean vb_updatable, boolean vb_change_4_edit, boolean vb_detail, string vs_enable_buttons, ref ribbonpanelitem r_rpi, t_dw_mpl vdw_focus);
+String									ls_classname
+Integer								li_rc, li_idx
+
+RibbonCategoryItem			l_rci
+RibbonPanelItem				l_rpi, l_rpi_action
+RibbonLargeButtonItem 		l_rlbi, l_rlbi_null
+RibbonMenu						l_rMenu		
+RibbonMenuItem				l_rmitem, l_rmitem_tmp
+//RibbonGroupItem				l_rgi
+RibbonSmallButtonItem 		l_rsbi, l_rsbi_null
+
+//-- panel: action --//
+//if this.getchilditembyindex( vrpi_action.itemhandle, 1, l_rgi)	= -1 then
+//	li_rc = this.getchilditemcount( l_rgi.itemhandle )
+//	this.getchilditembyindex( vrpi_action.itemhandle, 1, l_rlbi)
+//end if
+li_rc = this.getchilditemcount( r_rpi.itemhandle )
+FOR li_idx = li_rc to 1 step -1
+	this.getchilditembyindex( r_rpi.itemhandle, li_idx , l_rlbi)
+	if  l_rlbi.tag= 'e_refresh'or  l_rlbi.tag = 'e_filter' or   l_rlbi.tag = 'e_book' then
+		if vb_editing then
+			l_rlbi.enabled =  false
+		else
+			l_rlbi.enabled =  true
+		end if
+	else
+		if vs_type = 'document' then
+			if vs_doc_status = '' or isnull(vs_doc_status)  then
+				choose case l_rlbi.tag
+					case 'e_add'
+						l_rlbi.enabled =  vb_updatable and pos(vs_enable_buttons, 'e_add;') >0  and vdw_focus.f_get_ib_insert()
+					case 'e_modify','e_save','e_delete','e_post'
+						l_rlbi.enabled =  false
+					case 'e_insert'
+						l_rlbi.enabled =  vb_updatable and pos(vs_enable_buttons, 'e_add;') >0 and not vb_change_4_edit and vdw_focus.f_get_ib_insert()
+					case 'e_first','e_prior','e_prior','e_next','e_last','e_book','e_action_attach','e_user_trace','e_cancel'
+						l_rlbi.enabled =  false
+				end choose
+			elseif vs_doc_status = 'new' then
+				choose case l_rlbi.tag
+					case 'e_add'
+						l_rlbi.enabled =  vb_updatable and not vb_editing and pos(vs_enable_buttons, 'e_add;')>0 and vdw_focus.f_get_ib_insert()
+					case 'e_modify'
+						l_rlbi.enabled =  vb_updatable  and pos(vs_enable_buttons,  l_rlbi.tag+';')>0  and vdw_focus.f_get_ib_update()
+					case 'e_delete'
+						l_rlbi.enabled =  vb_updatable  and pos(vs_enable_buttons,  l_rlbi.tag+';')>0  and vdw_focus.f_get_ib_delete()
+					case 'e_save'
+						l_rlbi.enabled =  vb_updatable
+					case 'e_post'
+						l_rlbi.enabled =  vb_updatable and not vb_editing and pos(vs_enable_buttons,  l_rlbi.tag+';')>0
+					case 'e_insert' 
+						l_rlbi.enabled =  vb_updatable and not vb_editing and not vb_change_4_edit and pos(vs_enable_buttons, 'e_add;')>0 and vdw_focus.f_get_ib_insert()
+					case 'e_first','e_prior','e_prior','e_next','e_last','e_book','e_action_attach','e_user_trace','e_cancel'
+						l_rlbi.enabled =  true
+				end choose	
+			else
+				choose case l_rlbi.tag
+					case 'e_add','e_insert','e_unpost'
+						l_rlbi.enabled =  vb_updatable and pos(vs_enable_buttons,  l_rlbi.tag+';')>0 and vdw_focus.f_get_ib_insert()
+					case 'e_modify','e_save','e_delete'
+						l_rlbi.enabled =  false
+					case 'e_first','e_prior','e_prior','e_next','e_last','e_book','e_action_attach','e_user_trace','e_cancel'
+						l_rlbi.enabled =  true
+				end choose				
+			end if
+		elseif vs_type = 'detail' then
+		elseif vs_type = 'object' then
+			if vb_detail and vb_change_4_edit then
+				if isnull(vs_doc_status) or vs_doc_status = ''  then
+					choose case l_rlbi.tag
+						case 'e_add','e_insert'
+							if pos(vs_enable_buttons, l_rlbi.tag+';') = 0 then
+								this.DeleteLargeButton (l_rlbi.ItemHandle)
+								continue 
+							else
+								l_rlbi.enabled =  vb_updatable and not vb_editing and pos(vs_enable_buttons, l_rlbi.tag+';')>0 and vdw_focus.f_get_ib_insert()
+							end if
+						case 'e_modify' 
+							l_rlbi.enabled =  not vb_editing and vb_updatable and vdw_focus.f_get_ib_update()
+						case 'e_save'
+							l_rlbi.enabled =  vb_editing and vb_updatable
+						case 'e_delete'
+							l_rlbi.enabled =  vb_updatable and vb_editing and pos(vs_enable_buttons, l_rlbi.tag+';')>0 and vdw_focus.f_get_ib_delete()
+						case 'e_first','e_prior','e_prior','e_next','e_last','e_book','e_action_attach','e_user_trace','e_cancel'
+							l_rlbi.enabled =  true
+					end choose
+				else
+					choose case l_rlbi.tag
+						case 'e_add','e_insert'
+							if pos(vs_enable_buttons, l_rlbi.tag+';') = 0 then
+								this.DeleteLargeButton (l_rlbi.ItemHandle)
+								continue 
+							else
+								l_rlbi.enabled =  vb_updatable and not vb_editing and pos(vs_enable_buttons, l_rlbi.tag+';')>0 and vdw_focus.f_get_ib_insert()
+							end if
+						case 'e_modify'
+							l_rlbi.enabled =  vb_updatable and pos(vs_enable_buttons,  l_rlbi.tag+';')>0 and vdw_focus.f_get_ib_update()
+						case 'e_delete'
+							l_rlbi.enabled =  vb_updatable and pos(vs_enable_buttons,  l_rlbi.tag+';')>0 and vdw_focus.f_get_ib_delete()
+						case 'e_save'
+							l_rlbi.enabled =  vb_updatable
+						case 'e_first','e_prior','e_prior','e_next','e_last','e_book','e_action_attach','e_user_trace','e_cancel'
+							l_rlbi.enabled =  true
+					end choose	
+				end if						
+			elseif  vb_detail and not vb_change_4_edit then
+				if isnull(vs_doc_status) or vs_doc_status = ''  then
+					choose case l_rlbi.tag
+						case 'e_add','e_insert'
+							if pos(vs_enable_buttons, l_rlbi.tag+';') = 0 then
+								this.DeleteLargeButton (l_rlbi.ItemHandle)
+								continue 
+							else
+								l_rlbi.enabled =  vb_updatable and not vb_editing and pos(vs_enable_buttons, l_rlbi.tag+';')>0 and vdw_focus.f_get_ib_insert()
+							end if
+						case 'e_modify' 
+							if pos(vs_enable_buttons, l_rlbi.tag+';') = 0 then
+								this.DeleteLargeButton (l_rlbi.ItemHandle)
+								continue 
+							else
+								l_rlbi.enabled =  not vb_editing and vb_updatable  and pos(vs_enable_buttons, 'e_modify;')>0 and vdw_focus.f_get_ib_update()
+							end if
+						case 'e_save'
+							l_rlbi.enabled =  vb_editing and vb_updatable
+						case 'e_delete'
+							if pos(vs_enable_buttons, l_rlbi.tag+';') = 0 then
+								this.DeleteLargeButton (l_rlbi.ItemHandle)
+								continue 
+							else
+								l_rlbi.enabled =  pos(vs_enable_buttons, 'e_delete;')>0 and vb_updatable and vdw_focus.f_get_ib_delete()
+							end if
+						case 'e_first','e_prior','e_prior','e_next','e_last','e_book','e_action_attach','e_user_trace','e_cancel'
+							l_rlbi.enabled =  true
+					end choose
+				end if
+			else
+				if isnull(vs_doc_status)  then
+					choose case l_rlbi.tag
+						case 'e_add','e_insert', 'e_okclose'
+							if pos(vs_enable_buttons, l_rlbi.tag+';') = 0 then
+								this.DeleteLargeButton (l_rlbi.ItemHandle)
+								continue 
+							else
+								l_rlbi.enabled =  vb_updatable and not vb_editing and pos(vs_enable_buttons, l_rlbi.tag+';')>0 and vdw_focus.f_get_ib_insert()
+							end if
+						case 'e_modify','e_save','e_delete'
+							if pos(vs_enable_buttons, l_rlbi.tag+';') = 0 then
+								this.DeleteLargeButton (l_rlbi.ItemHandle)
+								continue 
+							else
+								l_rlbi.enabled =  false
+							end if
+						case 'e_first','e_prior','e_prior','e_next','e_last','e_book','e_action_attach','e_user_trace','e_cancel'
+							l_rlbi.enabled =  true
+					end choose
+				else
+					choose case l_rlbi.tag
+						case 'e_add','e_insert', 'e_okclose'
+							if pos(vs_enable_buttons, l_rlbi.tag+';') = 0 then
+								this.DeleteLargeButton (l_rlbi.ItemHandle)
+								continue 
+							else
+								l_rlbi.enabled =  vb_updatable and not vb_editing and pos(vs_enable_buttons, l_rlbi.tag+';')>0 and vdw_focus.f_get_ib_insert()
+							end if
+						case 'e_modify'
+							if pos(vs_enable_buttons, l_rlbi.tag+';') = 0 then
+								this.DeleteLargeButton (l_rlbi.ItemHandle)
+								continue 
+							else
+								l_rlbi.enabled =  vb_updatable  and pos(vs_enable_buttons,  l_rlbi.tag+';')>0  and vdw_focus.f_get_ib_update()
+							end if
+						case 'e_delete'
+							if pos(vs_enable_buttons, l_rlbi.tag+';') = 0 then
+								this.DeleteLargeButton (l_rlbi.ItemHandle)
+								continue 
+							else
+								l_rlbi.enabled =  vb_updatable  and pos(vs_enable_buttons,  l_rlbi.tag+';')>0  and vdw_focus.f_get_ib_delete()
+							end if							
+						case 'e_save'
+							l_rlbi.enabled =  vb_updatable 
+						case 'e_first','e_prior','e_prior','e_next','e_last','e_book','e_action_attach','e_user_trace','e_cancel'
+							l_rlbi.enabled =  true
+					end choose	
+				end if			
+			end if
+		elseif vs_type = 'report' then
+		end if
+	end if
+	this.setLargebutton( l_rlbi.itemhandle , l_rlbi)
+NEXT
+
+Return li_rc
+end function
+
+public function integer f_enable_panel_action_group (string vs_type, string vs_doc_status, boolean vb_editing, boolean vb_updatable, boolean vb_change_4_edit, boolean vb_detail, string vs_enable_buttons, ref ribbongroupitem r_rgi, t_dw_mpl vdw_focus);
+String									ls_classname
+Integer								li_rc, li_idx
+
+RibbonCategoryItem			l_rci
+RibbonPanelItem				l_rpi, l_rpi_action
+RibbonLargeButtonItem 		l_rlbi, l_rlbi_null
+RibbonMenu						l_rMenu		
+RibbonMenuItem				l_rmitem, l_rmitem_tmp
+//RibbonGroupItem				l_rgi
+RibbonSmallButtonItem 		l_rsbi, l_rsbi_null
+
+
+li_rc = this.getchilditemcount( r_rgi.itemhandle )
+FOR li_idx = 1 to li_rc
+	this.getchilditembyindex( r_rgi.itemhandle, li_idx , l_rsbi)
+	if pos('e_refresh;e_filter;e_book;e_action_attach;e_cancel;e_user_trace;', l_rsbi.tag +';') > 0 then
+		if vb_editing then
+			l_rsbi.enabled =  false
+		else
+			l_rsbi.enabled =  true
+		end if
+	else
+		if vs_type = 'document' then
+			if vs_doc_status = '' or isnull(vs_doc_status)  then
+				choose case l_rsbi.tag
+					case 'e_add'
+						l_rsbi.enabled =  vb_updatable and pos(vs_enable_buttons, 'e_add;') >0  and vdw_focus.f_get_ib_insert()
+					case 'e_modify','e_save','e_delete','e_post'
+						l_rsbi.enabled =  false
+					case 'e_insert'
+						l_rsbi.enabled =  vb_updatable and pos(vs_enable_buttons, 'e_add;') >0 and not vb_change_4_edit  and vdw_focus.f_get_ib_insert()
+					case 'e_first','e_prior','e_prior','e_next','e_last'
+						l_rsbi.enabled =  false
+				end choose
+			elseif vs_doc_status = 'new' then
+				choose case l_rsbi.tag
+					case 'e_add'
+						l_rsbi.enabled =  vb_updatable and not vb_editing and pos(vs_enable_buttons, 'e_add;')>0 and vdw_focus.f_get_ib_insert()
+					case 'e_modify'
+						l_rsbi.enabled =  vb_updatable  and pos(vs_enable_buttons,  l_rsbi.tag+';')>0 and vdw_focus.f_get_ib_update()
+					case 'e_delete'
+						l_rsbi.enabled =  vb_updatable  and pos(vs_enable_buttons,  l_rsbi.tag+';')>0 and vdw_focus.f_get_ib_delete()
+					case 'e_save'
+						l_rsbi.enabled =  vb_updatable
+					case 'e_post'
+						l_rsbi.enabled =  vb_updatable and not vb_editing and pos(vs_enable_buttons,  l_rsbi.tag+';')>0
+					case 'e_insert' 
+						l_rsbi.enabled =  vb_updatable and not vb_editing and not vb_change_4_edit and pos(vs_enable_buttons, 'e_add;')>0
+					case 'e_first','e_prior','e_prior','e_next','e_last'
+						l_rsbi.enabled =  true
+				end choose	
+			else
+				choose case l_rsbi.tag
+					case 'e_add','e_insert','e_unpost'
+						l_rsbi.enabled =  vb_updatable and pos(vs_enable_buttons,  l_rsbi.tag+';')>0  and vdw_focus.f_get_ib_insert()
+					case 'e_modify','e_save','e_delete'
+						l_rsbi.enabled =  false
+					case 'e_first','e_prior','e_prior','e_next','e_last'
+						l_rsbi.enabled =  true
+				end choose				
+			end if
+		elseif vs_type = 'detail' then
+		elseif vs_type = 'object' then
+			if vb_detail and vb_change_4_edit then
+				if isnull(vs_doc_status) or vs_doc_status = ''  then
+					choose case l_rsbi.tag
+						case 'e_add','e_insert'
+							l_rsbi.enabled =  vb_updatable and vb_editing and pos(vs_enable_buttons, 'e_add'+';')>0 and vdw_focus.f_get_ib_insert()
+						case 'e_modify' 
+							l_rsbi.enabled =  not vb_editing and vb_updatable and vdw_focus.f_get_ib_update()
+						case 'e_save'
+							l_rsbi.enabled =  vb_editing and vb_updatable
+						case 'e_delete'
+							l_rsbi.enabled =  vb_updatable and vb_editing and pos(vs_enable_buttons, l_rsbi.tag+';')>0 and vdw_focus.f_get_ib_delete()
+						case 'e_first','e_prior','e_prior','e_next','e_last'
+							l_rsbi.enabled =  true
+					end choose
+				else
+					choose case l_rsbi.tag
+						case 'e_add','e_insert'
+							l_rsbi.enabled =  vb_updatable  and vb_editing  and pos(vs_enable_buttons, 'e_add;')>0  and vdw_focus.f_get_ib_insert()
+						case 'e_modify'
+							l_rsbi.enabled =  vb_updatable and pos(vs_enable_buttons,  l_rsbi.tag+';')>0  and vdw_focus.f_get_ib_update()
+						case 'e_delete'
+							l_rsbi.enabled =  vb_updatable and pos(vs_enable_buttons,  l_rsbi.tag+';')>0  and vdw_focus.f_get_ib_delete()
+						case 'e_save'
+							l_rsbi.enabled =  vb_updatable
+						case 'e_first','e_prior','e_prior','e_next','e_last','e_book','e_action_attach','e_user_trace','e_cancel'
+							l_rsbi.enabled =  true
+					end choose	
+				end if						
+			elseif  vb_detail and not vb_change_4_edit then
+				if isnull(vs_doc_status) or vs_doc_status = ''  then
+					choose case l_rsbi.tag
+						case 'e_add','e_insert'
+							l_rsbi.enabled =  vb_updatable and pos(vs_enable_buttons, 'e_add;')>0 and vdw_focus.f_get_ib_insert()
+						case 'e_modify' 
+							l_rsbi.enabled =  not vb_editing and vb_updatable  and pos(vs_enable_buttons, 'e_modify;')>0 and vdw_focus.f_get_ib_update()
+						case 'e_save'
+							l_rsbi.enabled =  vb_editing and vb_updatable
+						case 'e_delete'
+							l_rsbi.enabled =  pos(vs_enable_buttons, 'e_delete;')>0 and vb_updatable and vdw_focus.f_get_ib_delete()
+						case 'e_first','e_prior','e_prior','e_next','e_last'
+							l_rsbi.enabled =  true
+					end choose
+				end if
+			else
+				if isnull(vs_doc_status)  then
+					choose case l_rsbi.tag
+						case 'e_add','e_insert'
+							if vb_change_4_edit then
+								l_rsbi.enabled =  vb_updatable  and pos(vs_enable_buttons, l_rsbi.tag+ ';')>0 and not vb_editing and vdw_focus.f_get_ib_insert()
+							else
+								l_rsbi.enabled =  vb_updatable  and pos(vs_enable_buttons, 'e_add;')>0 and not vb_editing and vdw_focus.f_get_ib_insert()
+							end if
+						case 'e_modify','e_save','e_delete'
+							l_rsbi.enabled =  false
+						case 'e_first','e_prior','e_prior','e_next','e_last'
+							l_rsbi.enabled =  true
+					end choose
+				else
+					choose case l_rsbi.tag
+						case 'e_add','e_insert'
+							if vb_change_4_edit then
+								l_rsbi.enabled =  vb_updatable  and pos(vs_enable_buttons, l_rsbi.tag+ ';')>0 and not vb_editing and vdw_focus.f_get_ib_insert()
+							else
+								l_rsbi.enabled =  vb_updatable  and pos(vs_enable_buttons, 'e_add;')>0  and not vb_editing and vdw_focus.f_get_ib_insert()
+							end if
+						case 'e_modify'
+							l_rsbi.enabled =  vb_updatable  and pos(vs_enable_buttons,  l_rsbi.tag+';')>0	and vdw_focus.f_get_ib_update()		
+						case 'e_delete'
+							l_rsbi.enabled =  vb_updatable  and pos(vs_enable_buttons,  l_rsbi.tag+';')>0	and vdw_focus.f_get_ib_delete()	
+						case 'e_save'
+							l_rsbi.enabled =  vb_updatable 
+						case 'e_first','e_prior','e_prior','e_next','e_last'
+							l_rsbi.enabled =  true
+					end choose	
+				end if			
+			end if
+		elseif vs_type = 'report' then
+		end if
+	end if
+	this.setsmallbutton( l_rsbi.itemhandle , l_rsbi)
+NEXT
+
+
+Return li_rc
+end function
+
+public function integer f_ctrl_enable_button (string vs_type, string vs_doc_status, boolean vb_editing, boolean vb_updatable, boolean vb_change_4_edit, string vs_enable_buttons, boolean vb_detail, t_dw_mpl vdw_focus);
+String									ls_classname
+Integer								li_rc, li_idx
+
+RibbonCategoryItem			l_rci
+RibbonPanelItem				l_rpi
+
+
+this.getcategorybyindex( 1, l_rci)
+li_rc =  this.getchilditemcount(l_rci.itemhandle )
+FOR li_idx = 1 to li_rc
+	this.getchilditembyindex( l_rci.itemhandle, li_idx, l_rpi)	
+	
+	if l_rpi.tag = 'Tabs' then
+		this.f_enable_panel_tab( l_rpi,  vs_type, vs_doc_status,  vb_editing, vb_updatable, vs_enable_buttons)
+	elseif l_rpi.tag = 'Actions' then
+		this.f_enable_panel_action( l_rpi,  vs_type, vs_doc_status,  vb_editing, vb_updatable,vb_change_4_edit, vb_detail,vs_enable_buttons, vdw_focus)
+	elseif l_rpi.tag = 'Navigation' then
+		this.f_enable_panel_action( l_rpi,  vs_type, vs_doc_status,  vb_editing, vb_updatable,vb_change_4_edit, vb_detail,vs_enable_buttons)
+	elseif l_rpi.tag = 'Copy' then
+		this.f_enable_panel_copy( l_rpi,  vs_type, vs_doc_status,  vb_editing, vs_enable_buttons,vb_change_4_edit)
+	elseif l_rpi.tag = 'Print' then	
+		this.f_enable_panel_print( l_rpi,  vs_type, vs_doc_status,  vb_editing, vs_enable_buttons,vb_change_4_edit)
+	elseif l_rpi.tag = 'Approve' then
+		this.f_enable_panel_approve( l_rpi,  vs_type, vs_doc_status,  vb_editing, vs_enable_buttons,vb_change_4_edit)
+	elseif l_rpi.tag = 'Update' then	
+		this.f_enable_panel_update( l_rpi,  vs_type, vs_doc_status,  vb_editing, vs_enable_buttons,vb_change_4_edit)
+	elseif l_rpi.tag = 'Objects' then	
+		this.f_enable_panel_objects( l_rpi,  vs_type, vs_doc_status,  vb_editing, vs_enable_buttons,vb_change_4_edit)
+	end if
+NEXT
+
+
+Return li_rc
+end function
+
+public function integer f_enable_panel_action (ribbonpanelitem vrpi_action, string vs_type, string vs_doc_status, boolean vb_editing, boolean vb_updatable, boolean vb_change_4_edit, boolean vb_detail, string vs_enable_buttons, t_dw_mpl vdw_focus);
+String									ls_classname
+Integer								li_rc, li_idx
+
+RibbonCategoryItem			l_rci
+RibbonPanelItem				l_rpi, l_rpi_action
+RibbonLargeButtonItem 		l_rlbi, l_rlbi_null
+RibbonMenu						l_rMenu		
+RibbonMenuItem				l_rmitem, l_rmitem_tmp
+RibbonGroupItem				l_rgi
+RibbonSmallButtonItem 		l_rsbi, l_rsbi_null
+
+//-- panel: action --//
+if this.getchilditembyindex( vrpi_action.itemhandle, 1, l_rgi)	= 1  then
+	this.f_enable_panel_action_group( vs_type, vs_doc_status, vb_editing, vb_updatable, vb_change_4_edit, vb_detail, vs_enable_buttons, l_rgi, vdw_focus)
+	this.getchilditembyindex( vrpi_action.itemhandle, 2, l_rgi)
+	this.f_enable_panel_action_group( vs_type, vs_doc_status, vb_editing, vb_updatable, vb_change_4_edit, vb_detail, vs_enable_buttons, l_rgi, vdw_focus)
+else
+	this.f_enable_panel_action_panel(  vs_type, vs_doc_status, vb_editing, vb_updatable, vb_change_4_edit, vb_detail, vs_enable_buttons, vrpi_action, vdw_focus)
+end if
+
+
 
 Return li_rc
 end function
