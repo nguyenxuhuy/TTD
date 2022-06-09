@@ -239,6 +239,8 @@ public function double f_copy_to_sal_invoice (string vs_f_objname, s_str_dwo_rel
 public function double f_copy_to_receipt (string vs_f_objname, s_str_dwo_related vstr_dwo_related[], t_ds_db vads_copied[], ref t_transaction rt_transaction, ref c_dwsetup_initial rdwsetup_initial)
 public function double f_copy_to_bank_voucher (string vs_f_objname, s_str_dwo_related vstr_dwo_related[], t_ds_db vads_copied[], ref t_transaction rt_transaction, ref c_dwsetup_initial rdwsetup_initial)
 public function string f_get_branch_code (double vdb_branch_id)
+public function double f_get_doc_id (t_dw_mpl vdw_handling, ref t_transaction rt_transaction)
+public function boolean f_check_id_exists_table (double vdb_id, string vs_table, ref t_transaction rt_transaction)
 end prototypes
 
 event e_send_2_approve(datawindow vdw_focus, s_object_display vc_obj_handling, s_w_multi vw_multi);
@@ -19813,6 +19815,47 @@ select code into :ls_name from legal_entity where id = :vdb_branch_id using sqlc
 
 
 return ls_name
+
+end function
+
+public function double f_get_doc_id (t_dw_mpl vdw_handling, ref t_transaction rt_transaction);
+double		ldb_doc_id, ldb_version_id
+string			ls_ref_table
+long			ll_cnt
+
+
+ls_ref_table = upper(vdw_handling.describe('datawindow.table.update'))
+if ls_ref_table = 'DOCUMENT' then
+	ldb_doc_id = vdw_handling.getitemnumber(vdw_handling.getrow(), 'ID')
+elseif  ls_ref_table = 'BOOKED_SLIP' or ls_ref_table = 'ORDERS'  then
+	ldb_doc_id = vdw_handling.getitemnumber(vdw_handling.getrow(), 'OBJECT_REF_ID')
+else
+	if vdw_handling.describe('doc_version.coltype') = '!' then
+		ldb_version_id = vdw_handling.getitemnumber(vdw_handling.getrow(), 'object_ref_id')
+	else
+		ldb_version_id = vdw_handling.getitemnumber(vdw_handling.getrow(), 'doc_version')
+	end if
+	select count(id) into :ll_cnt  from document where version_id = :ldb_version_id using rt_transaction;
+	if ll_cnt = 1 then
+		select id into :ldb_doc_id from document where version_id = :ldb_version_id using rt_transaction;
+	end if
+end if
+
+return ldb_doc_id
+end function
+
+public function boolean f_check_id_exists_table (double vdb_id, string vs_table, ref t_transaction rt_transaction);
+string		ls_sql
+
+ls_sql = 'Select  ID from ' +vs_table + ' where id = '+ string(vdb_id)
+
+execute immediate :ls_sql using rt_transaction;
+
+if rt_transaction.sqlnrows > 0 then
+	return true
+else
+	return false
+end if
 
 end function
 

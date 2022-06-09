@@ -291,7 +291,7 @@ istr_dwo[2].b_detail = true
 istr_dwo[2].b_cascade_del = true
 istr_dwo[2].s_dwo_master = 'd_document_prod_grid;'
 istr_dwo[2].s_dwo_details = 'd_lot_line_kd_grid;d_prod_material_grid;d_prod_resource_grid'
-istr_dwo[2].s_master_keycol = 'ID;'
+istr_dwo[2].s_master_keycol = 'version_id;'
 istr_dwo[2].s_detail_keycol = 'OBJECT_REF_ID;'
 istr_dwo[2].b_ref_table_yn  = false
 istr_dwo[2].s_ref_table_field = 'OBJECT_REF_TABLE;'
@@ -1356,19 +1356,19 @@ is_object_title = 'Lệnh sản xuất'
 istr_actionpane[1].s_description = is_object_title
 is_exrate_type = 'buy'
 
-istr_actionpane[1].s_button_name = 'b_preview;b_view_qt;b_view_qt_kni_eng;b_send_2_approve;b_approve;b_reject;b_complete;b_lose;b_excel;'
-istr_actionpane[1].s_button_name += 'b_doc_trace;b_cancel;b_self_copy;e_add;e_modify;e_delete;'
+istr_actionpane[1].s_button_name = 'b_preview;b_send_2_approve;b_approve;b_reject;b_complete;b_excel;b_copyt;u_so;b_view;'
+istr_actionpane[1].s_button_name += 'b_doc_trace;b_cancel;b_self_copy;e_add;e_modify;e_delete;b_view_prod_order;b_copyt_goods_receipt_misc;b_copyt_goods_delivery_misc;'
 istr_actionpane[1].s_button_has_sub ='b_related_object;b_update;b_approve;b_view;b_copyt;b_copyf;'
 istr_actionpane[1].sa_sub_button[1]='u_so;'
 istr_actionpane[1].sa_subbutton_name[1]='Đơn bán hàng(SO);'
-istr_actionpane[1].sa_sub_button[2]='b_complete;b_lose;b_excel;'
-istr_actionpane[1].sa_subbutton_name[2]='Thành công;Không thành;Excel;'
+istr_actionpane[1].sa_sub_button[2]='b_complete;b_excel;'
+istr_actionpane[1].sa_subbutton_name[2]='Hoàn thành;Excel;'
 istr_actionpane[1].sa_sub_button[3]=''	//'b_send_2_approve;b_approve;b_reject;'
 istr_actionpane[1].sa_subbutton_name[3]=''	//'Gửi duyệt;Duyệt;Trả duyệt'
-istr_actionpane[1].sa_sub_button[4]='b_view_qt;b_view_qt_kni_eng;'
-istr_actionpane[1].sa_subbutton_name[4]='Chào giá;Chào giá ENG;'
-istr_actionpane[1].sa_sub_button[5]=''
-istr_actionpane[1].sa_subbutton_name[5]=''
+istr_actionpane[1].sa_sub_button[4]='b_view_sample;b_view_prod_order;'
+istr_actionpane[1].sa_subbutton_name[4]='Phiếu làm Mẫu;Lệnh SX;'
+istr_actionpane[1].sa_sub_button[5]='b_copyt_goods_delivery_misc;b_copyt_goods_receipt_misc';
+istr_actionpane[1].sa_subbutton_name[5]='Tạo xuất kho NVL;Tạo nhập kho TP;'
 istr_actionpane[1].sa_sub_button[6]=''
 istr_actionpane[1].sa_subbutton_name[6]=''
 end event
@@ -1632,7 +1632,7 @@ end if
 return 0
 end event
 
-event e_dw_getfocus;call super::e_dw_getfocus;double				ldb_item_id, ldb_object_ref_id, ldb_size_id, ldb_bom_id, ldb_route_id
+event e_dw_getfocus;call super::e_dw_getfocus;double				ldb_item_id, ldb_object_ref_id, ldb_size_id, ldb_bom_id, ldb_route_id, ldb_doc_version
 t_dw_mpl			ldw_master
 
 if rdw_handling.dataobject  = 'd_lot_line_kd_grid' then
@@ -1640,6 +1640,7 @@ if rdw_handling.dataobject  = 'd_lot_line_kd_grid' then
 		ldw_master = rdw_handling.f_get_idw_master()
 		if ldw_master.getrow( ) > 0 then
 			ldb_object_ref_id = ldw_master.getitemnumber( ldw_master.getrow(), 'id')
+			ldb_doc_version = ldw_master.getitemnumber( ldw_master.getrow(), 'object_ref_id')
 			ldb_item_id = ldw_master.getitemnumber( ldw_master.getrow(), 'object_id')
 			if isnull(ldb_item_id) or ldb_item_id = 0 then
 				gf_messagebox('m.c_prod_orders.e_dw_getfocus.01','Thông báo','Chưa có thành phẩm SX !','exclamation','ok',1)
@@ -1653,9 +1654,9 @@ if rdw_handling.dataobject  = 'd_lot_line_kd_grid' then
 				return 0
 			end if
 			//-- insert size --//
-			INSERT into lot_line(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,
+			INSERT into lot_line(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,DOC_VERSION,
 										lot_no,serial_no,line_no)
-			SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'PRODUCTION_LINE',
+			SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'PRODUCTION_LINE',:ldb_doc_version,
 						'Đôi', vv.code,vv.line_no
 					from valueset_value vv where object_ref_id = :ldb_size_id using it_transaction;
 			commit using it_transaction;
@@ -1668,6 +1669,7 @@ elseif rdw_handling.dataobject  = 'd_prod_material_grid' then
 		ldw_master = rdw_handling.f_get_idw_master()
 		if ldw_master.getrow( ) > 0 then
 			ldb_object_ref_id = ldw_master.getitemnumber( ldw_master.getrow(), 'id')
+			ldb_doc_version = ldw_master.getitemnumber( ldw_master.getrow(), 'object_ref_id')
 			ldb_item_id = ldw_master.getitemnumber( ldw_master.getrow(), 'object_id')
 			if isnull(ldb_item_id) or ldb_item_id = 0 then
 				gf_messagebox('m.c_prod_orders.e_dw_getfocus.01','Thông báo','Chưa có thành phẩm SX !','exclamation','ok',1)
@@ -1681,9 +1683,9 @@ elseif rdw_handling.dataobject  = 'd_prod_material_grid' then
 				return 0
 			end if
 			//-- insert size --//
-			INSERT into PRODUCTION_DETAIL(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,
+			INSERT into PRODUCTION_DETAIL(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,doc_version,
 										LINE_NO,BOM_REF_ID,BOM_REF_TABLE, INPUT_OUTPUT)
-			SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'PRODUCTION_LINE',
+			SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'PRODUCTION_LINE',:ldb_doc_version,
 						bio.line_no,bio.item_id,'OBJECT', 'I'
 					from BOM_INOUT_PUT bio join bom_line bl on bl.id = bio.object_ref_id
                                                      join item i on i.id = bl.object_ref_id
@@ -1699,6 +1701,7 @@ elseif rdw_handling.dataobject  = 'd_prod_resource_grid' then
 		ldw_master = rdw_handling.f_get_idw_master()
 		if ldw_master.getrow( ) > 0 then
 			ldb_object_ref_id = ldw_master.getitemnumber( ldw_master.getrow(), 'id')
+			ldb_doc_version = ldw_master.getitemnumber( ldw_master.getrow(), 'object_ref_id')
 			ldb_item_id = ldw_master.getitemnumber( ldw_master.getrow(), 'object_id')
 			if isnull(ldb_item_id) or ldb_item_id = 0 then
 				gf_messagebox('m.c_prod_orders.e_dw_getfocus.01','Thông báo','Chưa có thành phẩm SX !','exclamation','ok',1)
@@ -1717,9 +1720,9 @@ elseif rdw_handling.dataobject  = 'd_prod_resource_grid' then
                                                      join object o on o.id = i.object_ref_id  and o.object_ref_table = 'BOM'
                                                      where o.id = :ldb_bom_id using it_transaction;			
 			//-- insert resource line --//
-			INSERT into PRODUCTION_RESOURCE(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,
+			INSERT into PRODUCTION_RESOURCE(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,doc_version,
 										LINE_NO,ITEM_TYPE,OBJECT_ID, NOTE)
-			SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'PRODUCTION_LINE',
+			SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'PRODUCTION_LINE',:ldb_doc_version,
 						bl.line_no, bl.LINE_TYPE, bl.route_id, coalesce(vv.name, o_subRoute.name)
 									from bom_line bl 
                                                      join bom_hdr bh on bh.id = bl.object_ref_id
@@ -1750,6 +1753,41 @@ if rpo_dw.dataobject = 'd_lot_line_kd_grid' then
 elseif rpo_dw.dataobject = 'd_prod_material_grid' or  rpo_dw.dataobject = 'd_prod_resource_grid'  then		
 	if lbo_ins.f_update_line_no( rpo_dw ) = -1 then return -1
 end if
+return ancestorreturnvalue
+end event
+
+event e_dw_e_predelete;call super::e_dw_e_predelete;string					ls_status
+double				ldb_version_id
+t_dw_mpl			ldw_main
+
+ldw_main = iw_display.f_get_dwmain( )
+
+ls_status = ldw_main.getitemstring(vl_currentrow, 'status')
+if ls_status = 'planned' then
+	ldb_version_id = ldw_main.getitemnumber(vl_currentrow, 'version_id')
+	if rpo_dw.dataobject = ldw_main.dataobject then
+	//-- delele BOOKED_SLIP --//
+		delete BOOKED_SLIP where id = :ldb_version_id using it_transaction;
+	//-- delele production_line --//
+		delete production_line where object_ref_id = :ldb_version_id using it_transaction;
+	//-- delele lot_line --//
+		delete lot_line where doc_version = :ldb_version_id using it_transaction;
+	//-- delele production_detail --//
+		delete production_detail where doc_version = :ldb_version_id using it_transaction;
+	//-- delele production_resource --//		
+		delete production_resource where doc_version = :ldb_version_id using it_transaction;
+	elseif rpo_dw.dataobject = 'd_prod_line_kd_grid' then
+	//-- delele lot_line --//
+		delete lot_line where doc_version = :ldb_version_id using it_transaction;
+	//-- delele production_detail --//
+		delete production_detail where doc_version = :ldb_version_id using it_transaction;
+	//-- delele production_resource --//		
+		delete production_resource where doc_version = :ldb_version_id using it_transaction;
+	end if
+else
+	gf_messagebox('m.c_prod_orders.e_dw_e_predelete.01','Thông báo','Chỉ xoá được lệnh có trạng thái là "Kế hoạch" !','information','ok',1)
+end if
+
 return ancestorreturnvalue
 end event
 

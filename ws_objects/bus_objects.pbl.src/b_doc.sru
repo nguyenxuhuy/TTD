@@ -5861,8 +5861,8 @@ end if
 return 0
 end function
 
-public function integer f_update_matching (datawindow vdw_modifing, long vl_row_editing, dwbuffer v_dwbuffer);b_obj_instantiate	lc_obj
-s_str_dwo_related	lstr_related[]
+public function integer f_update_matching (datawindow vdw_modifing, long vl_row_editing, dwbuffer v_dwbuffer);b_obj_instantiate		lc_obj
+s_str_dwo_related		lstr_related[]
 t_transaction			lt_transaction
 c_dwservice				lc_dwsr
 c_datetime				lc_dt
@@ -5883,14 +5883,20 @@ lds_matching.dataobject = 'ds_matching'
 lds_matching.f_settransobject( lt_transaction)
 ldb_match_id = vdw_modifing.getitemnumber(vl_row_editing,'id', v_dwbuffer,false)
 //ldb_doc_id = this.f_get_doc_id( ldb_match_id, vdw_modifing.describe('datawindow.table.update') )
-ldb_doc_id = lt_transaction.f_get_doc_id(ldb_match_id , vdw_modifing.describe('datawindow.table.update'))
+/////////////////////////////////////////////////////////////////////////
+ldb_doc_id = lc_obj.f_get_doc_id( vdw_modifing, lt_transaction)
+//////////////////////////////////////////////////////////////////////////
+
 if ids_matching.rowcount( ) >0 then
 	for ll_row=1 to ids_matching.rowcount( )
 		ls_f_table=ids_matching.getitemstring(ll_row,'f_ref_table')
 		ldb_f_ref_id=ids_matching.getitemnumber(ll_row,'f_ref_id')
 		if isnull(ldb_f_ref_id) then ldb_f_ref_id=0
 		//kiem tra f_ref_id co  ton tai hay khong
-		lb_check_f_ref_id=lt_transaction.f_check_id_exists_table(ldb_f_ref_id,ls_f_table)
+		////////////////////////////////////////////////////////////////
+		lb_check_f_ref_id=lc_obj.f_check_id_exists_table(ldb_f_ref_id,ls_f_table,lt_transaction )
+		//////////////////////////////////////////////////////////////
+		
 		if lb_check_f_ref_id=false then
 			gf_messagebox('m.b_doc.f_update_matching.01','Thông báo','Dữ liệu đã được thay đổi bởi user khác,vui lòng kết lại phiếu','stop','ok',1)	
 			return -1

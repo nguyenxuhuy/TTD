@@ -827,8 +827,8 @@ string 				ls_win_parm, ls_id , ls_parm[], ls_title
 window	 			lw_refer
 
 
-ldb_menu_id = this.f_get_menu_id(vpo_win_param.classname() )
-
+//ldb_menu_id = this.f_get_menu_id(vpo_win_param.classname() )
+ldb_menu_id = 0
 ls_title = mid(vpo_win_param.is_object_title,1, pos(vpo_win_param.is_object_title, ':') -1 )
 //if 
 ls_win_parm = vpo_win_param.classname()+';'+ string(ldb_menu_id) +';' + ls_title +';'+ 'DOC'  // ls_parm[1]+';'+ ls_parm[3]+';'+ls_parm[4]+';DOC'
@@ -1380,14 +1380,18 @@ choose case itemtag
 		if isvalid(lw_handle) then
 			choose case itemtag
 				case 'e_modify','e_save','e_post','e_unpost'
-					this.f_change_action_button( itemhandle, index, 0)
+					li_rtn = lw_handle.triggerevent( itemtag)
+					if li_rtn <> -1 then
+						this.f_change_action_button( itemhandle, index, 0)
+					end if
 				case 'e_add','e_insert'
 					ldw_main = lw_handle.dynamic f_get_dwmain()
 					if not ldw_main.f_get_ib_editing( ) then		
 						this.f_change_action_button( itemhandle, index, 0)
 					end if		
+					li_rtn = lw_handle.triggerevent( itemtag)
 			end choose				
-			li_rtn = lw_handle.triggerevent( itemtag)
+			
 		end if
 	case 'e_self_copy'
 		lw_handle = parent.getactivesheet( )
@@ -1415,10 +1419,17 @@ choose case itemtag
 			lod_handle.triggerevent(itemtag )
 		end if				
 	case else //-- e_change_object_appeon --//
-		lw_handle = parent.getactivesheet( )
-		if isvalid(lw_handle) then
-			lw_handle.triggerevent(itemtag )
-		end if				
+		if left(itemtag, 7) = 'b_view_' then
+			lw_handle = parent.getactivesheet( )
+			if isvalid(lw_handle) then
+				lw_handle.dynamic event e_view(itemtag)
+			end if				
+		else
+			lw_handle = parent.getactivesheet( )
+			if isvalid(lw_handle) then
+				lw_handle.triggerevent(itemtag )
+			end if				
+		end if
 end choose
 end event
 

@@ -326,6 +326,7 @@ FOR li_idx = 1 to li_rc
 	if  l_rsbi.tag= 'b_self_copy' then
 		l_rsbi.enabled =  lb_enable and not isnull(vs_doc_status ) and  not vb_editing
 	else
+		l_rsbi.enabled =  lb_enable
 		l_rsbi.getmenu( l_rMenu)
 		li_itemCnt = l_rMenu.GetItemCount ()
 		FOR li_idx1 = 1 to li_itemCnt

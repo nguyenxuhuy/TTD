@@ -32,7 +32,6 @@ SUBROUTINE f_db_upd_item_balance_adj(date v_f_date, char v_sob) RPCFUNC ALIAS FO
 
 
 end prototypes
-
 on t_transaction.create
 call super::create
 TriggerEvent( this, "constructor" )

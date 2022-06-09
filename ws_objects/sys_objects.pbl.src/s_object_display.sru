@@ -662,7 +662,7 @@ event type integer e_window_e_postdelete();return 0
 end event
 
 event type integer e_window_e_postsave(integer vi_save_return);
-return 0
+return vi_save_return
 end event
 
 event type integer e_window_e_postmodify();
@@ -6222,6 +6222,9 @@ RibbonMenuItem				l_rmitem, l_rmitem_tmp
 RibbonGroupItem				l_rgi
 RibbonSmallButtonItem 		l_rsbi, l_rsbi_null
 
+
+//rbb_handle.importfromjsonfile( "JsonFile1.json")
+
 rbb_handle.getcategorybyindex( 1, l_rci)
 li_cnt  = lc_string.f_stringtoarray(istr_actionpane[1].s_button_has_sub , ';', lsa_sub[])
 
@@ -6256,7 +6259,7 @@ FOR li_idx = 1 to li_cnt
 				end if
 			next
 			l_rsbi.setmenu(l_rMenu )
-			rbb_handle.SetSmallButton (l_rsbi.itemhandle, l_rsbi )
+			rbb_handle.SetSmallButton (l_rsbi.itemhandle, l_rsbi )			
 		end if
 	elseif lsa_sub[li_idx] = 'b_view' then
 		rbb_handle.getchilditembyindex( l_rci.itemhandle, 4, l_rpi)			
