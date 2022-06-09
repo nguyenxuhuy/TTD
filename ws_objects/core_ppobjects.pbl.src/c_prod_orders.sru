@@ -486,9 +486,9 @@ iastr_dwo_tabpage[2].str_dwo[1].s_master_keycol = 'ID;'
 iastr_dwo_tabpage[2].str_dwo[1].s_detail_keycol = 'OBJECT_REF_ID;'
 iastr_dwo_tabpage[2].str_dwo[1].b_ref_table_yn  = false
 iastr_dwo_tabpage[2].str_dwo[1].s_ref_table_field = 'OBJECT_REF_TABLE;'
-iastr_dwo_tabpage[2].str_dwo[1].b_insert = true
+iastr_dwo_tabpage[2].str_dwo[1].b_insert = false
 iastr_dwo_tabpage[2].str_dwo[1].b_update = true
-iastr_dwo_tabpage[2].str_dwo[1].b_delete = true
+iastr_dwo_tabpage[2].str_dwo[1].b_delete = false
 iastr_dwo_tabpage[2].str_dwo[1].b_query = true
 iastr_dwo_tabpage[2].str_dwo[1].b_print = true
 iastr_dwo_tabpage[2].str_dwo[1].b_excel = true
@@ -584,7 +584,7 @@ istr_dwo_related[1].s_main_obj_column = 'id'			// cột quan hệ của main
 istr_dwo_related[1].s_related_obj_dwo = 'dv_prod_order_form'	// datawindow quan hệ đến
 istr_dwo_related[1].s_related_obj_column = 'id'			// cột quan hệ đến
 istr_dwo_related[1].s_relatedtext_column = 'code'					
-istr_dwo_related[1].s_text = 'In phiếu tác nghiệp'
+istr_dwo_related[1].s_text = 'In lệnh sản xuất'
 
 istr_dwo_related[2].s_related_obj_name = 'u_po'					// đối tượng copy đến
 istr_dwo_related[2].s_main_obj_dwo = 'd_document_prod_grid'		//datawindow quan hệ main
@@ -741,6 +741,13 @@ istr_dwo_related[6].s_match_f_column[1] = 'qty'
 istr_dwo_related[6].s_match_t_column[1] = 'PLAN_QTY'
 istr_dwo_related[6].s_match_column[1] = 'qty'
 
+istr_dwo_related[7].s_related_obj_name = 'b_view'				// đối tượng copy đến
+istr_dwo_related[7].s_main_obj_dwo = 'd_document_prod_grid'		//datawindow quan hệ main
+istr_dwo_related[7].s_main_obj_column = 'id'			// cột quan hệ của main
+istr_dwo_related[7].s_related_obj_dwo = 'dv_prod_sample_form'	// datawindow quan hệ đến
+istr_dwo_related[7].s_related_obj_column = 'id'			// cột quan hệ đến
+istr_dwo_related[7].s_relatedtext_column = 'code'					
+istr_dwo_related[7].s_text = 'In phiếu làm mẫu'
 
 end subroutine
 
@@ -1365,7 +1372,7 @@ istr_actionpane[1].sa_sub_button[2]='b_complete;b_excel;'
 istr_actionpane[1].sa_subbutton_name[2]='Hoàn thành;Excel;'
 istr_actionpane[1].sa_sub_button[3]=''	//'b_send_2_approve;b_approve;b_reject;'
 istr_actionpane[1].sa_subbutton_name[3]=''	//'Gửi duyệt;Duyệt;Trả duyệt'
-istr_actionpane[1].sa_sub_button[4]='b_view_sample;b_view_prod_order;'
+istr_actionpane[1].sa_sub_button[4]='b_view_prod_sample;b_view_prod_order;'
 istr_actionpane[1].sa_subbutton_name[4]='Phiếu làm Mẫu;Lệnh SX;'
 istr_actionpane[1].sa_sub_button[5]='b_copyt_goods_delivery_misc;b_copyt_goods_receipt_misc';
 istr_actionpane[1].sa_subbutton_name[5]='Tạo xuất kho NVL;Tạo nhập kho TP;'
@@ -1423,7 +1430,7 @@ end event
 
 event e_window_e_preopen;call super::e_window_e_preopen;//--resize parm --//
 
-iw_display.f_set_ii_upperpart_height(1/2 )
+iw_display.f_set_ii_upperpart_height(1/3 )
 
 iw_display.f_set_ii_leftpart_width( 1/5)
 

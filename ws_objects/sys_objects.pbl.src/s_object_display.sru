@@ -6248,6 +6248,7 @@ FOR li_idx = 1 to li_cnt
 			for li_idx1 = 1 to li_bttn_cnt
 				if li_idx1 = 1 then
 					l_rMenu.getitem( 1 , l_rmitem)
+					l_rmitem_tmp = l_rmitem
 					l_rmitem.tag = lsa_bttn[li_idx1]
 					l_rmitem.text = lsa_bttn_nm[li_idx1]
 					l_rMenu.setitem( 1, l_rmitem)
@@ -6255,7 +6256,7 @@ FOR li_idx = 1 to li_cnt
 					l_rmitem_tmp.tag = lsa_bttn[li_idx1]
 					l_rmitem_tmp.text = lsa_bttn_nm[li_idx1]
 					l_rmitem_tmp.picturename = l_rmitem.picturename
-					l_rMenu.insertitem( li_idx1, l_rmitem_tmp)
+					l_rMenu.insertitemLast( l_rmitem_tmp)
 				end if
 			next
 			l_rsbi.setmenu(l_rMenu )
@@ -6274,6 +6275,7 @@ FOR li_idx = 1 to li_cnt
 			for li_idx1 = 1 to li_bttn_cnt
 				if li_idx1 = 1 then
 					l_rMenu.getitem( 1 , l_rmitem)
+					l_rmitem_tmp = l_rmitem
 					l_rmitem.tag = lsa_bttn[li_idx1]
 					l_rmitem.text = lsa_bttn_nm[li_idx1]
 					l_rMenu.setitem( 1 ,l_rmitem)
@@ -6281,7 +6283,7 @@ FOR li_idx = 1 to li_cnt
 					l_rmitem_tmp.tag = lsa_bttn[li_idx1]
 					l_rmitem_tmp.text = lsa_bttn_nm[li_idx1]
 					l_rmitem_tmp.picturename = l_rmitem.picturename
-					l_rMenu.insertitem(li_idx1, l_rmitem_tmp)
+					l_rMenu.InsertItemLast(l_rmitem_tmp)
 				end if
 			next
 			l_rsbi.setmenu(l_rMenu )
