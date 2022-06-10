@@ -1390,6 +1390,8 @@ choose case itemtag
 						this.f_change_action_button( itemhandle, index, 0)
 					end if		
 					li_rtn = lw_handle.triggerevent( itemtag)
+				case else
+					li_rtn = lw_handle.triggerevent( itemtag)
 			end choose				
 			
 		end if

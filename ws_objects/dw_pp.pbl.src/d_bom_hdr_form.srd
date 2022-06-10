@@ -11,7 +11,7 @@ table(column=(type=number update=yes updatewhereclause=yes key=yes name=id dbnam
  column=(type=char(500) updatewhereclause=yes name=object_name dbname="object.name" dbalias="obj_bom.name" )
  column=(type=char(5) update=yes updatewhereclause=yes name=type dbname="item.type" dbalias=".type" )
  column=(type=char(5) update=yes updatewhereclause=yes name=item_type dbname="item.item_type" dbalias=".item_type" values="Công thức	BOM/Sản Phẩm	ITEM/" )
- column=(type=number update=yes updatewhereclause=yes name=spec_id dbname="item.spec_id" dbalias=".spec_id" )
+ column=(type=number update=yes updatewhereclause=yes name=size_id dbname="item.size_id" dbalias=".size_id" )
  column=(type=number update=yes updatewhereclause=yes name=stock_uom dbname="item.stock_uom" dbalias=".stock_uom" )
  column=(type=number update=yes updatewhereclause=yes name=default_wh dbname="item.default_wh" dbalias=".default_wh" )
  column=(type=number update=yes updatewhereclause=yes name=round_id dbname="item.round_id" dbalias=".round_id" )
@@ -40,12 +40,12 @@ table(column=(type=number update=yes updatewhereclause=yes key=yes name=id dbnam
               obj_bom.name,
               ITEM.type    ,      
               ITEM.item_type    ,      
-              ITEM.spec_id, 
+              ITEM.size_id, 
               ITEM.stock_uom,  
               ITEM.default_wh,    
               ITEM.round_id,     
               ITEM.QUANTITY_YN,   
-              ITEM.VALUE_YN,  
+              ITEM.VALUE_YN, 
               ITEM.ROLLUP_COST_PRICE,       
               ITEM.overhead_cost,   
               ITEM.BOM_CALCULATED_YN,    
