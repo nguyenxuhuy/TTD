@@ -6246,12 +6246,11 @@ FOR li_idx = 1 to li_cnt
 		else
 			l_rsbi.getmenu( l_rMenu)
 			for li_idx1 = 1 to li_bttn_cnt
-				if li_idx1 = 1 then
-					l_rMenu.getitem( 1 , l_rmitem)
+				if l_rMenu.getitem( li_idx1 , l_rmitem) = 1 then
 					l_rmitem_tmp = l_rmitem
 					l_rmitem.tag = lsa_bttn[li_idx1]
 					l_rmitem.text = lsa_bttn_nm[li_idx1]
-					l_rMenu.setitem( 1, l_rmitem)
+					l_rMenu.setitem( li_idx1, l_rmitem)
 				else
 					l_rmitem_tmp.tag = lsa_bttn[li_idx1]
 					l_rmitem_tmp.text = lsa_bttn_nm[li_idx1]
@@ -6273,12 +6272,11 @@ FOR li_idx = 1 to li_cnt
 			rbb_handle.getchilditembyindex( l_rpi.itemhandle, 1, l_rsbi)
 			l_rsbi.getmenu( l_rMenu)
 			for li_idx1 = 1 to li_bttn_cnt
-				if li_idx1 = 1 then
-					l_rMenu.getitem( 1 , l_rmitem)
+				if l_rMenu.getitem( li_idx1 , l_rmitem) = 1 then					
 					l_rmitem_tmp = l_rmitem
 					l_rmitem.tag = lsa_bttn[li_idx1]
 					l_rmitem.text = lsa_bttn_nm[li_idx1]
-					l_rMenu.setitem( 1 ,l_rmitem)
+					l_rMenu.setitem( li_idx1 ,l_rmitem)
 				else
 					l_rmitem_tmp.tag = lsa_bttn[li_idx1]
 					l_rmitem_tmp.text = lsa_bttn_nm[li_idx1]

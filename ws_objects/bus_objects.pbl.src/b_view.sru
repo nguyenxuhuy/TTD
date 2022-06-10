@@ -119,8 +119,26 @@ event constructor;call super::constructor;ib_changed_dwo_4edit = false
 is_display_model = '1d'
 ib_display_text = true
 is_object_title = 'In Phiếu'
-istr_actionpane[1].s_button_name = 'b_modify;b_saveclose;b_saveas;b_refresh;b_print;b_sendmail;b_firstpage;b_previouspage;b_nextpage;b_lastpage;'
+//istr_actionpane[1].s_button_name = 'b_modify;b_saveclose;b_saveas;b_refresh;b_print;b_sendmail;b_firstpage;b_previouspage;b_nextpage;b_lastpage;'
+//istr_actionpane[1].s_description = is_object_title
+
 istr_actionpane[1].s_description = is_object_title
+
+istr_actionpane[1].s_button_name =  'e_add;e_modify;e_delete;'
+//istr_actionpane[1].s_button_name += 'b_doc_trace;b_cancel;b_self_copy;e_add;e_modify;e_delete;'
+//istr_actionpane[1].s_button_has_sub ='b_related_object;b_update;b_approve;b_view;b_copyt;b_copyf;'
+//istr_actionpane[1].sa_sub_button[1]='u_so;'
+//istr_actionpane[1].sa_subbutton_name[1]='Đơn bán hàng(SO);'
+//istr_actionpane[1].sa_sub_button[2]='b_complete;b_lose;b_excel;'
+//istr_actionpane[1].sa_subbutton_name[2]='Thành công;Không thành;Excel;'
+//istr_actionpane[1].sa_sub_button[3]=''	//'b_send_2_approve;b_approve;b_reject;'
+//istr_actionpane[1].sa_subbutton_name[3]=''	//'Gửi duyệt;Duyệt;Trả duyệt'
+//istr_actionpane[1].sa_sub_button[4]='b_view_qt;b_view_qt_kni_eng;'
+//istr_actionpane[1].sa_subbutton_name[4]='Chào giá;Chào giá ENG;'
+//istr_actionpane[1].sa_sub_button[5]=''
+//istr_actionpane[1].sa_subbutton_name[5]=''
+//istr_actionpane[1].sa_sub_button[6]=''
+//istr_actionpane[1].sa_subbutton_name[6]=''
 
 istr_report.s_pic_ref_table = 'legal_entity'
 istr_report.s_pic_ref_field = 'id'

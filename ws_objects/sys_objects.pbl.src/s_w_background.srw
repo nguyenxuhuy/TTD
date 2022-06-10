@@ -130,6 +130,8 @@ event activate;call super::activate;//this.windowstate = maximized!
 
 //this.event e_query( )
 //this.f_resize('' )
+
+//t_w_mdi.f_create_ribbonbar()
 end event
 
 event resize;call super::resize;string		ls_display_model
