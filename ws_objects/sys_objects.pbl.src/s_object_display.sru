@@ -6242,7 +6242,9 @@ FOR li_idx = 1 to li_cnt
 		li_bttn_cnt  = lc_string.f_stringtoarray(istr_actionpane[1].sa_subbutton_name[li_idx] , ';', lsa_bttn_nm[])
 		if li_bttn_cnt = 0 then
 			//-- xóa copy --//			
-			rbb_handle.deleteSmallbutton(l_rsbi.itemhandle )
+			l_rsbi.enabled = false
+			rbb_handle.SetSmallButton (l_rsbi.itemhandle, l_rsbi )
+//			rbb_handle.deleteSmallbutton(l_rsbi.itemhandle )
 		else
 			l_rsbi.getmenu( l_rMenu)
 			for li_idx1 = 1 to li_bttn_cnt
@@ -6266,8 +6268,9 @@ FOR li_idx = 1 to li_cnt
 		li_bttn_cnt  = lc_string.f_stringtoarray(istr_actionpane[1].sa_sub_button[li_idx] , ';', lsa_bttn[])
 		li_bttn_cnt  = lc_string.f_stringtoarray(istr_actionpane[1].sa_subbutton_name[li_idx] , ';', lsa_bttn_nm[])
 		if li_bttn_cnt = 0 then
+//			rbb_handle.getchilditembyindex( l_rpi.itemhandle, 1, l_rsbi)
 			//-- xóa copy --//			
-			rbb_handle.deletepanel(l_rpi.itemhandle )
+//			rbb_handle.deletepanel(l_rpi.itemhandle )
 		else
 			rbb_handle.getchilditembyindex( l_rpi.itemhandle, 1, l_rsbi)
 			l_rsbi.getmenu( l_rMenu)
