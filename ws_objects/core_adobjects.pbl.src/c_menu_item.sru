@@ -203,20 +203,27 @@ end if
 end function
 
 public function string f_get_menu_label_ex (string vs_object, ref t_transaction rt_transaction);string				ls_text
-
+int					li_cnt
 if vs_object <> ''  then
-	select label.text into :ls_text 
+	select count(label.text) into :li_cnt
 	from menu join label on label.code = menu.code
 	where menu.code = :vs_object  
 	and menu.company_id = :gi_user_comp_id 
 	and menu.branch_id = :gdb_branch 
 	and label.lang = :gs_user_lang
 	using rt_transaction;
-	
-	return ls_text
-else
-	return ''
+	if li_cnt = 1 then
+		select label.text into :ls_text 
+		from menu join label on label.code = menu.code
+		where menu.code = :vs_object  
+		and menu.company_id = :gi_user_comp_id 
+		and menu.branch_id = :gdb_branch 
+		and label.lang = :gs_user_lang
+		using rt_transaction;	
+		return ls_text
+	end if
 end if
+return ''
 end function
 
 public function boolean f_is_submodule_ex (double vdb_id, ref t_transaction rt_transaction);int			li_cnt

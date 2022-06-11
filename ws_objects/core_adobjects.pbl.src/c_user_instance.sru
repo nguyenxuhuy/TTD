@@ -37,6 +37,7 @@ string		DEFAULT_SOB
 double	idb_role_id[]
 
 end variables
+
 forward prototypes
 public function integer f_init (double vdb_id)
 public function integer f_init (string vs_code)
@@ -324,15 +325,21 @@ return ldb_module
 end function
 
 public function string f_get_name_of_userid_ex (double vdb_userid, ref t_transaction rt_transaction);string		ls_name
+int			li_cnt
 
-select object.name into :ls_name 
+select count(object.id) into :li_cnt 
 from object join role_user ru on ru.object_staff = object.id 
 where ru.id = :vdb_userid using rt_transaction;
-if rt_transaction.sqlcode = 0 then
+
+if li_cnt= 1 then
+	select object.name into :ls_name 
+	from object join role_user ru on ru.object_staff = object.id 
+	where ru.id = :vdb_userid using rt_transaction;
 	return ls_name
-elseif rt_transaction.sqlcode = 100 then
-	return ''
 end if
+
+return ''
+
 end function
 
 public function integer f_init_ex (double vdb_id, ref t_transaction rt_transaction);select 

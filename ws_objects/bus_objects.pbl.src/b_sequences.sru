@@ -672,54 +672,63 @@ return ls_seq_combine
 
 end function
 
-public function integer f_init_ex (double vdb_id, ref t_transaction rt_transaction);select 
-sequences.TYPE,
-nvl(sequences.TEXT_STR,''),
-nvl(sequences.FORMAT_STR,'') ,
-nvl(sequences.TEXT_SEPARATE_YN,'N') ,
-nvl(sequences.DATE_SEPARATE_YN,'N'),
-nvl(sequences.COMBINE_CHAR,''),
-sequences.COMBINE_ORDER,
-nvl(sequences.RESET_TYPE,'none') ,
-nvl(sequences.DATE_STR,'none')  ,
-nvl(sequences.CONTINUOUS_YN,'N')  ,
-nvl(sequences.START_VALUE,0)  ,
-nvl(sequences.NEXT_VALUE,0) ,  
-nvl(sequences.LAST_VALUE,0),  
-sequences.LAST_VALUE_DATE,
-nvl(flexible_data.code,''),
-nvl(flexible_data.name,'')
-into
-:is_TYPE,
-:is_TEXT_STR,
-:is_FORMAT_STR ,
-:is_TEXT_SEPARATE_YN ,
-:is_DATE_SEPARATE_YN,
-:is_COMBINE_CHAR,
-:is_COMBINE_ORDER,
-:is_RESET_TYPE ,
-:is_DATE_STR  ,
-:is_CONTINUOUS_YN , 
-:idb_START_VALUE,  
-:idb_NEXT_VALUE ,  
-:idb_LAST_VALUE , 
-:id_LAST_VALUE_DATE,
-:is_seq_code,
-:is_seq_name
+public function integer f_init_ex (double vdb_id, ref t_transaction rt_transaction);int			li_cnt
+
+select 
+count(sequences.id) into :li_cnt
 from flexible_data
 join sequences on flexible_data.id = sequences.object_ref_id
 where sequences.object_ref_id = :vdb_id and flexible_data.object_ref_table ='SEQUENCES' using rt_transaction;
 
-if rt_transaction.sqlcode = 0 then
+if li_cnt = 1 then
+	select 
+	sequences.TYPE,
+	coalesce(sequences.TEXT_STR,''),
+	coalesce(sequences.FORMAT_STR,'') ,
+	coalesce(sequences.TEXT_SEPARATE_YN,'N') ,
+	coalesce(sequences.DATE_SEPARATE_YN,'N'),
+	coalesce(sequences.COMBINE_CHAR,''),
+	sequences.COMBINE_ORDER,
+	coalesce(sequences.RESET_TYPE,'none') ,
+	coalesce(sequences.DATE_STR,'none')  ,
+	coalesce(sequences.CONTINUOUS_YN,'N')  ,
+	coalesce(sequences.START_VALUE,0)  ,
+	coalesce(sequences.NEXT_VALUE,0) ,  
+	coalesce(sequences.LAST_VALUE,0),  
+	sequences.LAST_VALUE_DATE,
+	coalesce(flexible_data.code,''),
+	coalesce(flexible_data.name,'')
+	into
+	:is_TYPE,
+	:is_TEXT_STR,
+	:is_FORMAT_STR ,
+	:is_TEXT_SEPARATE_YN ,
+	:is_DATE_SEPARATE_YN,
+	:is_COMBINE_CHAR,
+	:is_COMBINE_ORDER,
+	:is_RESET_TYPE ,
+	:is_DATE_STR  ,
+	:is_CONTINUOUS_YN , 
+	:idb_START_VALUE,  
+	:idb_NEXT_VALUE ,  
+	:idb_LAST_VALUE , 
+	:id_LAST_VALUE_DATE,
+	:is_seq_code,
+	:is_seq_name
+	from flexible_data
+	join sequences on flexible_data.id = sequences.object_ref_id
+	where sequences.object_ref_id = :vdb_id and flexible_data.object_ref_table ='SEQUENCES' using rt_transaction;
+	
 	if isnull(is_TEXT_STR) then is_TEXT_STR = ''
 	if isnull(is_FORMAT_STR) then is_FORMAT_STR = ''
 	if isnull(is_COMBINE_CHAR) then is_COMBINE_CHAR = ''
 	if isnull(is_seq_code) then is_seq_code = ''
-	if isnull(is_seq_name) then is_seq_name = ''
+	if isnull(is_seq_name) then is_seq_name = ''	
 	return 1
 else
 	return 0
 end if
+
 end function
 
 public function string f_create_autonumber_ex (date vd_date, ref t_transaction rt_transaction);t_ds_db				lds_seq_del
