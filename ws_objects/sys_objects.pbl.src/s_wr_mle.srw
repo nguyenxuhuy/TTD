@@ -80,6 +80,7 @@ c_obj_service			lc_obj_service
 
 this.setredraw( false)
 
+
 ls_parm = message.stringparm
 setnull(message.stringparm)
 if isnull(ls_parm) or ls_parm='' then
@@ -107,10 +108,12 @@ if isvalid(ic_obj_main) then
 	end if
 	
 	//-- post open --//
-	if li_rtn <> -1 then this.post event e_postopen( li_rtn)
+//	if li_rtn <> -1 then this.post event e_postopen( li_rtn)
 else
 	//-- message --//
 end if
+
+
 end event
 
 event e_preopen;call super::e_preopen;int			li_rtn

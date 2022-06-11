@@ -28,6 +28,7 @@ public function integer f_init_message (error verr_system)
 public function integer f_display_message ()
 public function integer f_get_bttn_text (ref string ras_bttntext[])
 public function integer f_get_init_button (ref string rs_bttn, ref string ras_bttntext[])
+public function integer f_init_message_ex (string vs_msgparm)
 end prototypes
 
 public function string f_get_picture ();string		ls_pic
@@ -216,6 +217,69 @@ end function
 public function integer f_get_init_button (ref string rs_bttn, ref string ras_bttntext[]);rs_bttn =is_bttn
 ras_bttnText[] = is_bttntext[]
 return 1
+end function
+
+public function integer f_init_message_ex (string vs_msgparm);int						li_pos, li_rtn
+string					las_parm[], ls_variable
+c_obj_service		lc_obj_service
+
+
+lc_obj_service.f_stringtoarray( vs_msgParm, '#', las_parm[])
+if pos( las_parm[3], '@')> 0 then
+	if lastpos( las_parm[3], '@') = pos( las_parm[3], '@') then
+		ls_variable = mid( las_parm[3], pos( las_parm[3], '@') +1) 
+	else
+		ls_variable = mid( las_parm[3], pos( las_parm[3], '@') +1, lastpos( las_parm[3], '+') - pos( las_parm[3], '@') -1) 
+	end if
+end if
+
+connect using it_transaction;
+
+SELECT count( MESSAGE.CODE) into :li_rtn		   
+FROM message
+         JOIN label on (MESSAGE.CODE = LABEL.CODE)
+WHERE LABEL.LANG = :gs_user_lang
+    AND LABEL.SUBCODE = 'MESSAGE.TEXT'
+    AND MESSAGE.CODE = :las_parm[1]
+  using it_transaction;
+if li_rtn = 1 then
+	SELECT 
+				MESSAGE.CODE,		
+				MESSAGE.DEFAULT_BTTN,
+					MESSAGE.BUTTON,
+					MESSAGE.ICON,
+					LABEL.TEXT,
+					LABEL.TTDHELP
+		INTO
+			:CODE,	
+			:DEFAULT_BTTN,
+			:BUTTON ,
+			:ICON,
+			:TEXT,
+			:TITLE      
+	FROM message
+				JOIN label on (MESSAGE.CODE = LABEL.CODE)
+	WHERE LABEL.LANG = :gs_user_lang
+		 AND LABEL.SUBCODE = 'MESSAGE.TEXT'
+		 AND MESSAGE.CODE = :las_parm[1]
+	  using it_transaction;
+else
+	TITLE = '['+las_parm[2]+']'
+	TEXT = las_parm[3]
+	ICON = las_parm[4]
+	BUTTON = las_parm[5]
+	DEFAULT_BTTN = integer(las_parm[6])
+	is_message = lc_obj_service.f_globalreplace( TEXT, '@', '')	
+end if
+
+if pos(TEXT,'@') > 0  then 
+  is_message = lc_obj_service.f_globalreplace( TEXT, '@', ls_variable) 
+else
+	is_message = TEXT
+end if
+
+disconnect using it_transaction;
+return li_rtn
 end function
 
 on c_err_message.create
