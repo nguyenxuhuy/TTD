@@ -1439,7 +1439,7 @@ FOR li_idx = 1 to li_rc
 					case 'e_first','e_prior','e_prior','e_next','e_last'
 						l_rsbi.enabled =  false
 				end choose
-			elseif vs_doc_status = 'new' then
+			elseif vs_doc_status = 'new' or vs_doc_status = 'planned' then
 				choose case l_rsbi.tag
 					case 'e_add'
 						l_rsbi.enabled =  vb_updatable and not vb_editing and pos(vs_enable_buttons, 'e_add;')>0 and vdw_focus.f_get_ib_insert()
@@ -1452,19 +1452,28 @@ FOR li_idx = 1 to li_rc
 					case 'e_post'
 						l_rsbi.enabled =  vb_updatable and not vb_editing and pos(vs_enable_buttons,  l_rsbi.tag+';')>0
 					case 'e_insert' 
-						l_rsbi.enabled =  vb_updatable and not vb_editing and not vb_change_4_edit and pos(vs_enable_buttons, 'e_add;')>0
+						l_rsbi.enabled =  vb_updatable and not vb_editing and not vb_change_4_edit and pos(vs_enable_buttons, 'e_add;')>0 and vdw_focus.f_get_ib_insert()
 					case 'e_first','e_prior','e_prior','e_next','e_last'
 						l_rsbi.enabled =  true
 				end choose	
 			else
-				choose case l_rsbi.tag
-					case 'e_add','e_insert','e_unpost'
-						l_rsbi.enabled =  vb_updatable and pos(vs_enable_buttons,  l_rsbi.tag+';')>0  and vdw_focus.f_get_ib_insert()
-					case 'e_modify','e_save','e_delete'
-						l_rsbi.enabled =  false
-					case 'e_first','e_prior','e_prior','e_next','e_last'
-						l_rsbi.enabled =  true
-				end choose				
+				if vdw_focus.f_get_ib_detail() then
+					choose case l_rsbi.tag
+						case 'e_add','e_insert','e_unpost', 'e_modify','e_save','e_delete','e_cancel'
+							l_rsbi.enabled =  false
+						case 'e_first','e_prior','e_prior','e_next','e_last'
+							l_rsbi.enabled =  true
+					end choose								
+				else
+					choose case l_rsbi.tag
+						case 'e_add','e_insert','e_unpost'
+							l_rsbi.enabled =  vb_updatable and pos(vs_enable_buttons,  l_rsbi.tag+';')>0  and vdw_focus.f_get_ib_insert()
+						case 'e_modify','e_save','e_delete'
+							l_rsbi.enabled =  false
+						case 'e_first','e_prior','e_prior','e_next','e_last'
+							l_rsbi.enabled =  true
+					end choose			
+				end if
 			end if
 		elseif vs_type = 'detail' then
 		elseif vs_type = 'object' then

@@ -51,6 +51,9 @@ event e_dwclosedropdown pbm_dwclosedropdown
 event type integer e_itemchanged_ex ( long row,  string colname,  ref string data )
 event type long e_addrow_ex ( )
 event type integer e_resetupdate_del ( )
+event type integer e_autosave ( )
+event type integer e_preautosave ( )
+event type integer e_postautosave ( )
 end type
 global t_dw_mpl t_dw_mpl
 
@@ -2327,6 +2330,158 @@ if this.ib_editing then
 end if
 
 return 1
+end event
+
+event type integer e_autosave();
+int 				li_rtn, li_idx
+string 			ls_updatetable
+t_dw_mpl		ldw_request
+s_w_main		lw_parent
+
+//-- lưu master trước trong presave --//
+if not ib_saving and ib_editing then 
+	this.ib_saving = true		
+	if this.event e_preautosave( ) = -1 then
+//		this.event e_rollback_save( )
+		return -1
+	end if
+	if this.f_get_ib_update( ) then	
+		ldw_request = this
+		li_rtn = this.f_send_message_to_object(ldw_request, 'e_save')
+		if li_rtn = 1 then
+			//check updatetable property
+			ls_updatetable = describe("DataWindow.Table.updatetable")
+			if ls_updatetable = '?' then
+//				this.ib_editing = false
+//				this.ib_inserting = false
+				gf_messagebox('m.t_dw_mpl.e_save.01','Thống báo','Không có DW update của:@'+this.dataobject,'exclamation','ok',1)
+				return 0
+			end if
+			
+			if this.accepttext( ) <>1 then return -1
+//			this.ib_editing = false
+//			this.ib_inserting = false				
+			//-- update --//
+			this.f_getparentwindow(lw_parent)
+			this.settransobject( lw_parent.it_transaction)			
+			li_rtn = this.update(true, false)
+			if li_rtn = -1 then
+//				this.event e_rollback_save( )
+				return -1
+			end if
+			this.resetupdate( )
+//			if ib_excel_copying then	this.resetupdate( )  // nếu đang copy từ excel (import) thì phải resetupdate --//
+		elseif li_rtn = 0 then
+//			this.ib_editing = false
+//			this.ib_inserting = false		
+//			this.ib_saving = false
+//			this.f_set_editable_property(this.ib_editing)
+		else
+//			this.event e_rollback_save( )
+			return -1
+		end if
+	else
+//		this.ib_editing = false
+//		this.ib_inserting = false			
+//		this.ib_saving = false
+//		this.f_set_editable_property(this.ib_editing)
+	end if
+	//-- lưu detial trong postsave --//
+	if this.event e_postautosave( ) = -1 then return -1
+end if
+return li_rtn
+
+end event
+
+event type integer e_preautosave();datawindow 	ldw_master, ldw_handling
+c_string		lc_string
+int				li_rtn, li_idx
+long			ll_row
+string			ls_ref_table, lsa_ref_table_field[], ls_original_filter,ls_coltype
+any			laa_empty[], la_ref_data
+
+if this.ib_ismaster  and not this.ib_isdetail and this.ib_ref_table_yn then		
+	//-- cấp nhật object_ref_table lên master --//
+	li_rtn =  this.f_set_ref_data()
+	if li_rtn = -1 then return -1
+	li_rtn = lc_string.f_stringtoarray( this.is_ref_table_field, ';', lsa_ref_table_field[])
+	FOR li_idx = 1 to li_rtn
+		ls_coltype = this.describe( lsa_ref_table_field[li_idx] + '.coltype')
+		if left(ls_coltype,5) = 'char(' then a_ref_data[li_idx] = upper(a_ref_data[li_idx])
+		this.setitem( this.getrow( ) , lsa_ref_table_field[li_idx], a_ref_data[li_idx])
+	NEXT	
+	this.a_ref_data[] = laa_empty[]
+	
+elseif this.ib_isdetail then
+	li_rtn = this.idw_master.dynamic event e_autosave()
+	if li_rtn = -1 then return -1
+	
+/* Khóa ngày 08/02/2014 --/
+elseif this.ib_isshared then
+	this.idw_master.dynamic f_set_ib_editing(false)
+	this.idw_master.dynamic f_set_ib_inserting(false)
+	this.idw_master.dynamic f_set_ib_saving(true)
+	if this.idw_master.dynamic f_get_ib_detail() then
+		ldw_master = this.idw_master.dynamic f_getdwmaster()
+		li_rtn = ldw_master.dynamic event e_save()
+	end if
+*/
+end if
+//-- Thông báo cho obj_handling --//
+ldw_handling = this
+li_rtn = this.f_send_message_to_object( ldw_handling, "e_presave")
+return li_rtn
+
+end event
+
+event type integer e_postautosave();//-- lưu các dw details --//
+
+int						li_rtn, li_idx
+long					ll_currow, ll_row_cnt
+
+datawindow			ldw_requester
+window				lw_parent
+powerobject			lpo_handling
+
+if this.ib_ismaster then
+	//-- save detail --//
+	FOR li_idx = 1 to upperbound(this.iadw_detail)		
+		li_rtn = this.iadw_detail[li_idx].dynamic event e_autosave()
+		if li_rtn = -1 then return -1
+	NEXT
+	//-- save shared --//
+//	if  upperbound(this.iadw_shared)	> 0 then
+				
+//		FOR li_idx = 1 to upperbound(this.iadw_shared)	
+//			this.iadw_shared[li_idx].dynamic f_set_ib_editing(false)
+//			this.iadw_shared[li_idx].dynamic f_set_ib_inserting(false)
+//			this.iadw_shared[li_idx].dynamic f_set_ib_saving(true)
+//			this.iadw_shared[li_idx].dynamic f_set_editable_property( false)	
+//		NEXT
+//	end if
+end if
+//-- insert dummy row --//
+ll_row_cnt = this.rowcount( )
+if ll_row_cnt = 0 and not this.f_isgrid( ) then
+	if not isvalid(lpo_handling) then
+		this.f_getparentwindow( lw_parent)
+		lpo_handling = lw_parent.dynamic f_get_obj_handling()
+	end if
+	ldw_requester =  lw_parent.dynamic f_get_dwmain() 
+	if ldw_requester = this  and lpo_handling.dynamic f_get_ib_changed_dwo_4edit() then
+		//-- không làm gì hết--//
+	else
+		if this.ib_dummy_row_yn then
+			ib_dummy_row = true
+			ll_currow = this.event e_addrow( )
+			this.event e_resetadding( )	
+		end if
+	end if
+end if
+
+ldw_requester = this
+return this.f_send_message_to_object(ldw_requester , 'e_postsave')
+
 end event
 
 public function integer f_set_criteria_retreive ();/* Cài đk để truy xuất dữ liệu ít lại.

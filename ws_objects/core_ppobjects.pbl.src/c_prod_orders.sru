@@ -7,6 +7,8 @@ end forward
 global type c_prod_orders from b_doc
 event type integer e_action_process ( )
 event type integer e_action_estimate ( )
+event type integer e_action_copmlete ( )
+event type integer e_action_reopen ( )
 end type
 global c_prod_orders c_prod_orders
 
@@ -32,113 +34,22 @@ public function integer f_update_material (double vdb_ref_id, double vdb_bom_id,
 public function integer f_update_formula (double vdb_ref_id, double vdb_bom_id, double vdb_plan_qty, double vdb_act_qty, ref t_ds_db rdw_material, string vs_upd_type, ref t_transaction rt_transaction)
 end prototypes
 
-event type integer e_action_process();double				ldb_bom_id, ldb_produced_qty, ldb_ref_id, ldb_plan_qty
-long					ll_row
-t_transaction 		lt_transaction
-t_dw_mpl			ldw_prod_line, ldw_material, ldw_product, ldw_main
-t_ds_db				lds_material 
+event type integer e_action_process();double				ldb_id
+string					ls_status
+t_dw_mpl			ldw_main
 
-this.iw_display.f_get_transaction( lt_transaction)
-ldw_prod_line = this.iw_display.f_get_dw( 'd_prod_line_grid')
-ldw_material =  this.iw_display.f_get_dw( 'd_prod_material_grid')
-ldw_product = this.iw_display.f_get_dw( 'd_prod_product_grid')
-
-ldw_material.setfilter( '')
-ldw_material.filter( )
-
-lds_material = create t_ds_db
-lds_material.dataobject = ldw_material.dataobject
-lds_material.f_settransobject(lt_transaction )
-ldw_material.rowscopy( 1, ldw_material.rowcount(), primary!, lds_material, 1, primary!)
-lds_material.resetupdate( )
-
-//-- Xoa material cũ --//
-//if isvalid(ldw_material) then 	
-//	for ll_row = 1 to ldw_prod_line.rowcount( )
-//		ldb_ref_id = ldw_prod_line.getitemnumber( ll_row, 'ID')
-//		ldw_material.setfilter( ' object_ref_id = ' + string(ldb_ref_id) )
-//		ldw_material.filter( )
-//		if ldw_material.rowcount( ) > 0 then 
-//			if ldw_material.event e_delete_all( ) = -1 then 
-//				rollback using lt_transaction;
-//				this.iw_display.event e_refresh( )
-//				return -1
-//			end if
-//		end if		
-//	next
-//end if
-
-//-- Xoa TP cũ --//
-if isvalid(ldw_product) then 	
-	for ll_row = 1 to ldw_prod_line.rowcount( )
-		ldb_ref_id = ldw_prod_line.getitemnumber( ll_row, 'ID')
-		ldw_product.setfilter( ' object_ref_id = ' + string(ldb_ref_id) )
-		ldw_product.filter( )	
-		if ldw_product.rowcount( ) > 0 then 
-			if ldw_product.event e_delete_all( ) = -1 then 
-				rollback using lt_transaction;
-				this.iw_display.event e_refresh( )
-				return -1
-			end if
-		end if		
-	next
+//-- cập nhật trạng thái : planned --//
+ldw_main =  this.iw_display.f_get_dwmain( )
+ls_status = ldw_main.getitemstring( ldw_main.getrow(), 'status')
+if ls_status = 'planned' then
+	ldb_id =  ldw_main.getitemnumber( ldw_main.getrow(), 'id')
+	connect using it_transaction;
+	Update document set status = 'processing' where id = :ldb_id using it_transaction;	
+	commit using it_transaction;
+	ldw_main.event e_refresh( )	
+	disconnect using it_transaction;
 end if
-
-FOR ll_row= 1 to ldw_prod_line.rowcount( )
-	//-- update NL--//
-	ldb_bom_id = ldw_prod_line.getitemnumber( ll_row, 'BOM_ID')
-	if isnull(ldb_bom_id ) or ldb_bom_id = 0 then continue
-	ldb_produced_qty = ldw_prod_line.getitemnumber( ll_row, 'INPUT_QTY')
-//	if isnull(ldb_produced_qty ) or ldb_produced_qty = 0 then continue
-//	ldb_plan_qty = ldw_prod_line.getitemnumber( ll_row, 'PLAN_QTY')
-//	if isnull(ldb_produced_qty ) then ldb_produced_qty = 0 
-	ldb_ref_id = ldw_prod_line.getitemnumber( ll_row, 'ID')
-	if this.f_update_material(ldb_ref_id, ldb_bom_id , ldb_plan_qty,ldb_produced_qty, lds_material, 'actual',lt_transaction ) = -1 then
-//	if this.f_update_material(ldb_ref_id, ldb_bom_id , ldb_plan_qty, ldb_produced_qty, ldw_material, 'actual') = -1 then
-		rollback using lt_transaction;
-		this.iw_display.event e_refresh( )
-		return -1		
-	end if
-	//-- update tp --//
-	if this.f_update_product( ldb_ref_id, ldb_bom_id,ldb_plan_qty, ldb_produced_qty, ldw_product, 'actual') = -1 then
-		rollback using lt_transaction;
-		this.iw_display.event e_refresh( )
-		return -1				
-	end if
-NEXT
-if lds_material.update( true,false) = 1 then
-	lds_material.resetupdate( )
-else
-	gf_messagebox('m.c_prod_orders.e_action_process.01','Thông báo','Lỗi update dữ liệu nguyên liệu:@'+lt_transaction.sqlerrtext,'stop','ok',1)
-	rollback using lt_transaction;
-	this.iw_display.event e_refresh( )
-	return -1
-end if
-if ldw_product.update( true,false) = 1 then
-	ldw_product.resetupdate( )
-	//-- cập nhật trạng thái : planned --//
-	ldw_main =  this.iw_display.f_get_dwmain( )
-	ldw_main.setitem( ldw_main.getrow(), 'status', 'processing')
-	if ldw_main.update( true,false) = 1 then
-		ldw_main.resetupdate( )
-		commit using  lt_transaction;
-		ldw_main.event e_refresh( )
-		gf_messagebox('m.c_prod_orders.e_action_process.02','Thông báo','Hoàn thành tính nguyên liệu','information','ok',1)		
-	else
-		gf_messagebox('m.c_prod_orders.e_action_process.03','Thông báo','Lỗi  update trạng thái lệnh SX:@'+lt_transaction.sqlerrtext,'stop','ok',1)
-		rollback using lt_transaction;
-		this.iw_display.event e_refresh( )
-		return -1		
-	end if	
-else
-	gf_messagebox('m.c_prod_orders.e_action_process.04','Thông báo','Lỗi update dữ liệu thành phẩm:@'+lt_transaction.sqlerrtext,'stop','ok',1)
-	rollback using lt_transaction;
-	this.iw_display.event e_refresh( )
-	return -1
-end if
-
-destroy lds_material
-return 1
+return 0
 end event
 
 event type integer e_action_estimate();double				ldb_bom_id, ldb_plan_qty, ldb_ref_id, ldb_act_qty
@@ -255,6 +166,42 @@ end if
 destroy  lds_material
 
 return 1
+end event
+
+event type integer e_action_copmlete();double				ldb_id
+string					ls_status
+t_dw_mpl			ldw_main
+
+//-- cập nhật trạng thái : planned --//
+ldw_main =  this.iw_display.f_get_dwmain( )
+ls_status = ldw_main.getitemstring( ldw_main.getrow(), 'status')
+if ls_status = 'processing' then
+	ldb_id =  ldw_main.getitemnumber( ldw_main.getrow(), 'id')
+	connect using it_transaction;
+	Update document set status = 'completed' where id = :ldb_id using it_transaction;
+	commit using it_transaction;
+	ldw_main.event e_refresh( )	
+	disconnect using it_transaction;
+end if
+return 0
+end event
+
+event type integer e_action_reopen();double				ldb_id
+string					ls_status
+t_dw_mpl			ldw_main
+
+//-- cập nhật trạng thái : planned --//
+ldw_main =  this.iw_display.f_get_dwmain( )
+ls_status = ldw_main.getitemstring( ldw_main.getrow(), 'status')
+if ls_status = 'completed' then
+	ldb_id =  ldw_main.getitemnumber( ldw_main.getrow(), 'id')
+	connect using it_transaction;
+	Update document set status = 'planned' where id = :ldb_id using it_transaction;
+	commit using it_transaction;
+	ldw_main.event e_refresh( )	
+	disconnect using it_transaction;
+end if
+return 0
 end event
 
 public subroutine f_set_dwo_window ();
@@ -1363,13 +1310,13 @@ is_object_title = 'Lệnh sản xuất'
 istr_actionpane[1].s_description = is_object_title
 is_exrate_type = 'buy'
 
-istr_actionpane[1].s_button_name = 'b_preview;b_send_2_approve;b_approve;b_reject;b_complete;b_excel;b_copyt;u_so;b_view;'
+istr_actionpane[1].s_button_name = 'b_preview;b_send_2_approve;b_approve;b_reject;b_copyt;u_so;b_view;e_action_process;e_action_complete;e_action_reopen;'
 istr_actionpane[1].s_button_name += 'b_doc_trace;b_cancel;b_self_copy;e_add;e_modify;e_delete;b_view_prod_order;b_copyt_goods_receipt_misc;b_copyt_goods_delivery_misc;'
 istr_actionpane[1].s_button_has_sub ='b_related_object;b_update;b_approve;b_view;b_copyt;b_copyf;'
 istr_actionpane[1].sa_sub_button[1]='u_so;'
 istr_actionpane[1].sa_subbutton_name[1]='Đơn bán hàng(SO);'
-istr_actionpane[1].sa_sub_button[2]='b_complete;b_excel;'
-istr_actionpane[1].sa_subbutton_name[2]='Hoàn thành;Excel;'
+istr_actionpane[1].sa_sub_button[2]='e_action_process;e_action_complete;e_action_reopen;'
+istr_actionpane[1].sa_subbutton_name[2]='Thực hiện;Hoàn thành;Mở lại;'
 istr_actionpane[1].sa_sub_button[3]=''	//'b_send_2_approve;b_approve;b_reject;'
 istr_actionpane[1].sa_subbutton_name[3]=''	//'Gửi duyệt;Duyệt;Trả duyệt'
 istr_actionpane[1].sa_sub_button[4]='b_view_prod_sample;b_view_prod_order;'
@@ -1451,7 +1398,7 @@ if rpo_dw.dataobject = 'd_document_prod_grid' then
 	rpo_dw.setitem(vl_currentrow,'version_id',ldb_version_id)
 	rpo_dw.setitem(vl_currentrow,'handled_by',gi_userid)
 	rpo_dw.setitem(vl_currentrow,'object_name', g_user.f_get_name_of_userid_ex(gi_userid, it_transaction ) )
-	rpo_dw.setitem(vl_currentrow,'status','new')
+	rpo_dw.setitem(vl_currentrow,'status','planned')
 	rpo_dw.setitem(vl_currentrow,'document_date',date(gd_session_date))
 	rpo_dw.setitem(vl_currentrow,'TRANS_DATE',date(gd_session_date))	
 	
@@ -1540,17 +1487,13 @@ end if
 return 0
 end event
 
-event e_window_open;call super::e_window_open;iw_display.f_set_text_cbx_1( 'Xem tất cả nguyên liệu', false)
-return 0
-end event
-
-event e_cbx_clicked;call super::e_cbx_clicked;if rcbx_handling.checked then
-	this.f_doc_filter(  'd_prod_material_grid', true)			
-	this.f_doc_filter(  'd_prod_consumption_grid', true)
-else
-	this.f_doc_filter(  'd_prod_material_grid', false)
-	this.f_doc_filter(  'd_prod_consumption_grid', false)
-end if
+event e_cbx_clicked;call super::e_cbx_clicked;//if rcbx_handling.checked then
+//	this.f_doc_filter(  'd_prod_material_grid', true)			
+//	this.f_doc_filter(  'd_prod_consumption_grid', true)
+//else
+//	this.f_doc_filter(  'd_prod_material_grid', false)
+//	this.f_doc_filter(  'd_prod_consumption_grid', false)
+//end if
 return 0
 end event
 
@@ -1586,6 +1529,7 @@ if rpo_dw.dataobject = 'd_document_prod_grid' then
 		VALUES (:ldb_extend_id, :ldb_doc_id, 'DOCUMENT',:gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,
 					:ls_val_yn, :ls_qty_yn, :ldb_base_curr_id, 1, :ldb_customer_id, :ldb_customer_id, :ls_alloc_yn, :ll_scrap_pct, 'PROD_ORDERS')
 		using it_transaction;		
+		rpo_dw.setitem(rpo_dw.getrow(), 'extend_id', ldb_extend_id) 
 	end if
 elseif rpo_dw.dataobject= 'd_prod_line_kd_grid'  then
 	ldw_main = rpo_dw.dynamic f_get_idw_master()
@@ -1645,6 +1589,9 @@ t_dw_mpl			ldw_master
 if rdw_handling.dataobject  = 'd_lot_line_kd_grid' then
 	if rdw_handling.rowcount() = 0 then
 		ldw_master = rdw_handling.f_get_idw_master()
+		if ldw_master.accepttext( ) = -1 then return -1
+		connect using it_transaction;
+		ldw_master.event e_autosave( )
 		if ldw_master.getrow( ) > 0 then
 			ldb_object_ref_id = ldw_master.getitemnumber( ldw_master.getrow(), 'id')
 			ldb_doc_version = ldw_master.getitemnumber( ldw_master.getrow(), 'object_ref_id')
@@ -1654,7 +1601,7 @@ if rdw_handling.dataobject  = 'd_lot_line_kd_grid' then
 				return 0
 			end if
 			//-- lấy size của item --//
-			connect using it_transaction;
+			
 			select size_id into :ldb_size_id from item where object_ref_id = :ldb_item_id using it_transaction;
 			if ldb_size_id = 0 or isnull(ldb_size_id) then
 				gf_messagebox('m.c_prod_orders.e_dw_getfocus.02','Thông báo','Chưa chọn loại size cho sản phẩm !','exclamation','ok',1)
@@ -1764,14 +1711,21 @@ return ancestorreturnvalue
 end event
 
 event e_dw_e_predelete;call super::e_dw_e_predelete;string					ls_status
-double				ldb_version_id
+double				ldb_version_id, ldb_id
+int						li_cnt
 t_dw_mpl			ldw_main
 
 ldw_main = iw_display.f_get_dwmain( )
 
 ls_status = ldw_main.getitemstring(vl_currentrow, 'status')
 if ls_status = 'planned' then
+	ldb_id =  ldw_main.getitemnumber(vl_currentrow, 'id')
 	ldb_version_id = ldw_main.getitemnumber(vl_currentrow, 'version_id')
+	select count(id) into :li_cnt from matching where f_doc_id = :ldb_id using it_transaction;
+	if li_cnt > 0 then
+		gf_messagebox('m.c_prod_orders.e_dw_e_predelete.02','Thông báo','Lệnh SX đã có giao dịch xuất nhập kho, không thể xoá','information','ok',1)
+		return -1
+	end if
 	if rpo_dw.dataobject = ldw_main.dataobject then
 	//-- delele BOOKED_SLIP --//
 		delete BOOKED_SLIP where id = :ldb_version_id using it_transaction;
@@ -1793,6 +1747,7 @@ if ls_status = 'planned' then
 	end if
 else
 	gf_messagebox('m.c_prod_orders.e_dw_e_predelete.01','Thông báo','Chỉ xoá được lệnh có trạng thái là "Kế hoạch" !','information','ok',1)
+	return -1
 end if
 
 return ancestorreturnvalue

@@ -6243,6 +6243,7 @@ FOR li_idx = 1 to li_cnt
 		if li_bttn_cnt = 0 then
 			//-- xóa copy --//			
 			l_rsbi.enabled = false
+			l_rsbi.tag = 'disable'
 			rbb_handle.SetSmallButton (l_rsbi.itemhandle, l_rsbi )
 //			rbb_handle.deleteSmallbutton(l_rsbi.itemhandle )
 		else
@@ -6336,8 +6337,12 @@ FOR li_idx = 1 to li_cnt
 					l_rsbi.clicked = "ue_tabbutton"			
 					if lsa_bttn[li_idx1] = 'b_doc_trace' then
 						l_rsbi.picturename = "Browse1!"
-					elseif lsa_bttn[li_idx1] = 'b_complete'then
+					elseif lsa_bttn[li_idx1] = 'e_action_complete'then
 						l_rsbi.picturename = "Custom026!"
+					elseif lsa_bttn[li_idx1] = 'e_action_process'then
+						l_rsbi.picturename = "Actionsbig!"		
+					elseif lsa_bttn[li_idx1] = 'e_action_reopen'then
+						l_rsbi.picturename = "reloginBig!"							
 					elseif lsa_bttn[li_idx1] = 'b_lose'then
 						l_rsbi.picturename = "Custom027a!"
 					elseif lsa_bttn[li_idx1] = 'b_excel'then
@@ -6403,19 +6408,26 @@ end function
 
 public function integer f_ctrl_enable_button (u_rbb vrbb_handle, t_dw_mpl vdw_focus);string					ls_type, ls_status, ls_updateTable,  ls_idKey_code[]
 boolean				 lb_editing, lb_updatable, lb_change_4_edit, lb_detail
-
+t_dw_mpl			ldw_main
 s_str_policy_attr		lstr_rule_attr, lstr_security_attr
 
 if isnull(vdw_focus) then
 	setnull(ls_type)
 else
-
-	ls_updateTable = upper(vdw_focus.describe("datawindow.table.updatetable")) 
+	if vdw_focus.f_get_ib_detail() then
+		ldw_main = iw_display.f_get_dwmain( )
+		ls_updateTable = upper(ldw_main.describe("datawindow.table.updatetable")) 
+	else
+		ls_updateTable = upper(vdw_focus.describe("datawindow.table.updatetable")) 
+	end if
+	
 	if vdw_focus.rowcount() = 0 then
 //		setnull(ls_status)
 		ls_status = ''
-	else
-		if left(this.classname( ), 9)= 'u_detail_' or ls_updateTable = 'DOCUMENT'  then
+	elseif ls_updateTable = 'DOCUMENT' then			
+		if  vdw_focus.f_get_ib_detail() then
+			ls_status = ldw_main.getitemstring(ldw_main.getrow(), 'status')
+		else
 			ls_status = vdw_focus.getitemstring(vdw_focus.getrow(), 'status')
 		end if
 	end if
@@ -6426,7 +6438,7 @@ else
 	else
 		if ls_updateTable = 'DOCUMENT'   then		
 			ls_type = 'document'
-		else
+		else	
 			ls_type = 'object'
 		end if
 	end if

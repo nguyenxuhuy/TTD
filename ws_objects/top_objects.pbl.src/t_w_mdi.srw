@@ -1429,7 +1429,7 @@ choose case itemtag
 				end if
 			end if
 		end if
-	case 'e_action_attach'
+	case 'e_action_attach', 'e_action_process','e_action_complete','e_action_reopen'
 		lw_handle = parent.getactivesheet( )
 		if isvalid(lw_handle) then
 			lod_handle = lw_handle.f_get_obj_handling( )
