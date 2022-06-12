@@ -1401,6 +1401,7 @@ if rpo_dw.dataobject = 'd_document_prod_grid' then
 	rpo_dw.setitem(vl_currentrow,'status','planned')
 	rpo_dw.setitem(vl_currentrow,'document_date',date(gd_session_date))
 	rpo_dw.setitem(vl_currentrow,'TRANS_DATE',date(gd_session_date))	
+	rpo_dw.setitem(vl_currentrow,'count_t_date',date(gd_session_date))
 	
 	laa_retrieve[1] = upper(mid(this.classname(),3))
 	if  lbo_ins.f_is_branch_yn_ex('u_trans_setup', it_transaction )then
@@ -1443,45 +1444,16 @@ if isvalid(ldw_main) then
 end if
 end event
 
-event e_dw_e_itemchanged;call super::e_dw_e_itemchanged;double			ldb_size, ldb_item_id, ldb_bom_id
-string				ls_change_yn
-long				ll_cnt
-
+event e_dw_e_itemchanged;call super::e_dw_e_itemchanged;
+date 			ld_doc_Date
 if ancestorreturnvalue = 1 then return 1
 
-if pos(rpo_dw.dataobject, 'd_prod_line_') > 0  then
-	//-- update  --//
-	
-//	if vs_colname = 'object_code' then
-//		ldb_bom_id =  rpo_dw.getitemnumber(vl_currentrow,'bom_id')
-//		ldb_item_id =  rpo_dw.getitemnumber(vl_currentrow,'object_id')
-//		//-- retrieve: size --//
-//		select count(t.id) into :ll_cnt from flexible_data t join object o on o.OBJECT_REF_NAME = t.code and o.id = :ldb_item_id using it_transaction;		
-//		if ll_cnt = 1 then
-//			select t.id into :ldb_size from flexible_data t join object o on o.OBJECT_REF_NAME = t.code and o.id = :ldb_item_id using it_transaction;
-//		end if
-//		//-- retrieve: material --//
-//		
-//		//-- retrieve: route --//
-//	end if
-//elseif pos(rpo_dw.dataobject, 'd_prod_material_') > 0  then
-//	if vs_colname = 'change_qty_yn' then
-//		ls_change_yn = vs_editdata
-//	else
-//		ls_change_yn = rpo_dw.getitemstring(vl_currentrow,'change_qty_yn')
-//	end if
-//	ldb_act_qty =  rpo_dw.getitemnumber(vl_currentrow,'act_qty')
-//	ldb_item_id =  rpo_dw.getitemnumber(vl_currentrow,'item_id')
-//	ldb_uom =  rpo_dw.getitemnumber(vl_currentrow,'uom_id')
-//	ldb_bom_qty = rpo_dw.getitemnumber(vl_currentrow,'BOM_QTY')
-//	iw_display.f_get_transaction( lt_transaction)
-//	ldb_round = this.ic_unit_instance.f_get_round_id(ldb_uom, ldb_item_id, 'item')		
-//	ldb_difference_qty = rpo_dw.getitemnumber(vl_currentrow,'difference_qty')
-//	if ls_change_yn = 'Y' then
-//		rpo_dw.setitem(vl_currentrow, 'changed_qty', ic_unit_instance.f_round( lt_transaction, ldb_round,ldb_difference_qty + ldb_act_qty ))
-//	else
-//		rpo_dw.setitem(vl_currentrow, 'changed_qty', ic_unit_instance.f_round( lt_transaction, ldb_round,ldb_act_qty ))
-//	end if
+if pos(rpo_dw.dataobject, 'd_document_prod_') > 0  then
+	//-- update  --//	
+	if vs_colname = 'document_date' then
+		rpo_dw.setitem(vl_currentrow, 'trans_date',date( vs_editdata))
+		
+	end if
 end if
 
 return 0
@@ -1501,7 +1473,7 @@ event e_dw_e_postsave;call super::e_dw_e_postsave;double		ldb_customer_id, ldb_d
 long			ll_scrap_pct, ll_row
 int				li_cnt, li_idx
 string			ls_alloc_yn, ls_currCode, ls_currName, ls_qty_yn, ls_val_yn, ls_ref_no
-
+date			ld_trans_date
 b_obj_instantiate		lbo_ins
 t_dw_mpl				ldw_main
 
@@ -1513,21 +1485,22 @@ if rpo_dw.dataobject = 'd_document_prod_grid' then
 	ls_qty_yn = rpo_dw.getitemstring(rpo_dw.getrow(), 'quantity_yn') 
 	ls_val_yn = rpo_dw.getitemstring(rpo_dw.getrow(), 'value_yn') 
 	ll_scrap_pct = rpo_dw.getitemnumber(rpo_dw.getrow(), 'qty') 
+	ld_trans_date = date(rpo_dw.getitemdatetime(rpo_dw.getrow(), 'trans_date') )
 	ic_unit_instance.f_get_base_cur_ex( ldb_base_curr_id, ls_currCode, ls_currName, it_transaction)
 	//-- BOOKED_SLIP --//
 	if ldb_extend_id > 0 then
 		//-- update--//		
 		UPDATE booked_slip 
 		set dr_cr_object = :ldb_customer_id , invoice_object = :ldb_customer_id, allocation_yn = :ls_alloc_yn, 
-			 qty = :ll_scrap_pct 
+			 qty = :ll_scrap_pct , trans_date = :ld_trans_date
 		where id = :ldb_extend_id using it_transaction;		
 	else 
 		//-- insert--//
 		ldb_extend_id = rpo_dw.getitemnumber(rpo_dw.getrow(), 'version_id') 
 		INSERT into booked_slip (id, object_ref_id, object_ref_Table, company_id, branch_id, created_by, created_Date, last_mdf_by, last_mdf_date,
-									value_yn, quantity_yn, CURRENCY_ID, exchange_rate, dr_cr_object, invoice_object, allocation_yn, qty, doc_type)
+									value_yn, quantity_yn, CURRENCY_ID, exchange_rate, dr_cr_object, invoice_object, allocation_yn, qty, doc_type,trans_date)
 		VALUES (:ldb_extend_id, :ldb_doc_id, 'DOCUMENT',:gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,
-					:ls_val_yn, :ls_qty_yn, :ldb_base_curr_id, 1, :ldb_customer_id, :ldb_customer_id, :ls_alloc_yn, :ll_scrap_pct, 'PROD_ORDERS')
+					:ls_val_yn, :ls_qty_yn, :ldb_base_curr_id, 1, :ldb_customer_id, :ldb_customer_id, :ls_alloc_yn, :ll_scrap_pct, 'PROD_ORDERS',:ld_trans_date)
 		using it_transaction;		
 		rpo_dw.setitem(rpo_dw.getrow(), 'extend_id', ldb_extend_id) 
 	end if

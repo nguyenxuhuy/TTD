@@ -725,8 +725,8 @@ return 0
 end event
 
 event e_dw_e_postsave;call super::e_dw_e_postsave;double		ldb_customer_id, ldb_addr1, ldb_addr2, ldb_org, ldb_people, ldb_obj_id, ldb_branch
-double		ldb_dfl_curr, ldb_paymentTerm, ldb_paymentMethod, ldb_deliveryMode, ldb_city
-string			ls_vend_yn, ls_taxnumber, ls_addr, ls_purpose, ls_firstname, ls_phone, ls_email, ls_title, ls_p_note, ls_city
+double		ldb_dfl_curr, ldb_paymentTerm, ldb_paymentMethod, ldb_deliveryMode, ldb_city, ldb_scrap_pct
+string			ls_vend_yn, ls_taxnumber, ls_addr, ls_purpose, ls_firstname, ls_phone, ls_email, ls_title, ls_p_note, ls_city, ls_scrap_included_yn
 date			ld_dob
 
 b_obj_instantiate		lbo_ins
@@ -742,20 +742,21 @@ if ldb_obj_id > 0 then
 	ldb_deliveryMode = rpo_dw.getitemnumber(rpo_dw.getrow(), 'delivery_mode') 
 	ls_city = rpo_dw.getitemstring(rpo_dw.getrow(), 'city_text') 
 	ls_vend_yn = rpo_dw.getitemstring(rpo_dw.getrow(), 'vendor_yn') 
-	
+	ls_scrap_included_yn = rpo_dw.getitemstring(rpo_dw.getrow(), 'scrap_included_yn') 
+	ldb_scrap_pct = rpo_dw.getitemnumber(rpo_dw.getrow(), 'scrap_pct') 
 	if ldb_customer_id > 0 then
 		//-- update--//		
 		UPDATE customer 
-		set vendor_yn = :ls_vend_yn , default_currency = :ldb_dfl_curr, payment_term = :ldb_paymentTerm, 
-			 payment_method = :ldb_paymentMethod , delivery_mode = :ldb_deliveryMode, city_text = :ls_city
+		set vendor_yn = :ls_vend_yn , default_currency = :ldb_dfl_curr, payment_term = :ldb_paymentTerm, scrap_included_yn = :ls_scrap_included_yn,
+			 payment_method = :ldb_paymentMethod , delivery_mode = :ldb_deliveryMode, city_text = :ls_city, scrap_pct = :ldb_scrap_pct
 		where object_ref_id = :ldb_obj_id using it_transaction;
 	else
 		//-- insert--//
 		ldb_customer_id = lbo_ins.f_Create_id_ex( it_transaction )
 		INSERT into customer (id, object_ref_id, object_ref_Table, company_id, branch_id, created_by, created_Date, last_mdf_by, last_mdf_date,
-									vendor_yn, default_currency, payment_term, payment_method, delivery_mode, city_text)
+									vendor_yn, default_currency, payment_term, payment_method, delivery_mode, city_text, scrap_included_yn, scrap_pct)
 		VALUES (:ldb_customer_id, :ldb_obj_id, 'OBJECT',:gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,
-					:ls_vend_yn, :ldb_dfl_curr, :ldb_paymentTerm, :ldb_paymentMethod, :ldb_deliveryMode, :ls_city)
+					:ls_vend_yn, :ldb_dfl_curr, :ldb_paymentTerm, :ldb_paymentMethod, :ldb_deliveryMode, :ls_city, :ls_scrap_included_yn, :ldb_scrap_pct)
 		using it_transaction;
 	end if
 	//--ORG--//
@@ -869,13 +870,23 @@ end if
 return 0
 end event
 
-event e_dw_e_predelete;call super::e_dw_e_predelete;double		ldb_customer_id
-
-
-	//-- VENDOR--//
-	ldb_customer_id = rpo_dw.getitemnumber(vl_currentrow, 'customer_id') 
+event e_dw_e_predelete;call super::e_dw_e_predelete;double		ldb_customer_id, ldb_object_id
+int				li_cnt
 	
 
+	//-- VENDOR--//
+	ldb_object_id = rpo_dw.getitemnumber(vl_currentrow, 'id') 
+	select count(id) into :li_cnt from booked_slip where dr_cr_object = :ldb_object_id or invoice_object = :ldb_object_id using it_transaction;
+	if li_cnt > 0 then
+		gf_messagebox('m.c_customer.e_dw_e_predelete.01','Thông báo','Khách hàng đã có giao dịch, không thể xoá !','exclamation','ok',1)
+		return -1
+	end if
+	select count(id) into :li_cnt from orders where bill_to_object = :ldb_object_id or OBJECT_ID = :ldb_object_id using it_transaction;
+	if li_cnt > 0 then
+		gf_messagebox('m.c_customer.e_dw_e_predelete.01','Thông báo','Khách hàng đã có giao dịch, không thể xoá !','exclamation','ok',1)
+		return -1
+	end if
+	ldb_customer_id = rpo_dw.getitemnumber(vl_currentrow, 'customer_id') 
 	if ldb_customer_id > 0 then
 		iw_display.f_get_transaction(it_transaction)
 		DELETE  customer where id = :ldb_customer_id using it_transaction;
