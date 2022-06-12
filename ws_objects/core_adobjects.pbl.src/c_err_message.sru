@@ -187,23 +187,22 @@ end function
 public function integer f_get_bttn_text (ref string ras_bttntext[]);string						ls_bttnText, las_bttn[]
 int							li_cnt, li_idx
 c_string					lc_string
- select text into :ls_bttnText from label where code = :CODE and subcode = 'MESSAGE.BUTTON' and lang = :gs_user_lang using it_transaction;
- 
- if it_transaction.sqlcode = -1 then
-	messagebox('ERROR',it_transaction.sqlerrtext)
-	return -1
-elseif it_transaction.sqlnrows = 0 then
-	li_cnt = lc_string.f_stringtoarray( is_bttn, ';', las_bttn[])
-	FOR li_idx = 1 to li_cnt
-		 if las_bttn[li_idx] = button then
-			li_cnt = lc_string.f_stringtoarray(  is_bttntext[li_idx], ';',ras_bttntext[])
-			return li_cnt
-		end if
-	NEXT
-elseif it_transaction.sqlnrows = 1 then
+
+select count(id) into :li_cnt from label where code = :CODE and subcode = 'MESSAGE.BUTTON' and lang = :gs_user_lang using it_transaction;
+
+if li_cnt = 1 then
+	select text into :ls_bttnText from label where code = :CODE and subcode = 'MESSAGE.BUTTON' and lang = :gs_user_lang using it_transaction;
 	li_cnt = lc_string.f_stringtoarray( is_bttn, ';', las_bttn[])
 	FOR li_idx = 1 to li_cnt
 		 if las_bttn[li_idx] = ls_bttnText then
+			li_cnt = lc_string.f_stringtoarray(  is_bttntext[li_idx], ';',ras_bttntext[])
+			return li_cnt
+		end if
+	NEXT	
+else
+	li_cnt = lc_string.f_stringtoarray( is_bttn, ';', las_bttn[])
+	FOR li_idx = 1 to li_cnt
+		 if las_bttn[li_idx] = button then
 			li_cnt = lc_string.f_stringtoarray(  is_bttntext[li_idx], ';',ras_bttntext[])
 			return li_cnt
 		end if
@@ -233,7 +232,7 @@ if pos( las_parm[3], '@')> 0 then
 	end if
 end if
 
-connect using it_transaction;
+//connect using it_transaction;
 
 SELECT count( MESSAGE.CODE) into :li_rtn		   
 FROM message
@@ -269,7 +268,7 @@ else
 	ICON = las_parm[4]
 	BUTTON = las_parm[5]
 	DEFAULT_BTTN = integer(las_parm[6])
-	is_message = lc_obj_service.f_globalreplace( TEXT, '@', '')	
+	TEXT = lc_obj_service.f_globalreplace( TEXT, '@', '')	
 end if
 
 if pos(TEXT,'@') > 0  then 
@@ -278,7 +277,7 @@ else
 	is_message = TEXT
 end if
 
-disconnect using it_transaction;
+//disconnect using it_transaction;
 return li_rtn
 end function
 

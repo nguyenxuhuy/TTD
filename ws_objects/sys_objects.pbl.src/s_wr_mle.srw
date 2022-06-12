@@ -92,7 +92,7 @@ end if
 lw_requester = this
 if pos(ls_parm,'#') > 0  then
 	ic_obj_main = create using 'c_err_message'
-	ic_obj_main.dynamic f_init_message(ls_parm)
+	ic_obj_main.dynamic f_init_message_ex(ls_parm)
 elseif isvalid(lerr_system) then
 	ic_obj_main = create using 'c_err_message'
 	ic_obj_main.dynamic f_init_message(lerr_system)	

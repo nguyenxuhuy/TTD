@@ -1379,8 +1379,23 @@ choose case itemtag
 		lw_handle = parent.getactivesheet( )
 		if isvalid(lw_handle) then
 			choose case itemtag
-				case 'e_modify','e_save','e_post','e_unpost'
-					li_rtn = lw_handle.triggerevent( itemtag)
+				case 'e_modify'
+					li_rtn = lw_handle. dynamic event e_modify()
+					if li_rtn <> -1 then
+						this.f_change_action_button( itemhandle, index, 0)
+					end if					
+				case 'e_save'
+					li_rtn = lw_handle. dynamic event e_save()
+					if li_rtn <> -1 then
+						this.f_change_action_button( itemhandle, index, 0)
+					end if					
+				case 'e_post'
+					li_rtn = lw_handle. dynamic event e_post()
+					if li_rtn <> -1 then
+						this.f_change_action_button( itemhandle, index, 0)
+					end if					
+				case 'e_unpost'
+					li_rtn = lw_handle.dynamic event e_unpost()
 					if li_rtn <> -1 then
 						this.f_change_action_button( itemhandle, index, 0)
 					end if

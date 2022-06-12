@@ -6886,6 +6886,8 @@ if idw_focus.dynamic f_get_ib_editing() then
 		end if
 	elseif li_response = 3 then
 		return 1
+	else
+		t_w_mdi.rbb_1.f_change_action_button('e_save')
 	end if
 end if
 
@@ -6911,6 +6913,8 @@ end if
 
 
 li_response = ic_obj_handling.dynamic event e_window_closequery()
+
+
 
 //lw_sheet = t_w_mdi.
 //lw_sheet = t_w_mdi.getnextsheet(this)
