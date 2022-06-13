@@ -696,6 +696,37 @@ istr_dwo_related[7].s_related_obj_column = 'id'			// cột quan hệ đến
 istr_dwo_related[7].s_relatedtext_column = 'code'					
 istr_dwo_related[7].s_text = 'In phiếu làm mẫu'
 
+istr_dwo_related[8].s_related_obj_name = 'u_qt'					// đối tượng copy đến
+istr_dwo_related[8].s_main_obj_dwo = 'd_document_prod_grid'		//datawindow quan hệ main
+istr_dwo_related[8].s_main_obj_column = 'id'			// cột quan hệ của main
+istr_dwo_related[8].s_related_obj_dwo = 'd_document_pm_grid'	// datawindow quan hệ đến
+istr_dwo_related[8].s_related_obj_column = 'id'			// cột quan hệ đến
+istr_dwo_related[8].b_f_matching = true
+istr_dwo_related[8].s_relatedtext_column = 'doc_code'		
+istr_dwo_related[8].s_text = 'Đơn đặt mua từ: '
+
+istr_dwo_related[8].s_main_obj_dwo_copy[1] = 'd_prod_material_grid' // datawindow copy từ
+istr_dwo_related[8].s_main_obj_column_copy[1] = 'ITEM_ID;object_code;object_name;object_name;BOM_QTY;uom_code;UOM_ID;wh_id;' // cột copy từ
+istr_dwo_related[8].s_related_obj_dwo_copy[1] = 'd_po_line_grid' //datawindow copy đến
+istr_dwo_related[8].s_related_obj_column_copy[1] = 'ITEM_ID;item_code;item_name;LINE_TEXT;QTY;uom_code;TRANS_UOM;warehouse_id' // cột copy đến
+istr_dwo_related[8].s_main_obj_column_chk[1] = ''
+istr_dwo_related[8].s_related_obj_column_chk[1] = ''
+istr_dwo_related[8].b_copy_line[1] = true
+// khai báo cập nhật bản matching
+istr_dwo_related[8].s_match_f_dwo[1] = 'd_prod_material_grid'
+istr_dwo_related[8].s_match_f_col_obj[1] = 'item_id'
+istr_dwo_related[8].s_match_t_dwo[1] = 'd_po_line_grid'
+istr_dwo_related[8].s_match_f_column[1] = 'BOM_QTY'
+istr_dwo_related[8].s_match_t_column[1] = 'qty'
+istr_dwo_related[8].s_match_column[1] = 'qty'
+istr_dwo_related[8].s_main_obj_column_sum[1] = 'BOM_QTY'
+istr_dwo_related[8].s_related_obj_column_sum[1] = 'QTY'
+istr_dwo_related[8].s_f_obj_column_chk[1] = 'ITEM_ID'
+istr_dwo_related[8].s_t_obj_column_chk[1] = 'ITEM_ID'
+istr_dwo_related[8].s_match_minus_dwo[1] = 'd_pur_invoice_line_grid;' //dwo không tính là đã match
+istr_dwo_related[8].b_f_sum[1] = true
+istr_dwo_related[8].s_main_dr_cr_obj_dwo_sum[1]=''
+istr_dwo_related[8].s_main_dr_cr_obj_column_sum[1]=''
 end subroutine
 
 public subroutine f_set_str_streamvalue ();//-- material --//
@@ -1321,8 +1352,8 @@ istr_actionpane[1].sa_sub_button[3]=''	//'b_send_2_approve;b_approve;b_reject;'
 istr_actionpane[1].sa_subbutton_name[3]=''	//'Gửi duyệt;Duyệt;Trả duyệt'
 istr_actionpane[1].sa_sub_button[4]='b_view_prod_sample;b_view_prod_order;'
 istr_actionpane[1].sa_subbutton_name[4]='Phiếu làm Mẫu;Lệnh SX;'
-istr_actionpane[1].sa_sub_button[5]='b_copyt_goods_delivery_misc;b_copyt_goods_receipt_misc';
-istr_actionpane[1].sa_subbutton_name[5]='Tạo xuất kho NVL;Tạo nhập kho TP;'
+istr_actionpane[1].sa_sub_button[5]='b_copyt_goods_delivery_misc;b_copyt_goods_receipt_misc;b_copyt_qt';
+istr_actionpane[1].sa_subbutton_name[5]='Tạo xuất kho NVL;Tạo nhập kho TP;Tạo chào giá'
 istr_actionpane[1].sa_sub_button[6]=''
 istr_actionpane[1].sa_subbutton_name[6]=''
 end event
@@ -1724,5 +1755,15 @@ else
 end if
 
 return ancestorreturnvalue
+end event
+
+event e_window_e_precopy_to;call super::e_window_e_precopy_to;//-- varify before copy --//
+
+if vs_objectname_to = 'u_qt' then
+	
+elseif vs_objectname_to = 'u_goods_delivery_misc' then
+elseif vs_objectname_to = 'u_goods_receipt_misc' then
+end if
+return 0
 end event
 

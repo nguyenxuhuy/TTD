@@ -1677,6 +1677,7 @@ int					li_rtn
 //ls_first_colname =  iw_display.dw_filter.f_getfirstcolumn( true)
 //iw_display.f_set_idwfocus(  iw_display.dw_filter)
 //li_rtn = iw_display.idw_focus.setcolumn( ls_first_colname)
+iw_display.dynamic event e_filteron_rb( )
 return li_rtn
 end event
 

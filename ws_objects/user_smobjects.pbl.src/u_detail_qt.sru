@@ -319,7 +319,6 @@ if lb_editing then
 		iw_display.post event e_add( )
 	end if
 end if
-iw_display.event e_filteron_new( )
 return 0
 end event
 

@@ -1416,6 +1416,10 @@ choose case itemtag
 			lw_handle.dynamic event e_copy_to_new('b_copyt_self')
 		end if		
 	case 'e_copyt'
+		lw_handle = parent.getactivesheet( )
+		if isvalid(lw_handle) then
+			lw_handle.dynamic event e_copy_to_new(itemtag )
+		end if				
 	case 'e_copyf'
 	case 'e_filter'
 		lw_handle = parent.getactivesheet( )

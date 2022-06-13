@@ -924,14 +924,14 @@ if vs_type = 'document' then
 	if isnull(vs_doc_status) then	
 		this.getchilditembyindex( vrpi_tab.itemhandle, 1, l_rsbi)
 		l_rsbi.enabled = true
-//		this.setsmallbutton( l_rsbi.itemhandle , l_rsbi)
+		this.setsmallbutton( l_rsbi.itemhandle , l_rsbi)
 	else
 		this.getchilditembyindex( vrpi_tab.itemhandle, 1, l_rsbi)
 		l_rsbi.enabled = true
-//		this.setsmallbutton( l_rsbi.itemhandle , l_rsbi)
+		this.setsmallbutton( l_rsbi.itemhandle , l_rsbi)
 		this.getchilditembyindex( vrpi_tab.itemhandle, 2, l_rsbi)
-		l_rsbi.enabled = true
-//		this.setsmallbutton( l_rsbi.itemhandle , l_rsbi)		
+		l_rsbi.enabled = true and pos( vs_enable_buttons, l_rsbi.tag+';')>0
+		this.setsmallbutton( l_rsbi.itemhandle , l_rsbi)		
 	end if
 elseif vs_type = 'detail' then
 elseif vs_type = 'object' then
