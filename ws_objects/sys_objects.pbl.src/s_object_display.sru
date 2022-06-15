@@ -6211,7 +6211,7 @@ return 0
 end function
 
 public function integer f_update_ribbonbar (u_rbb rbb_handle);
-int						li_cnt, li_idx, li_bttn_cnt, li_idx1
+int						li_cnt, li_idx, li_bttn_cnt, li_idx1, li_rtn_idx
 string					lsa_sub[], lsa_bttn[], lsa_bttn_nm[],  lsa_null[], ls_enble_buttons
 c_string				lc_string
 RibbonCategoryItem			l_rci
@@ -6258,7 +6258,7 @@ FOR li_idx = 1 to li_cnt
 					l_rmitem_tmp.tag = lsa_bttn[li_idx1]
 					l_rmitem_tmp.text = lsa_bttn_nm[li_idx1]
 					l_rmitem_tmp.picturename = l_rmitem.picturename
-					l_rMenu.insertitemLast( l_rmitem_tmp)
+					li_rtn_idx = l_rMenu.insertitemLast( l_rmitem_tmp)
 				end if
 			next
 			l_rsbi.setmenu(l_rMenu )
