@@ -19,6 +19,9 @@ event ue_tabbutton ( long al_handle )
 event ue_appbutton ( long al_handle,  long al_index,  long al_subindex )
 event ue_recentitem ( long al_handle,  long al_index )
 event itemclicked ( string itemtag,  long itemhandle,  integer index,  integer subindex )
+event ue_menuviewclicked ( long al_handle,  long al_index,  long al_subindex )
+event ue_menucopytclicked ( long al_handle,  long al_index,  long al_subindex )
+event ue_menucopyfclicked ( long al_handle,  long al_index,  long al_subindex )
 end type
 global u_rbb u_rbb
 
@@ -69,6 +72,30 @@ event ue_recentitem(long al_handle, long al_index);if  #CentralizedEventHandling
 	of_triggerparentevent ( al_handle, al_index, 0 )
 else
 	 of_triggerevent ( al_handle, al_index, 0 )
+end if
+
+end event
+
+event ue_menuviewclicked(long al_handle, long al_index, long al_subindex);if  #CentralizedEventHandling = false then
+	of_triggerparentevent ( al_handle, al_index, al_subindex )
+else
+	 of_triggerevent ( al_handle, al_index, al_subindex )
+end if
+
+end event
+
+event ue_menucopytclicked(long al_handle, long al_index, long al_subindex);if  #CentralizedEventHandling = false then
+	of_triggerparentevent ( al_handle, al_index, al_subindex )
+else
+	 of_triggerevent ( al_handle, al_index, al_subindex )
+end if
+
+end event
+
+event ue_menucopyfclicked(long al_handle, long al_index, long al_subindex);if  #CentralizedEventHandling = false then
+	of_triggerparentevent ( al_handle, al_index, al_subindex )
+else
+	 of_triggerevent ( al_handle, al_index, al_subindex )
 end if
 
 end event
