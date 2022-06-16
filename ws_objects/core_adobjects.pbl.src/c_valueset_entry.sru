@@ -44,7 +44,7 @@ is_object_title = 'Bộ giá trị'
 
 istr_actionpane[1].s_description = is_object_title
 
-istr_actionpane[1].s_button_name =  'b_doc_trace;b_cancel;b_self_copy;e_add;e_modify;e_delete;'
+istr_actionpane[1].s_button_name =  'b_self_copy;e_add;e_modify;e_delete;'
 //istr_actionpane[1].s_button_name += 'b_doc_trace;b_cancel;b_self_copy;e_add;e_modify;e_delete;'
 //istr_actionpane[1].s_button_has_sub ='b_related_object;b_update;b_approve;b_view;b_copyt;b_copyf;'
 //istr_actionpane[1].sa_sub_button[1]='u_so;'

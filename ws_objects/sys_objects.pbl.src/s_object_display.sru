@@ -6217,12 +6217,13 @@ c_string				lc_string
 RibbonCategoryItem			l_rci
 RibbonPanelItem				l_rpi, l_rpi_action
 RibbonLargeButtonItem 		l_rlbi, l_rlbi_null
-RibbonMenu						l_rMenu_copyf, l_rMenu_view, l_rMenu_copyt		
+RibbonMenu						l_rMenu		
 RibbonMenuItem				l_rmitem, l_rmitem_tmp
 RibbonGroupItem				l_rgi
 RibbonSmallButtonItem 		l_rsbi, l_rsbi_null
 
 
+//rbb_handle.importfromjsonfile( "JsonFile1.json")
 
 rbb_handle.getcategorybyindex( 1, l_rci)
 li_cnt  = lc_string.f_stringtoarray(istr_actionpane[1].s_button_has_sub , ';', lsa_sub[])
@@ -6231,61 +6232,63 @@ FOR li_idx = 1 to li_cnt
 	lsa_bttn[] = lsa_null[]
 	lsa_bttn_nm[] =  lsa_null[]
 	if lsa_sub[li_idx] = 'b_copyt' or  lsa_sub[li_idx] = 'b_copyf'   then
-		li_bttn_cnt  = lc_string.f_stringtoarray(istr_actionpane[1].sa_sub_button[li_idx] , ';', lsa_bttn[])
-		li_bttn_cnt  = lc_string.f_stringtoarray(istr_actionpane[1].sa_subbutton_name[li_idx] , ';', lsa_bttn_nm[])		
 		rbb_handle.getchilditembyindex( l_rci.itemhandle, 3, l_rpi)	
 		if lsa_sub[li_idx] = 'b_copyt' then
 			rbb_handle.getchilditembyindex( l_rpi.itemhandle, 2, l_rsbi)
-			if li_bttn_cnt = 0 then
-				//-- xóa copy --//			
-				l_rsbi.enabled = false
-				l_rsbi.tag = 'disable'
-			else
-				for li_idx1 = 1 to li_bttn_cnt
-					l_rmitem.tag = lsa_bttn[li_idx1]
-					l_rmitem.text = lsa_bttn_nm[li_idx1]
-					l_rmitem.itemtype = 0
-					l_rmitem.clicked = "ue_menucopytclicked"
-					li_rtn_idx = l_rMenu_copyf.insertitemlast(l_rmitem)
-				next
-				l_rsbi.setmenu(l_rMenu_copyf )				
-			end if			
 		else
 			rbb_handle.getchilditembyindex( l_rpi.itemhandle, 1, l_rsbi)
-			if li_bttn_cnt = 0 then
-				//-- xóa copy --//			
-				l_rsbi.enabled = false
-				l_rsbi.tag = 'disable'
-			else
-				for li_idx1 = 1 to li_bttn_cnt
-					l_rmitem.tag = lsa_bttn[li_idx1]
-					l_rmitem.text = lsa_bttn_nm[li_idx1]
-					l_rmitem.itemtype = 0
-					l_rmitem.clicked = "ue_menucopyfclicked"
-					li_rtn_idx = l_rMenu_copyt.insertitemlast(l_rmitem)
-				next
-				l_rsbi.setmenu(l_rMenu_copyt )				
-			end if						
 		end if
-		rbb_handle.SetSmallButton (l_rsbi.itemhandle, l_rsbi )			
-	elseif lsa_sub[li_idx] = 'b_view' then
-		rbb_handle.getchilditembyindex( l_rci.itemhandle, 4, l_rpi)			
 		li_bttn_cnt  = lc_string.f_stringtoarray(istr_actionpane[1].sa_sub_button[li_idx] , ';', lsa_bttn[])
 		li_bttn_cnt  = lc_string.f_stringtoarray(istr_actionpane[1].sa_subbutton_name[li_idx] , ';', lsa_bttn_nm[])
 		if li_bttn_cnt = 0 then
 			//-- xóa copy --//			
 			l_rsbi.enabled = false
 			l_rsbi.tag = 'disable'
+			rbb_handle.SetSmallButton (l_rsbi.itemhandle, l_rsbi )
+//			rbb_handle.deleteSmallbutton(l_rsbi.itemhandle )
+		else
+			l_rsbi.getmenu( l_rMenu)
+			for li_idx1 = 1 to li_bttn_cnt
+				if l_rMenu.getitem( li_idx1 , l_rmitem) = 1 then
+					l_rmitem_tmp = l_rmitem
+					l_rmitem.tag = lsa_bttn[li_idx1]
+					l_rmitem.text = lsa_bttn_nm[li_idx1]
+					l_rMenu.setitem( li_idx1, l_rmitem)
+				else
+					l_rmitem_tmp.tag = lsa_bttn[li_idx1]
+					l_rmitem_tmp.text = lsa_bttn_nm[li_idx1]
+					l_rmitem_tmp.picturename = l_rmitem.picturename
+					li_rtn_idx = l_rMenu.insertitemLast( l_rmitem_tmp)
+				end if
+			next
+			l_rsbi.setmenu(l_rMenu )
+			rbb_handle.SetSmallButton (l_rsbi.itemhandle, l_rsbi )			
+		end if
+	elseif lsa_sub[li_idx] = 'b_view' then
+		rbb_handle.getchilditembyindex( l_rci.itemhandle, 4, l_rpi)			
+		li_bttn_cnt  = lc_string.f_stringtoarray(istr_actionpane[1].sa_sub_button[li_idx] , ';', lsa_bttn[])
+		li_bttn_cnt  = lc_string.f_stringtoarray(istr_actionpane[1].sa_subbutton_name[li_idx] , ';', lsa_bttn_nm[])
+		if li_bttn_cnt = 0 then
+//			rbb_handle.getchilditembyindex( l_rpi.itemhandle, 1, l_rsbi)
+			//-- xóa copy --//			
+//			rbb_handle.deletepanel(l_rpi.itemhandle )
 		else
 			rbb_handle.getchilditembyindex( l_rpi.itemhandle, 1, l_rsbi)
+			l_rsbi.getmenu( l_rMenu)
 			for li_idx1 = 1 to li_bttn_cnt
-				l_rmitem.tag = lsa_bttn[li_idx1]
-				l_rmitem.text = lsa_bttn_nm[li_idx1]
-				l_rmitem.itemtype = 0
-				l_rmitem.clicked = "ue_menuviewclicked"
-				li_rtn_idx = l_rMenu_view.insertitemlast(l_rmitem)
+				if l_rMenu.getitem( li_idx1 , l_rmitem) = 1 then					
+					l_rmitem_tmp = l_rmitem
+					l_rmitem.tag = lsa_bttn[li_idx1]
+					l_rmitem.text = lsa_bttn_nm[li_idx1]
+					l_rMenu.setitem( li_idx1 ,l_rmitem)
+				else
+					l_rmitem_tmp.tag = lsa_bttn[li_idx1]
+					l_rmitem_tmp.text = lsa_bttn_nm[li_idx1]
+					l_rmitem_tmp.picturename = l_rmitem.picturename
+					l_rMenu.InsertItemLast(l_rmitem_tmp)
+				end if
 			next
-			l_rsbi.setmenu(l_rMenu_view )
+			l_rsbi.setmenu(l_rMenu )
 			rbb_handle.SetSmallButton (l_rsbi.itemhandle, l_rsbi )
 		end if		
 	elseif lsa_sub[li_idx] = 'b_approve' then

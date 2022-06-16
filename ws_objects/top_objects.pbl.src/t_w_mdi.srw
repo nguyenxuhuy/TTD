@@ -1323,7 +1323,15 @@ long BackColor=15780518
 end type
 
 type rbb_1 from u_rbb within t_w_mdi
-boolean #centralizedeventhandling = true
+integer width = 0
+integer height = 0
+long backcolor = 0
+integer textsize = 0
+integer weight = 0
+fontpitch fontpitch = default!
+fontfamily fontfamily = anyfont!
+string facename = ""
+boolean hidepaneltext = false
 end type
 
 event itemclicked;call super::itemclicked;int					li_rtn
