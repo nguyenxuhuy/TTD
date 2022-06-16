@@ -7669,10 +7669,10 @@ s_str_dwo_related		lstr_data_related[]
 //	end if
 //end if
 if  not this.ib_opening then 
+	ic_obj_handling.event e_window_activate()
 	ldw_main =  this.f_get_dwmain( )
 	this.f_set_idwfocus( ldw_main)
-	this.f_ctrl_enable_button(idw_focus )
-	ic_obj_handling.event e_window_activate()
+	this.post f_ctrl_enable_button(idw_focus )	
 end if
 end event
 
