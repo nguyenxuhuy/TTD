@@ -1342,7 +1342,7 @@ istr_actionpane[1].s_description = is_object_title
 is_exrate_type = 'buy'
 
 istr_actionpane[1].s_button_name = 'b_preview;b_send_2_approve;b_approve;b_reject;b_copyt;u_so;b_view;e_action_process;e_action_complete;e_action_reopen;'
-istr_actionpane[1].s_button_name += 'b_doc_trace;b_cancel;b_self_copy;e_add;e_modify;e_delete;b_view_prod_order;b_copyt_goods_receipt_misc;b_copyt_goods_delivery_misc;b_copyt_qt;'
+istr_actionpane[1].s_button_name += 'b_doc_trace;b_cancel;b_self_copy;e_add;e_modify;e_delete;b_view_prod_order;b_view_prod_sample;b_copyt_goods_receipt_misc;b_copyt_goods_delivery_misc;b_copyt_qt;'
 istr_actionpane[1].s_button_has_sub ='b_related_object;b_update;b_approve;b_view;b_copyt;b_copyf;'
 istr_actionpane[1].sa_sub_button[1]='u_so;'
 istr_actionpane[1].sa_subbutton_name[1]='Đơn bán hàng(SO);'
