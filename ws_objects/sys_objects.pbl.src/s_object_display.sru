@@ -6211,7 +6211,7 @@ return 0
 end function
 
 public function integer f_update_ribbonbar (u_rbb rbb_handle);
-int						li_cnt, li_idx, li_bttn_cnt, li_idx1, li_rtn_idx
+int						li_cnt, li_idx, li_bttn_cnt, li_idx1, li_rtn_idx, li_child_cnt
 string					lsa_sub[], lsa_bttn[], lsa_bttn_nm[],  lsa_null[], ls_enble_buttons
 c_string				lc_string
 RibbonCategoryItem			l_rci
@@ -6242,6 +6242,8 @@ FOR li_idx = 1 to li_cnt
 				l_rsbi.enabled = false
 				l_rsbi.tag = 'disable'
 			else
+				l_rsbi.enabled = true
+				l_rsbi.tag = lsa_sub[li_idx]			
 				for li_idx1 = 1 to li_bttn_cnt
 					l_rmitem.tag = lsa_bttn[li_idx1]
 					l_rmitem.text = lsa_bttn_nm[li_idx1]
@@ -6275,13 +6277,15 @@ FOR li_idx = 1 to li_cnt
 		rbb_handle.getchilditembyindex( l_rci.itemhandle, 4, l_rpi)			
 		li_bttn_cnt  = lc_string.f_stringtoarray(istr_actionpane[1].sa_sub_button[li_idx] , ';', lsa_bttn[])
 		li_bttn_cnt  = lc_string.f_stringtoarray(istr_actionpane[1].sa_subbutton_name[li_idx] , ';', lsa_bttn_nm[])
-
 		rbb_handle.getchilditembyindex( l_rpi.itemhandle, 1, l_rsbi)
+			
 		if li_bttn_cnt = 0 then
 			//-- xóa copy --//			
 			l_rsbi.enabled = false
 			l_rsbi.tag = 'disable'
 		else
+			l_rsbi.enabled = true
+			l_rsbi.tag = lsa_sub[li_idx]					
 			for li_idx1 = 1 to li_bttn_cnt
 				l_rmitem.tag = lsa_bttn[li_idx1]
 				l_rmitem.text = lsa_bttn_nm[li_idx1]
@@ -6296,20 +6300,66 @@ FOR li_idx = 1 to li_cnt
 
 	elseif lsa_sub[li_idx] = 'b_approve' then
 		rbb_handle.getchilditembyindex( l_rci.itemhandle, 5, l_rpi)	
+		//-- xoá child --//
+		li_child_cnt = rbb_handle.GetChildItemCount ( l_rpi.itemhandle )
+		for  li_rtn_idx = li_child_cnt to 1 step -1
+			 rbb_handle.GetChildItemByIndex (l_rpi.itemhandle, li_rtn_idx, l_rsbi)
+			 rbb_handle.DeleteSmallButton(l_rsbi.itemhandle)
+		next		
 		li_bttn_cnt  = lc_string.f_stringtoarray(istr_actionpane[1].sa_sub_button[li_idx] , ';', lsa_bttn[])
 		if li_bttn_cnt = 0 then
-			rbb_handle.deletepanel(l_rpi.itemhandle )
+			//-- disable--//		
+			l_rpi.enabled = false
+			l_rpi.tag = 'disable'			
+			rbb_handle.SetPanel (l_rpi.itemhandle, l_rpi)
+		else
+			for li_idx1 = 1 to li_bttn_cnt	
+				if lsa_bttn[li_idx1] = 'b_send_2_approve' then 
+					l_rsbi.picturename = "Pics\m_send_2_approve.png"		
+					l_rsbi.PowerTipDescription= "Gửi duyệt" 	
+				elseif lsa_bttn[li_idx1] = 'b_approve' then 
+					l_rsbi.picturename = "Custom038a!"		
+					l_rsbi.PowerTipDescription= "Duyệt" 						
+				elseif lsa_bttn[li_idx1] = 'b_reject' then 
+					l_rsbi.picturename = "UndoBig!"		
+					l_rsbi.PowerTipDescription= "Trả duyệt" 						
+				elseif lsa_bttn[li_idx1] = 'b_appr_trace' then 
+					l_rsbi.picturename = "HistoryBig!"		
+					l_rsbi.PowerTipDescription= "Lược sử" 						
+				end if
+				l_rsbi.Tag= lsa_bttn[li_idx1]
+				l_rsbi.visible = true
+				l_rsbi.enabled = true
+				l_rsbi.clicked = "ue_tabbutton"				
+				rbb_handle.InsertSmallButtonLast (l_rpi.itemhandle, l_rsbi)					
+			next
 		end if		
 	elseif lsa_sub[li_idx] = 'b_update' then
+		li_bttn_cnt  = lc_string.f_stringtoarray(istr_actionpane[1].sa_sub_button[li_idx] , ';', lsa_bttn[])
+		li_bttn_cnt  = lc_string.f_stringtoarray(istr_actionpane[1].sa_subbutton_name[li_idx] , ';', lsa_bttn_nm[])		
 		if iw_display.classname( ) = 's_w_multi_rb' then
 			rbb_handle.getchilditembyindex( l_rci.itemhandle, 6, l_rpi)	
+			//-- xoá child --//
+			li_child_cnt = rbb_handle.GetChildItemCount ( l_rpi.itemhandle )
+			for  li_rtn_idx = li_child_cnt to 1 step -1
+				 rbb_handle.GetChildItemByIndex (l_rpi.itemhandle, li_rtn_idx, l_rsbi)
+				 rbb_handle.DeleteSmallButton(l_rsbi.itemhandle)
+			next				
 		elseif iw_display.classname( ) = 's_w_multi_n_rb' then
-			rbb_handle.getchilditembyindex( l_rci.itemhandle, 4, l_rpi)				
+			rbb_handle.getchilditembyindex( l_rci.itemhandle, 4, l_rpi)	
+			//-- xoá child --//
+			li_child_cnt = rbb_handle.GetChildItemCount ( l_rpi.itemhandle )
+			for  li_rtn_idx = li_child_cnt to 1 step -1
+				 rbb_handle.GetChildItemByIndex (l_rpi.itemhandle, li_rtn_idx, l_rlbi)
+				 rbb_handle.DeleteLargeButton(l_rlbi.itemhandle)
+			next				
 		end if
-		li_bttn_cnt  = lc_string.f_stringtoarray(istr_actionpane[1].sa_sub_button[li_idx] , ';', lsa_bttn[])
-		li_bttn_cnt  = lc_string.f_stringtoarray(istr_actionpane[1].sa_subbutton_name[li_idx] , ';', lsa_bttn_nm[])
+
 		if li_bttn_cnt = 0 then
-			rbb_handle.deletepanel(l_rpi.itemhandle )
+			//-- disable--//			
+			l_rpi.enabled = false
+			l_rpi.tag = 'disable'			
+			rbb_handle.SetPanel (l_rpi.itemhandle, l_rpi)
 		else
 			for li_idx1 = 1 to li_bttn_cnt			
 				if iw_display.classname( ) = 's_w_multi_rb' then	
@@ -6390,18 +6440,28 @@ FOR li_idx = 1 to li_cnt
 		rbb_handle.getchilditembyindex( l_rci.itemhandle, 7, l_rpi)	
 		li_bttn_cnt  = lc_string.f_stringtoarray(istr_actionpane[1].sa_sub_button[li_idx] , ';', lsa_bttn[])
 		li_bttn_cnt  = lc_string.f_stringtoarray(istr_actionpane[1].sa_subbutton_name[li_idx] , ';', lsa_bttn_nm[])
+		//-- xoá child --//
+		li_child_cnt = rbb_handle.GetChildItemCount ( l_rpi.itemhandle )
+		for  li_rtn_idx = li_child_cnt to 1 step -1
+			 rbb_handle.GetChildItemByIndex (l_rpi.itemhandle, li_rtn_idx, l_rlbi)
+			 rbb_handle.DeleteLargeButton(l_rlbi.itemhandle)
+		next		
 		if li_bttn_cnt = 0 then
-			rbb_handle.deletepanel(l_rpi.itemhandle )
+			//-- disable--//		
+			l_rpi.enabled = false
+			l_rpi.tag = 'disable'			
+			rbb_handle.SetPanel (l_rpi.itemhandle, l_rpi)
 		else
-			for li_idx1 = 1 to li_bttn_cnt
-				l_rlbi = l_rlbi_null	
-				l_rlbi.text =  lsa_bttn_nm[li_idx1]
+			for li_idx1 = 1 to li_bttn_cnt	
+				l_rlbi.picturename = "OrdersBig!"		
 				l_rlbi.Tag= lsa_bttn[li_idx1]
-				l_rlbi.clicked = "ue_tabbutton"		
-				l_rlbi.picturename = "OrdersBig!"
-				rbb_handle.InsertLargeButtonLast (l_rpi.itemhandle,l_rlbi)
-			next										
-		end if				
+				l_rlbi.text=  lsa_bttn_nm[li_idx1]
+				l_rlbi.visible = true
+				l_rlbi.enabled = true
+				l_rlbi.clicked = "ue_tabbutton"				
+				rbb_handle.InsertLargeButtonLast (l_rpi.itemhandle, l_rlbi)					
+			next
+		end if							
 	end if
 NEXT
 

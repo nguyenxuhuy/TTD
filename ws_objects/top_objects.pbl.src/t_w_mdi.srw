@@ -1324,14 +1324,13 @@ end type
 
 type rbb_1 from u_rbb within t_w_mdi
 integer width = 0
-integer height = 0
+integer height = 380
 long backcolor = 0
 integer textsize = 0
 integer weight = 0
 fontpitch fontpitch = default!
 fontfamily fontfamily = anyfont!
 string facename = ""
-boolean hidepaneltext = false
 boolean #centralizedeventhandling = true
 end type
 

@@ -7670,6 +7670,7 @@ s_str_dwo_related		lstr_data_related[]
 //end if
 if  not this.ib_opening then 
 	ic_obj_handling.event e_window_activate()
+	ic_obj_handling.f_update_ribbonbar( t_w_mdi.rbb_1)
 	ldw_main =  this.f_get_dwmain( )
 	this.f_set_idwfocus( ldw_main)
 	this.post f_ctrl_enable_button(idw_focus )	
