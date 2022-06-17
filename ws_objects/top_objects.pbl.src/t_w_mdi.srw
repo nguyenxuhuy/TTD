@@ -1332,6 +1332,7 @@ fontpitch fontpitch = default!
 fontfamily fontfamily = anyfont!
 string facename = ""
 boolean hidepaneltext = false
+boolean #centralizedeventhandling = true
 end type
 
 event itemclicked;call super::itemclicked;int					li_rtn
