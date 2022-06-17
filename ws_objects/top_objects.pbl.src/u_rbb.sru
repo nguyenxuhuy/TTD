@@ -339,6 +339,7 @@ FOR li_idx = 1 to li_rc
 			l_rmitem.enabled = lb_enable and not isnull(vs_doc_status )
 			l_rMenu.setitem( li_idx1, l_rmitem)
 		NEXT
+		l_rsbi.setmenu( l_rMenu)
 	end if
 	this.setsmallbutton( l_rsbi.itemhandle , l_rsbi)
 NEXT
@@ -383,6 +384,7 @@ FOR li_idx = 1 to li_rc
 			end if
 			l_rMenu.setitem( li_idx1, l_rmitem)
 		NEXT
+		l_rsbi.setmenu( l_rMenu)
 	end if
 	this.setsmallbutton( l_rsbi.itemhandle , l_rsbi)
 NEXT
