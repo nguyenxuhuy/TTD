@@ -706,9 +706,12 @@ istr_dwo_related[8].s_relatedtext_column = 'code'
 istr_dwo_related[8].s_text = 'Chào giá từ: '
 
 istr_dwo_related[8].s_main_obj_dwo_copy[1] = 'd_document_prod_grid' // datawindow copy từ
-istr_dwo_related[8].s_main_obj_column_copy[1] = 'dr_cr_object;object_name;total_QTY;TRANS_UOM;' // cột copy từ
+istr_dwo_related[8].s_main_obj_column_copy[1] = 'dr_cr_object;' // cột copy từ
 istr_dwo_related[8].s_related_obj_dwo_copy[1] = 'd_document_qt_grid' //datawindow copy đến
-istr_dwo_related[8].s_related_obj_column_copy[1] = 'dr_cr_object;LINE_TEXT;QTY;TRANS_UOM;' // cột copy đến
+istr_dwo_related[8].s_related_obj_column_copy[1] = 'dr_cr_object;' // cột copy đến
+istr_dwo_related[8].s_f_default_col[1] = 'DEFAULT_CURRENCY;SELL_RATE;PAYMENT_TERM;PAYMENT_METHOD;DELIVERY_MODE;'
+istr_dwo_related[8].s_main_dft_obj_col[1] = 'dr_cr_object;'
+istr_dwo_related[8].s_t_default_col[1] = 'CURRENCY_ID;EXCHANGE_RATE;PAYMENT_TERM;PAYMENT_METHOD;DELIVERY_MODE;'
 istr_dwo_related[8].s_main_obj_column_chk[1] = ''
 istr_dwo_related[8].s_related_obj_column_chk[1] = ''
 

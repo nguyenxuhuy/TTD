@@ -54,5 +54,8 @@ global type s_str_dwo_related from structure
 	string		s_related_obj_replace_dwo		descriptor "comment" = "dw thay thế cho dw related"
 	boolean		b_selected[]		descriptor "comment" = "TRUE chỉ copy record đc chọn"
 	boolean		b_chk_matched_qty
+	string		s_f_default_col[]		descriptor "comment" = "Cột related object lấy value từ default (ko copy)"
+	string		s_t_default_col[]		descriptor "comment" = "Cột lấy value  default"
+	string		s_main_dft_obj_col[]
 end type
 

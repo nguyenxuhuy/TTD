@@ -241,6 +241,7 @@ public function double f_copy_to_bank_voucher (string vs_f_objname, s_str_dwo_re
 public function string f_get_branch_code (double vdb_branch_id)
 public function double f_get_doc_id (t_dw_mpl vdw_handling, ref t_transaction rt_transaction)
 public function boolean f_check_id_exists_table (double vdb_id, string vs_table, ref t_transaction rt_transaction)
+public function integer f_get_cust_info (double vdb_cust_id, string vs_col_string, ref jsonpackage rjpk_info, ref t_transaction rt_transaction)
 end prototypes
 
 event e_send_2_approve(datawindow vdw_focus, s_object_display vc_obj_handling, s_w_multi vw_multi);
@@ -16127,7 +16128,7 @@ string				las_from_cols[], ls_from_cols, ls_sql_values, ls_coltype, ls_sql_exec,
 string				ls_sql_detail, ls_from_cols_detail, las_from_cols_detail[]
 double			ldb_id,ldb_f_doc_id, ldb_t_doc_id, ldb_version_id, ldb_trans_id, ldb_base_currID, ldb_mat_val, ldb_matched_val, ldb_f_ref_id, ldb_f_branch_id
 double			ldb_f_version_id, ldb_branch, ldb_id_detail, ldb_manage_group
-int					li_idx, li_idx1, li_idx2, li_row, li_colnbr, li_colCnt, li_pos, li_cnt, li_colCnt_detail, li_row_detail
+int					li_idx, li_idx1, li_idx2, li_row, li_colnbr, li_colCnt, li_pos, li_cnt, li_colCnt_detail, li_row_detail, li_dft_colCnt
 boolean			lb_found, lb_copied, lb_update_orders
 any				laa_value[], laa_chk_data[]
 t_ds_db				lds_handle, lds_handle_detail
@@ -16243,6 +16244,9 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) - 1
 	
 	ls_sql = "INSERT into "+ls_update_table +"(company_id, branch_id, created_by, created_date,last_mdf_by, last_mdf_date,"				
 	ls_sql_cols = vstr_dwo_related[1].s_related_obj_column_copy[li_idx]
+	if upperbound(vstr_dwo_related[1].s_t_default_col[]) > 0 then
+		ls_sql_cols += vstr_dwo_related[1].s_t_default_col[li_idx]
+	end if
 	ls_sql_cols= trim(lc_string.f_globalreplace(ls_sql_cols , ';', ','))
 	if right(ls_sql_cols,1) = ',' then 
 		if upper(ls_update_table) = 'ORDERS' then
@@ -16360,6 +16364,13 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) - 1
 						end if
 					end if
 				NEXT
+				//-- default cols--//
+				li_dft_colCnt =  lc_string.f_stringtoarray( vstr_dwo_related[1].s_t_default_col[li_idx], ';', las_from_cols[])
+				/////////////////////////////////////////////////////////////
+				////////////////////////////////////////////////////////////////
+				///////////////////////////////////
+				
+				//-- last cols--//
 				if upper(ls_update_table) = 'ORDERS' then					
 					ls_sql_values += ",1,'QT','DOCUMENT',"+string(ldb_t_doc_id) + "," +string(ldb_version_id) + ")"
 				elseif upper(ls_update_table) = 'QT_LINE' then
@@ -16478,6 +16489,10 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) - 1
 					end if
 				end if				
 			NEXT
+			//-- default cols--//
+			
+			
+			//-- last cols--//
 			if upper(ls_update_table) = 'ORDERS' then
 				ls_sql_values += ",1,'QT','DOCUMENT',"+string(ldb_t_doc_id) + "," +string(ldb_version_id) + ")"
 			else
@@ -19857,6 +19872,31 @@ else
 	return false
 end if
 
+end function
+
+public function integer f_get_cust_info (double vdb_cust_id, string vs_col_string, ref jsonpackage rjpk_info, ref t_transaction rt_transaction);int				li_rtn
+string			ls_sql, ls_modify, ls_rtn,ls_code
+t_ds_db		lds_datastore
+
+//------------------//
+
+lds_datastore = create t_ds_db
+lds_datastore.dataobject = 'ds_get_id_code_name'
+
+ls_sql = "SELECT " + vs_col_string  + " FROM customer c  " &
+											+ " left join v_exchange_rate v on v.OBJECT_REF_ID = c.default_currency  " &
+											+ " where c.object_ref_ID = "+ string(vdb_cust_id)
+ls_modify = 'Datawindow.Table.Select= "' + ls_sql +'"'
+ls_rtn =lds_datastore.modify(ls_modify )
+lds_datastore.f_settransobject( rt_transaction)
+
+if lds_datastore.retrieve( ) = 1 then
+	li_rtn = rjpk_info.SetValueByDataWindow ( 'cust_info', lds_datastore , false )
+else
+	li_rtn = 0
+end if 
+destroy lds_datastore
+return li_rtn
 end function
 
 on b_obj_instantiate.create
