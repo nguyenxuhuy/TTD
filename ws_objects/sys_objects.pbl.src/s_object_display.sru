@@ -1158,6 +1158,7 @@ event type integer e_item_barcode(string vs_btn_name);return 0
 end event
 
 event type integer e_window_e_change_object();t_dw_mpl			ldw_main
+
 this.f_update_ribbonbar( t_w_mdi.rbb_1)
 ldw_main =  iw_display.f_get_dwmain( )
 iw_display.f_set_idwfocus( ldw_main)
@@ -6342,24 +6343,25 @@ FOR li_idx = 1 to li_cnt
 	elseif lsa_sub[li_idx] = 'b_update' then
 		li_bttn_cnt  = lc_string.f_stringtoarray(istr_actionpane[1].sa_sub_button[li_idx] , ';', lsa_bttn[])
 		li_bttn_cnt  = lc_string.f_stringtoarray(istr_actionpane[1].sa_subbutton_name[li_idx] , ';', lsa_bttn_nm[])		
-		if iw_display.classname( ) = 's_w_multi_rb' then
-			rbb_handle.getchilditembyindex( l_rci.itemhandle, 6, l_rpi)	
-			//-- xoá child --//
-			li_child_cnt = rbb_handle.GetChildItemCount ( l_rpi.itemhandle )
-			for  li_rtn_idx = li_child_cnt to 1 step -1
-				 rbb_handle.GetChildItemByIndex (l_rpi.itemhandle, li_rtn_idx, l_rsbi)
-				 rbb_handle.DeleteSmallButton(l_rsbi.itemhandle)
-			next				
-		elseif iw_display.classname( ) = 's_w_multi_n_rb' then
-			rbb_handle.getchilditembyindex( l_rci.itemhandle, 4, l_rpi)	
-			//-- xoá child --//
-			li_child_cnt = rbb_handle.GetChildItemCount ( l_rpi.itemhandle )
-			for  li_rtn_idx = li_child_cnt to 1 step -1
-				 rbb_handle.GetChildItemByIndex (l_rpi.itemhandle, li_rtn_idx, l_rlbi)
-				 rbb_handle.DeleteLargeButton(l_rlbi.itemhandle)
-			next				
+		if isvalid(iw_display) then 
+			if iw_display.classname( ) = 's_w_multi_rb' then
+				rbb_handle.getchilditembyindex( l_rci.itemhandle, 6, l_rpi)	
+				//-- xoá child --//
+				li_child_cnt = rbb_handle.GetChildItemCount ( l_rpi.itemhandle )
+				for  li_rtn_idx = li_child_cnt to 1 step -1
+					 rbb_handle.GetChildItemByIndex (l_rpi.itemhandle, li_rtn_idx, l_rsbi)
+					 rbb_handle.DeleteSmallButton(l_rsbi.itemhandle)
+				next				
+			elseif iw_display.classname( ) = 's_w_multi_n_rb' then
+				rbb_handle.getchilditembyindex( l_rci.itemhandle, 4, l_rpi)	
+				//-- xoá child --//
+				li_child_cnt = rbb_handle.GetChildItemCount ( l_rpi.itemhandle )
+				for  li_rtn_idx = li_child_cnt to 1 step -1
+					 rbb_handle.GetChildItemByIndex (l_rpi.itemhandle, li_rtn_idx, l_rlbi)
+					 rbb_handle.DeleteLargeButton(l_rlbi.itemhandle)
+				next				
+			end if
 		end if
-
 		if li_bttn_cnt = 0 then
 			//-- disable--//			
 			l_rpi.enabled = false
@@ -6367,6 +6369,7 @@ FOR li_idx = 1 to li_cnt
 			rbb_handle.SetPanel (l_rpi.itemhandle, l_rpi)
 		else
 			for li_idx1 = 1 to li_bttn_cnt			
+				if not isvalid(iw_display) then exit
 				if iw_display.classname( ) = 's_w_multi_rb' then	
 					l_rsbi = l_rsbi_null
 					if lsa_bttn[li_idx1] = 'b_doc_trace' then 
