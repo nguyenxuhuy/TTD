@@ -1157,7 +1157,12 @@ end event
 event type integer e_item_barcode(string vs_btn_name);return 0
 end event
 
-event type integer e_window_e_change_object();
+event type integer e_window_e_change_object();t_dw_mpl			ldw_main
+this.f_update_ribbonbar( t_w_mdi.rbb_1)
+ldw_main =  iw_display.f_get_dwmain( )
+iw_display.f_set_idwfocus( ldw_main)
+iw_display.dynamic f_ctrl_enable_button(ldw_main )	
+
 //this.f_ctrl_actionbuttons( ldw_focus)
 return 0
 end event

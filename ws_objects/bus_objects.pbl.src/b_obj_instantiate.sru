@@ -241,7 +241,10 @@ public function double f_copy_to_bank_voucher (string vs_f_objname, s_str_dwo_re
 public function string f_get_branch_code (double vdb_branch_id)
 public function double f_get_doc_id (t_dw_mpl vdw_handling, ref t_transaction rt_transaction)
 public function boolean f_check_id_exists_table (double vdb_id, string vs_table, ref t_transaction rt_transaction)
-public function integer f_get_cust_info (double vdb_cust_id, string vs_col_string, ref jsonpackage rjpk_info, ref t_transaction rt_transaction)
+public function integer f_get_cust_info (string vs_key, double vdb_cust_id, string vs_col_string, ref jsonpackage rjpk_info, ref t_transaction rt_transaction)
+public function integer f_get_cust_info (string vs_key, double vdb_cust_id, string vs_col_string, ref jsonparser rjpsr_info, ref t_transaction rt_transaction)
+public function integer f_get_cust_info (double vdb_cust_id, string vs_col_string, ref datastore rds_cust_info, ref t_transaction rt_transaction)
+public function integer f_get_cust_info (double vdb_cust_id, string vs_col_string, ref string rsa_values[], ref t_transaction rt_transaction)
 end prototypes
 
 event e_send_2_approve(datawindow vdw_focus, s_object_display vc_obj_handling, s_w_multi vw_multi);
@@ -16125,16 +16128,17 @@ end function
 public function double f_copy_to_qt (string vs_f_objname, s_str_dwo_related vstr_dwo_related[], t_ds_db vads_copied[], ref t_transaction rt_transaction, ref c_dwsetup_initial rdwsetup_initial);string				ls_sql, ls_code, ls_currCode, ls_currName, ls_sql_cols, ls_update_table, ls_related_data, las_related_data[], ls_f_ref_table
 string				ls_main_chk_cols, las_main_chk_cols[], ls_related_chk_cols, las_related_chk_cols[], ls_data_tmp
 string				las_from_cols[], ls_from_cols, ls_sql_values, ls_coltype, ls_sql_exec, ls_from_match_cols, las_from_match_cols[], ls_mat_cols, las_mat_cols[]
-string				ls_sql_detail, ls_from_cols_detail, las_from_cols_detail[]
+string				ls_sql_detail, ls_from_cols_detail, las_from_cols_detail[], las_to_dft_cols[], ls_main_dfl_obj_col
 double			ldb_id,ldb_f_doc_id, ldb_t_doc_id, ldb_version_id, ldb_trans_id, ldb_base_currID, ldb_mat_val, ldb_matched_val, ldb_f_ref_id, ldb_f_branch_id
-double			ldb_f_version_id, ldb_branch, ldb_id_detail, ldb_manage_group
+double			ldb_f_version_id, ldb_branch, ldb_id_detail, ldb_manage_group, ldb_dfl_obj
 int					li_idx, li_idx1, li_idx2, li_row, li_colnbr, li_colCnt, li_pos, li_cnt, li_colCnt_detail, li_row_detail, li_dft_colCnt
 boolean			lb_found, lb_copied, lb_update_orders
 any				laa_value[], laa_chk_data[]
-t_ds_db				lds_handle, lds_handle_detail
+t_ds_db				lds_handle, lds_handle_detail, lds_cust_info
 c_string				lc_string
 c_unit_instance 	lc_unit_ins
-
+JsonParser  			ljpsr_cust_info
+JsonPackage		ljpk_cust_info
 
 //--------------------------//
 // lấy giao dịch của QT //
@@ -16236,7 +16240,7 @@ EXECUTE immediate :ls_sql using rt_transaction;
 // insert table  //
 //--------------------//
 
-FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) - 1
+FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) - 1 //-- trừ dw tax_line --//
 
 	lds_handle.dataobject = vstr_dwo_related[1].s_related_obj_dwo_copy[li_idx]
 	ls_update_table = lds_handle.describe( "datawindow.table.update")		
@@ -16244,8 +16248,9 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) - 1
 	
 	ls_sql = "INSERT into "+ls_update_table +"(company_id, branch_id, created_by, created_date,last_mdf_by, last_mdf_date,"				
 	ls_sql_cols = vstr_dwo_related[1].s_related_obj_column_copy[li_idx]
-	if upperbound(vstr_dwo_related[1].s_t_default_col[]) > 0 then
+	if upperbound(vstr_dwo_related[1].s_t_default_col[]) >= li_idx then
 		ls_sql_cols += vstr_dwo_related[1].s_t_default_col[li_idx]
+		ls_main_dfl_obj_col = vstr_dwo_related[1].s_main_dft_obj_col[li_idx]
 	end if
 	ls_sql_cols= trim(lc_string.f_globalreplace(ls_sql_cols , ';', ','))
 	if right(ls_sql_cols,1) = ',' then 
@@ -16316,11 +16321,13 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) - 1
 			lb_update_orders = false
 			FOR li_row = 1 to vads_copied[li_idx1].rowcount()
 				//-- check match full--//
-				if vads_copied[li_idx1].dataobject = vstr_dwo_related[1].s_match_f_dwo[li_idx] then
+				if vads_copied[li_idx1].dataobject = vstr_dwo_related[1].s_match_f_dwo[li_idx] and vstr_dwo_related[1].b_chk_matched_qty then
 					ldb_mat_val = vads_copied[li_idx1].getitemnumber(li_row, ls_from_match_cols)
 					if isnull(ldb_mat_val) then ldb_mat_val = 0
 					ldb_f_ref_id = vads_copied[li_idx1].getitemnumber(li_row, 'id')
-					ldb_matched_val = rt_transaction.f_get_matched_value(ls_mat_cols, ldb_f_ref_id, ls_update_table)
+					///////////////////////////////////////
+//					ldb_matched_val = rt_transaction.f_get_matched_value(ls_mat_cols, ldb_f_ref_id, ls_update_table)
+					/////////////////////////////////////////////////////////
 					if isnull(ldb_matched_val) then ldb_matched_val = 0
 					if ldb_matched_val >= ldb_mat_val then continue //-- đã copy hết--//
 					if vstr_dwo_related[1].s_match_f_col_obj[li_idx] <> '' then
@@ -16341,8 +16348,8 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) - 1
 				FOR li_colnbr= 1 to li_colCnt
 					ls_coltype = vads_copied[li_idx1].describe(las_from_cols[li_colnbr]+".coltype")
 					if left(ls_coltype, 5) = 'numbe' then
-						if las_from_cols[li_colnbr] = ls_from_match_cols then
-							ls_sql_values += "," + string(ldb_mat_val - ldb_matched_val)
+						if las_from_cols[li_colnbr] = ls_from_match_cols  and vstr_dwo_related[1].b_chk_matched_qty then
+							ls_sql_values += "," + string(ldb_mat_val - ldb_matched_val)						
 						else
 							if isnull(vads_copied[li_idx1].getitemnumber(li_row ,las_from_cols[li_colnbr])) then
 								ls_sql_values +=",NULL"
@@ -16350,11 +16357,14 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) - 1
 								ls_sql_values += "," + string(vads_copied[li_idx1].getitemnumber(li_row ,las_from_cols[li_colnbr]))
 							end if
 						end if
+						if  las_from_cols[li_colnbr] = ls_main_dfl_obj_col then
+							ldb_dfl_obj = vads_copied[li_idx1].getitemnumber(li_row ,las_from_cols[li_colnbr])
+						end if
 					elseif left(ls_coltype, 5) = 'char(' then
 						if isnull(vads_copied[li_idx1].getitemstring(li_row ,las_from_cols[li_colnbr])) then
 							ls_sql_values +=",NULL"
 						else						
-							ls_sql_values += ",'" + string(vads_copied[li_idx1].getitemstring(li_row ,las_from_cols[li_colnbr]))+"'"
+							ls_sql_values += ",'" + vads_copied[li_idx1].getitemstring(li_row ,las_from_cols[li_colnbr]) +"'"
 						end if
 					elseif  left(ls_coltype, 5) = 'datet' then
 						if isnull(vads_copied[li_idx1].getitemdatetime(li_row ,las_from_cols[li_colnbr])) then
@@ -16365,10 +16375,34 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) - 1
 					end if
 				NEXT
 				//-- default cols--//
-				li_dft_colCnt =  lc_string.f_stringtoarray( vstr_dwo_related[1].s_t_default_col[li_idx], ';', las_from_cols[])
+				if upperbound(vstr_dwo_related[1].s_f_default_col[]) >= li_idx then				
+					li_dft_colCnt =  lc_string.f_stringtoarray( vstr_dwo_related[1].s_t_default_col[li_idx], ';', las_to_dft_cols[])
+					if li_dft_colCnt > 0 then
+						lds_cust_info = create t_ds_db	
+						string lsa_values[]
+						if this.f_get_cust_info( ldb_dfl_obj , vstr_dwo_related[1].s_f_default_col[li_idx], lsa_values[] , rt_transaction )> 0 then		
+//						if this.f_get_cust_info( ldb_dfl_obj , vstr_dwo_related[1].s_f_default_col[li_idx], lds_cust_info, rt_transaction )> 0 then							
+							FOR li_colnbr= 1 to li_dft_colCnt  
+								ls_coltype = lds_handle.describe(las_to_dft_cols[li_colnbr]+".coltype")
+								if left(ls_coltype, 5) = 'numbe' then
+									if  isnull(lsa_values[li_colnbr]) then
+										ls_sql_values +=",NULL"
+									else	
+										ls_sql_values += "," + lsa_values[li_colnbr]
+									end if									
+								elseif left(ls_coltype, 5) = 'char(' then
+									if isnull(lsa_values[li_colnbr])  then
+										ls_sql_values +=",NULL"
+									else	
+										ls_sql_values += ",'" +  lsa_values[li_colnbr] + "'"
+									end if											
+								end if
+							NEXT
+						end if
+						destroy lds_cust_info
+					end if
+				end if				
 				/////////////////////////////////////////////////////////////
-				////////////////////////////////////////////////////////////////
-				///////////////////////////////////
 				
 				//-- last cols--//
 				if upper(ls_update_table) = 'ORDERS' then					
@@ -16389,9 +16423,11 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) - 1
 											"F_REF_TABLE,MATCH_TYPE,T_REF_TABLE,"+ls_mat_cols+")" +&
 								" VALUES( seq_table_id.nextval," +string(gi_user_comp_id) +","+string(ldb_branch )+","+string(gi_userid )+",sysdate"+","+string(gi_userid )+",sysdate" +&
 								","+string(ldb_f_ref_id )+","+string(ldb_id)+",sysdate,"+string(ldb_f_doc_id) +","+string(ldb_t_doc_id)+","+string(ldb_f_branch_id)+","+string(ldb_branch)+&
-								",'"+ls_f_ref_table+"','COPY','"+ ls_update_table +"'," +string(ldb_mat_val - ldb_matched_val)+ ")"
+								",'"+upper(ls_f_ref_table)+"','COPY','"+ upper(ls_update_table) +"'," +string(ldb_mat_val - ldb_matched_val)+ ")"
 											
 						EXECUTE immediate :ls_sql_exec using rt_transaction;
+						lb_copied = true
+					elseif vstr_dwo_related[1].s_match_f_dwo[li_idx] = '' then
 						lb_copied = true
 					end if
 				else
@@ -16442,10 +16478,12 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) - 1
 		FOR li_row = 1 to lds_handle.rowcount()
 			ldb_f_ref_id = lds_handle.getitemnumber(li_row, 'id')
 			//-- check match full--//
-			if lds_handle.dataobject = vstr_dwo_related[1].s_match_f_dwo[li_idx] then
+			if lds_handle.dataobject = vstr_dwo_related[1].s_match_f_dwo[li_idx] and vstr_dwo_related[1].b_chk_matched_qty then
 				ldb_mat_val = lds_handle.getitemnumber(li_row, ls_from_match_cols)
-				if isnull(ldb_mat_val) then ldb_mat_val = 0				
-				ldb_matched_val = rt_transaction.f_get_matched_value(ls_mat_cols, ldb_f_ref_id, ls_update_table)
+				if isnull(ldb_mat_val) then ldb_mat_val = 0			
+				///////////////////////////////////////////////////////
+//				ldb_matched_val = rt_transaction.f_get_matched_value(ls_mat_cols, ldb_f_ref_id, ls_update_table)
+				////////////////////////////////////////////////////////////////////////////////
 				if isnull(ldb_matched_val) then ldb_matched_val = 0
 				if ldb_matched_val >= ldb_mat_val then continue //-- đã copy hết --//
 				if vstr_dwo_related[1].s_match_f_col_obj[li_idx] <> '' then
@@ -16466,7 +16504,7 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) - 1
 			FOR li_colnbr= 1 to li_colCnt
 				ls_coltype = lds_handle.describe(las_from_cols[li_colnbr]+".coltype")
 				if left(ls_coltype, 5) = 'numbe' then
-					if las_from_cols[li_colnbr] = ls_from_match_cols then
+					if las_from_cols[li_colnbr] = ls_from_match_cols  and vstr_dwo_related[1].b_chk_matched_qty then
 						ls_sql_values += "," + string(ldb_mat_val - ldb_matched_val)
 					else
 						if isnull(lds_handle.getitemnumber(li_row ,las_from_cols[li_colnbr])) then
@@ -16511,9 +16549,11 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) - 1
 										"F_REF_TABLE,MATCH_TYPE,T_REF_TABLE ,"+ls_mat_cols+")" +&
 							" VALUES( seq_table_id.nextval," +string(gi_user_comp_id) +","+string(ldb_branch )+","+string(gi_userid )+",sysdate"+","+string(gi_userid )+",sysdate" +&
 							","+string(ldb_f_ref_id )+","+string(ldb_id)+",sysdate,"+string(ldb_f_doc_id) +","+string(ldb_t_doc_id)+","+string(ldb_f_branch_id)+","+string(ldb_branch)+&
-							",'"+ls_f_ref_table+"','COPY','"+ ls_update_table+"'," +string(ldb_mat_val - ldb_matched_val)+ ")"
+							",'"+upper(ls_f_ref_table)+"','COPY','"+ upper(ls_update_table)+"'," +string(ldb_mat_val - ldb_matched_val)+ ")"
 										
 					EXECUTE immediate :ls_sql_exec using rt_transaction;			
+					lb_copied = true
+				elseif vstr_dwo_related[1].s_match_f_dwo[li_idx]  = '' then
 					lb_copied = true
 				end if
 			else
@@ -19874,29 +19914,156 @@ end if
 
 end function
 
-public function integer f_get_cust_info (double vdb_cust_id, string vs_col_string, ref jsonpackage rjpk_info, ref t_transaction rt_transaction);int				li_rtn
-string			ls_sql, ls_modify, ls_rtn,ls_code
+public function integer f_get_cust_info (string vs_key, double vdb_cust_id, string vs_col_string, ref jsonpackage rjpk_info, ref t_transaction rt_transaction);int				li_rtn
+string			ls_sql, ls_sql_syntax, ls_rtn
 t_ds_db		lds_datastore
-
+c_string		lc_string
 //------------------//
 
-lds_datastore = create t_ds_db
-lds_datastore.dataobject = 'ds_get_id_code_name'
+if right(trim(vs_col_string),1) = ';' then
+	ls_sql = left(trim(vs_col_string), len(trim(vs_col_string))-1)
+	
+end if
+ls_sql = lc_string.f_globalreplace( ls_sql, ';', ',')
 
-ls_sql = "SELECT " + vs_col_string  + " FROM customer c  " &
+ls_sql = "SELECT " + ls_sql  + " FROM customer c  " &
 											+ " left join v_exchange_rate v on v.OBJECT_REF_ID = c.default_currency  " &
 											+ " where c.object_ref_ID = "+ string(vdb_cust_id)
-ls_modify = 'Datawindow.Table.Select= "' + ls_sql +'"'
-ls_rtn =lds_datastore.modify(ls_modify )
-lds_datastore.f_settransobject( rt_transaction)
+											
+ls_sql_syntax = rt_transaction.syntaxfromsql(ls_sql, "", ls_rtn)
+if len(ls_rtn) > 0 then
+	 MessageBox("Caution",  "SyntaxFromSQL caused these errors: " + ls_rtn)
+	 return -1
+end if
+//B2: Retrieve tên cột
+lds_datastore = create t_ds_db
+lds_datastore.create( ls_sql_syntax, ls_rtn)
+if len(ls_rtn) > 0 then
+	 MessageBox("Caution",  "SyntaxFromSQL caused these errors: " + ls_rtn)
+	 destroy lds_datastore
+	 return -1
+end if
 
+lds_datastore.f_settransobject( rt_transaction)
 if lds_datastore.retrieve( ) = 1 then
-	li_rtn = rjpk_info.SetValueByDataWindow ( 'cust_info', lds_datastore , false )
+	li_rtn = rjpk_info.SetValueByDataWindow ( vs_key, lds_datastore , false )
+	ls_rtn = rjpk_info.GetJsonString()
 else
 	li_rtn = 0
 end if 
 destroy lds_datastore
 return li_rtn
+end function
+
+public function integer f_get_cust_info (string vs_key, double vdb_cust_id, string vs_col_string, ref jsonparser rjpsr_info, ref t_transaction rt_transaction);int				li_rtn
+string			ls_sql, ls_sql_syntax, ls_rtn, ls_json
+t_ds_db			lds_datastore
+c_string			lc_string
+Jsonpackage	ljpk_cust		
+//------------------//
+
+if right(trim(vs_col_string),1) = ';' then
+	ls_sql = left(trim(vs_col_string), len(trim(vs_col_string))-1)
+	
+end if
+ls_sql = lc_string.f_globalreplace( ls_sql, ';', ',')
+
+ls_sql = "SELECT " + ls_sql  + " FROM customer c  " &
+											+ " left join v_exchange_rate v on v.OBJECT_REF_ID = c.default_currency  " &
+											+ " where c.object_ref_ID = "+ string(vdb_cust_id)
+											
+ls_sql_syntax = rt_transaction.syntaxfromsql(ls_sql, "", ls_rtn)
+if len(ls_rtn) > 0 then
+	 MessageBox("Caution",  "SyntaxFromSQL caused these errors: " + ls_rtn)
+	 return -1
+end if
+//B2: Retrieve tên cột
+lds_datastore = create t_ds_db
+lds_datastore.create( ls_sql_syntax, ls_rtn)
+if len(ls_rtn) > 0 then
+	 MessageBox("Caution",  "SyntaxFromSQL caused these errors: " + ls_rtn)
+	 destroy lds_datastore
+	 return -1
+end if
+lds_datastore.f_settransobject( rt_transaction)
+
+if lds_datastore.retrieve( ) = 1 then
+	ljpk_cust = create Jsonpackage
+	li_rtn = ljpk_cust.SetValueByDataWindow ( vs_key, lds_datastore , false )
+	if li_rtn = 1 then
+		ls_json = ljpk_cust.getjsonstring( )
+		ls_rtn = rjpsr_info.LoadString(ls_json)
+	end if
+else
+	li_rtn = 0
+end if 
+destroy lds_datastore
+return li_rtn
+end function
+
+public function integer f_get_cust_info (double vdb_cust_id, string vs_col_string, ref datastore rds_cust_info, ref t_transaction rt_transaction);int				li_rtn
+string			ls_sql, ls_sql_syntax, ls_rtn, ls_json
+
+c_string			lc_string
+Jsonpackage	ljpk_cust		
+//------------------//
+
+if right(trim(vs_col_string),1) = ';' then
+	ls_sql = left(trim(vs_col_string), len(trim(vs_col_string))-1)
+	
+end if
+ls_sql = lc_string.f_globalreplace( ls_sql, ';', ',')
+
+ls_sql = "SELECT " + ls_sql  + " FROM customer c  " &
+											+ " left join v_exchange_rate v on v.OBJECT_REF_ID = c.default_currency  " &
+											+ " where c.object_ref_ID = "+ string(vdb_cust_id)
+											
+ls_sql_syntax = rt_transaction.syntaxfromsql(ls_sql, "", ls_rtn)
+if len(ls_rtn) > 0 then
+	 MessageBox("Caution",  "SyntaxFromSQL caused these errors: " + ls_rtn)
+	 return -1
+end if
+//B2: Retrieve tên cột
+rds_cust_info.create( ls_sql_syntax, ls_rtn)
+if len(ls_rtn) > 0 then
+	 MessageBox("Caution",  "SyntaxFromSQL caused these errors: " + ls_rtn)
+	 return -1
+end if
+rds_cust_info.settransobject( rt_transaction)
+li_rtn =  rds_cust_info.retrieve( ) 
+
+return li_rtn
+end function
+
+public function integer f_get_cust_info (double vdb_cust_id, string vs_col_string, ref string rsa_values[], ref t_transaction rt_transaction);int				li_cnt
+string			ls_sql, lsa_cols[]
+c_string					lc_string
+DynamicStagingArea	ldsa_stage
+
+//------------------//
+
+li_cnt = lc_string.f_stringtoarray(vs_col_string, ';', lsa_cols[])
+
+if right(trim(vs_col_string),1) = ';' then
+	ls_sql = left(trim(vs_col_string), len(trim(vs_col_string))-1)	
+end if
+ls_sql = lc_string.f_globalreplace( ls_sql, ';', ',')
+
+ls_sql = "SELECT " + ls_sql  + " FROM customer c  " &
+											+ " left join v_exchange_rate v on v.OBJECT_REF_ID = c.default_currency  " &
+											+ " where c.object_ref_ID = "+ string(vdb_cust_id)
+connect using sqlca;											
+DECLARE lcur_info DYNAMIC CURSOR FOR SQLSA ;
+PREPARE SQLSA FROM :ls_sql ;
+OPEN DYNAMIC lcur_info ;
+	
+if li_cnt = 5 then
+	FETCH lcur_info INTO :rsa_values[1],:rsa_values[2],:rsa_values[3],:rsa_values[4],:rsa_values[5] ;
+end if
+CLOSE lcur_info ;
+disconnect using sqlca;		
+
+return li_cnt
 end function
 
 on b_obj_instantiate.create

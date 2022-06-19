@@ -706,11 +706,11 @@ istr_dwo_related[8].s_relatedtext_column = 'code'
 istr_dwo_related[8].s_text = 'Chào giá từ: '
 
 istr_dwo_related[8].s_main_obj_dwo_copy[1] = 'd_document_prod_grid' // datawindow copy từ
-istr_dwo_related[8].s_main_obj_column_copy[1] = 'dr_cr_object;' // cột copy từ
-istr_dwo_related[8].s_related_obj_dwo_copy[1] = 'd_document_qt_grid' //datawindow copy đến
-istr_dwo_related[8].s_related_obj_column_copy[1] = 'dr_cr_object;' // cột copy đến
+istr_dwo_related[8].s_main_obj_column_copy[1] = 'dr_cr_object;dr_cr_object;' // cột copy từ
+istr_dwo_related[8].s_related_obj_dwo_copy[1] = 'd_document_qt_form' //datawindow copy đến
+istr_dwo_related[8].s_related_obj_column_copy[1] = 'object_id;bill_to_object;' // cột copy đến
 istr_dwo_related[8].s_f_default_col[1] = 'DEFAULT_CURRENCY;SELL_RATE;PAYMENT_TERM;PAYMENT_METHOD;DELIVERY_MODE;'
-istr_dwo_related[8].s_main_dft_obj_col[1] = 'dr_cr_object;'
+istr_dwo_related[8].s_main_dft_obj_col[1] = 'dr_cr_object'
 istr_dwo_related[8].s_t_default_col[1] = 'CURRENCY_ID;EXCHANGE_RATE;PAYMENT_TERM;PAYMENT_METHOD;DELIVERY_MODE;'
 istr_dwo_related[8].s_main_obj_column_chk[1] = ''
 istr_dwo_related[8].s_related_obj_column_chk[1] = ''
@@ -721,9 +721,7 @@ istr_dwo_related[8].s_related_obj_dwo_copy[2] = 'd_qt_line_grid' //datawindow co
 istr_dwo_related[8].s_related_obj_column_copy[2] = 'ITEM_ID;LINE_TEXT;QTY;TRANS_UOM;' // cột copy đến
 istr_dwo_related[8].s_main_obj_column_chk[2] = ''
 istr_dwo_related[8].s_related_obj_column_chk[2] = ''
-istr_dwo_related[8].b_copy_line[2] = true
-// khai báo cập nhật bản matching
-istr_dwo_related[8].s_match_f_dwo[2] = 'd_prod_line_kd_grid'
+istr_dwo_related[8].s_match_f_dwo[2] ='d_prod_line_kd_grid'
 istr_dwo_related[8].s_match_f_col_obj[2] = 'OBJECT_ID'
 istr_dwo_related[8].s_match_t_dwo[2] = 'd_qt_line_grid'
 istr_dwo_related[8].s_match_f_column[2] = 'total_QTY'
@@ -735,8 +733,30 @@ istr_dwo_related[8].s_f_obj_column_chk[2] = 'OBJECT_ID'
 istr_dwo_related[8].s_t_obj_column_chk[2] = 'ITEM_ID'
 istr_dwo_related[8].s_match_minus_dwo[2] = '' //dwo không tính là đã match
 istr_dwo_related[8].b_f_sum[2] = true
-istr_dwo_related[8].s_main_dr_cr_obj_dwo_sum[2]=''
-istr_dwo_related[8].s_main_dr_cr_obj_column_sum[2]=''
+
+istr_dwo_related[8].s_main_obj_dwo_copy[3] = 'd_tax_line_grid' // datawindow copy từ
+istr_dwo_related[8].s_main_obj_column_copy[3] = 'tax_pct;tax_amt;tax_correction;tax_id;TRANS_CURRENCY;exchange_rate;' // cột copy từ
+istr_dwo_related[8].s_related_obj_dwo_copy[3] = 'd_tax_line_grid' //datawindow copy đến
+istr_dwo_related[8].s_related_obj_column_copy[3] = 'tax_pct;tax_amt;tax_correction;tax_id;TRANS_CURRENCY;exchange_rate;' // cột copy đến
+istr_dwo_related[8].s_main_obj_column_chk[3] = ''
+istr_dwo_related[8].s_related_obj_column_chk[3] = ''
+
+istr_dwo_related[8].b_copy_line[3] = true
+// khai báo cập nhật bản matching
+istr_dwo_related[8].s_match_f_dwo[3] = ''
+istr_dwo_related[8].s_match_f_col_obj[3] = ''
+istr_dwo_related[8].s_match_t_dwo[3] = ''
+istr_dwo_related[8].s_match_f_column[3] = ''
+istr_dwo_related[8].s_match_t_column[3] = ''
+istr_dwo_related[8].s_match_column[3] = ''
+istr_dwo_related[8].s_main_obj_column_sum[3] = ''
+istr_dwo_related[8].s_related_obj_column_sum[3] = ''
+istr_dwo_related[8].s_f_obj_column_chk[3] = ''
+istr_dwo_related[8].s_t_obj_column_chk[3] = ''
+istr_dwo_related[8].s_match_minus_dwo[3] = '' //dwo không tính là đã match
+istr_dwo_related[8].b_f_sum[3] = true
+istr_dwo_related[8].s_main_dr_cr_obj_dwo_sum[3]=''
+istr_dwo_related[8].s_main_dr_cr_obj_column_sum[3]=''
 end subroutine
 
 public subroutine f_set_str_streamvalue ();//-- material --//
@@ -1724,23 +1744,37 @@ end if
 return ancestorreturnvalue
 end event
 
-event e_dw_e_predelete;call super::e_dw_e_predelete;string					ls_status
-double				ldb_version_id, ldb_id
+event e_dw_e_predelete;call super::e_dw_e_predelete;string					ls_status, ls_doc_code
+double				ldb_version_id, ldb_doc_id
 int						li_cnt
 t_dw_mpl			ldw_main
+b_obj_instantiate	lbo_ins
 
 ldw_main = iw_display.f_get_dwmain( )
 
-ls_status = ldw_main.getitemstring(vl_currentrow, 'status')
+ls_status = ldw_main.getitemstring(ldw_main.getrow(), 'status')
 if ls_status = 'planned' then
-	ldb_id =  ldw_main.getitemnumber(vl_currentrow, 'id')
-	ldb_version_id = ldw_main.getitemnumber(vl_currentrow, 'version_id')
-	select count(id) into :li_cnt from matching where f_doc_id = :ldb_id using it_transaction;
+	ldb_doc_id =  ldw_main.getitemnumber(ldw_main.getrow(), 'id')
+	ldb_version_id = ldw_main.getitemnumber(ldw_main.getrow(), 'version_id')
+	select count(id) into :li_cnt from matching where f_doc_id = :ldb_doc_id using it_transaction;
 	if li_cnt > 0 then
-		gf_messagebox('m.c_prod_orders.e_dw_e_predelete.02','Thông báo','Lệnh SX đã có giao dịch xuất nhập kho, không thể xoá','information','ok',1)
+		select t_doc_id into :ldb_doc_id
+			from matching where f_doc_id = :ldb_doc_id  and rownum = 1 using it_transaction;
+			
+		ls_doc_code = lbo_ins.f_get_doc_code( ldb_doc_id, it_transaction)
+		if isnull(ls_doc_code) then ls_doc_code = ''
+		gf_messagebox('m.c_qt.e_dw_e_predelete.02','Thông báo','Không xoá được phiếu đã kết với chứng từ khác, có số:@'+ls_doc_code,'stop','ok',1)
 		return -1
 	end if
 	if rpo_dw.dataobject = ldw_main.dataobject then
+
+		//-- delete matching--//
+		select count(id) into :li_cnt
+		from matching where t_doc_id = :ldb_doc_id using it_transaction;	
+		if li_cnt > 0 then
+			delete from matching where t_doc_id = :ldb_doc_id using it_transaction;	
+		end if		
+			
 	//-- delele BOOKED_SLIP --//
 		delete BOOKED_SLIP where id = :ldb_version_id using it_transaction;
 	//-- delele production_line --//

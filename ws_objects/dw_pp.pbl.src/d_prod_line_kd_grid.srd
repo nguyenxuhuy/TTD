@@ -8,7 +8,7 @@ detail(height=84 color="536870912" transparency="0" gradient.color="8421504" gra
 table(column=(type=char(0) updatewhereclause=yes name=gutter dbname="gutter" values="	Y/	N" )
  column=(type=number update=yes updatewhereclause=yes key=yes name=id dbname="production_line.id" dbalias=".id" )
  column=(type=char(100) updatewhereclause=yes name=object_code dbname="object.object_code" dbalias="o_product.object_code" )
- column=(type=char(500) updatewhereclause=yes name=object_name dbname="object.object_name" dbalias="o_product.object_name" )
+ column=(type=char(500) updatewhereclause=yes name=object_name dbname="object_name" )
  column=(type=number update=yes updatewhereclause=yes name=plan_qty dbname="production_line.plan_qty" dbalias=".plan_qty" )
  column=(type=number update=yes updatewhereclause=yes name=input_qty dbname="production_line.input_qty" dbalias=".input_qty" )
  column=(type=number update=yes updatewhereclause=yes name=finish_qty dbname="production_line.finish_qty" dbalias=".finish_qty" )
@@ -59,7 +59,7 @@ table(column=(type=char(0) updatewhereclause=yes name=gutter dbname="gutter" val
  retrieve="  SELECT  '' as gutter,
          PRODUCTION_LINE.ID,   
          o_product.code object_code,
-         o_product.name object_name,         
+         coalesce(o_product.name,o_product.short_name) object_name,         
          PRODUCTION_LINE.PLAN_QTY,    
          PRODUCTION_LINE.INPUT_QTY,  
          PRODUCTION_LINE.FINISH_QTY,   
@@ -116,7 +116,7 @@ left join object o_wcenter on o_wcenter.id = PRODUCTION_LINE.WCENTER_ID and o_wc
 left join item_spec on item_spec.id = PRODUCTION_LINE.spec_id
 left join V_PROD_LINE_QTY v on v.object_ref_id = PRODUCTION_LINE.id
 
-" update="PRODUCTION_LINE" updatewhere=0 updatekeyinplace=no )
+" update="PRODUCTION_LINE" updatewhere=1 updatekeyinplace=yes )
 text(band=header alignment="2" text="[ ]" border="0" color="134217856" x="9" y="8" height="76" width="110" html.valueishtml="0"  name=gutter_t visible="1"  font.face="Tahoma" font.height="-10" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="2" background.color="67108864" background.transparency="0" background.gradient.color="8421504" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="100" background.gradient.focus="0" background.gradient.scale="100" background.gradient.spread="100" tooltip.backcolor="134217752" tooltip.delay.initial="0" tooltip.delay.visible="32000" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="134217751" tooltip.transparency="0" transparency="0" )
 text(band=header alignment="2" text="Hình thể/Khuôn" border="0" color="33554432" x="128" y="8" height="76" width="425" html.valueishtml="0"  name=object_code_t visible="1"  font.face="Tahoma" font.height="-10" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="2" background.color="67108864" background.transparency="0" background.gradient.color="8421504" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="100" background.gradient.focus="0" background.gradient.scale="100" background.gradient.spread="100" tooltip.backcolor="134217752" tooltip.delay.initial="0" tooltip.delay.visible="32000" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="134217751" tooltip.transparency="0" transparency="0" )
 text(band=header alignment="2" text="Màu" border="0" color="33554432" x="974" y="4" height="76" width="370" html.valueishtml="0"  name=spec_color_t visible="1"  font.face="Tahoma" font.height="-10" font.weight="400"  font.family="2" font.pitch="2" font.charset="0" background.mode="2" background.color="67108864" background.transparency="0" background.gradient.color="0" background.gradient.transparency="0" background.gradient.angle="0" background.brushmode="0" background.gradient.repetition.mode="0" background.gradient.repetition.count="0" background.gradient.repetition.length="0" background.gradient.focus="0" background.gradient.scale="0" background.gradient.spread="0" tooltip.backcolor="0" tooltip.delay.initial="0" tooltip.delay.visible="0" tooltip.enabled="0" tooltip.hasclosebutton="0" tooltip.icon="0" tooltip.isbubble="0" tooltip.maxwidth="0" tooltip.textcolor="0" tooltip.transparency="0" transparency="0" )

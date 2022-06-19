@@ -870,20 +870,33 @@ end if
 return 0
 end event
 
-event e_dw_e_predelete;call super::e_dw_e_predelete;double		ldb_customer_id, ldb_object_id
+event e_dw_e_predelete;call super::e_dw_e_predelete;double		ldb_customer_id, ldb_object_id, ldb_doc_id
 int				li_cnt
-	
+string			ls_doc_code	
+b_obj_instantiate			lbo_ins
 
 	//-- VENDOR--//
 	ldb_object_id = rpo_dw.getitemnumber(vl_currentrow, 'id') 
 	select count(id) into :li_cnt from booked_slip where dr_cr_object = :ldb_object_id or invoice_object = :ldb_object_id using it_transaction;
 	if li_cnt > 0 then
-		gf_messagebox('m.c_customer.e_dw_e_predelete.01','Thông báo','Khách hàng đã có giao dịch, không thể xoá !','exclamation','ok',1)
+		select object_ref_id into :ldb_doc_id
+			from booked_slip bs 
+			where dr_cr_object = :ldb_object_id or invoice_object = :ldb_object_id and rownum=1
+			using it_transaction;			
+		ls_doc_code = lbo_ins.f_get_doc_code( ldb_doc_id, it_transaction)
+		if isnull(ls_doc_code) then ls_doc_code = ''			
+		gf_messagebox('m.c_customer.e_dw_e_predelete.01','Thông báo','Khách hàng đã có giao dịch, không thể xoá ! Số chứng từ:@'+ls_doc_code,'exclamation','ok',1)
 		return -1
 	end if
 	select count(id) into :li_cnt from orders where bill_to_object = :ldb_object_id or OBJECT_ID = :ldb_object_id using it_transaction;
 	if li_cnt > 0 then
-		gf_messagebox('m.c_customer.e_dw_e_predelete.01','Thông báo','Khách hàng đã có giao dịch, không thể xoá !','exclamation','ok',1)
+		select object_ref_id into :ldb_doc_id
+			from orders bs 
+			where bill_to_object = :ldb_object_id or OBJECT_ID = :ldb_object_id and rownum=1
+			using it_transaction;			
+		ls_doc_code = lbo_ins.f_get_doc_code( ldb_doc_id, it_transaction)
+		if isnull(ls_doc_code) then ls_doc_code = ''			
+		gf_messagebox('m.c_customer.e_dw_e_predelete.01','Thông báo','Khách hàng đã có giao dịch, không thể xoá ! Số chứng từ:@'+ls_doc_code,'exclamation','ok',1)
 		return -1
 	end if
 	ldb_customer_id = rpo_dw.getitemnumber(vl_currentrow, 'customer_id') 

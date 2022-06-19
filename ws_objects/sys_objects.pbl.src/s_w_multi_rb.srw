@@ -1648,6 +1648,7 @@ if this.f_get_data_copied_ex( lads_copied[],lstr_related,'copyt',ls_obj_name) > 
 else
 	ic_obj_handling.ib_copying = false
 	disconnect using it_transaction;
+	
 end if
 
 return ll_win_idx
