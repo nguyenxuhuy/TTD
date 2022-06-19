@@ -245,7 +245,7 @@ return vl_currentrow
 end event
 
 event e_dw_e_itemchanged;call super::e_dw_e_itemchanged;double			ldb_item_id, ldb_spec_id, ldb_qt_line, ll_tax_line_id, ll_vat_id
-int					li_tax_line_cnt
+int					li_tax_line_cnt, li_cnt
 decimal			ldb_qty, ldc_tax_correction, ldc_tax_pct
 string				ls_upd_colname, ls_sql, ls_dataStr
 b_obj_instantiate			lb_obj
@@ -253,6 +253,17 @@ t_dw_mpl					ldw_handle
 
 choose case vs_colname
 	case 'item_code'
+		//-- check spec khách hàng --//
+		ldb_item_id = rpo_dw.getitemnumber( vl_currentrow, 'item_id' )
+		connect using it_transaction;
+		select count(id) into :li_cnt from item_spec where object_ref_id = :ldb_item_id and spec_group = :idb_object_id using it_transaction;
+		disconnect using it_transaction;
+		if li_cnt = 0 then
+			if gf_messagebox('m.u_detail_qt.e_dw_e_itemchanged.01','Thông báo','Hình thể chưa có làm phiếu mẫu với khách hàng, bạn tiếp tục hay không?','question','yesno',2) = 2 then
+				return 1
+			end if				
+		end if
+		//---------------------------------//
 		vs_colname = 'price'
 		vs_editdata = string(rpo_dw.getitemnumber(vl_currentrow, 'price'))
 		
@@ -322,7 +333,7 @@ end if
 return 0
 end event
 
-event constructor;call super::constructor;istr_actionpane[1].s_button_name =  'b_add_multi;b_insert;b_modify;b_save;b_filteron;b_query;b_refresh;b_delete;b_view_multi;b_send_2_approve;b_request_2_change;b_approve;b_reject;'
+event constructor;call super::constructor;istr_actionpane[1].s_button_name =  'b_insert;b_modify;b_filteron;b_refresh;b_delete;'
 //istr_actionpane[1].s_button_has_sub = 'b_view_multi;'
 ////istr_actionpane[1].sa_sub_button[1]='b_view_qt;'
 //if	gdb_branch = 24088840 then

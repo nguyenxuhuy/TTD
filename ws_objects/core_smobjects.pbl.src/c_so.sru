@@ -895,6 +895,7 @@ end event
 
 event e_window_e_detail_start;call super::e_window_e_detail_start;
 t_dw_mpl 			ldw_main
+
 ldw_main = iw_display.f_get_dwmain( )
 if ldw_main.getrow() = 0 then return -1
 if ldw_main.f_get_ib_editing( ) then

@@ -86,6 +86,38 @@ istr_dwo[1].b_excel = true
 istr_dwo[1].b_traceable = true
 istr_dwo[1].b_keyboardlocked = true
 istr_dwo[1].s_description = 'Chi tiết đơn hàng bán'
+istr_dwo[1].b_master = true
+istr_dwo[1].b_detail = false
+istr_dwo[1].b_cascade_del = true
+istr_dwo[1].s_dwo_master = ''
+istr_dwo[1].s_dwo_details = 'd_lot_line_kd_grid'
+istr_dwo[1].s_master_keycol = ''
+istr_dwo[1].s_detail_keycol = ''
+istr_dwo[1].b_ref_table_yn  = false
+istr_dwo[1].s_ref_table_field = ''
+
+istr_dwo[2].s_dwo_default =  'd_lot_line_kd_grid'
+istr_dwo[2].s_dwo_form = ''
+istr_dwo[2].s_dwo_grid = 'd_lot_line_kd_grid'
+istr_dwo[2].b_insert = true
+istr_dwo[2].b_update = true
+istr_dwo[2].b_delete = true
+istr_dwo[2].b_query = true
+istr_dwo[2].b_print = true
+istr_dwo[2].b_excel = true
+istr_dwo[2].b_traceable = true
+istr_dwo[2].b_keyboardlocked = true
+istr_dwo[2].s_description = 'Chi tiết SIZE'
+istr_dwo[2].b_master = false
+istr_dwo[2].b_detail = true
+istr_dwo[2].b_cascade_del = true
+istr_dwo[2].s_dwo_master = 'd_so_line_grid;'
+istr_dwo[2].s_dwo_details = ''
+istr_dwo[2].s_master_keycol = 'ID;'
+istr_dwo[2].s_detail_keycol = 'OBJECT_REF_ID;'
+istr_dwo[2].b_ref_table_yn  = false
+istr_dwo[2].s_ref_table_field = 'OBJECT_REF_TABLE;'
+istr_dwo[2].s_gb_name = 'gb_3'
 end subroutine
 
 public function integer f_get_dw_retrieve_args (ref datawindow rdw_focus, ref any ra_args[]);return 0
@@ -306,11 +338,19 @@ if lb_editing then
 		iw_display.post event e_add( )
 	end if
 end if
-iw_display.event e_filteron_new( )
+//iw_display.event e_filteron_new( )
 return 0
 end event
 
-event constructor;call super::constructor;istr_actionpane[1].s_button_name =  'b_add_multi;b_insert;b_modify;b_save;b_filteron;b_query;b_refresh;b_delete;b_view_multi;b_send_2_approve;b_request_2_change;b_approve;b_reject;'
+event constructor;call super::constructor;
+ib_changed_dwo_4edit = false
+is_display_model = '2d'
+ib_display_text = true
+is_object_title = 'Xem chi tiết'
+
+istr_actionpane[1].s_description = is_object_title
+
+istr_actionpane[1].s_button_name =  'b_insert;b_modify;b_filteron;b_refresh;b_delete;'
 //istr_actionpane[1].s_button_has_sub = 'b_copyt_multi;'
 //istr_actionpane[1].sa_sub_button[1]='b_copyt_po;'
 //istr_actionpane[1].sa_enabled_subbutton[] = istr_actionpane[1].sa_sub_button[]
@@ -414,5 +454,10 @@ FOR li_row = 1 to rpo_dw.rowcount()
 	end if
 NEXT
 return 0
+end event
+
+event e_window_e_preopen;call super::e_window_e_preopen;
+iw_display.f_set_ii_upperpart_height( 1/2)
+return ancestorreturnvalue
 end event
 
