@@ -1618,6 +1618,7 @@ return 0
 end event
 
 event e_dw_getfocus;call super::e_dw_getfocus;double				ldb_item_id, ldb_object_ref_id, ldb_size_id, ldb_bom_id, ldb_route_id, ldb_doc_version
+string					ls_lot_yn
 t_dw_mpl			ldw_master
 
 if rdw_handling.dataobject  = 'd_lot_line_kd_grid' then
@@ -1634,19 +1635,31 @@ if rdw_handling.dataobject  = 'd_lot_line_kd_grid' then
 				gf_messagebox('m.c_prod_orders.e_dw_getfocus.01','Thông báo','Chưa có thành phẩm SX !','exclamation','ok',1)
 				return 0
 			end if
-			//-- lấy size của item --//
-			
-			select size_id into :ldb_size_id from item where object_ref_id = :ldb_item_id using it_transaction;
+			//-- lấy size, lot_yn của item --//			
+			select size_id, lot_yn into :ldb_size_id , :ls_lot_yn from item where object_ref_id = :ldb_item_id using it_transaction;
 			if ldb_size_id = 0 or isnull(ldb_size_id) then
 				gf_messagebox('m.c_prod_orders.e_dw_getfocus.02','Thông báo','Chưa chọn loại size cho sản phẩm !','exclamation','ok',1)
 				return 0
 			end if
 			//-- insert size --//
-			INSERT into lot_line(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,DOC_VERSION,
-										lot_no,serial_no,line_no)
-			SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'PRODUCTION_LINE',:ldb_doc_version,
-						'Đôi', vv.code,vv.line_no
-					from valueset_value vv where object_ref_id = :ldb_size_id using it_transaction;
+			if ls_lot_yn = 'Y' then
+				INSERT into lot_line(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,DOC_VERSION,
+											lot_no,serial_no,line_no)
+				SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'PRODUCTION_LINE',:ldb_doc_version,
+							'T', vv.code,vv.line_no
+						from valueset_value vv where object_ref_id = :ldb_size_id using it_transaction;
+				INSERT into lot_line(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,DOC_VERSION,
+											lot_no,serial_no,line_no)
+				SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'PRODUCTION_LINE',:ldb_doc_version,
+							'P', vv.code,vv.line_no
+						from valueset_value vv where object_ref_id = :ldb_size_id using it_transaction;						
+			else
+				INSERT into lot_line(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,DOC_VERSION,
+											lot_no,serial_no,line_no)
+				SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'PRODUCTION_LINE',:ldb_doc_version,
+							'Đôi', vv.code,vv.line_no
+						from valueset_value vv where object_ref_id = :ldb_size_id using it_transaction;
+			end if
 			commit using it_transaction;
 			rdw_handling.event e_retrieve()
 			disconnect using it_transaction;			

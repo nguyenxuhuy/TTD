@@ -10,11 +10,11 @@ end type
 global u_detail_so u_detail_so
 
 type variables
-double	idb_obj_ref_id, idb_object_id, idb_curr_id, idb_exrate
+double	idb_obj_ref_id, idb_object_id, idb_curr_id, idb_exrate, idb_scrap_pct, idb_cust_id
+string		is_included_scrap
 date		id_doc_date
 s_str_data	istr_currency
 end variables
-
 forward prototypes
 public subroutine f_set_dwo_window ()
 public function integer f_get_dw_retrieve_args (ref datawindow rdw_focus, ref any ra_args[])
@@ -185,6 +185,7 @@ if  ldw_main.getrow( ) > 0 then
 	istr_currency.adb_data[2] = ldw_main.getitemnumber( ldw_main.getrow( ) , 'exchange_rate')
 	idb_obj_ref_id =  ldw_main.getitemnumber(ldw_main.getrow(),'version_id')
 	ldb_handled_by =  ldw_main.getitemnumber(ldw_main.getrow(),'handled_by')
+	idb_cust_id =   ldw_main.getitemnumber(ldw_main.getrow(),'object_id')
 	idb_object_id = lbo_ins.f_get_user_staff_id( ldb_handled_by, it_transaction )
 	
 	laa_value[1] = idb_obj_ref_id
@@ -458,6 +459,46 @@ end event
 
 event e_window_e_preopen;call super::e_window_e_preopen;
 iw_display.f_set_ii_upperpart_height( 1/2)
+return ancestorreturnvalue
+end event
+
+event e_dw_getfocus;call super::e_dw_getfocus;double				ldb_item_id, ldb_object_ref_id, ldb_size_id, ldb_bom_id, ldb_route_id, ldb_doc_version
+t_dw_mpl			ldw_master
+
+if rdw_handling.dataobject  = 'd_lot_line_kd_grid' then
+	if rdw_handling.rowcount() = 0 then
+		ldw_master = rdw_handling.f_get_idw_master()
+		if ldw_master.accepttext( ) = -1 then return -1
+		connect using it_transaction;
+		ldw_master.event e_autosave( )
+		if ldw_master.getrow( ) > 0 then
+			ldb_object_ref_id = ldw_master.getitemnumber( ldw_master.getrow(), 'id')
+			ldb_doc_version = ldw_master.getitemnumber( ldw_master.getrow(), 'object_ref_id')
+			ldb_item_id = ldw_master.getitemnumber( ldw_master.getrow(), 'object_id')
+			if isnull(ldb_item_id) or ldb_item_id = 0 then
+				gf_messagebox('m.c_prod_orders.e_dw_getfocus.01','Thông báo','Chưa nhập mã hàng !','exclamation','ok',1)
+				return 0
+			end if
+			//-- lấy size của item --//
+			
+			select size_id into :ldb_size_id from item where object_ref_id = :ldb_item_id using it_transaction;
+			if ldb_size_id = 0 or isnull(ldb_size_id) then
+				gf_messagebox('m.c_prod_orders.e_dw_getfocus.02','Thông báo','Chưa chọn loại size cho hình thể !','exclamation','ok',1)
+				return 0
+			end if
+			//-- insert size --//
+			INSERT into lot_line(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,DOC_VERSION,
+										lot_no,serial_no,line_no)
+			SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'SO_LINE',:ldb_doc_version,
+						null, vv.code,vv.line_no
+					from valueset_value vv where object_ref_id = :ldb_size_id using it_transaction;
+					
+			commit using it_transaction;
+			rdw_handling.event e_retrieve()
+			disconnect using it_transaction;
+		end if
+	end if
+end if
 return ancestorreturnvalue
 end event
 

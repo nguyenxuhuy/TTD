@@ -10,11 +10,10 @@ end type
 global u_detail_qt u_detail_qt
 
 type variables
-double	idb_obj_ref_id, idb_object_id, idb_curr_id, idb_exrate
+double	idb_obj_ref_id, idb_object_id, idb_curr_id, idb_exrate, idb_cust_id
 date		id_doc_date
 s_str_data	istr_currency
 end variables
-
 forward prototypes
 public subroutine f_set_dwo_window ()
 public function integer f_get_dw_retrieve_args (ref datawindow rdw_focus, ref any ra_args[])
@@ -167,6 +166,7 @@ if ldw_main.getrow( ) > 0 then
 	istr_currency.adb_data[2] = ldw_main.getitemnumber( ldw_main.getrow( ) , 'exchange_rate')
 	idb_obj_ref_id =  ldw_main.getitemnumber(ldw_main.getrow(),'version_id')
 	ldb_handled_by =  ldw_main.getitemnumber(ldw_main.getrow(),'handled_by')
+	idb_cust_id =  ldw_main.getitemnumber(ldw_main.getrow(),'object_id')
 	idb_object_id = lbo_ins.f_get_user_staff_id( ldb_handled_by, it_transaction )
 	
 	laa_value[1] = idb_obj_ref_id
@@ -256,7 +256,7 @@ choose case vs_colname
 		//-- check spec khách hàng --//
 		ldb_item_id = rpo_dw.getitemnumber( vl_currentrow, 'item_id' )
 		connect using it_transaction;
-		select count(id) into :li_cnt from item_spec where object_ref_id = :ldb_item_id and spec_group = :idb_object_id using it_transaction;
+		select count(id) into :li_cnt from item_spec where object_ref_id = :ldb_item_id and spec_group = :idb_cust_id using it_transaction;
 		disconnect using it_transaction;
 		if li_cnt = 0 then
 			if gf_messagebox('m.u_detail_qt.e_dw_e_itemchanged.01','Thông báo','Hình thể chưa có làm phiếu mẫu với khách hàng, bạn tiếp tục hay không?','question','yesno',2) = 2 then
