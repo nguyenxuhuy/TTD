@@ -1337,8 +1337,8 @@ end type
 event itemclicked;call super::itemclicked;int					li_rtn
 t_w_main		lw_handle, lw_sheet_close
 s_w_main		lw_active
-s_object_display		lod_handle
-t_dw_mpl				ldw_main
+s_object_display		lod_handle, lpo_related
+t_dw_mpl				ldw_main, ldw_focus
 
 choose case itemtag
 	case 'signout'
@@ -1453,11 +1453,19 @@ choose case itemtag
 				lw_handle.dynamic event e_copy_to_new(itemtag )
 			end if				
 		elseif left(itemtag, 7) = 'b_copyf' then			
-		else
-			lw_handle = parent.getactivesheet( )
-			if isvalid(lw_handle) then
-				lw_handle.triggerevent(itemtag )
+		elseif  left(itemtag, 2) = 'u_' then //-- related object--//
+			lw_active = parent.getactivesheet( )
+			if isvalid(lw_active) then
+				lw_active.event e_create_related_object(itemtag,lpo_related)
+				ldw_focus = lw_active.f_get_idwfocus( )
+				if ldw_focus.f_get_ib_editing() then
+					gf_messagebox('m.t_w_mdi.itemclicked.01','Thông báo','Phải lưu dữ liệu trước khi chuyển đối tượng liên quan','exclamation','ok',1)
+					return 
+				else		
+					lw_active.event e_change_object_appeon(lpo_related)
+				end if
 			end if				
+		else
 		end if
 end choose
 end event

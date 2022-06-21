@@ -7375,7 +7375,7 @@ if not isnull(message.stringparm) and message.stringparm <> '' then
 
 elseif not isnull(message.powerobjectparm ) then
 	ic_obj_main = message.powerobjectparm
-	setnull(message.powerobjectparm)
+//	setnull(message.powerobjectparm)
 
 	ic_obj_main.f_init_policy_datastore_exx(it_transaction )
 	ls_menu_text = lc_menu_item.f_get_menu_label_ex(ic_obj_main.classname( ) ,it_transaction)

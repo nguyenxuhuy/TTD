@@ -1157,12 +1157,12 @@ end event
 event type integer e_item_barcode(string vs_btn_name);return 0
 end event
 
-event type integer e_window_e_change_object();t_dw_mpl			ldw_main
-
-this.f_update_ribbonbar( t_w_mdi.rbb_1)
-ldw_main =  iw_display.f_get_dwmain( )
-iw_display.f_set_idwfocus( ldw_main)
-iw_display.dynamic f_ctrl_enable_button(ldw_main )	
+event type integer e_window_e_change_object();//t_dw_mpl			ldw_main
+//
+//this.f_update_ribbonbar( t_w_mdi.rbb_1)
+//ldw_main =  iw_display.f_get_dwmain( )
+//iw_display.f_set_idwfocus( ldw_main)
+//iw_display.dynamic f_ctrl_enable_button(ldw_main )	
 
 //this.f_ctrl_actionbuttons( ldw_focus)
 return 0
@@ -1428,12 +1428,12 @@ event type integer e_window_e_presave();
 return 0
 end event
 
-event type integer e_dw_e_itemfocuschanged(datawindow rpo_dw, long vl_currentrow, string vs_colname);		
-IF  rpo_dw.describe(vs_colname + ".Edit.Style")  = 'dddw' and rpo_dw.describe(vs_colname + '.dddw.name') <> '' then
-
-	rpo_dw.dynamic keybd_event( 115,0,0,0 )	
+event type integer e_dw_e_itemfocuschanged(datawindow rpo_dw, long vl_currentrow, string vs_colname);if  isvalid(rpo_dw)	then	
+	IF  rpo_dw.describe(vs_colname + ".Edit.Style")  = 'dddw' and rpo_dw.describe(vs_colname + '.dddw.name') <> '' then
+	
+		rpo_dw.dynamic keybd_event( 115,0,0,0 )	
+	end if
 end if
-
 return 0
 
 end event
