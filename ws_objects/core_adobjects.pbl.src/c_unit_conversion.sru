@@ -101,12 +101,15 @@ choose case vs_colname
 		ls_unit_code = vs_editdata
 		//--Nếu không nhập mã hàng thì setitem đơn vị chuẩn vào to_unit_code--//
 		if isnull(ldb_item_id) or ldb_item_id <= 0 then
+			connect using it_transaction;
 			ldb_class_id = ic_unit_instance.f_get_unit_class_id_ex( ls_unit_code , it_transaction )
 			if ic_unit_instance.f_get_unit_standard_ex( ls_unit_code, ldb_unit_id,ldb_class_id, it_transaction) > 0 then
 				rpo_dw.setitem(vl_currentrow,'code_to_unit',ls_unit_code)
 				rpo_dw.setitem(vl_currentrow,'to_unit_id',ldb_unit_id)
+				disconnect using it_transaction;
 			else
 				gf_messagebox('m.c_unit_conversion.e_dw_e_itemchanged.01','Thông báo','Chưa có đơn vị chuẩn','exclamation','ok',1)
+				disconnect using it_transaction;
 				return 1
 			end if
 		end if
@@ -115,7 +118,9 @@ choose case vs_colname
 		ldb_item_id = rpo_dw.getitemnumber(vl_currentrow,'item_id')
 		ls_unit_code = vs_editdata		 
 		 if not isnull(ldb_item_id) and ldb_item_id > 0 then
+			connect using it_transaction;
 			li_rtn = lb_obj.f_get_stock_uom_ex(ldb_item_id,ldb_unit_id, ls_unit_code, it_transaction )
+			disconnect using it_transaction;
 			if li_rtn = -1 then return 1
 			if lower(ls_unit_code) <> lower(vs_editdata) then
 				gf_messagebox('m.c_unit_conversion.e_dw_e_itemchanged.02','Thông báo','Phải chọn đơn vị tồn kho của mã hàng cho đơn vị <Đến>','exclamation','ok',1)
@@ -123,7 +128,9 @@ choose case vs_colname
 			end if
 		end if
 	case 'code_item'
+		connect using it_transaction;
 		li_rtn = lb_obj.f_get_stock_uom_ex(vs_editdata,ldb_unit_id, ls_unit_code, it_transaction )
+		disconnect using it_transaction;
 		if li_rtn = -1 then return 1
 		rpo_dw.setitem(vl_currentrow, 'code_to_unit',ls_unit_code)
 		rpo_dw.setitem(vl_currentrow, 'TO_UNIT_ID',ldb_unit_id)
@@ -234,39 +241,39 @@ end if
 return 0
 end event
 
-event e_window_e_postopen_child;call super::e_window_e_postopen_child;long				ll_row
-int					li_cnt, li_idx
-string				lsa_colname[], ls_coltype, ls_itemCode, ls_itemName, ls_uomCode, ls_spec
-double			ldb_stock_uom
-t_dw_mpl				ldw_main
-c_string					lc_string
-b_obj_instantiate		lbo_ins
-if upperbound(istr_data_related[]) = 1 then
-	ldw_main = iw_display.f_get_dwmain( )
-	ldw_main.event e_retrieve( )
-	if ldw_main.rowcount( ) = 0 and istr_data_related[1].s_related_obj_dwo = ldw_main.dataobject then
-		ll_row = iw_display.event e_add( )
-		li_cnt = lc_string.f_stringtoarray( istr_data_related[1].s_related_obj_column, ';', lsa_colname[])
-		FOR li_idx = 1 to li_cnt
-			ls_coltype = ldw_main.describe( lsa_colname[li_idx] +'.coltype')
-			if left(ls_coltype,5) = 'numbe' then
-				ldw_main.setitem( ll_row, lsa_colname[li_idx], double(istr_data_related[1].s_data[li_idx]))
-				if  lower(lsa_colname[li_idx]) = 'item_id' then
-					if lbo_ins.f_get_item_code_n_name_spec_ex(double(istr_data_related[1].s_data[li_idx]), ls_itemCode, ls_itemName, ls_spec, it_transaction ) = 1 then
-						ldw_main.setitem( ll_row, 'code_item', ls_itemCode)
-						ldw_main.setitem( ll_row, 'name_item', ls_itemName)
-						ldw_main.setitem( ll_row, 'spec_desc', ls_spec)
-						lbo_ins.f_get_stock_uom_ex( double(istr_data_related[1].s_data[li_idx]), ldb_stock_uom, ls_uomCode , it_transaction )
-						ldw_main.setitem( ll_row, 'to_unit_id', ldb_stock_uom)
-						ldw_main.setitem( ll_row, 'code_to_unit', ls_uomCode)					
-					end if
-				end if
-			end if
-		NEXT
-	elseif ldw_main.rowcount( ) > 0 and istr_data_related[1].s_related_obj_dwo = ldw_main.dataobject then
-		iw_display.event e_modify( )
-	end if
-end if
+event e_window_e_postopen_child;call super::e_window_e_postopen_child;//long				ll_row
+//int					li_cnt, li_idx
+//string				lsa_colname[], ls_coltype, ls_itemCode, ls_itemName, ls_uomCode, ls_spec
+//double			ldb_stock_uom
+//t_dw_mpl				ldw_main
+//c_string					lc_string
+//b_obj_instantiate		lbo_ins
+//if upperbound(istr_data_related[]) = 1 then
+//	ldw_main = iw_display.f_get_dwmain( )
+//	ldw_main.event e_retrieve( )
+//	if ldw_main.rowcount( ) = 0 and istr_data_related[1].s_related_obj_dwo = ldw_main.dataobject then
+//		ll_row = iw_display.event e_add( )
+//		li_cnt = lc_string.f_stringtoarray( istr_data_related[1].s_related_obj_column, ';', lsa_colname[])
+//		FOR li_idx = 1 to li_cnt
+//			ls_coltype = ldw_main.describe( lsa_colname[li_idx] +'.coltype')
+//			if left(ls_coltype,5) = 'numbe' then
+//				ldw_main.setitem( ll_row, lsa_colname[li_idx], double(istr_data_related[1].s_data[li_idx]))
+//				if  lower(lsa_colname[li_idx]) = 'item_id' then
+//					if lbo_ins.f_get_item_code_n_name_spec_ex(double(istr_data_related[1].s_data[li_idx]), ls_itemCode, ls_itemName, ls_spec, it_transaction ) = 1 then
+//						ldw_main.setitem( ll_row, 'code_item', ls_itemCode)
+//						ldw_main.setitem( ll_row, 'name_item', ls_itemName)
+//						ldw_main.setitem( ll_row, 'spec_desc', ls_spec)
+//						lbo_ins.f_get_stock_uom_ex( double(istr_data_related[1].s_data[li_idx]), ldb_stock_uom, ls_uomCode , it_transaction )
+//						ldw_main.setitem( ll_row, 'to_unit_id', ldb_stock_uom)
+//						ldw_main.setitem( ll_row, 'code_to_unit', ls_uomCode)					
+//					end if
+//				end if
+//			end if
+//		NEXT
+//	elseif ldw_main.rowcount( ) > 0 and istr_data_related[1].s_related_obj_dwo = ldw_main.dataobject then
+//		iw_display.event e_modify( )
+//	end if
+//end if
 
 return ancestorreturnvalue
 end event

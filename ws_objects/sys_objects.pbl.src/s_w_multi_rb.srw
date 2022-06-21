@@ -99,6 +99,7 @@ event type integer e_copy_to_new ( string vs_btn_name )
 event type integer e_save4close ( )
 event type integer e_filteron_rb ( )
 event type integer e_filterswitch_rb ( )
+event e_open_related_object ( string vs_objname )
 dw_2 dw_2
 tab_1 tab_1
 dw_4 dw_4
@@ -1879,6 +1880,19 @@ end if
 //dw_filter.inv_querymode.f_setdwfocus( ldw_focus)
 
 return 0
+end event
+
+event e_open_related_object(string vs_objname);
+t_dw_mpl					ldw_focus
+s_object_display			lpo_related
+
+	this.event e_create_related_object(vs_objname,lpo_related)
+	ldw_focus = this.f_get_idwfocus( )
+	if ldw_focus.f_get_ib_editing() then
+		gf_messagebox('m.t_w_mdi.itemclicked.01','Thông báo','Phải lưu dữ liệu trước khi chuyển đối tượng liên quan','exclamation','ok',1) 
+	else		
+		this.event e_change_object_appeon(lpo_related)
+	end if
 end event
 
 public function tab f_get_tab_1 ();return tab_1

@@ -1456,14 +1456,7 @@ choose case itemtag
 		elseif  left(itemtag, 2) = 'u_' then //-- related object--//
 			lw_active = parent.getactivesheet( )
 			if isvalid(lw_active) then
-				lw_active.event e_create_related_object(itemtag,lpo_related)
-				ldw_focus = lw_active.f_get_idwfocus( )
-				if ldw_focus.f_get_ib_editing() then
-					gf_messagebox('m.t_w_mdi.itemclicked.01','Thông báo','Phải lưu dữ liệu trước khi chuyển đối tượng liên quan','exclamation','ok',1)
-					return 
-				else		
-					lw_active.event e_change_object_appeon(lpo_related)
-				end if
+				lw_active.dynamic event e_open_related_object(itemtag)
 			end if				
 		else
 		end if
