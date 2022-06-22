@@ -840,7 +840,7 @@ if wf_active_win(vpo_win_param.is_object_title) > 0 then
 	return 1
 end if
 
-setnull(message.powerobjectparm)
+//setnull(message.powerobjectparm)
 
 //open it
 ls_id = f_getrand() + ";" + ls_win_parm

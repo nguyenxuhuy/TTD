@@ -2267,9 +2267,11 @@ FOR li_idx = 1 to li_objCount
 				if isnull(ls_data) then ls_data = ''
 				rstr_data_related[li_idx].s_data[li_col] += ls_data		
 				//-- set data related cho dw drilldown --//
-				if rstr_data_related[li_idx].s_related_obj_dwo = rstr_data_related[li_idx].s_related_obj_dwo_copy[1] then
-					rstr_drilldown_data.aa_data[li_col] = ldw_related.dynamic f_getitemany(ldw_related.getrow( ) , las_main_obj_column[li_col])
-				end if				
+				if upperbound( rstr_data_related[li_idx].s_related_obj_dwo_copy[]) > 0 then
+					if rstr_data_related[li_idx].s_related_obj_dwo = rstr_data_related[li_idx].s_related_obj_dwo_copy[1] then
+						rstr_drilldown_data.aa_data[li_col] = ldw_related.dynamic f_getitemany(ldw_related.getrow( ) , las_main_obj_column[li_col])
+					end if				
+				end if
 			end if			
 
 			
@@ -2350,17 +2352,19 @@ FOR li_idx = 1 to li_objCount
 	end if
 	
 	//-- set drilldown --//
-	rstr_drilldown_data.s_drilldown_obj_dwo[1] = rstr_data_related[li_idx].s_related_obj_dwo_copy[1]
-	if rstr_data_related[li_idx].s_related_obj_dwo = rstr_data_related[li_idx].s_related_obj_dwo_copy[1] then		
-		rstr_drilldown_data.s_drilldown_obj_column[1] = rstr_data_related[li_idx].s_related_obj_column + ';' + rstr_data_related[1].s_related_obj_column_copy[1]	
-	else
-		rstr_drilldown_data.s_drilldown_obj_column[1] = rstr_data_related[1].s_related_obj_column_copy[1]	
+	if upperbound(rstr_drilldown_data.s_drilldown_obj_dwo[]) > 0 and upperbound(rstr_data_related[li_idx].s_related_obj_dwo_copy[]) > 0 then
+		rstr_drilldown_data.s_drilldown_obj_dwo[1] = rstr_data_related[li_idx].s_related_obj_dwo_copy[1]
+		if rstr_data_related[li_idx].s_related_obj_dwo = rstr_data_related[li_idx].s_related_obj_dwo_copy[1] then		
+			rstr_drilldown_data.s_drilldown_obj_column[1] = rstr_data_related[li_idx].s_related_obj_column + ';' + rstr_data_related[1].s_related_obj_column_copy[1]	
+		else
+			rstr_drilldown_data.s_drilldown_obj_column[1] = rstr_data_related[1].s_related_obj_column_copy[1]	
+		end if
+		ldw_parm = this.f_get_dw(rstr_data_related[li_idx].s_main_obj_dwo_copy[1])	
+		li_colCount = lc_string.f_stringtoarray(rstr_data_related[li_idx].s_main_obj_column_copy[1] , ';', las_main_obj_column[]) 
+		FOR li_idx = 1 to li_colCount
+			rstr_drilldown_data.aa_data[upperbound(rstr_drilldown_data.aa_data[])+1] = ldw_parm.dynamic f_getitemany(ldw_parm.getrow( ) , las_main_obj_column[li_idx])	
+		NEXT
 	end if
-	ldw_parm = this.f_get_dw(rstr_data_related[li_idx].s_main_obj_dwo_copy[1])	
-	li_colCount = lc_string.f_stringtoarray(rstr_data_related[li_idx].s_main_obj_column_copy[1] , ';', las_main_obj_column[]) 
-	FOR li_idx = 1 to li_colCount
-		rstr_drilldown_data.aa_data[upperbound(rstr_drilldown_data.aa_data[])+1] = ldw_parm.dynamic f_getitemany(ldw_parm.getrow( ) , las_main_obj_column[li_idx])	
-	NEXT
 NEXT
 
 return upperbound(rstr_data_related)

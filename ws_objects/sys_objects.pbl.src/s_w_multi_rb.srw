@@ -1882,17 +1882,51 @@ end if
 return 0
 end event
 
-event e_open_related_object(string vs_objname);
-t_dw_mpl					ldw_focus
-s_object_display			lpo_related
+event e_open_related_object(string vs_objname);boolean					lb_return_2_main,lb_multi_print
+string						ls_display_model, ls_filterstring, ls_sqlnowhere, ls_currentwhere, ls_modify, ls_rtn,ls_dwo_view
+double					ldb_main_ID
+long						ll_row
+int							li_idx,li_rtn
+c_string					lc_string
+s_str_dw_ms			lastr_dw_ms_empty[]
+s_str_dw_md			lastr_dw_md_empty[]
+t_transaction			lc_transaction
+window					lw_requester
+//t_dw_mpl					ldw_main, ldw_empty[]
+s_object_display		lod_main, lpo_related
 
-	this.event e_create_related_object(vs_objname,lpo_related)
-	ldw_focus = this.f_get_idwfocus( )
-	if ldw_focus.f_get_ib_editing() then
-		gf_messagebox('m.t_w_mdi.itemclicked.01','Thông báo','Phải lưu dữ liệu trước khi chuyển đối tượng liên quan','exclamation','ok',1) 
-	else		
-		this.event e_change_object_appeon(lpo_related)
+s_str_dwo_related		lstr_data_related[],lstr_related[]
+s_str_dwo				lstr_dwo[]
+s_str_drilldown_data	lstr_drilldown_data
+t_dw_mpl					ldw_focus
+
+
+
+ldw_focus = this.f_get_idwfocus( )
+if ldw_focus.f_get_ib_editing() then
+	gf_messagebox('m.t_w_mdi.itemclicked.01','Thông báo','Phải lưu dữ liệu trước khi chuyển đối tượng liên quan','exclamation','ok',1) 
+else		
+	ib_object_changing = true
+	lpo_related =  create using vs_objname
+	li_rtn = ic_obj_handling.f_get_data_related(lpo_related.classname(), lstr_data_related[])
+	if li_rtn = 0 then
+		//-- xem lại khai báo đối tương liên quan trên object--//
+		gf_messagebox('m.s_w_main.e_change_object.01','Thông báo','Không tìm thấy struct đối tượng liên quan','exclamation','ok',1)
+		return
 	end if
+	li_rtn = this.f_build_data_related( lstr_data_related[], lstr_drilldown_data) 
+//		if this.f_build_data_related( lstr_data_related[]) = -1 then lb_multi_print = false
+	lpo_related.f_set_data_related(lstr_data_related[])		
+	lpo_related.is_object_title = lstr_data_related[1].s_text
+	lpo_related.is_win_grp = 'DOC'
+	lpo_related.is_sheet_type ='DOC'
+	lpo_related.is_win_name = lstr_data_related[1].s_text
+	li_idx= t_w_mdi.wf_open_sheet_doc(lpo_related, 's_w_multi_rb' )
+//	lpo_related.post event e_window_e_change_object()
+	ib_object_changing = false	
+end if
+
+
 end event
 
 public function tab f_get_tab_1 ();return tab_1
@@ -6752,10 +6786,12 @@ else
 		if ic_obj_handling.classname() = 'u_onhand' then
 			idw_focus = this.f_get_dw( 'd_onhand_grid')
 		end if
-		if idw_focus.dynamic event e_refresh() = -9 or idw_focus.dynamic event e_refresh() = 0  then
+		idw_focus.dynamic event e_refresh() 
+		
+//		if idw_focus.dynamic event e_refresh() = -9 or idw_focus.dynamic event e_refresh() = 0  then
 //			this.f_ctrl_enable_button(  idw_focus)
 //			ic_obj_handling.f_ctrl_actionbuttons(idw_focus)
-		end if
+//		end if
 		
 		//-- scroll đến record được chọn trong window search --//
 	//	if idw_focus.rowcount( ) > 0 then
@@ -7591,14 +7627,15 @@ ib_object_changing = true
 if not isvalid(vpo_change_object) then return -1
 if upper(left(vpo_change_object.classname(), 3)) = 'UR_' then // change drilldown report//	
 //	ic_obj_handling.f_change_drilldown_rpt(vpo_change_object)
-	lb_multi_print = true
+//	lb_multi_print = true
 	li_rtn = ic_obj_handling.f_get_data_related(vpo_change_object.classname(), lstr_data_related[])
 	if li_rtn = 0 then
 		//-- xem lại khai báo đối tương liên quan trên object--//
 		gf_messagebox('m.s_w_main.e_change_object.01','Thông báo','Không tìm thấy struct đối tượng liên quan','exclamation','ok',1)
 		return -1
 	end if	
-	if this.f_build_data_related( lstr_data_related[], lstr_drilldown_data) = -1 then lb_multi_print = false
+	li_rtn = this.f_build_data_related( lstr_data_related[], lstr_drilldown_data) 
+//	if li_rtn = -1 then lb_multi_print = false
 //	vpo_change_object.f_set_data_related(lstr_data_related[])		
 	vpo_change_object.f_set_drilldown_data(lstr_drilldown_data)
 	vpo_change_object.is_object_title = lstr_data_related[1].s_text
@@ -7631,7 +7668,8 @@ else
 			gf_messagebox('m.s_w_main.e_change_object.01','Thông báo','Không tìm thấy struct đối tượng liên quan','exclamation','ok',1)
 			return -1
 		end if
-		if this.f_build_data_related( lstr_data_related[]) = -1 then lb_multi_print = false
+		li_rtn = this.f_build_data_related( lstr_data_related[], lstr_drilldown_data) 
+//		if this.f_build_data_related( lstr_data_related[]) = -1 then lb_multi_print = false
 		vpo_change_object.f_set_data_related(lstr_data_related[])		
 		vpo_change_object.is_object_title = lstr_data_related[1].s_text
 		vpo_change_object.is_win_grp = 'DOC'

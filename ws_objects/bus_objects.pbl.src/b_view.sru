@@ -110,8 +110,8 @@ end event
 
 event e_dw_e_postretrieve;call super::e_dw_e_postretrieve;datawindow 	ldw_main
 
-ldw_main = iw_display.dynamic f_get_dwmain()
-ldw_main.modify("DataWindow.Print.Preview= true")
+//ldw_main = iw_display.dynamic f_get_dwmain()
+//ldw_main.modify("DataWindow.Print.Preview= true")
 return 0
 end event
 
