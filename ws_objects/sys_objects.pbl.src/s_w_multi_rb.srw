@@ -380,85 +380,7 @@ else
 	return 
 end if	
 return
-/*
-//lpo_handle = this.f_get_obj_handling( )
-lb_view = create b_view
-ls_dwo_view = lc_string.f_globalreplace( vs_btn_name, 'b_view_', 'dv_') + '_form'
-if ic_obj_handling.f_get_data_related( ls_dwo_view, lstr_data_related[]) = 1 then
-	//--Gán title cho phiếu in--//
-	lb_view.f_get_istr_actionpane(lstr_actionpane)
-	lstr_actionpane[1].s_description = lstr_data_related[1].s_text
-	lb_view.f_set_istr_actionpane(lstr_actionpane)		
-	//--Gán dwo main --//
-	lb_view.f_get_dwo( lstr_dwo)
-	lstr_dwo[1].s_dwo_default =  lstr_data_related[1].s_related_obj_dwo
-	lstr_dwo[1].s_dwo_form = lstr_data_related[1].s_related_obj_dwo
-	lstr_dwo[1].s_description =  lstr_data_related[1].s_text
-	lb_view.f_set_dwo_structure(lstr_dwo )			
-else
-	gf_messagebox('m.s_w_main.e_view.01','Thông báo','Không tìm thấy structure đối tượng liên quan theo dwo:@'+ls_dwo_view,'stop','ok',1)
-	return 
-end if
-if this.event e_create_related_object(vs_btn_name,lpo_related) = 1 then
-//	lpo_related.f_create_actionpane(tab_action)
-//	if this.event e_change_object(lpo_related) = -1 then 		
-//		lpo_related.f_close_object( left(vs_btn_name,6), lpo_related.ii_tp_index)
-//	end if
-	
 
-
-
-	ldw_focus = This.f_get_idwfocus( )
-	if ldw_focus.f_get_ib_editing() then
-		gf_messagebox('m.t_dw_action_pane.buttonclicked.01','Thông báo','Phải lưu dữ liệu trước khi chuyển đối tượng liên quan','exclamation','ok',1)
-		return 
-	else
-		This.event e_change_object_appeon(lpo_related)
-	end if
-
-end if
-
-
-if ls_object_name = 'b_view' then
-	ls_dwo_view = lc_string.f_globalreplace( vs_object_name, 'b_view_', 'dv_') + '_form'
-	if ic_obj_handling.f_get_data_related( ls_dwo_view, lstr_data_related[]) = 1 then
-		//--Gán title cho phiếu in--//
-		rpo_related.f_get_istr_actionpane(lstr_actionpane)
-		lstr_actionpane[1].s_description = lstr_data_related[1].s_text
-		rpo_related.f_set_istr_actionpane(lstr_actionpane)		
-		//--Gán dwo main --//
-		rpo_related.f_get_dwo( lstr_dwo)
-		lstr_dwo[1].s_dwo_default =  lstr_data_related[1].s_related_obj_dwo
-		lstr_dwo[1].s_dwo_form = lstr_data_related[1].s_related_obj_dwo
-		lstr_dwo[1].s_description =  lstr_data_related[1].s_text
-		rpo_related.f_set_dwo_structure(lstr_dwo )		
-	else
-		gf_messagebox('m.s_w_main.e_create_related_object.01','Thông báo','Không tìm thấy structure đối tượng liên quan theo dwo:@'+ls_dwo_view,'stop','ok',1)
-		return -1
-	end if
-end if
-
-
-
-	lod_cust_paid = create u_cust_paid
-	
-	lod_cust_paid.ipo_parm = lstr_data
-	lod_cust_paid.is_win_name = 'u_cust_paid' 
-	lod_cust_paid.is_win_grp ='DOC'
-	lod_cust_paid.is_sheet_type = 'DOC'
-	lod_cust_paid.is_object_title = 'Phiếu chi'
-	message.powerobjectparm = lstr_data_related
-	t_w_mdi.wf_open_sheet_doc(lod_cust_paid, 's_w_multi')
-
-				if vpo_change_object.classname() = 'b_view' then// Đối tượng In
-					if ic_obj_handling.event e_window_e_view(vpo_change_object, ls_dwo_view ) = -1 then return -1
-					li_rtn = ic_obj_handling.f_get_data_related(vpo_change_object.f_get_main_dwo( ), lstr_data_related[])
-				else
-					 li_rtn = ic_obj_handling.f_get_data_related(vpo_change_object.classname(), lstr_data_related[])
-				end if
-
-
-*/
 end event
 
 event e_approve();b_obj_instantiate lb_ins
@@ -1925,8 +1847,35 @@ else
 //	lpo_related.post event e_window_e_change_object()
 	ib_object_changing = false	
 end if
+return
 
-
+/*
+if ic_obj_handling.f_get_data_related( ls_dwo_view, lstr_data_related[]) = 1 then
+	//--Gán title cho phiếu in--//
+	lb_view.f_get_istr_actionpane(lstr_actionpane)
+	lstr_actionpane[1].s_description = lstr_data_related[1].s_text
+	lb_view.f_set_istr_actionpane(lstr_actionpane)		
+	//--Gán dwo main --//
+	lb_view.f_get_dwo( lstr_dwo)
+	lstr_dwo[1].s_dwo_default =  lstr_data_related[1].s_related_obj_dwo
+	lstr_dwo[1].s_dwo_form = lstr_data_related[1].s_related_obj_dwo
+	lstr_dwo[1].s_description =  lstr_data_related[1].s_text
+	lb_view.f_set_dwo_structure(lstr_dwo )	
+	lb_view.is_object_title =   lstr_data_related[1].s_text
+	if ic_obj_handling.event e_window_e_view(lb_view, ls_dwo_view ) = -1 then return 
+	 lstr_data_related[]=  lstr_data_empty[]
+	ic_obj_handling.f_get_data_related(lb_view.f_get_main_dwo( ), lstr_data_related[])
+	
+	if this.f_build_data_related( lstr_data_related[]) = -1 then return
+	lb_view.f_set_data_related(lstr_data_related[])			
+	ic_obj_handling.event e_window_e_view( lb_view, ls_dwo_view)
+	t_w_mdi.wf_open_sheet_doc(lb_view, 's_w_multi_rb')
+else
+	gf_messagebox('m.s_w_main.e_view.01','Thông báo','Không tìm thấy structure đối tượng liên quan theo dwo:@'+ls_dwo_view,'stop','ok',1)
+	return 
+end if	
+return
+*/
 end event
 
 public function tab f_get_tab_1 ();return tab_1
@@ -6983,6 +6932,7 @@ li_response = ic_obj_handling.dynamic event e_window_closequery()
 //end if
 //-- release resource --//
 //disconnect using it_transaction;
+//destroy ic_obj_handling
 destroy it_transaction
 
 //if li_response = 0 then
@@ -7702,32 +7652,19 @@ s_object_display		lod_main
 t_dw_mpl				ldw_main
 s_str_dwo_related		lstr_data_related[]
 
-
-//lod_main = this.ic_obj_handling.f_get_main_object( )
-//if isvalid(lod_main) and not this.ib_opening then
-//	if lod_main.classname() <> ic_obj_handling.classname( ) AND not ic_obj_handling.ib_copying then
-//		li_cnt = ic_obj_handling.f_get_data_related(  lstr_data_related[])		
-//		if li_cnt = 1 then
-//			this.title = lstr_data_related[1].s_text
-//			ldw_main =  this.f_get_dwmain( )
-//			if isvalid(ldw_main) then
-////				if ic_obj_handling.classname() = 'c_valueset' then
-////					ldw_main.ib_rebuild_relationwhere = false
-////				else
-//					ldw_main.ib_rebuild_relationwhere = true
-////				end if
-//				this.event e_refresh( )
-//			end if		
-//		end if
+//
+//if gb_ribbonclicking then return 0
+//if  not this.ib_opening then 
+//	if isvalid(ic_obj_handling) then
+//		ic_obj_handling.event e_window_activate()
+//		ic_obj_handling.post f_update_ribbonbar( t_w_mdi.rbb_1)
+//	
+//		ldw_main =  this.f_get_dwmain( )
+//		this.f_set_idwfocus( ldw_main)
+//		this.post f_ctrl_enable_button(idw_focus )	
 //	end if
 //end if
-if  not this.ib_opening then 
-	ic_obj_handling.event e_window_activate()
-	ic_obj_handling.post f_update_ribbonbar( t_w_mdi.rbb_1)
-	ldw_main =  this.f_get_dwmain( )
-	this.f_set_idwfocus( ldw_main)
-	this.post f_ctrl_enable_button(idw_focus )	
-end if
+//return 0
 end event
 
 type st_1 from s_w_main`st_1 within s_w_multi_rb

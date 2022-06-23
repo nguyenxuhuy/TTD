@@ -26,6 +26,7 @@ string 		gs_solution_data, gs_registry
 Boolean 		gbl_can_active = false
 Boolean 		gbl_resize_old = false
 Boolean 		gbl_default_layout =  false
+boolean		gb_ribbonclicking
 
 
 //Token expiresin
@@ -36,7 +37,6 @@ Long gl_ClockSkew = 3
 c_user_instance			g_user
 sailjson						gjs_object_user
 end variables
-
 global type ttd from application
 string appname = "ttd"
 string themepath = "theme190"

@@ -1093,7 +1093,10 @@ if not ib_saving then
 				this.event e_rollback_save( )
 				return -1
 			end if
-			if ib_excel_copying then	this.resetupdate( )  // nếu đang copy từ excel (import) thì phải resetupdate --//
+			//-- lưu detial trong postsave --//
+			if this.event e_postsave( ) = -1 then return -1			
+			// nếu đang copy từ excel (import) thì phải resetupdate --//
+			if ib_excel_copying then	this.resetupdate( )  
 		elseif li_rtn = 0 then
 			this.ib_editing = false
 			this.ib_inserting = false		
@@ -1109,8 +1112,6 @@ if not ib_saving then
 //		this.ib_saving = false
 		this.f_set_editable_property(this.ib_editing)
 	end if
-	//-- lưu detial trong postsave --//
-	if this.event e_postsave( ) = -1 then return -1
 end if
 return li_rtn
 
