@@ -1823,31 +1823,34 @@ s_str_drilldown_data	lstr_drilldown_data
 t_dw_mpl					ldw_focus
 
 
-
-ldw_focus = this.f_get_idwfocus( )
-if ldw_focus.f_get_ib_editing() then
-	gf_messagebox('m.t_w_mdi.itemclicked.01','Thông báo','Phải lưu dữ liệu trước khi chuyển đối tượng liên quan','exclamation','ok',1) 
-else		
-	ib_object_changing = true
-	lpo_related =  create using vs_objname
-	li_rtn = ic_obj_handling.f_get_data_related(lpo_related.classname(), lstr_data_related[])
-	if li_rtn = 0 then
-		//-- xem lại khai báo đối tương liên quan trên object--//
-		gf_messagebox('m.s_w_main.e_change_object.01','Thông báo','Không tìm thấy struct đối tượng liên quan','exclamation','ok',1)
-		return
-	end if
-	li_rtn = this.f_build_data_related( lstr_data_related[], lstr_drilldown_data) 
-//		if this.f_build_data_related( lstr_data_related[]) = -1 then lb_multi_print = false
-	lpo_related.f_set_data_related(lstr_data_related[])		
-	lpo_related.is_object_title = lstr_data_related[1].s_text
-	lpo_related.is_win_grp = 'DOC'
-	lpo_related.is_sheet_type ='DOC'
-	lpo_related.is_win_name = lstr_data_related[1].s_text
-	li_idx= t_w_mdi.wf_open_sheet_doc(lpo_related, 's_w_multi_rb' )
+//
+//ldw_focus = this.f_get_idwfocus( )
+//if ldw_focus.f_get_ib_editing() then
+//	gf_messagebox('m.t_w_mdi.itemclicked.01','Thông báo','Phải lưu dữ liệu trước khi chuyển đối tượng liên quan','exclamation','ok',1) 
+//else		
+//	ib_object_changing = true
+//	lpo_related =  create using vs_objname
+//	li_rtn = ic_obj_handling.f_get_data_related(lpo_related.classname(), lstr_data_related[])
+//	if li_rtn = 0 then
+//		//-- xem lại khai báo đối tương liên quan trên object--//
+//		gf_messagebox('m.s_w_main.e_change_object.01','Thông báo','Không tìm thấy struct đối tượng liên quan','exclamation','ok',1)
+//		return
+//	end if
+//	li_rtn = this.f_build_data_related( lstr_data_related[], lstr_drilldown_data) 
+////		if this.f_build_data_related( lstr_data_related[]) = -1 then lb_multi_print = false
+//	lpo_related.f_set_data_related(lstr_data_related[])		
+//	lpo_related.is_object_title = lstr_data_related[1].s_text
+//	lpo_related.is_win_grp = 'DOC'
+//	lpo_related.is_sheet_type ='DOC'
+//	lpo_related.is_win_name = lstr_data_related[1].s_text
+//	t_w_mdi.post wf_open_sheet_doc(lpo_related, 's_w_multi_rb' )
 //	lpo_related.post event e_window_e_change_object()
-	ib_object_changing = false	
-end if
+//	ib_object_changing = false	
+//end if
+
+//OpenSheetwithParmAsDocument( w[upperbound(w[])+1], ls_win_parm, ls_parm[2], lw_refer, ls_id  )
 return
+
 
 /*
 if ic_obj_handling.f_get_data_related( ls_dwo_view, lstr_data_related[]) = 1 then
