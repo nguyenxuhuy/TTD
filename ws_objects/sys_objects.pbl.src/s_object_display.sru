@@ -6448,28 +6448,28 @@ FOR li_idx = 1 to li_cnt
 		rbb_handle.getchilditembyindex( l_rci.itemhandle, 7, l_rpi)	
 		li_bttn_cnt  = lc_string.f_stringtoarray(istr_actionpane[1].sa_sub_button[li_idx] , ';', lsa_bttn[])
 		li_bttn_cnt  = lc_string.f_stringtoarray(istr_actionpane[1].sa_subbutton_name[li_idx] , ';', lsa_bttn_nm[])
-		//-- xoá child --//
+		//-- xoá child --//	
 		li_child_cnt = rbb_handle.GetChildItemCount ( l_rpi.itemhandle )
 		for  li_rtn_idx = li_child_cnt to 1 step -1
 			 rbb_handle.GetChildItemByIndex (l_rpi.itemhandle, li_rtn_idx, l_rlbi)
-			 rbb_handle.DeleteLargeButton(l_rlbi.itemhandle)
-		next		
-		if li_bttn_cnt = 0 then
-			//-- disable--//		
-			l_rpi.enabled = false
-			l_rpi.tag = 'disable'			
-			rbb_handle.SetPanel (l_rpi.itemhandle, l_rpi)
-		else
-			for li_idx1 = 1 to li_bttn_cnt	
-				l_rlbi.picturename = "OrdersBig!"		
-				l_rlbi.Tag= lsa_bttn[li_idx1]
-				l_rlbi.text=  lsa_bttn_nm[li_idx1]
-				l_rlbi.visible = true
-				l_rlbi.enabled = true
-				l_rlbi.clicked = "ue_tabbutton"				
-				rbb_handle.InsertLargeButtonLast (l_rpi.itemhandle, l_rlbi)					
+			 rbb_handle.DeleteSmallButton(l_rlbi.itemhandle)
+		next					
+		if li_bttn_cnt > 0 then
+			l_rlbi.text = l_rpi.text
+			l_rlbi.tag = 'b_related_object'
+			l_rlbi.picturename = "OrdersBig!"
+			l_rlbi.enabled = true
+			for li_idx1 = 1 to li_bttn_cnt
+				l_rmitem.tag = lsa_bttn[li_idx1]
+				l_rmitem.text = lsa_bttn_nm[li_idx1]
+				l_rmitem.picturename = "OrdersBig!"
+				l_rmitem.itemtype = 0
+				l_rmitem.clicked = "ue_appbutton"				
+				li_rtn_idx = l_rMenu_copyf.insertitemLast( l_rmitem)
 			next
-		end if							
+			l_rlbi.setmenu(l_rMenu_copyf )	
+			rbb_handle.InsertLargeButtonLast (l_rpi.itemhandle,l_rlbi)		
+		end if				
 	end if
 NEXT
 

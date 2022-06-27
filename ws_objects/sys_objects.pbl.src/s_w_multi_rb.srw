@@ -7655,19 +7655,17 @@ s_object_display		lod_main
 t_dw_mpl				ldw_main
 s_str_dwo_related		lstr_data_related[]
 
-//
-//if gb_ribbonclicking then return 0
-//if  not this.ib_opening then 
-//	if isvalid(ic_obj_handling) then
-//		ic_obj_handling.event e_window_activate()
-//		ic_obj_handling.post f_update_ribbonbar( t_w_mdi.rbb_1)
-//	
-//		ldw_main =  this.f_get_dwmain( )
-//		this.f_set_idwfocus( ldw_main)
-//		this.post f_ctrl_enable_button(idw_focus )	
-//	end if
-//end if
-//return 0
+if  not this.ib_opening then 
+	if isvalid(ic_obj_handling) then
+		ic_obj_handling.event e_window_activate()
+		ic_obj_handling.post f_update_ribbonbar( t_w_mdi.rbb_1)
+	
+		ldw_main =  this.f_get_dwmain( )
+		this.f_set_idwfocus( ldw_main)
+		this.post f_ctrl_enable_button(idw_focus )	
+	end if
+end if
+return 0
 end event
 
 type st_1 from s_w_main`st_1 within s_w_multi_rb
