@@ -7653,7 +7653,7 @@ t_dw_mpl				ldw_main
 s_str_dwo_related		lstr_data_related[]
 
 //
-//if gb_ribbonclicking then return 0
+if gb_ribbonclicking then return 0
 //if  not this.ib_opening then 
 //	if isvalid(ic_obj_handling) then
 //		ic_obj_handling.event e_window_activate()
