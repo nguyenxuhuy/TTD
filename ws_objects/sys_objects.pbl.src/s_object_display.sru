@@ -1157,14 +1157,13 @@ end event
 event type integer e_item_barcode(string vs_btn_name);return 0
 end event
 
-event type integer e_window_e_change_object();//t_dw_mpl			ldw_main
-//
-//this.f_update_ribbonbar( t_w_mdi.rbb_1)
-//ldw_main =  iw_display.f_get_dwmain( )
-//iw_display.f_set_idwfocus( ldw_main)
-//iw_display.dynamic f_ctrl_enable_button(ldw_main )	
+event type integer e_window_e_change_object();t_dw_mpl			ldw_main
 
-//this.f_ctrl_actionbuttons( ldw_focus)
+this.f_update_ribbonbar( t_w_mdi.rbb_1)
+ldw_main =  iw_display.f_get_dwmain( )
+iw_display.f_set_idwfocus( ldw_main)
+iw_display.dynamic f_ctrl_enable_button(ldw_main )	
+
 return 0
 end event
 
@@ -6365,7 +6364,7 @@ FOR li_idx = 1 to li_cnt
 		if li_bttn_cnt = 0 then
 			//-- disable--//			
 			l_rpi.enabled = false
-			l_rpi.tag = 'disable'			
+//			l_rpi.tag = 'disable'			
 			rbb_handle.SetPanel (l_rpi.itemhandle, l_rpi)
 		else
 			for li_idx1 = 1 to li_bttn_cnt			

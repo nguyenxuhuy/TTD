@@ -138,6 +138,7 @@ int ii_redraw
 boolean				ib_saving
 b_callback			ib_callback
 end variables
+
 forward prototypes
 public function tab f_get_tab_1 ()
 public function datawindow f_get_dwmain ()
@@ -1843,7 +1844,7 @@ else
 	lpo_related.is_sheet_type ='DOC'
 	lpo_related.is_win_name = lstr_data_related[1].s_text
 	li_idx= t_w_mdi.wf_open_sheet_doc(lpo_related, 's_w_multi_rb' )
-//	lpo_related.post event e_window_e_change_object()
+	if isvalid(lpo_related) then lpo_related.post event e_window_e_change_object()
 	ib_object_changing = false	
 end if
 return

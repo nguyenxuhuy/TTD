@@ -66,6 +66,7 @@ Protected:
 
 Private:
 end variables
+
 forward prototypes
 public subroutine f_resize_w_menu ()
 public subroutine f_resize_client_workspace ()
@@ -1435,7 +1436,7 @@ choose case itemtag
 				end if
 			end if
 		end if
-	case 'e_action_attach', 'e_action_process','e_action_complete','e_action_reopen'
+	case 'e_action_attach', 'e_action_process','e_action_complete','e_action_reopen', 'e_action_lose'
 		lw_handle = parent.getactivesheet( )
 		if isvalid(lw_handle) then
 			lod_handle = lw_handle.f_get_obj_handling( )

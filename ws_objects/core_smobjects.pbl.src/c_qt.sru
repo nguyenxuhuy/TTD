@@ -6,7 +6,7 @@ end forward
 
 global type c_qt from b_doc
 event type integer e_action_generate ( )
-event type integer e_action_completed ( )
+event type integer e_action_complete ( )
 event type integer e_action_lose ( )
 end type
 global c_qt c_qt
@@ -208,7 +208,7 @@ disconnect using it_transaction;
 return 1
 end event
 
-event type integer e_action_completed();long			ll_found
+event type integer e_action_complete();long			ll_found
 string			ls_vend_name, ls_dist_name, ls_find_string, ls_status
 double		ldb_rtn, ldb_qt_ID
 any			laa_value[]
@@ -634,12 +634,12 @@ is_display_model = '1d'
 ib_display_text = false
 is_object_title ='Chào giá'
 is_exrate_type = 'sell'
-istr_actionpane[1].s_button_name = 'b_preview;b_view;b_view_qt;b_send_2_approve;b_approve;b_reject;b_complete;b_lose;b_copyt;u_so;b_related_object;'
-istr_actionpane[1].s_button_name += 'b_doc_trace;b_cancel;b_self_copy;e_add;e_modify;e_delete;e_detail;b_copyt_so;b_copyt_bank_voucher;'
+istr_actionpane[1].s_button_name = 'b_preview;b_view;b_view_qt;b_send_2_approve;b_approve;b_reject;e_action_complete;e_action_lose;b_copyt;u_so;b_related_object;'
+istr_actionpane[1].s_button_name += 'b_doc_trace;b_cancel;b_self_copy;e_add;e_modify;e_delete;e_detail;b_copyt_so;b_copyt_bank_voucher;b_update;'
 istr_actionpane[1].s_button_has_sub ='b_related_object;b_update;b_approve;b_view;b_copyt;b_copyf;'
 istr_actionpane[1].sa_sub_button[1]='u_so;'
 istr_actionpane[1].sa_subbutton_name[1]='Đơn bán hàng(SO);'
-istr_actionpane[1].sa_sub_button[2]='b_complete;b_lose;'
+istr_actionpane[1].sa_sub_button[2]='e_action_complete;e_action_lose;'
 istr_actionpane[1].sa_subbutton_name[2]='Thành công;Không thành;'
 istr_actionpane[1].sa_sub_button[3]=''	//'b_send_2_approve;b_approve;b_reject;'
 istr_actionpane[1].sa_subbutton_name[3]=''	//'Gửi duyệt;Duyệt;Trả duyệt'
