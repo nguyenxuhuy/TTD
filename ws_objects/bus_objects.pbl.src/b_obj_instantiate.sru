@@ -246,6 +246,7 @@ public function integer f_get_cust_info (string vs_key, double vdb_cust_id, stri
 public function integer f_get_cust_info (double vdb_cust_id, string vs_col_string, ref datastore rds_cust_info, ref t_transaction rt_transaction)
 public function integer f_get_cust_info (double vdb_cust_id, string vs_col_string, ref string rsa_values[], ref t_transaction rt_transaction)
 public function double f_copy_to_so (string vs_f_objname, s_str_dwo_related vstr_dwo_related[], t_ds_db vads_copied[], ref t_transaction rt_transaction, ref c_dwsetup_initial rdwsetup_initial)
+public function double f_get_matched_value (string vs_matcol, double vdb_f_ref_id, string vs_f_ref_table)
 end prototypes
 
 event e_send_2_approve(datawindow vdw_focus, s_object_display vc_obj_handling, s_w_multi vw_multi);
@@ -12918,7 +12919,9 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) - 1
 					ldb_mat_val = vads_copied[li_idx1].getitemnumber(li_row, ls_from_match_cols)
 					if isnull(ldb_mat_val) then ldb_mat_val = 0
 					ldb_f_ref_id = vads_copied[li_idx1].getitemnumber(li_row, 'id')
-					ldb_matched_val = rt_transaction.f_get_matched_value(ls_mat_cols, ldb_f_ref_id, ls_update_table)
+					//////////////////////////////////////////////////////////////////////////////////
+					ldb_matched_val = this.f_get_matched_value(ls_mat_cols, ldb_f_ref_id, ls_update_table)
+					//////////////////////////////////////////////////////////////////////////////////
 					if isnull(ldb_matched_val) then ldb_matched_val = 0
 					if ldb_matched_val >= ldb_mat_val then continue //-- đã copy hết--//
 					if vstr_dwo_related[1].s_match_f_col_obj[li_idx] <> '' then
@@ -13031,8 +13034,10 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) - 1
 			//-- check match full--//
 			if lds_handle.dataobject = vstr_dwo_related[1].s_match_f_dwo[li_idx] then
 				ldb_mat_val = lds_handle.getitemnumber(li_row, ls_from_match_cols)
-				if isnull(ldb_mat_val) then ldb_mat_val = 0				
-				ldb_matched_val = rt_transaction.f_get_matched_value(ls_mat_cols, ldb_f_ref_id, ls_update_table)
+				if isnull(ldb_mat_val) then ldb_mat_val = 0	
+				////////////////////////////////////////////////////////////////////
+				ldb_matched_val = this.f_get_matched_value(ls_mat_cols, ldb_f_ref_id, ls_update_table)
+				/////////////////////////////////////////////////////////////////////
 				if isnull(ldb_matched_val) then ldb_matched_val = 0
 				if ldb_matched_val >= ldb_mat_val then continue //-- đã copy hết --//
 				if vstr_dwo_related[1].s_match_f_col_obj[li_idx] <> '' then
@@ -20506,6 +20511,22 @@ else
 end if
 
 return ldb_t_doc_id
+end function
+
+public function double f_get_matched_value (string vs_matcol, double vdb_f_ref_id, string vs_f_ref_table);string		ls_sql
+double	ldb_val
+
+ls_sql = 'SELECT sum('+ vs_matcol+') FROM matching WHERE f_ref_id = ' + string(vdb_f_ref_id)+ " and upper(T_REF_TABLE) = '"+upper(vs_f_ref_table)+ "'"
+    
+connect using sqlca;											
+DECLARE lcur_info DYNAMIC CURSOR FOR SQLSA ;
+PREPARE SQLSA FROM :ls_sql ;
+OPEN DYNAMIC lcur_info ;
+FETCH lcur_info INTO :ldb_val ;
+CLOSE lcur_info ;
+disconnect using sqlca;		
+
+return ldb_val
 end function
 
 on b_obj_instantiate.create

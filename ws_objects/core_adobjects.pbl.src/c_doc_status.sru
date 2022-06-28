@@ -96,6 +96,23 @@ ib_display_text = false
 is_object_title = 'Cài đặt update trạng thái chứng từ'
 
 istr_actionpane[1].s_description = is_object_title
+
+istr_actionpane[1].s_button_name =  'e_add;e_modify;e_delete;'
+istr_actionpane[1].s_button_name += 'b_related_object;b_update;b_approve;b_view;b_copyt;b_copyf;'
+istr_actionpane[1].s_button_has_sub ='b_related_object;b_update;b_approve;b_view;b_copyt;b_copyf;'
+istr_actionpane[1].sa_sub_button[1]=''
+istr_actionpane[1].sa_subbutton_name[1]=''
+istr_actionpane[1].sa_sub_button[2]=''
+istr_actionpane[1].sa_subbutton_name[2]=''
+istr_actionpane[1].sa_sub_button[3]=''	//'b_send_2_approve;b_approve;b_reject;'
+istr_actionpane[1].sa_subbutton_name[3]=''	//'Gửi duyệt;Duyệt;Trả duyệt'
+istr_actionpane[1].sa_sub_button[4]=''
+istr_actionpane[1].sa_subbutton_name[4]=''
+istr_actionpane[1].sa_sub_button[5]=''
+istr_actionpane[1].sa_subbutton_name[5]=''
+istr_actionpane[1].sa_sub_button[6]=''
+istr_actionpane[1].sa_subbutton_name[6]=''
+
 end event
 
 on c_doc_status.create

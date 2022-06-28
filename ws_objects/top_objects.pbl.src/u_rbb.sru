@@ -469,7 +469,7 @@ FOR li_idx = 1 to li_rc
 	else
 		lb_enable =  false
 	end if	
-	if l_rsbi.tag = 'b_complete' or l_rsbi.tag = 'b_lose'then
+	if l_rsbi.tag = 'e_action_complete' or l_rsbi.tag = 'e_action_lose'then
 		if vs_doc_status = 'new' then
 			l_rsbi.enabled = lb_enable and not vb_editing
 		else
