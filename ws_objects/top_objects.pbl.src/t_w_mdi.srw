@@ -55,7 +55,7 @@ global t_w_mdi t_w_mdi
 
 type variables
 Public:
-string							is_mainObject, is_menu_code
+string							is_mainObject, is_menu_code, is_active_win_name
 boolean						ib_opening
 double						idb_menu_id
 c_ds_lang 					ids_lang_text
@@ -66,7 +66,6 @@ Protected:
 
 Private:
 end variables
-
 forward prototypes
 public subroutine f_resize_w_menu ()
 public subroutine f_resize_client_workspace ()
@@ -1341,7 +1340,6 @@ s_object_display		lod_handle, lpo_related
 t_dw_mpl				ldw_main, ldw_focus
 
 
-gb_ribbonclicking = false
 choose case itemtag
 	case 'signout'
 		close(parent)

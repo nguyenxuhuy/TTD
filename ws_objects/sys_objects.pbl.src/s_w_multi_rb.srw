@@ -138,7 +138,6 @@ int ii_redraw
 boolean				ib_saving
 b_callback			ib_callback
 end variables
-
 forward prototypes
 public function tab f_get_tab_1 ()
 public function datawindow f_get_dwmain ()
@@ -7653,17 +7652,20 @@ t_dw_mpl				ldw_main
 s_str_dwo_related		lstr_data_related[]
 
 //
-if gb_ribbonclicking then
-	return 0
-end if
+
 if  not this.ib_opening then 
-	if isvalid(ic_obj_handling) then
-		ic_obj_handling.event e_window_activate()
-		ic_obj_handling.post f_update_ribbonbar( t_w_mdi.rbb_1)	
-		ldw_main =  this.f_get_dwmain( )
-		this.f_set_idwfocus( ldw_main)
-		this.post f_ctrl_enable_button(idw_focus )	
+	if t_w_mdi.is_active_win_name <> this.is_win_name	then
+		t_w_mdi.is_active_win_name = this.is_win_name	
+		if isvalid(ic_obj_handling) then
+			ic_obj_handling.event e_window_activate()
+			ic_obj_handling.post f_update_ribbonbar( t_w_mdi.rbb_1)	
+			ldw_main =  this.f_get_dwmain( )
+			this.f_set_idwfocus( ldw_main)
+			this.post f_ctrl_enable_button(idw_focus )	
+		end if
 	end if
+else
+	t_w_mdi.is_active_win_name = this.is_win_name		
 end if
 return 0
 end event

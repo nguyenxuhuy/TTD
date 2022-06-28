@@ -26,7 +26,6 @@ string 		gs_solution_data, gs_registry
 Boolean 		gbl_can_active = false
 Boolean 		gbl_resize_old = false
 Boolean 		gbl_default_layout =  false
-boolean		gb_ribbonclicking
 
 
 //Token expiresin

@@ -6222,7 +6222,7 @@ string					lsa_sub[], lsa_bttn[], lsa_bttn_nm[],  lsa_null[], ls_enble_buttons
 c_string				lc_string
 RibbonCategoryItem			l_rci
 RibbonPanelItem				l_rpi, l_rpi_action
-RibbonLargeButtonItem 		l_rlbi, l_rlbi_null
+RibbonLargeButtonItem 		l_rlbi, l_rlbi_new, l_rlbi_null
 RibbonMenu						l_rMenu_copyt, l_rMenu_view, l_rMenu_copyf
 RibbonMenuItem				l_rmitem, l_rmitem_tmp
 RibbonGroupItem				l_rgi
@@ -6452,13 +6452,14 @@ FOR li_idx = 1 to li_cnt
 		li_child_cnt = rbb_handle.GetChildItemCount ( l_rpi.itemhandle )
 		for  li_rtn_idx = li_child_cnt to 1 step -1
 			 rbb_handle.GetChildItemByIndex (l_rpi.itemhandle, li_rtn_idx, l_rlbi)
-			 rbb_handle.DeleteSmallButton(l_rlbi.itemhandle)
+			 rbb_handle.DeleteLargeButton(l_rlbi.itemhandle)
 		next					
 		if li_bttn_cnt > 0 then
-			l_rlbi.text = l_rpi.text
-			l_rlbi.tag = 'b_related_object'
-			l_rlbi.picturename = "OrdersBig!"
-			l_rlbi.enabled = true
+			l_rlbi_new.text = l_rpi.text
+			l_rlbi_new.tag = 'b_related_object'
+			l_rlbi_new.picturename = "OrdersBig!"
+			l_rlbi_new.enabled = true
+			l_rlbi_new.clicked = 'ue_tabbuton'
 			for li_idx1 = 1 to li_bttn_cnt
 				l_rmitem.tag = lsa_bttn[li_idx1]
 				l_rmitem.text = lsa_bttn_nm[li_idx1]
@@ -6467,8 +6468,8 @@ FOR li_idx = 1 to li_cnt
 				l_rmitem.clicked = "ue_appbutton"				
 				li_rtn_idx = l_rMenu_copyf.insertitemLast( l_rmitem)
 			next
-			l_rlbi.setmenu(l_rMenu_copyf )	
-			rbb_handle.InsertLargeButtonLast (l_rpi.itemhandle,l_rlbi)		
+			l_rlbi_new.setmenu(l_rMenu_copyf )	
+			rbb_handle.InsertLargeButtonLast (l_rpi.itemhandle,l_rlbi_new)		
 		end if				
 	end if
 NEXT

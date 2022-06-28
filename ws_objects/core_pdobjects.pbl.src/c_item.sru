@@ -1294,7 +1294,7 @@ is_display_model = 'up_1d_lo_tb'
 ib_display_text = false
 is_object_title = 'Sản phẩm - hàng hóa - dịch vụ'
 
-istr_actionpane[1].s_button_name = 'b_send_2_approve;b_approve;b_reject;u_unit_conversion;'
+istr_actionpane[1].s_button_name = 'b_send_2_approve;b_approve;b_reject;b_related_object;u_unit_conversion;'
 istr_actionpane[1].s_button_name += 'b_doc_trace;b_cancel;b_self_copy;e_add;e_modify;e_delete;'
 istr_actionpane[1].s_button_has_sub ='b_related_object;b_update;b_approve;b_view;b_copyt;b_copyf;'
 istr_actionpane[1].sa_sub_button[1]='u_unit_conversion;' 	//'u_so;'
