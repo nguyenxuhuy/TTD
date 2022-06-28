@@ -49,7 +49,8 @@ public function integer f_ctrl_enable_button (string vs_type, string vs_doc_stat
 public function integer f_enable_panel_action (ribbonpanelitem vrpi_action, string vs_type, string vs_doc_status, boolean vb_editing, boolean vb_updatable, boolean vb_change_4_edit, boolean vb_detail, string vs_enable_buttons, t_dw_mpl vdw_focus)
 end prototypes
 
-event ue_tabbutton(long al_handle);if  #CentralizedEventHandling = false then
+event ue_tabbutton(long al_handle);gb_ribbonclicking = true
+if  #CentralizedEventHandling = false then
 	of_triggerparentevent ( al_handle, 0, 0 )
 else
 	 of_triggerevent ( al_handle, 0, 0)
@@ -57,7 +58,8 @@ end if
 
 end event
 
-event ue_appbutton(long al_handle, long al_index, long al_subindex);if  #CentralizedEventHandling = false then
+event ue_appbutton(long al_handle, long al_index, long al_subindex);gb_ribbonclicking = true
+if  #CentralizedEventHandling = false then
 	of_triggerparentevent ( al_handle, al_index, al_subindex )
 else
 	 of_triggerevent ( al_handle, al_index, al_subindex )

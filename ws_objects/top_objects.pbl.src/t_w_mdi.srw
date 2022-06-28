@@ -1341,7 +1341,7 @@ s_object_display		lod_handle, lpo_related
 t_dw_mpl				ldw_main, ldw_focus
 
 
-gb_ribbonclicking = true
+gb_ribbonclicking = false
 choose case itemtag
 	case 'signout'
 		close(parent)
