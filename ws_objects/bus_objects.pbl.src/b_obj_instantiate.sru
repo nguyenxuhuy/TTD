@@ -247,6 +247,7 @@ public function integer f_get_cust_info (double vdb_cust_id, string vs_col_strin
 public function integer f_get_cust_info (double vdb_cust_id, string vs_col_string, ref string rsa_values[], ref t_transaction rt_transaction)
 public function double f_copy_to_so (string vs_f_objname, s_str_dwo_related vstr_dwo_related[], t_ds_db vads_copied[], ref t_transaction rt_transaction, ref c_dwsetup_initial rdwsetup_initial)
 public function double f_get_matched_value (string vs_matcol, double vdb_f_ref_id, string vs_f_ref_table)
+public function integer f_upd_related_status_ex (string vs_type, double vdb_t_doc_id, string vs_t_upd_status, string vs_t_ref_table, double vdb_doc_id, double vdb_t_ref_id, ref t_transaction rt_transaction)
 end prototypes
 
 event e_send_2_approve(datawindow vdw_focus, s_object_display vc_obj_handling, s_w_multi vw_multi);
@@ -20527,6 +20528,356 @@ CLOSE lcur_info ;
 disconnect using sqlca;		
 
 return ldb_val
+end function
+
+public function integer f_upd_related_status_ex (string vs_type, double vdb_t_doc_id, string vs_t_upd_status, string vs_t_ref_table, double vdb_doc_id, double vdb_t_ref_id, ref t_transaction rt_transaction);/*//////////////////////////////////////////////////////
+- Luôn cập nhật trạng thái cùa Doc liền kề 
+- Chỉ cập nhật trạng thai của DOC liên quan cấp 2, 3,... khi thoả mãn điều kiện quan lệ 1-1
+- vs_type = delete / update
+- vdb_t_ref_id > 0 : xoá line
+=====================================*/
+int			li_cnt, li_row, li_next_cnt, li_cnt2, li_row2,li_cnt3, li_row3, li_patial_cnt
+double	ldb_related_doc_id, ldb_f_doc_id
+string		ls_related_doc_type, ls_related_status, ls_t_upd_status, ls_t_doctype, ls_t_ref_table
+t_ds_db		lds_relaled_doc
+
+
+ls_t_upd_status = vs_t_upd_status
+ls_t_doctype = this.f_get_doc_type_ex( vdb_t_doc_id, rt_transaction)
+
+//-- Lấy f_doc_id cần update --//
+lds_relaled_doc = create t_ds_db
+lds_relaled_doc.dataobject = 'ds_related_doc'
+lds_relaled_doc.f_settransobject(rt_transaction )
+li_cnt = lds_relaled_doc.retrieve(vdb_t_doc_id )
+
+if vdb_t_ref_id > 0 then
+	delete matching where t_ref_id = :vdb_t_ref_id and upper(t_ref_table) = upper(:vs_t_ref_table) using rt_transaction;
+else
+	delete matching where t_doc_id = :vdb_t_doc_id  and upper(t_ref_table) = upper(:vs_t_ref_table) using rt_transaction;
+end if
+
+FOR li_row = 1 to li_cnt
+	///////////////////////////////////
+	// Update status doc liền kề //
+	//////////////////////////////////
+	//-- kiểm tra doc liền kề đã kết hết chưa --//
+	ldb_related_doc_id = lds_relaled_doc.getitemnumber( li_row, 'related_doc_id')
+	ls_related_doc_type = lds_relaled_doc.getitemstring( li_row, 'related_doc_type')
+	
+	choose case upper(ls_related_doc_type)+';'+upper(vs_t_ref_table)
+		case 'PUR_INVOICE;PAYMENT_LINE'
+			select count(d.id) into :li_next_cnt
+				from v_pur_inv_amount d
+				left join v_f_matching_line m on m.f_ref_id = d.id 
+													and upper(m.T_REF_TABLE) = 'PAYMENT_LINE'	
+													and m.f_doc_id = d.id 													
+				where d.id = :ldb_related_doc_id
+				and coalesce(m.mat_value,0) < d.amount
+				using rt_transaction;	
+		case 'SO;INVENTORY_LINE'
+			select count(d.id) into :li_next_cnt
+				from so_line d
+				join document doc on doc.version_id = d.object_ref_id
+				left join v_f_matching_line m on m.f_ref_id = d.id 
+													and upper(m.T_REF_TABLE) = 'INVENTORY_LINE'	
+													and m.f_doc_id = doc.id 													
+				where doc.id = :ldb_related_doc_id
+				and coalesce(m.mat_qty,0) < d.qty
+				using rt_transaction;				
+		CASE 'QT;SO_LINE'
+			select count(d.id) into :li_next_cnt
+				from qt_line d
+				join document doc on doc.version_id = d.object_ref_id
+				left join v_f_matching_line m on m.f_ref_id = d.id 
+													and upper(m.T_REF_TABLE) = 'SO_LINE'	
+													and m.f_doc_id = doc.id 													
+				where doc.id = :ldb_related_doc_id			
+				and coalesce(m.mat_qty,0) < d.qty
+				using rt_transaction;					
+				
+		case 'PO;INVENTORY_LINE'
+			select count(d.id) into :li_next_cnt
+				from po_line d
+				join document doc on doc.version_id = d.object_ref_id
+				left join v_f_matching_line m on m.f_ref_id = d.id 
+													and upper(m.T_REF_TABLE) = 'INVENTORY_LINE'	
+													and m.f_doc_id = doc.id 													
+				where doc.id = :ldb_related_doc_id						
+				and coalesce(m.mat_qty,0) < d.qty
+				using rt_transaction;	
+		case 'PO;SO_LINE'
+			select count(d.id) into :li_next_cnt
+				from po_line d
+				join document doc on doc.version_id = d.object_ref_id
+				left join v_f_matching_line m on m.f_ref_id = d.id 
+													and upper(m.T_REF_TABLE) = 'SO_LINE'	
+													and m.f_doc_id = doc.id 													
+				where doc.id = :ldb_related_doc_id			
+				and coalesce(m.mat_qty,0) < d.qty
+				using rt_transaction;					
+		case else
+			continue
+	end choose
+	
+	if li_next_cnt = 0 then  //-- kết hết --//	
+		//-- lấy trạng thái full --//
+		select t1.RELATED_FULL_STATUS into :ls_related_status
+			from doc_status t 
+			join doc_related_status t1 on t1.object_ref_id = t.id and instr(t1.RELATED_DOC_CODE,:ls_related_doc_type)>0
+			where t.doc_type = :ls_t_doctype 
+			and t.doc_status = :ls_t_upd_status
+			using rt_transaction;		
+	else
+		//-- lấy trạng thái partial --//
+		if vs_type = 'update' then
+			select t1.RELATED_PARTIAL_STATUS	 into :ls_related_status
+				from doc_status t 
+				join doc_related_status t1 on t1.object_ref_id = t.id  and instr(t1.RELATED_DOC_CODE,:ls_related_doc_type)>0
+				where t.doc_type = :ls_t_doctype and t.doc_status = :ls_t_upd_status
+				using rt_transaction;		
+		elseif vs_type = 'delete' then
+			//-- trường hợp không còn matching --//
+			if li_patial_cnt = 0 then
+				
+			else
+			//-- trường hợp còn matching 1 phần --//
+			end if
+			select t1.RELATED_FULL_STATUS into :ls_related_status
+				from doc_status t 
+				join doc_related_status t1 on t1.object_ref_id = t.id and instr(t1.RELATED_DOC_CODE,:ls_related_doc_type)>0
+				where t.doc_type = :ls_t_doctype 
+				and t.doc_status = :vs_t_upd_status
+				using rt_transaction;	
+			//-- đảo biến --//
+			ls_t_upd_status = ls_related_status				
+			select t1.DOC_STATUS into :ls_related_status
+			from doc_status t 
+				join  doc_status t1 on t1.doc_type = t.doc_type and t1.line_no+1 = t.line_no
+				 where t.doc_type = :ls_related_doc_type
+				 and t.doc_status = :ls_t_upd_status				
+			 using rt_transaction;
+		end if
+	end if
+	// Update status doc liền kề //
+	//-- đảo biến --//
+	ls_t_upd_status = ls_related_status
+	UPDATE document set status = :ls_t_upd_status where id = :ldb_related_doc_id using rt_transaction;
+	
+	////////////////////////////////////////////
+	// Kiểm tra doc liên quan cấp 2 //
+	///////////////////////////////////////////
+	select count(distinct f_doc_id) into :li_next_cnt
+	from matching where t_doc_id = :ldb_related_doc_id
+	using rt_transaction;
+	
+	if li_next_cnt = 1 then 		
+		//-- check chiều ngược lại cũng là 1-1--//
+		select f_doc_id, t_ref_table into :ldb_f_doc_id, :ls_t_ref_table
+		from matching where t_doc_id = :ldb_related_doc_id
+		and rownum=1
+		using rt_transaction;	
+		
+		select count(distinct t_doc_id) into :li_next_cnt
+		from matching where f_doc_id = :ldb_f_doc_id
+		using rt_transaction;		
+		if li_next_cnt = 1 then //-- thoả đk quan hệ 1-1: cập nhật status --//
+			ls_t_doctype =  this.f_get_doc_type_ex( ldb_related_doc_id, rt_transaction)
+			ls_related_doc_type = this.f_get_doc_type_ex( ldb_f_doc_id, rt_transaction)			
+			choose case upper(ls_related_doc_type)+';'+upper(ls_t_ref_table)
+				case 'PUR_INVOICE;PAYMENT_LINE'
+					select count(d.id) into :li_next_cnt
+						from v_pur_inv_amount d
+						left join v_f_matching_line m on m.f_ref_id = d.id 
+															and upper(m.T_REF_TABLE) = 'PAYMENT_LINE'	
+															and m.f_doc_id = d.id 															
+						where d.id = :ldb_related_doc_id
+						and coalesce(m.mat_value,0) < d.amount
+						using rt_transaction;	
+				case 'SO;INVENTORY_LINE'
+					select count(d.id) into :li_next_cnt
+						from so_line d
+						join document doc on doc.version_id = d.object_ref_id
+						left join v_f_matching_line m on m.f_ref_id = d.id 
+															and upper(m.T_REF_TABLE) = 'INVENTORY_LINE'	
+															and m.f_doc_id = doc.id 															
+						where doc.id = :ldb_related_doc_id
+						and coalesce(m.mat_qty,0) < d.qty
+						using rt_transaction;				
+				CASE 'QT;SO_LINE'
+					select count(d.id) into :li_next_cnt
+						from qt_line d
+						join document doc on doc.version_id = d.object_ref_id
+						left join v_f_matching_line m on m.f_ref_id = d.id 
+															and upper(m.T_REF_TABLE) = 'SO_LINE'	
+															and m.f_doc_id = doc.id 															
+						where doc.id = :ldb_related_doc_id				
+						and coalesce(m.mat_qty,0) < d.qty
+						using rt_transaction;					
+				case 'PO;INVENTORY_LINE'
+					select count(d.id) into :li_next_cnt
+						from po_line d
+						join document doc on doc.version_id = d.object_ref_id
+						left join v_f_matching_line m on m.f_ref_id = d.id 
+															and upper(m.T_REF_TABLE) = 'INVENTORY_LINE'	
+															and m.f_doc_id = doc.id 															
+						where doc.id = :ldb_related_doc_id			
+						and coalesce(m.mat_qty,0) < d.qty
+						using rt_transaction;		
+				case 'PO;SO_LINE'
+					select count(d.id) into :li_next_cnt
+						from po_line d
+						join document doc on doc.version_id = d.object_ref_id
+						left join v_f_matching_line m on m.f_ref_id = d.id 
+															and upper(m.T_REF_TABLE) = 'SO_LINE'	
+															and m.f_doc_id = doc.id 															
+						where doc.id = :ldb_related_doc_id				
+						and coalesce(m.mat_qty,0) < d.qty
+						using rt_transaction;		
+				case else
+					continue						
+			end choose
+	
+			if li_next_cnt = 0 then  //-- kết hết --//	
+				//-- lấy trạng thái full --//		
+				select t1.RELATED_FULL_STATUS into :ls_related_status
+					from doc_status t 
+					join doc_related_status t1 on t1.object_ref_id = t.id and instr(t1.RELATED_DOC_CODE,:ls_related_doc_type)>0
+					where t.doc_type = :ls_t_doctype 
+					and t.doc_status = :ls_t_upd_status
+					using rt_transaction;		
+			else
+				//-- lấy trạng thái partial --//
+				select t1.RELATED_PARTIAL_STATUS	 into :ls_related_status
+					from doc_status t 
+					join doc_related_status t1 on t1.object_ref_id = t.id  and instr(t1.RELATED_DOC_CODE,:ls_related_doc_type)>0
+					where t.doc_type = :ls_t_doctype and t.doc_status = :ls_t_upd_status
+					using rt_transaction;		
+			end if
+			////////////////////////////////////////////
+			// Update status doc liên quan câp 2 //
+			///////////////////////////////////////////				
+			//-- đảo biến --//
+			ls_t_upd_status = ls_related_status
+			UPDATE document set status = :ls_t_upd_status where id = :ldb_f_doc_id using rt_transaction;
+			
+			////////////////////////////////////////////
+			// Kiểm tra doc liên quan cấp 3 //
+			///////////////////////////////////////////			
+			//-- đảo biến --//
+			ldb_related_doc_id = ldb_f_doc_id
+			select count(distinct f_doc_id) into :li_next_cnt
+			from matching where t_doc_id = :ldb_related_doc_id
+			using rt_transaction;
+			
+			if li_next_cnt = 1 then //-- related 1-1: tiếp tục cập nhật status --//		
+				//-- check chiều ngược lại cũng là 1-1--//
+				select f_doc_id, t_ref_table into :ldb_f_doc_id, :ls_t_ref_table
+				from matching where t_doc_id = :ldb_related_doc_id
+				and rownum=1
+				using rt_transaction;	
+				
+				select count(distinct t_doc_id) into :li_next_cnt
+				from matching where f_doc_id = :ldb_f_doc_id
+				using rt_transaction;				
+				if li_next_cnt = 1 then  //-- thoả đk quan hệ 1-1: cập nhật status --//
+					ls_related_doc_type = this.f_get_doc_type_ex( ldb_f_doc_id, rt_transaction)
+					ls_t_doctype =  this.f_get_doc_type_ex( ldb_related_doc_id, rt_transaction)
+					choose case upper(ls_related_doc_type)+';'+upper(ls_t_ref_table)
+						case 'PUR_INVOICE;PAYMENT_LINE'
+							select count(d.id) into :li_next_cnt
+								from v_pur_inv_amount d
+								left join v_f_matching_line m on m.f_ref_id = d.id 
+																	and upper(m.T_REF_TABLE) = 'PAYMENT_LINE'	
+																	and m.f_doc_id = d.id 																	
+								where d.id = :ldb_related_doc_id
+								and coalesce(m.mat_value,0) < d.amount
+								using rt_transaction;	
+						case 'SO;INVENTORY_LINE'
+							select count(d.id) into :li_next_cnt
+								from so_line d
+								join document doc on doc.version_id = d.object_ref_id
+								left join v_f_matching_line m on m.f_ref_id = d.id 
+																	and upper(m.T_REF_TABLE) = 'INVENTORY_LINE'	
+																	and m.f_doc_id = doc.id 																	
+								where doc.id = :ldb_related_doc_id
+								and coalesce(m.mat_qty,0) < d.qty
+								using rt_transaction;				
+						CASE 'QT;SO_LINE'
+							select count(d.id) into :li_next_cnt
+								from qt_line d
+								join document doc on doc.version_id = d.object_ref_id
+								left join v_f_matching_line m on m.f_ref_id = d.id 
+																	and upper(m.T_REF_TABLE) = 'SO_LINE'	
+																	and m.f_doc_id = doc.id 																	
+								where doc.id = :ldb_related_doc_id				
+								and coalesce(m.mat_qty,0) < d.qty
+								using rt_transaction;					
+						case 'PO;INVENTORY_LINE'
+							select count(d.id) into :li_next_cnt
+								from po_line d
+								join document doc on doc.version_id = d.object_ref_id
+								left join v_f_matching_line m on m.f_ref_id = d.id 
+																	and upper(m.T_REF_TABLE) = 'INVENTORY_LINE'	
+																	and m.f_doc_id = doc.id 																	
+								where doc.id = :ldb_related_doc_id			
+								and coalesce(m.mat_qty,0) < d.qty
+								using rt_transaction;				
+						case 'PO;SO_LINE'
+							select count(d.id) into :li_next_cnt
+								from po_line d
+								join document doc on doc.version_id = d.object_ref_id
+								left join v_f_matching_line m on m.f_ref_id = d.id 
+																	and upper(m.T_REF_TABLE) = 'SO_LINE'	
+																	and m.f_doc_id = doc.id 																	
+								where doc.id = :ldb_related_doc_id		
+								and coalesce(m.mat_qty,0) < d.qty
+								using rt_transaction;	
+						case else
+							continue							
+					end choose
+					if li_next_cnt = 0 then  //-- kết hết --//	
+						//-- lấy trạng thái full --//		
+						select t1.RELATED_FULL_STATUS into :ls_related_status
+							from doc_status t 
+							join doc_related_status t1 on t1.object_ref_id = t.id and instr(t1.RELATED_DOC_CODE,:ls_related_doc_type)>0
+							where t.doc_type = :ls_t_doctype 
+							and t.doc_status = :ls_t_upd_status
+							using rt_transaction;		
+					else
+						//-- lấy trạng thái partial --//
+						select t1.RELATED_PARTIAL_STATUS	 into :ls_related_status
+							from doc_status t 
+							join doc_related_status t1 on t1.object_ref_id = t.id  and instr(t1.RELATED_DOC_CODE,:ls_related_doc_type)>0
+							where t.doc_type = :ls_t_doctype and t.doc_status = :ls_t_upd_status
+							using rt_transaction;		
+					end if				
+								
+					////////////////////////////////////////////
+					// Update status doc liên quan câp 3 //
+					///////////////////////////////////////////	
+					//-- đảo biến --//
+					ls_t_upd_status = ls_related_status					
+					UPDATE document set status = :ls_t_upd_status where id = :ldb_f_doc_id using rt_transaction;										
+					/////////////////////////////////////////////////////
+					// Kiểm tra doc liên quan cấp 4: gọi truy hồi //
+					///////////////////////////////////////////	/////////		
+				else
+					continue 
+				end if
+			else
+				continue 
+			end if
+		else
+			continue
+		end if
+	else
+		continue 
+	end if
+NEXT
+commit using rt_transaction;
+destroy lds_relaled_doc
+return li_cnt
 end function
 
 on b_obj_instantiate.create
