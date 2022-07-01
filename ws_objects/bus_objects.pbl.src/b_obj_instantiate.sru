@@ -20538,7 +20538,7 @@ public function integer f_upd_related_status_ex (string vs_type, double vdb_t_do
 =====================================*/
 int			li_cnt, li_row, li_next_cnt, li_cnt2, li_row2,li_cnt3, li_row3, li_patial_cnt
 double	ldb_related_doc_id, ldb_f_doc_id
-string		ls_related_doc_type, ls_related_status, ls_t_upd_status, ls_t_doctype, ls_t_ref_table
+string		ls_related_doc_type, ls_related_status, ls_t_upd_status, ls_t_doctype, ls_t_ref_table, ls_related_status_partial
 t_ds_db		lds_relaled_doc
 
 
@@ -20575,6 +20575,13 @@ FOR li_row = 1 to li_cnt
 				where d.id = :ldb_related_doc_id
 				and coalesce(m.mat_value,0) < d.amount
 				using rt_transaction;	
+				
+				if vs_type = 'delete' and li_next_cnt > 0 then
+					select count(id) into :li_patial_cnt from matching m 
+										where m.f_doc_id = :ldb_related_doc_id
+											and upper(m.T_REF_TABLE) = 'PAYMENT_LINE'											
+											using  rt_transaction;
+				end if				
 		case 'SO;INVENTORY_LINE'
 			select count(d.id) into :li_next_cnt
 				from so_line d
@@ -20583,8 +20590,15 @@ FOR li_row = 1 to li_cnt
 													and upper(m.T_REF_TABLE) = 'INVENTORY_LINE'	
 													and m.f_doc_id = doc.id 													
 				where doc.id = :ldb_related_doc_id
-				and coalesce(m.mat_qty,0) < d.qty
-				using rt_transaction;				
+				and coalesce(m.mat_qty,0) < d.qty				
+				using rt_transaction;			
+				
+				if vs_type = 'delete' and li_next_cnt > 0 then
+					select count(id) into :li_patial_cnt from matching m 
+										where m.f_doc_id = :ldb_related_doc_id
+											and upper(m.T_REF_TABLE) = 'INVENTORY_LINE'											
+											using  rt_transaction;
+				end if								
 		CASE 'QT;SO_LINE'
 			select count(d.id) into :li_next_cnt
 				from qt_line d
@@ -20596,6 +20610,13 @@ FOR li_row = 1 to li_cnt
 				and coalesce(m.mat_qty,0) < d.qty
 				using rt_transaction;					
 				
+				if vs_type = 'delete' and li_next_cnt > 0 then
+					select count(id) into :li_patial_cnt from matching m 
+										where m.f_doc_id = :ldb_related_doc_id
+											and upper(m.T_REF_TABLE) = 'SO_LINE'											
+											using  rt_transaction;
+				end if
+				
 		case 'PO;INVENTORY_LINE'
 			select count(d.id) into :li_next_cnt
 				from po_line d
@@ -20606,6 +20627,13 @@ FOR li_row = 1 to li_cnt
 				where doc.id = :ldb_related_doc_id						
 				and coalesce(m.mat_qty,0) < d.qty
 				using rt_transaction;	
+				
+				if vs_type = 'delete' and li_next_cnt > 0 then
+					select count(id) into :li_patial_cnt from matching m 
+										where m.f_doc_id = :ldb_related_doc_id
+											and upper(m.T_REF_TABLE) = 'INVENTORY_LINE'											
+											using  rt_transaction;
+				end if										
 		case 'PO;SO_LINE'
 			select count(d.id) into :li_next_cnt
 				from po_line d
@@ -20616,6 +20644,13 @@ FOR li_row = 1 to li_cnt
 				where doc.id = :ldb_related_doc_id			
 				and coalesce(m.mat_qty,0) < d.qty
 				using rt_transaction;					
+
+				if vs_type = 'delete' and li_next_cnt > 0 then
+					select count(id) into :li_patial_cnt from matching m 
+										where m.f_doc_id = :ldb_related_doc_id
+											and upper(m.T_REF_TABLE) = 'SO_LINE'											
+											using  rt_transaction;
+				end if										
 		case else
 			continue
 	end choose
@@ -20635,28 +20670,43 @@ FOR li_row = 1 to li_cnt
 				from doc_status t 
 				join doc_related_status t1 on t1.object_ref_id = t.id  and instr(t1.RELATED_DOC_CODE,:ls_related_doc_type)>0
 				where t.doc_type = :ls_t_doctype and t.doc_status = :ls_t_upd_status
+				and t.company_id = :gi_user_comp_id
 				using rt_transaction;		
 		elseif vs_type = 'delete' then
-			//-- trường hợp không còn matching --//
-			if li_patial_cnt = 0 then
-				
-			else
-			//-- trường hợp còn matching 1 phần --//
-			end if
-			select t1.RELATED_FULL_STATUS into :ls_related_status
+			select t1.RELATED_FULL_STATUS, t1.RELATED_PARTIAL_STATUS into :ls_related_status, :ls_related_status_partial
 				from doc_status t 
 				join doc_related_status t1 on t1.object_ref_id = t.id and instr(t1.RELATED_DOC_CODE,:ls_related_doc_type)>0
 				where t.doc_type = :ls_t_doctype 
 				and t.doc_status = :vs_t_upd_status
-				using rt_transaction;	
-			//-- đảo biến --//
-			ls_t_upd_status = ls_related_status				
-			select t1.DOC_STATUS into :ls_related_status
-			from doc_status t 
-				join  doc_status t1 on t1.doc_type = t.doc_type and t1.line_no+1 = t.line_no
-				 where t.doc_type = :ls_related_doc_type
-				 and t.doc_status = :ls_t_upd_status				
-			 using rt_transaction;
+				and t.company_id = :gi_user_comp_id
+				using rt_transaction;				
+				//-- đảo biến --//
+				ls_t_upd_status = ls_related_status				
+				select t1.DOC_STATUS into :ls_related_status
+				from doc_status t 
+					join  doc_status t1 on t1.doc_type = t.doc_type and t1.line_no+1 = t.line_no
+					 where t.doc_type = :ls_related_doc_type
+					 and t.doc_status = :ls_t_upd_status				
+					 and t.company_id = :gi_user_comp_id
+				 using rt_transaction;				
+			//-- trường hợp không còn matching --//
+			if li_patial_cnt = 0 then
+				if ls_related_status = ls_related_status_partial then
+					ls_t_upd_status = ls_related_status				
+					select t1.DOC_STATUS into :ls_related_status
+					from doc_status t 
+						join  doc_status t1 on t1.doc_type = t.doc_type and t1.line_no+1 = t.line_no
+						 where t.doc_type = :ls_related_doc_type
+						 and t.doc_status = :ls_t_upd_status				
+						 and t.company_id = :gi_user_comp_id
+					 using rt_transaction;									
+				end if
+			else
+			//-- trường hợp còn matching 1 phần --//
+				ls_related_status = ls_related_status_partial
+			end if
+
+
 		end if
 	end if
 	// Update status doc liền kề //
