@@ -452,6 +452,7 @@ istr_dwo_related[1].s_match_t_dwo[2] = 'd_so_line_grid'
 istr_dwo_related[1].s_match_f_column[2] = 'qty'
 istr_dwo_related[1].s_match_t_column[2] = 'qty'
 istr_dwo_related[1].s_match_column[2] = 'qty'
+istr_dwo_related[1].b_chk_matched_qty = false
 
 istr_dwo_related[1].s_main_obj_dwo_copy[3] = 'd_tax_line_grid' // datawindow copy từ
 istr_dwo_related[1].s_main_obj_column_copy[3] = 'tax_pct;tax_correction;tax_id;TRANS_CURRENCY;exchange_rate;'
