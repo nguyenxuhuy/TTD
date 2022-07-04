@@ -100,6 +100,7 @@ event type integer e_save4close ( )
 event type integer e_filteron_rb ( )
 event type integer e_filterswitch_rb ( )
 event e_open_related_object ( string vs_objname )
+event type integer e_action ( string vs_action )
 dw_2 dw_2
 tab_1 tab_1
 dw_4 dw_4
@@ -1876,6 +1877,19 @@ else
 end if	
 return
 */
+end event
+
+event type integer e_action(string vs_action);
+s_object_display			lpo_related
+
+ic_obj_handling.event e_action(vs_action)
+lpo_related = message.powerobjectparm
+if isvalid(lpo_related) then
+	connect using it_transaction;
+	this.event e_change_object_appeon( lpo_related)	
+	disconnect using it_transaction;
+end if
+return 1
 end event
 
 public function tab f_get_tab_1 ();return tab_1

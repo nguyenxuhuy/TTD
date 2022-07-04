@@ -1439,8 +1439,9 @@ choose case itemtag
 	case 'e_action_attach', 'e_action_process','e_action_complete','e_action_reopen', 'e_action_lose'
 		lw_handle = parent.getactivesheet( )
 		if isvalid(lw_handle) then
-			lod_handle = lw_handle.f_get_obj_handling( )
-			lod_handle.triggerevent(itemtag )
+			lw_handle.dynamic event e_action(itemtag)
+//			lod_handle = lw_handle.f_get_obj_handling( )
+//			lod_handle.triggerevent(itemtag )
 		end if				
 	case else //-- e_change_object_appeon --//
 		if left(itemtag, 7) = 'b_view_' then

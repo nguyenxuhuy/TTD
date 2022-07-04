@@ -218,22 +218,10 @@ s_object_display 		lpo_related
 t_ds_db					lads_copied[]
 b_obj_instantiate		lbo_ins
 
-connect using it_transaction;
 
-ldw_main = iw_display.f_get_dwmain( )
-ll_found = ldw_main.find("gutter ='Y' ",1 , ldw_main.rowcount())
-if ll_found = 0 then
-	ll_found = ldw_main.getrow()
-end if
-ldb_qt_ID = ldw_main.getitemnumber( ll_found, 'id')
-//-- check status --//
-select status into :ls_status from document where id = :ldb_qt_ID using it_transaction;
-if ls_status <> 'new' then
-	gf_messagebox('m.c_qt.e_action_completed.01','Thông báo','Chào giá đã bị thay đổi trạng thái','information','ok',1)
-	disconnect using it_transaction;
-	iw_display.event e_refresh( )
-	return 0
-end if
+
+
+connect using it_transaction;
 
 //get data de build where related
 this.f_get_data_related('u_so', lstr_data_related[]) 
@@ -244,17 +232,19 @@ this.dynamic f_get_dwo_related(lstr_related)
 if iw_display.dynamic f_get_data_copied_ex( lads_copied[],lstr_related,'copyt','u_so') > 0 then
 	lpo_related = create using 'u_so'
 	ldb_rtn = lbo_ins.f_copy_to_so( lstr_data_related[], lads_copied[], it_transaction ,lpo_related.idwsetup_initial )			
-	if ldb_rtn > 0 then
-		lpo_related.f_set_main_id(ldb_rtn )
-		iw_display.event e_change_object_appeon( lpo_related)			
+	if ldb_rtn > 0 then	
 		//-- update QT status--//
 		Update DOCUMENT set status = 'completed' where id = :ldb_qt_ID using it_transaction;
 		commit using it_transaction;
+		lpo_related.f_set_main_id(ldb_rtn )
+		message.powerobjectparm = lpo_related
+//		iw_display.event e_change_object_appeon( lpo_related)			
 	else
 		destroy lpo_related
 	end if
 end if
 disconnect using it_transaction;
+
 return 1			
 end event
 
@@ -749,32 +739,6 @@ end if
 if ids_currency.rowcount( ) = 0 then
 	laa_value[1] = '=Y'
 	this.f_init_object_table(ids_currency, 'd_currency_grid', 'base_yn',laa_value, laa_null[])
-end if
-*/
-return 0
-end event
-
-event e_dw_updatestart;call super::e_dw_updatestart;/*
-double		ldb_qty,ldb_price,ldb_id
-string			ls_filter
-long			ll_row
-
-t_dw_mpl		ldw_tax
-
-if rdw_requester.dataobject = istr_dwo[3].s_dwo_default then
-	if ids_matching.rowcount( ) > 0 then
-		ldw_tax = iw_display.f_get_dw(istr_dwo[4].s_dwo_default )
-		ls_filter = ldw_tax.describe( "datawindow.table.filter")
-		for ll_row = 1 to rdw_requester.rowcount( )
-			ldb_id = rdw_requester.getitemnumber(ll_row,'id')
-			ldw_tax.setfilter( "object_ref_id = " + string(ldb_id))
-			ldw_tax.filter( )
-			ldb_price = rdw_requester.getitemnumber( ll_row, 'price')
-			this.event e_dw_e_itemchanged( rdw_requester, ll_row, 'price', string(ldb_price))
-		next
-		ldw_tax.setfilter( ls_filter)
-		ldw_tax.filter( )
-	end if
 end if
 */
 return 0

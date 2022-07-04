@@ -20550,8 +20550,7 @@ public function integer f_upd_doc_status_ex (string vs_type, string vs_t_doc_typ
 - vdb_t_ref_id > 0 : xoá line
 =====================================*/
 int			li_cnt, li_row, li_next_cnt, li_cnt1, li_row1,li_cnt2, li_row2, li_patial_cnt
-double	ldb_related_doc_id, ldb_f_doc_id
-string		ls_related_doc_type, ls_related_status, ls_t_upd_status, ls_t_doctype, ls_t_ref_table, ls_related_status_partial
+string		ls_related_status, ls_t_upd_status, ls_t_doctype, ls_t_ref_table, ls_related_status_partial
 
 ls_t_upd_status = vs_t_upd_status
 	
@@ -20674,7 +20673,7 @@ else
 			select t1.DOC_STATUS into :ls_related_status
 			from doc_status t 
 				join  doc_status t1 on t1.doc_type = t.doc_type and t1.line_no+1 = t.line_no
-				 where t.doc_type = :ls_related_doc_type
+				 where t.doc_type = :vs_f_doc_type
 				 and t.doc_status = :ls_t_upd_status				
 				 and t.company_id = :gi_user_comp_id
 			 using rt_transaction;				
@@ -20685,7 +20684,7 @@ else
 				select t1.DOC_STATUS into :ls_related_status
 				from doc_status t 
 					join  doc_status t1 on t1.doc_type = t.doc_type and t1.line_no+1 = t.line_no
-					 where t.doc_type = :ls_related_doc_type
+					 where t.doc_type = :vs_f_doc_type
 					 and t.doc_status = :ls_t_upd_status				
 					 and t.company_id = :gi_user_comp_id
 				 using rt_transaction;									
@@ -20699,7 +20698,7 @@ end if
 // Update status doc liền kề //
 //-- đảo biến --//
 ls_t_upd_status = ls_related_status
-UPDATE document set status = :ls_t_upd_status where id = :ldb_related_doc_id using rt_transaction;
+UPDATE document set status = :ls_t_upd_status where id = :vdb_related_doc_id using rt_transaction;
 	
 return 1
 end function

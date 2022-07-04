@@ -858,15 +858,11 @@ b_obj_instantiate		lbo_ins
 	select count(id) into :li_cnt
 	from matching where t_doc_id = :ldb_doc_id using it_transaction;	
 	if li_cnt > 0 then
-		//-- update status --//
+		//-- xoá match và update status --//
 		if lbo_ins.f_upd_related_status_ex( 'delete', 'new', 'SO_LINE', ldb_doc_id, 0, it_transaction) = -1 then 
 			gf_messagebox('m.c_so.e_dw_e_predelete.01','Thông báo','Không cập nhật được trạng thái chứng từ liên quan','stop','ok',1)
 			return -1
 		end if
-//		lbo_ins.f_upd_related_status_del( ldb_doc_id, 'none', 'SO_LINE',ldb_doc_id, 0,  it_transaction)
-	
-		//-- xoá --//
-//		delete from matching where t_doc_id = :ldb_doc_id using it_transaction;	
 	end if
 	
 	//-- delete detail--//

@@ -737,8 +737,8 @@ choose case ls_action
 		iw_display.dynamic event e_view(vs_action)
 		return 0
 	case else
-		ls_action = "e_action_"+ mid(vs_action,3)
-		return this.triggerevent( ls_action)
+//		ls_action = "e_action_"+ mid(vs_action,3)
+		return this.triggerevent( vs_action)
 end choose
 
 end event
@@ -6314,10 +6314,12 @@ FOR li_idx = 1 to li_cnt
 		li_bttn_cnt  = lc_string.f_stringtoarray(istr_actionpane[1].sa_sub_button[li_idx] , ';', lsa_bttn[])
 		if li_bttn_cnt = 0 then
 			//-- disable--//		
-			l_rpi.enabled = false
-			l_rpi.tag = 'disable'			
+			l_rpi.enabled = false		
 			rbb_handle.SetPanel (l_rpi.itemhandle, l_rpi)
 		else
+			//--enable--//
+			l_rpi.enabled = true		
+			rbb_handle.SetPanel (l_rpi.itemhandle, l_rpi)			
 			for li_idx1 = 1 to li_bttn_cnt	
 				if lsa_bttn[li_idx1] = 'b_send_2_approve' then 
 					l_rsbi.picturename = "Pics\m_send_2_approve.png"		
@@ -6363,10 +6365,12 @@ FOR li_idx = 1 to li_cnt
 		end if
 		if li_bttn_cnt = 0 then
 			//-- disable--//			
-			l_rpi.enabled = false
-//			l_rpi.tag = 'disable'			
+			l_rpi.enabled = false		
 			rbb_handle.SetPanel (l_rpi.itemhandle, l_rpi)
 		else
+			//-- enable--//			
+			l_rpi.enabled = true		
+			rbb_handle.SetPanel (l_rpi.itemhandle, l_rpi)			
 			for li_idx1 = 1 to li_bttn_cnt			
 				if not isvalid(iw_display) then exit
 				if iw_display.classname( ) = 's_w_multi_rb' then	
