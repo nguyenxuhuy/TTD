@@ -1539,7 +1539,14 @@ if this.f_get_data_copied_ex( lads_copied[],lstr_related,'copyt',ls_obj_name) > 
 		end if
 		if ldb_rtn > 0 and left(ic_obj_handling.classname( ), 9)<> 'u_detail_' then
 			lpo_related.f_set_main_id(ldb_rtn )
-			this.event e_change_object_appeon( lpo_related)			
+			lpo_related.f_set_data_related(lstr_data_related[])		
+			lpo_related.is_object_title = lstr_data_related[1].s_text
+			lpo_related.is_win_grp = 'DOC'
+			lpo_related.is_sheet_type ='DOC'
+			lpo_related.is_win_name = lstr_data_related[1].s_text			
+			t_w_mdi.wf_open_sheet_doc(lpo_related, 's_w_multi_rb' )
+			if isvalid(lpo_related) then lpo_related.post event e_window_e_change_object()			
+//			this.event e_change_object_appeon( lpo_related)			
 		elseif  ldb_rtn > 0 and left(ic_obj_handling.classname( ), 9)= 'u_detail_' then
 			lpo_related.f_set_main_id(ldb_rtn )
 			this.iw_parent.dynamic event e_change_object_appeon( lpo_related)			
@@ -1885,9 +1892,11 @@ s_object_display			lpo_related
 ic_obj_handling.event e_action(vs_action)
 lpo_related = message.powerobjectparm
 if isvalid(lpo_related) then
-	connect using it_transaction;
-	this.event e_change_object_appeon( lpo_related)	
-	disconnect using it_transaction;
+	t_w_mdi.wf_open_sheet_doc(lpo_related, 's_w_multi_rb' )
+	if isvalid(lpo_related) then lpo_related.post event e_window_e_change_object()			
+//	connect using it_transaction;
+//	this.event e_change_object_appeon( lpo_related)	
+//	disconnect using it_transaction;
 end if
 return 1
 end event

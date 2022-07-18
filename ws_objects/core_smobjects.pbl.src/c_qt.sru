@@ -222,7 +222,7 @@ b_obj_instantiate		lbo_ins
 
 
 connect using it_transaction;
-
+this.ib_copying = true
 //get data de build where related
 this.f_get_data_related('u_so', lstr_data_related[]) 
 //build where related
@@ -230,6 +230,7 @@ iw_display.f_build_data_related( lstr_data_related[])
 
 this.dynamic f_get_dwo_related(lstr_related) 
 if iw_display.dynamic f_get_data_copied_ex( lads_copied[],lstr_related,'copyt','u_so') > 0 then
+	this.ib_copying = false
 	lpo_related = create using 'u_so'
 	ldb_rtn = lbo_ins.f_copy_to_so( lstr_data_related[], lads_copied[], it_transaction ,lpo_related.idwsetup_initial )			
 	if ldb_rtn > 0 then	
@@ -237,6 +238,11 @@ if iw_display.dynamic f_get_data_copied_ex( lads_copied[],lstr_related,'copyt','
 		Update DOCUMENT set status = 'completed' where id = :ldb_qt_ID using it_transaction;
 		commit using it_transaction;
 		lpo_related.f_set_main_id(ldb_rtn )
+		lpo_related.f_set_data_related(lstr_data_related[])		
+		lpo_related.is_object_title = lstr_data_related[1].s_text
+		lpo_related.is_win_grp = 'DOC'
+		lpo_related.is_sheet_type ='DOC'
+		lpo_related.is_win_name = lstr_data_related[1].s_text		
 		message.powerobjectparm = lpo_related
 //		iw_display.event e_change_object_appeon( lpo_related)			
 	else

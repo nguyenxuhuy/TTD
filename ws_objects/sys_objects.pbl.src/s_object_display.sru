@@ -710,35 +710,10 @@ ls_action = left(vs_action,6)
 if (ls_action <> 'b_copy' and ls_action <> 'b_view') or right(vs_action,6) = 'report' then
 	ls_action = vs_action
 end if
-choose case ls_action
-	case 'b_add','b_insert','b_modify','b_delete','b_save','b_saveclose','b_query','b_execquery','b_querying','b_refresh','b_doc_trace_on','b_doc_trace_off', +&
-		'b_filteron','b_filteroff','b_book','b_okclose','b_close','b_print','b_view_report', 'b_user_trace','b_appr_trace','b_total','b_approve','b_send_2_approve',+&
-		'b_reject','b_request_2_change','b_savepost','b_post','b_unpost', 'b_account_view', 'b_note','b_saveas','b_detail','b_cancel', 'b_allocate','b_ledger_transfer',+&
-		'b_settlement','b_cancel_settlement','b_amortize','b_sendmail','b_importfile','b_firstpage','b_previouspage','b_nextpage','b_lastpage'
-		if isvalid(iw_display) then
-			ls_action = lc_obj_service.f_globalreplace(ls_action, 'b_', 'e_')
-			return iw_display.triggerevent( ls_action)
-		else
-			return -1
-		end if
-	case 'b_item_barcode'
-		return this.event e_item_barcode( ls_action)
-	case 'b_copy'
-		if left(vs_action,7) = 'b_copyt' then
-			return iw_display.dynamic event e_copy_to_new(vs_action)
-		elseif left(vs_action,7) = 'b_copyf' then
-			iw_display.dynamic event e_copy_from(vs_action)
-			return 0
-		elseif left(vs_action,7) = 'b_copyl' then
-			iw_display.dynamic event e_copy_line(vs_action)
-			return 0
-		end if
-	case 'b_view'
-		iw_display.dynamic event e_view(vs_action)
+choose case vs_action
+	case 'e_action_complete'
+		this.dynamic event e_action_complete()
 		return 0
-	case else
-//		ls_action = "e_action_"+ mid(vs_action,3)
-		return this.triggerevent( vs_action)
 end choose
 
 end event
@@ -6344,109 +6319,94 @@ FOR li_idx = 1 to li_cnt
 	elseif lsa_sub[li_idx] = 'b_update' then
 		li_bttn_cnt  = lc_string.f_stringtoarray(istr_actionpane[1].sa_sub_button[li_idx] , ';', lsa_bttn[])
 		li_bttn_cnt  = lc_string.f_stringtoarray(istr_actionpane[1].sa_subbutton_name[li_idx] , ';', lsa_bttn_nm[])		
-		if isvalid(iw_display) then 
-			if iw_display.classname( ) = 's_w_multi_rb' then
-				rbb_handle.getchilditembyindex( l_rci.itemhandle, 6, l_rpi)	
-				//-- xoá child --//
-				li_child_cnt = rbb_handle.GetChildItemCount ( l_rpi.itemhandle )
-				for  li_rtn_idx = li_child_cnt to 1 step -1
-					 rbb_handle.GetChildItemByIndex (l_rpi.itemhandle, li_rtn_idx, l_rsbi)
-					 rbb_handle.DeleteSmallButton(l_rsbi.itemhandle)
-				next				
-			elseif iw_display.classname( ) = 's_w_multi_n_rb' then
-				rbb_handle.getchilditembyindex( l_rci.itemhandle, 4, l_rpi)	
-				//-- xoá child --//
-				li_child_cnt = rbb_handle.GetChildItemCount ( l_rpi.itemhandle )
-				for  li_rtn_idx = li_child_cnt to 1 step -1
-					 rbb_handle.GetChildItemByIndex (l_rpi.itemhandle, li_rtn_idx, l_rlbi)
-					 rbb_handle.DeleteLargeButton(l_rlbi.itemhandle)
-				next				
-			end if
+
+		if iw_display.classname( ) = 's_w_multi_rb' then
+			rbb_handle.getchilditembyindex( l_rci.itemhandle, 6, l_rpi)					
+		elseif iw_display.classname( ) = 's_w_multi_n_rb' then
+			rbb_handle.getchilditembyindex( l_rci.itemhandle, 4, l_rpi)			
 		end if
-		if li_bttn_cnt = 0 then
-			//-- disable--//			
-			l_rpi.enabled = false		
-			rbb_handle.SetPanel (l_rpi.itemhandle, l_rpi)
-		else
-			//-- enable--//			
-			l_rpi.enabled = true		
-			rbb_handle.SetPanel (l_rpi.itemhandle, l_rpi)			
-			for li_idx1 = 1 to li_bttn_cnt			
-				if not isvalid(iw_display) then exit
-				if iw_display.classname( ) = 's_w_multi_rb' then	
+		//-- xoá child --//
+		li_child_cnt = rbb_handle.GetChildItemCount ( l_rpi.itemhandle )
+		for  li_rtn_idx = li_child_cnt to 1 step -1
+			 rbb_handle.GetChildItemByIndex (l_rpi.itemhandle, li_rtn_idx, l_rlbi)
+			 rbb_handle.DeleteLargeButton(l_rlbi.itemhandle)
+		next					
+	
+		for li_idx1 = 1 to li_bttn_cnt			
+			if iw_display.classname( ) = 's_w_multi_rb' then	
+				l_rsbi = l_rsbi_null
+				if lsa_bttn[li_idx1] = 'b_doc_trace' then 
+					//-- thêm nút ghi sổ và hủy: panel action --//
+					rbb_handle.getchilditembyindex( l_rci.itemhandle, 2, l_rpi_action)	
+					//-- add nút ghi sổ--//
+					rbb_handle.getchilditembyindex( l_rpi_action.itemhandle, 1, l_rgi)	
+					l_rsbi.picturename = "Edit!"
+					l_rsbi.clicked = "ue_appbutton"
+					l_rsbi.PowerTipDescription="Ghi sổ Ctrl+G" 
+					l_rsbi.Tag="e_post"
+					l_rsbi.Shortcut="Ctrl+G"
+					rbb_handle.InsertSmallButtonLast (l_rgi.itemhandle,l_rsbi)
+					//-- add nút canel--//
+					rbb_handle.getchilditembyindex( l_rpi_action.itemhandle, 2, l_rgi)	
 					l_rsbi = l_rsbi_null
-					if lsa_bttn[li_idx1] = 'b_doc_trace' then 
-						//-- thêm nút ghi sổ và hủy: panel action --//
-						rbb_handle.getchilditembyindex( l_rci.itemhandle, 2, l_rpi_action)	
-						//-- add nút ghi sổ--//
-						rbb_handle.getchilditembyindex( l_rpi_action.itemhandle, 1, l_rgi)	
-						l_rsbi.picturename = "Edit!"
-						l_rsbi.clicked = "ue_tabbutton"
-						l_rsbi.PowerTipDescription="Ghi sổ Ctrl+G" 
-						l_rsbi.Tag="e_post"
-						l_rsbi.Shortcut="Ctrl+G"
-						rbb_handle.InsertSmallButtonLast (l_rgi.itemhandle,l_rsbi)
-						//-- add nút canel--//
-						rbb_handle.getchilditembyindex( l_rpi_action.itemhandle, 2, l_rgi)	
-						l_rsbi = l_rsbi_null
-						l_rsbi.picturename = "Custom080!"
-						l_rsbi.clicked = "ue_tabbutton"
-						l_rsbi.PowerTipDescription="Hủy" 
-						l_rsbi.Tag="e_cancel"
-						rbb_handle.InsertSmallButtonLast (l_rgi.itemhandle,l_rsbi)			
-						l_rsbi = l_rsbi_null
-					end if							
-					l_rsbi.text =  lsa_bttn_nm[li_idx1]
-					l_rsbi.Tag= lsa_bttn[li_idx1]
-					l_rsbi.clicked = "ue_tabbutton"			
-					if lsa_bttn[li_idx1] = 'b_doc_trace' then
-						l_rsbi.picturename = "Browse1!"
-					elseif lsa_bttn[li_idx1] = 'e_action_complete'then
-						l_rsbi.picturename = "Custom026!"
-					elseif lsa_bttn[li_idx1] = 'e_action_process'then
-						l_rsbi.picturename = "Actionsbig!"		
-					elseif lsa_bttn[li_idx1] = 'e_action_reopen'then
-						l_rsbi.picturename = "reloginBig!"							
-					elseif lsa_bttn[li_idx1] = 'b_lose'then
-						l_rsbi.picturename = "Custom027a!"
-					elseif lsa_bttn[li_idx1] = 'b_excel'then
-						l_rsbi.picturename = "Custom043!"
-					elseif lsa_bttn[li_idx1] = 'e_action_load_file' then
-						l_rsbi.picturename = "Browser!"
-					elseif  lsa_bttn[li_idx1] = 'e_action_link' then
-						l_rsbi.picturename = "Hyperlinkbig!"
-					elseif  lsa_bttn[li_idx1] = 'e_action_open_file' then
-						l_rsbi.picturename = "Preview1!"
-					elseif lsa_bttn[li_idx1] = 'e_action_new' then
-						l_rsbi.picturename = "NewfolderBig!"
-					end if
-					rbb_handle.InsertSmallButtonLast (l_rpi.itemhandle,l_rsbi)
-				elseif  iw_display.classname( ) = 's_w_multi_n_rb' then	
-					l_rlbi = l_rlbi_null
-					l_rlbi.text =  lsa_bttn_nm[li_idx1]
-					l_rlbi.Tag= lsa_bttn[li_idx1]
-					l_rlbi.clicked = "ue_tabbutton"			
-					if lsa_bttn[li_idx1] = 'b_doc_trace' then
-						l_rlbi.picturename = "Browse1!"
-					elseif lsa_bttn[li_idx1] = 'b_complete'then
-						l_rlbi.picturename = "Custom026!"
-					elseif lsa_bttn[li_idx1] = 'b_lose'then
-						l_rlbi.picturename = "Custom027a!"
-					elseif lsa_bttn[li_idx1] = 'b_excel'then
-						l_rlbi.picturename = "Custom043!"
-					elseif lsa_bttn[li_idx1] = 'e_action_load_file' then
-						l_rlbi.picturename = "Browser!"
-					elseif  lsa_bttn[li_idx1] = 'e_action_link' then
-						l_rlbi.picturename = "Hyperlinkbig!"
-					elseif  lsa_bttn[li_idx1] = 'e_action_open_file' then
-						l_rlbi.picturename = "Preview1!"
-					elseif lsa_bttn[li_idx1] = 'e_action_new' then
-						l_rlbi.picturename = "NewfolderBig!"
-					end if
-					rbb_handle.InsertLargeButtonLast (l_rpi.itemhandle,l_rlbi)					
+					l_rsbi.picturename = "Custom080!"
+					l_rsbi.clicked = "ue_appbutton"
+					l_rsbi.PowerTipDescription="Hủy" 
+					l_rsbi.Tag="e_cancel"
+					rbb_handle.InsertSmallButtonLast (l_rgi.itemhandle,l_rsbi)			
+					l_rsbi = l_rsbi_null
+				end if							
+				l_rsbi.text =  lsa_bttn_nm[li_idx1]
+				l_rsbi.Tag= lsa_bttn[li_idx1]
+				l_rsbi.clicked = "ue_appbutton"			
+				if lsa_bttn[li_idx1] = 'b_doc_trace' then
+					l_rsbi.picturename = "Browse1!"
+				elseif lsa_bttn[li_idx1] = 'e_action_complete'then
+					l_rsbi.picturename = "Custom026!"
+				elseif lsa_bttn[li_idx1] = 'e_action_process'then
+					l_rsbi.picturename = "Actionsbig!"		
+				elseif lsa_bttn[li_idx1] = 'e_action_reopen'then
+					l_rsbi.picturename = "reloginBig!"							
+				elseif lsa_bttn[li_idx1] = 'b_lose'then
+					l_rsbi.picturename = "Custom027a!"
+				elseif lsa_bttn[li_idx1] = 'b_excel'then
+					l_rsbi.picturename = "Custom043!"
+				elseif lsa_bttn[li_idx1] = 'e_action_load_file' then
+					l_rsbi.picturename = "Browser!"
+				elseif  lsa_bttn[li_idx1] = 'e_action_link' then
+					l_rsbi.picturename = "Hyperlinkbig!"
+				elseif  lsa_bttn[li_idx1] = 'e_action_open_file' then
+					l_rsbi.picturename = "Preview1!"
+				elseif lsa_bttn[li_idx1] = 'e_action_new' then
+					l_rsbi.picturename = "NewfolderBig!"
 				end if
-			next						
-		end if		
+				rbb_handle.InsertSmallButtonLast (l_rpi.itemhandle,l_rsbi)
+			elseif  iw_display.classname( ) = 's_w_multi_n_rb' then	
+				l_rlbi = l_rlbi_null
+				l_rlbi.text =  lsa_bttn_nm[li_idx1]
+				l_rlbi.Tag= lsa_bttn[li_idx1]
+				l_rlbi.clicked = "ue_tabbutton"			
+				if lsa_bttn[li_idx1] = 'b_doc_trace' then
+					l_rlbi.picturename = "Browse1!"
+				elseif lsa_bttn[li_idx1] = 'b_complete'then
+					l_rlbi.picturename = "Custom026!"
+				elseif lsa_bttn[li_idx1] = 'b_lose'then
+					l_rlbi.picturename = "Custom027a!"
+				elseif lsa_bttn[li_idx1] = 'b_excel'then
+					l_rlbi.picturename = "Custom043!"
+				elseif lsa_bttn[li_idx1] = 'e_action_load_file' then
+					l_rlbi.picturename = "Browser!"
+				elseif  lsa_bttn[li_idx1] = 'e_action_link' then
+					l_rlbi.picturename = "Hyperlinkbig!"
+				elseif  lsa_bttn[li_idx1] = 'e_action_open_file' then
+					l_rlbi.picturename = "Preview1!"
+				elseif lsa_bttn[li_idx1] = 'e_action_new' then
+					l_rlbi.picturename = "NewfolderBig!"
+				end if
+				rbb_handle.InsertLargeButtonLast (l_rpi.itemhandle,l_rlbi)					
+			end if
+		next						
+
 	elseif lsa_sub[li_idx] = 'b_related_object' then
 		rbb_handle.getchilditembyindex( l_rci.itemhandle, 7, l_rpi)	
 		li_bttn_cnt  = lc_string.f_stringtoarray(istr_actionpane[1].sa_sub_button[li_idx] , ';', lsa_bttn[])
