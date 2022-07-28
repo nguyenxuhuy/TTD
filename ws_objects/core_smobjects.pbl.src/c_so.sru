@@ -547,39 +547,68 @@ istr_dwo_related[6].s_related_obj_column = 'id'
 istr_dwo_related[6].s_relatedtext_column = 'code'
 istr_dwo_related[6].s_text = 'In bảng báo giá(USD)'
 
-if	gdb_branch = 24088840 then
-	istr_dwo_related[7].s_related_obj_name = 'b_view'
-	istr_dwo_related[7].s_main_obj_dwo = istr_dwo[1].s_dwo_default
-	istr_dwo_related[7].s_main_obj_column = 'id'
-	istr_dwo_related[7].s_related_obj_dwo = 'dv_qt_kni_eng_form'
-	istr_dwo_related[7].s_related_obj_column = 'id'
-	istr_dwo_related[7].s_relatedtext_column = 'code'
-	istr_dwo_related[7].s_text = 'In bảng báo giá Dao-Dầu(eng)'
+istr_dwo_related[7].s_related_obj_name = 'u_so'					// đối tượng copy đến
+istr_dwo_related[7].s_main_obj_dwo = istr_dwo[1].s_dwo_default	//datawindow quan hệ main
+istr_dwo_related[7].s_main_obj_column = 'id'			// cột quan hệ của main
+istr_dwo_related[7].s_related_obj_dwo = 'd_document_so_grid'	// datawindow quan hệ đến
+istr_dwo_related[7].s_related_obj_column = 'id'			// cột quan hệ đến
+istr_dwo_related[7].b_f_matching = true
+//istr_dwo_related[7].b_return = true //la doi duong tra hang
+istr_dwo_related[7].s_relatedtext_column = 'code'					
+istr_dwo_related[7].s_text = 'SO bù hàng: '
 
-	istr_dwo_related[8].s_related_obj_name = 'b_view'
-	istr_dwo_related[8].s_main_obj_dwo = istr_dwo[1].s_dwo_default
-	istr_dwo_related[8].s_main_obj_column = 'id'
-	istr_dwo_related[8].s_related_obj_dwo = 'dv_qt_kni_form'
-	istr_dwo_related[8].s_related_obj_column = 'id'
-	istr_dwo_related[8].s_relatedtext_column = 'code'
-	istr_dwo_related[8].s_text = 'In bảng báo giá Dao-Dầu(vn)'
-else  // if gdb_branch = 11006119 then
-	istr_dwo_related[7].s_related_obj_name = 'b_view'
-	istr_dwo_related[7].s_main_obj_dwo = istr_dwo[1].s_dwo_default
-	istr_dwo_related[7].s_main_obj_column = 'id'
-	istr_dwo_related[7].s_related_obj_dwo = 'dv_qt_kni_eng_asv_form'
-	istr_dwo_related[7].s_related_obj_column = 'id'
-	istr_dwo_related[7].s_relatedtext_column = 'code'
-	istr_dwo_related[7].s_text = 'In bảng báo giá Dao-Dầu(eng)'
-	
-	istr_dwo_related[8].s_related_obj_name = 'b_view'
-	istr_dwo_related[8].s_main_obj_dwo = istr_dwo[1].s_dwo_default
-	istr_dwo_related[8].s_main_obj_column = 'id'
-	istr_dwo_related[8].s_related_obj_dwo = 'dv_qt_kni_asv_form'
-	istr_dwo_related[8].s_related_obj_column = 'id'
-	istr_dwo_related[8].s_relatedtext_column = 'code'
-	istr_dwo_related[8].s_text = 'In bảng báo giá Dao-Dầu(vn)'
-end if
+istr_dwo_related[7].s_main_obj_dwo_copy[1] = 'd_document_so_grid'  // datawindow copy từ
+istr_dwo_related[7].s_main_obj_column_copy[1] = 'object_id;ship_to_addtext;bill_to_object;bill_to_addtext;'
+istr_dwo_related[7].s_main_obj_column_copy[1] += 'currency_id;exchange_rate;include_tax_yn;note;payment_term;payment_method;delivery_mode;'
+istr_dwo_related[7].s_related_obj_dwo_copy[1] = 'd_document_so_grid' // datawindow copy đến
+istr_dwo_related[7].s_related_obj_column_copy[1]= 'object_id;ship_to_addtext;bill_to_object;bill_to_addtext;'
+istr_dwo_related[7].s_related_obj_column_copy[1] += 'currency_id;exchange_rate;include_tax_yn;note;payment_term;payment_method;delivery_mode;'
+
+
+istr_dwo_related[7].s_main_obj_dwo_copy[2] = 'd_so_line_grid'// datawindow copy từ
+istr_dwo_related[7].s_main_obj_column_copy[2] =  'line_no;ITEM_ID;LINE_TEXT;NOTE;other_note;QTY;act_qty;price;act_price;amount;act_amount;disc_pct;disc_amt;'+&
+																			'TRANS_UOM;SALES_PERSON;base_price;base_amount;amount_ex_tax;act_amount_ex_tax;' +&
+																			'BASE_AMOUNT_EX_TAX;ACT_BASE_AMOUNT_EX_TAX;price_ex_tax;act_price_ex_tax;'// cột copy từ
+istr_dwo_related[7].s_related_obj_dwo_copy[2] = 'd_so_line_grid' // datawindow copy đến
+istr_dwo_related[7].s_related_obj_column_copy[2] = 'line_no;ITEM_ID;LINE_TEXT;NOTE;other_note;QTY;act_qty;price;act_price;amount;act_amount;disc_pct;disc_amt;'+&
+																		'TRANS_UOM;SALES_PERSON;base_price;base_amount;amount_ex_tax;act_amount_ex_tax;' +&
+																		'BASE_AMOUNT_EX_TAX;ACT_BASE_AMOUNT_EX_TAX;price_ex_tax;act_price_ex_tax;'// cột copy đến
+istr_dwo_related[7].s_main_obj_column_chk[2] = ''
+istr_dwo_related[7].s_related_obj_column_chk[2] = ''
+istr_dwo_related[7].s_f_obj_column_chk[2] = ''
+istr_dwo_related[7].s_t_obj_column_chk[2] = ''
+istr_dwo_related[7].b_copy_line[2] = true
+// khai báo cập nhật bản matching
+istr_dwo_related[7].s_match_f_dwo[2] = 'd_so_line_grid'
+istr_dwo_related[7].s_match_f_col_obj[2] = 'item_id' //--cho phép hàng hóa dịch vụ
+istr_dwo_related[7].s_match_t_dwo[2] = 'd_so_line_grid'
+istr_dwo_related[7].s_match_f_column[2] = 'qty'
+istr_dwo_related[7].s_match_t_column[2] = 'qty'
+istr_dwo_related[7].s_match_column[2] = 'qty'
+
+istr_dwo_related[7].s_main_obj_dwo_copy[3] = 'd_tax_line_grid' // datawindow copy từ
+istr_dwo_related[7].s_main_obj_column_copy[3] = 'tax_pct;'
+istr_dwo_related[7].s_related_obj_dwo_copy[3] = 'd_tax_line_grid' // datawindow copy đến
+istr_dwo_related[7].s_related_obj_column_copy[3] = 'tax_pct;'
+//istr_dwo_related[7].s_main_obj_column_chk[3] = 'item_id;item_code;item_name;'
+//istr_dwo_related[7].s_related_obj_column_chk[3] = 'item_id;object_code;line_text;'
+
+
+istr_dwo_related[7].s_main_obj_dwo_copy[4] = 'd_charge_line_grid' // datawindow copy từ
+istr_dwo_related[7].s_main_obj_column_copy[4] = 'object_code;object_name;charge_id;charge_amt;charge_pct;uom_code;exchange_rate;CHARGE_CURRENCY;beneficiary_name;beneficiary_id'
+istr_dwo_related[7].s_related_obj_dwo_copy[4] = 'd_charge_line_grid' // datawindow copy đến
+istr_dwo_related[7].s_related_obj_column_copy[4] = 'object_code;object_name;charge_id;charge_amt;charge_pct;uom_code;exchange_rate;CHARGE_CURRENCY;beneficiary_name;beneficiary_id'
+istr_dwo_related[7].s_main_obj_column_chk[4] = ''
+istr_dwo_related[7].s_related_obj_column_chk[4] = ''
+istr_dwo_related[7].s_match_f_dwo[4] = ''
+istr_dwo_related[7].s_match_t_dwo[4] = ''
+istr_dwo_related[7].s_main_obj_column_sum[4] = ''
+istr_dwo_related[7].s_related_obj_column_sum[4] = ''
+istr_dwo_related[7].s_f_obj_column_chk[4] = ''
+istr_dwo_related[7].s_t_obj_column_chk[4] = ''
+istr_dwo_related[7].b_f_sum[4] = false
+istr_dwo_related[7].b_copy_line[4] = false
+
 
 istr_dwo_related[9].s_related_obj_name = 'u_po'					// đối tượng copy đến
 istr_dwo_related[9].s_main_obj_dwo = 'd_document_so_grid'	//datawindow quan hệ main
@@ -705,7 +734,7 @@ ib_display_text = false
 is_object_title ='SO (Đơn bán hàng)'
 is_exrate_type = 'sell'
 istr_actionpane[1].s_button_name = 'b_preview;b_view;b_send_2_approve;b_approve;b_reject;b_related_object;u_sal_invoice;b_copyt;b_copyt_sal_invoice;b_copyt_prod_orders;'
-istr_actionpane[1].s_button_name += 'b_doc_trace;b_cancel;b_self_copy;e_add;e_modify;e_delete;e_detail;'
+istr_actionpane[1].s_button_name += 'b_doc_trace;b_cancel;b_self_copy;e_add;e_modify;e_delete;e_detail;b_copyt_so;'
 istr_actionpane[1].s_button_has_sub ='b_related_object;b_update;b_approve;b_view;b_copyt;b_copyf;'
 istr_actionpane[1].sa_sub_button[1]='u_qt;u_prod_orders;u_sal_invoice;'
 istr_actionpane[1].sa_subbutton_name[1]='Chào giá;Lệnh SX;Hoá đơn bán;'
@@ -715,8 +744,8 @@ istr_actionpane[1].sa_sub_button[3]=''	//'b_send_2_approve;b_approve;b_reject;'
 istr_actionpane[1].sa_subbutton_name[3]=''	//'Gửi duyệt;Duyệt;Trả duyệt'
 istr_actionpane[1].sa_sub_button[4]=';'
 istr_actionpane[1].sa_subbutton_name[4]=''
-istr_actionpane[1].sa_sub_button[5]='b_copyt_prod_orders;b_copyt_sal_invoice;'
-istr_actionpane[1].sa_subbutton_name[5]='Tạo lệnh SX;Tạo hóa đơn bán;'
+istr_actionpane[1].sa_sub_button[5]='b_copyt_prod_orders;b_copyt_sal_invoice;b_copyt_so;'
+istr_actionpane[1].sa_subbutton_name[5]='Tạo lệnh SX;Tạo phiếu giao hàng;Tạo đơn bù hàng;'
 istr_actionpane[1].sa_sub_button[6]=''
 istr_actionpane[1].sa_subbutton_name[6]=''
 istr_actionpane[1].s_description = is_object_title

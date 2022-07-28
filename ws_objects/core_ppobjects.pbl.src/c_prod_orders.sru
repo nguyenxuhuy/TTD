@@ -1662,7 +1662,9 @@ if rdw_handling.dataobject  = 'd_lot_line_kd_grid' then
 			end if
 			commit using it_transaction;
 			rdw_handling.event e_retrieve()
-			disconnect using it_transaction;			
+			disconnect using it_transaction;		
+		else 
+			disconnect using it_transaction;	
 		end if
 	end if
 elseif rdw_handling.dataobject  = 'd_prod_material_grid' then
