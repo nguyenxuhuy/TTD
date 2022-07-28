@@ -1890,14 +1890,14 @@ event type integer e_action(string vs_action);
 s_object_display			lpo_related
 
 ic_obj_handling.event e_action(vs_action)
-lpo_related = message.powerobjectparm
-if isvalid(lpo_related) then
-	t_w_mdi.wf_open_sheet_doc(lpo_related, 's_w_multi_rb' )
-	if isvalid(lpo_related) then lpo_related.post event e_window_e_change_object()			
+//lpo_related = message.powerobjectparm
+//if isvalid(lpo_related) then
+//	t_w_mdi.wf_open_sheet_doc(lpo_related, 's_w_multi_rb' )
+//	if isvalid(lpo_related) then lpo_related.post event e_window_e_change_object()			
 //	connect using it_transaction;
 //	this.event e_change_object_appeon( lpo_related)	
 //	disconnect using it_transaction;
-end if
+//end if
 return 1
 end event
 

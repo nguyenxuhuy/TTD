@@ -6197,7 +6197,7 @@ c_string				lc_string
 RibbonCategoryItem			l_rci
 RibbonPanelItem				l_rpi, l_rpi_action
 RibbonLargeButtonItem 		l_rlbi, l_rlbi_new, l_rlbi_null
-RibbonMenu						l_rMenu_copyt, l_rMenu_view, l_rMenu_copyf
+RibbonMenu						l_rMenu_copyt, l_rMenu_view, l_rMenu_copyf, l_rMenu_null
 RibbonMenuItem				l_rmitem, l_rmitem_tmp
 RibbonGroupItem				l_rgi
 RibbonSmallButtonItem 		l_rsbi, l_rsbi_null
@@ -6325,88 +6325,74 @@ FOR li_idx = 1 to li_cnt
 		elseif iw_display.classname( ) = 's_w_multi_n_rb' then
 			rbb_handle.getchilditembyindex( l_rci.itemhandle, 4, l_rpi)			
 		end if
-		//-- xoá child --//
+		
+	//-- xoá child --//	
 		li_child_cnt = rbb_handle.GetChildItemCount ( l_rpi.itemhandle )
 		for  li_rtn_idx = li_child_cnt to 1 step -1
 			 rbb_handle.GetChildItemByIndex (l_rpi.itemhandle, li_rtn_idx, l_rlbi)
 			 rbb_handle.DeleteLargeButton(l_rlbi.itemhandle)
-		next					
-	
-		for li_idx1 = 1 to li_bttn_cnt			
-			if iw_display.classname( ) = 's_w_multi_rb' then	
-				l_rsbi = l_rsbi_null
-				if lsa_bttn[li_idx1] = 'b_doc_trace' then 
-					//-- thêm nút ghi sổ và hủy: panel action --//
-					rbb_handle.getchilditembyindex( l_rci.itemhandle, 2, l_rpi_action)	
-					//-- add nút ghi sổ--//
-					rbb_handle.getchilditembyindex( l_rpi_action.itemhandle, 1, l_rgi)	
-					l_rsbi.picturename = "Edit!"
-					l_rsbi.clicked = "ue_appbutton"
-					l_rsbi.PowerTipDescription="Ghi sổ Ctrl+G" 
-					l_rsbi.Tag="e_post"
-					l_rsbi.Shortcut="Ctrl+G"
-					rbb_handle.InsertSmallButtonLast (l_rgi.itemhandle,l_rsbi)
-					//-- add nút canel--//
-					rbb_handle.getchilditembyindex( l_rpi_action.itemhandle, 2, l_rgi)	
+		next			
+		
+		if li_bttn_cnt > 0 then
+			l_rlbi_new.text = l_rpi.text
+			l_rlbi_new.tag = 'b_update'
+			l_rlbi_new.picturename = "ToolkitConfig!"
+			l_rlbi_new.enabled = true
+			l_rlbi_new.clicked = 'ue_tabbuton'
+			l_rMenu_copyf = l_rMenu_null
+			for li_idx1 = 1 to li_bttn_cnt
+				if iw_display.classname( ) = 's_w_multi_rb' then	
 					l_rsbi = l_rsbi_null
-					l_rsbi.picturename = "Custom080!"
-					l_rsbi.clicked = "ue_appbutton"
-					l_rsbi.PowerTipDescription="Hủy" 
-					l_rsbi.Tag="e_cancel"
-					rbb_handle.InsertSmallButtonLast (l_rgi.itemhandle,l_rsbi)			
-					l_rsbi = l_rsbi_null
-				end if							
-				l_rsbi.text =  lsa_bttn_nm[li_idx1]
-				l_rsbi.Tag= lsa_bttn[li_idx1]
-				l_rsbi.clicked = "ue_appbutton"			
+					if lsa_bttn[li_idx1] = 'b_doc_trace' then 
+						//-- thêm nút ghi sổ và hủy: panel action --//
+						rbb_handle.getchilditembyindex( l_rci.itemhandle, 2, l_rpi_action)	
+						//-- add nút ghi sổ--//
+						rbb_handle.getchilditembyindex( l_rpi_action.itemhandle, 1, l_rgi)	
+						l_rsbi.picturename = "Edit!"
+						l_rsbi.clicked = "ue_appbutton"
+						l_rsbi.PowerTipDescription="Ghi sổ Ctrl+G" 
+						l_rsbi.Tag="e_post"
+						l_rsbi.Shortcut="Ctrl+G"
+						rbb_handle.InsertSmallButtonLast (l_rgi.itemhandle,l_rsbi)
+						//-- add nút canel--//
+						rbb_handle.getchilditembyindex( l_rpi_action.itemhandle, 2, l_rgi)	
+						l_rsbi = l_rsbi_null
+						l_rsbi.picturename = "Custom080!"
+						l_rsbi.clicked = "ue_appbutton"
+						l_rsbi.PowerTipDescription="Hủy" 
+						l_rsbi.Tag="e_cancel"
+						rbb_handle.InsertSmallButtonLast (l_rgi.itemhandle,l_rsbi)			
+						l_rsbi = l_rsbi_null
+					end if							
+				end if
+				l_rmitem.tag = lsa_bttn[li_idx1]
+				l_rmitem.text = lsa_bttn_nm[li_idx1]
+//				l_rmitem.picturename = "OrdersBig!"
+				l_rmitem.itemtype = 0
+				l_rmitem.clicked = "ue_appbutton"				
+								
 				if lsa_bttn[li_idx1] = 'b_doc_trace' then
-					l_rsbi.picturename = "Browse1!"
+					l_rmitem.picturename = "Browse1!"
 				elseif lsa_bttn[li_idx1] = 'e_action_complete'then
-					l_rsbi.picturename = "Custom026!"
-				elseif lsa_bttn[li_idx1] = 'e_action_process'then
-					l_rsbi.picturename = "Actionsbig!"		
-				elseif lsa_bttn[li_idx1] = 'e_action_reopen'then
-					l_rsbi.picturename = "reloginBig!"							
-				elseif lsa_bttn[li_idx1] = 'b_lose'then
-					l_rsbi.picturename = "Custom027a!"
+					l_rmitem.picturename = "Custom026!"
+				elseif lsa_bttn[li_idx1] = 'e_action_lose'then
+					l_rmitem.picturename = "Custom027a!"
 				elseif lsa_bttn[li_idx1] = 'b_excel'then
-					l_rsbi.picturename = "Custom043!"
+					l_rmitem.picturename = "Custom043!"
 				elseif lsa_bttn[li_idx1] = 'e_action_load_file' then
-					l_rsbi.picturename = "Browser!"
+					l_rmitem.picturename = "Browser!"
 				elseif  lsa_bttn[li_idx1] = 'e_action_link' then
-					l_rsbi.picturename = "Hyperlinkbig!"
+					l_rmitem.picturename = "Hyperlinkbig!"
 				elseif  lsa_bttn[li_idx1] = 'e_action_open_file' then
-					l_rsbi.picturename = "Preview1!"
+					l_rmitem.picturename = "Preview1!"
 				elseif lsa_bttn[li_idx1] = 'e_action_new' then
-					l_rsbi.picturename = "NewfolderBig!"
-				end if
-				rbb_handle.InsertSmallButtonLast (l_rpi.itemhandle,l_rsbi)
-			elseif  iw_display.classname( ) = 's_w_multi_n_rb' then	
-				l_rlbi = l_rlbi_null
-				l_rlbi.text =  lsa_bttn_nm[li_idx1]
-				l_rlbi.Tag= lsa_bttn[li_idx1]
-				l_rlbi.clicked = "ue_tabbutton"			
-				if lsa_bttn[li_idx1] = 'b_doc_trace' then
-					l_rlbi.picturename = "Browse1!"
-				elseif lsa_bttn[li_idx1] = 'b_complete'then
-					l_rlbi.picturename = "Custom026!"
-				elseif lsa_bttn[li_idx1] = 'b_lose'then
-					l_rlbi.picturename = "Custom027a!"
-				elseif lsa_bttn[li_idx1] = 'b_excel'then
-					l_rlbi.picturename = "Custom043!"
-				elseif lsa_bttn[li_idx1] = 'e_action_load_file' then
-					l_rlbi.picturename = "Browser!"
-				elseif  lsa_bttn[li_idx1] = 'e_action_link' then
-					l_rlbi.picturename = "Hyperlinkbig!"
-				elseif  lsa_bttn[li_idx1] = 'e_action_open_file' then
-					l_rlbi.picturename = "Preview1!"
-				elseif lsa_bttn[li_idx1] = 'e_action_new' then
-					l_rlbi.picturename = "NewfolderBig!"
-				end if
-				rbb_handle.InsertLargeButtonLast (l_rpi.itemhandle,l_rlbi)					
-			end if
-		next						
-
+					l_rmitem.picturename = "NewfolderBig!"
+				end if				
+				li_rtn_idx = l_rMenu_copyf.insertitemLast( l_rmitem)
+			next
+			l_rlbi_new.setmenu(l_rMenu_copyf )	
+			rbb_handle.InsertLargeButtonLast (l_rpi.itemhandle,l_rlbi_new)		
+		end if						
 	elseif lsa_sub[li_idx] = 'b_related_object' then
 		rbb_handle.getchilditembyindex( l_rci.itemhandle, 7, l_rpi)	
 		li_bttn_cnt  = lc_string.f_stringtoarray(istr_actionpane[1].sa_sub_button[li_idx] , ';', lsa_bttn[])
@@ -6423,6 +6409,7 @@ FOR li_idx = 1 to li_cnt
 			l_rlbi_new.picturename = "OrdersBig!"
 			l_rlbi_new.enabled = true
 			l_rlbi_new.clicked = 'ue_tabbuton'
+			l_rMenu_copyf = l_rMenu_null
 			for li_idx1 = 1 to li_bttn_cnt
 				l_rmitem.tag = lsa_bttn[li_idx1]
 				l_rmitem.text = lsa_bttn_nm[li_idx1]

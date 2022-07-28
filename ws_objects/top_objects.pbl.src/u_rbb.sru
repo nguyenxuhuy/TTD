@@ -457,33 +457,38 @@ RibbonLargeButtonItem 		l_rlbi, l_rlbi_null
 RibbonMenu						l_rMenu		
 RibbonMenuItem				l_rmitem, l_rmitem_tmp
 RibbonGroupItem				l_rgi
-RibbonSmallButtonItem 		l_rsbi, l_rsbi_null
+RibbonLargeButtonItem 		l_rsbi, l_rsbi_null
 
 //-- panel: action --//
 
 li_rc = this.getchilditemcount( vrpi_action.itemhandle )
-FOR li_idx = 1 to li_rc
-	this.getchilditembyindex( vrpi_action.itemhandle, li_idx , l_rsbi)
-	if pos(vs_enable_buttons, l_rsbi.tag+';') > 0 then
+if li_rc = 1 then
+	this.getchilditembyindex( vrpi_action.itemhandle, 1 , l_rlbi)
+	if pos(vs_enable_buttons, l_rlbi.tag+';') > 0 and  l_rlbi.tag <>'' then
 		lb_enable =  true
 	else
 		lb_enable =  false
 	end if	
-	if l_rsbi.tag = 'e_action_complete' or l_rsbi.tag = 'e_action_lose'then
-		if vs_doc_status = 'new' then
-			l_rsbi.enabled = lb_enable and not vb_editing
+	l_rlbi.enabled =  lb_enable
+	l_rlbi.getmenu( l_rMenu)
+	li_itemCnt = l_rMenu.GetItemCount ()
+	FOR li_idx1 = 1 to li_itemCnt
+		l_rMenu.getitem( li_idx1 , l_rmitem)
+		if l_rmitem.tag = 'e_action_complete' or l_rmitem.tag = 'e_action_lose'then
+			if vs_doc_status = 'new' then
+				lb_enable = true and  not vb_editing
+			else
+				lb_enable =  false
+			end if					
 		else
-			l_rsbi.enabled = false
-		end if		
-	else
-		l_rsbi.enabled = lb_enable and not vb_editing and not isnull(vs_doc_status)
-	end if
-		
-	this.setsmallbutton( l_rsbi.itemhandle , l_rsbi)
-NEXT
-
-
-
+			lb_enable = lb_enable and not vb_editing and not isnull(vs_doc_status)
+		end if
+		l_rmitem.enabled = lb_enable and not isnull(vs_doc_status )
+		l_rMenu.setitem( li_idx1, l_rmitem)					
+	NEXT
+	l_rlbi.setmenu( l_rMenu)
+	this.setlargebutton( l_rlbi.itemhandle , l_rlbi)
+end if
 
 Return li_rc
 end function

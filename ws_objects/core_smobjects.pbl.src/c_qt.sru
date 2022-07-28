@@ -235,6 +235,7 @@ if iw_display.dynamic f_get_data_copied_ex( lads_copied[],lstr_related,'copyt','
 	ldb_rtn = lbo_ins.f_copy_to_so( lstr_data_related[], lads_copied[], it_transaction ,lpo_related.idwsetup_initial )			
 	if ldb_rtn > 0 then	
 		//-- update QT status--//
+		ldb_qt_ID = double(lstr_data_related[1].s_data[1])
 		Update DOCUMENT set status = 'completed' where id = :ldb_qt_ID using it_transaction;
 		commit using it_transaction;
 		lpo_related.f_set_main_id(ldb_rtn )
@@ -243,7 +244,9 @@ if iw_display.dynamic f_get_data_copied_ex( lads_copied[],lstr_related,'copyt','
 		lpo_related.is_win_grp = 'DOC'
 		lpo_related.is_sheet_type ='DOC'
 		lpo_related.is_win_name = lstr_data_related[1].s_text		
-		message.powerobjectparm = lpo_related
+		t_w_mdi.wf_open_sheet_doc(lpo_related, 's_w_multi_rb' )
+//		if isvalid(lpo_related) then lpo_related.post event e_window_e_change_object()				
+//		message.powerobjectparm = lpo_related
 //		iw_display.event e_change_object_appeon( lpo_related)			
 	else
 		destroy lpo_related
