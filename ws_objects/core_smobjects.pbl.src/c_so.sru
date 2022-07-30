@@ -587,17 +587,17 @@ istr_dwo_related[7].s_match_t_column[2] = 'qty'
 istr_dwo_related[7].s_match_column[2] = 'qty'
 
 istr_dwo_related[7].s_main_obj_dwo_copy[3] = 'd_tax_line_grid' // datawindow copy từ
-istr_dwo_related[7].s_main_obj_column_copy[3] = 'tax_pct;'
+istr_dwo_related[7].s_main_obj_column_copy[3] = 'tax_pct;TAX_ID;TRANS_CURRENCY;EXCHANGE_RATE;'
 istr_dwo_related[7].s_related_obj_dwo_copy[3] = 'd_tax_line_grid' // datawindow copy đến
-istr_dwo_related[7].s_related_obj_column_copy[3] = 'tax_pct;'
+istr_dwo_related[7].s_related_obj_column_copy[3] = 'tax_pct;TAX_ID;TRANS_CURRENCY;EXCHANGE_RATE;'
 //istr_dwo_related[7].s_main_obj_column_chk[3] = 'item_id;item_code;item_name;'
 //istr_dwo_related[7].s_related_obj_column_chk[3] = 'item_id;object_code;line_text;'
 
 
-istr_dwo_related[7].s_main_obj_dwo_copy[4] = 'd_charge_line_grid' // datawindow copy từ
-istr_dwo_related[7].s_main_obj_column_copy[4] = 'object_code;object_name;charge_id;charge_amt;charge_pct;uom_code;exchange_rate;CHARGE_CURRENCY;beneficiary_name;beneficiary_id'
-istr_dwo_related[7].s_related_obj_dwo_copy[4] = 'd_charge_line_grid' // datawindow copy đến
-istr_dwo_related[7].s_related_obj_column_copy[4] = 'object_code;object_name;charge_id;charge_amt;charge_pct;uom_code;exchange_rate;CHARGE_CURRENCY;beneficiary_name;beneficiary_id'
+istr_dwo_related[7].s_main_obj_dwo_copy[4] = 'd_lot_line_kd_grid' // datawindow copy từ
+istr_dwo_related[7].s_main_obj_column_copy[4] = 'LINE_NO;QTY;LOT_NO;SERIAL_NO;'
+istr_dwo_related[7].s_related_obj_dwo_copy[4] = 'd_lot_line_kd_grid' // datawindow copy đến
+istr_dwo_related[7].s_related_obj_column_copy[4] = 'LINE_NO;QTY;LOT_NO;SERIAL_NO;'
 istr_dwo_related[7].s_main_obj_column_chk[4] = ''
 istr_dwo_related[7].s_related_obj_column_chk[4] = ''
 istr_dwo_related[7].s_match_f_dwo[4] = ''
@@ -812,8 +812,8 @@ return 0
 end event
 
 event e_dw_e_postsave;call super::e_dw_e_postsave;double		ldb_doc_id, ldb_extend_id, ldb_billto_id, ldb_object_id, ldb_payment_term, ldb_payment_method, ldb_delivery_mode
-double		ldb_base_curr_id, ldb_exrate
-string			ls_cust_yn, ls_taxnumber, ls_addr, ls_ship_address, ls_contact_person, ls_phone, ls_currCode, ls_currName, ls_note
+double		ldb_base_curr_id, ldb_exrate, ldb_scrap
+string			ls_cust_yn, ls_taxnumber, ls_addr, ls_ship_address, ls_contact_person, ls_phone, ls_currCode, ls_currName, ls_note, ls_include_scrap_yn
 date			ld_req_ship_date
 
 
@@ -829,6 +829,8 @@ if ldb_doc_id > 0 then
 	ldb_delivery_mode =  rpo_dw.getitemnumber(rpo_dw.getrow(), 'delivery_mode') 
 	ldb_exrate = rpo_dw.getitemnumber(rpo_dw.getrow(), 'exchange_rate') 
 	ldb_base_curr_id = rpo_dw.getitemnumber(rpo_dw.getrow(), 'currency_id') 	
+	ldb_scrap = rpo_dw.getitemnumber(rpo_dw.getrow(), 'SCRAP_PCT') 	
+	ls_include_scrap_yn = rpo_dw.getitemstring(rpo_dw.getrow(), 'include_scrap_yn') 
 	
 	if isnull(ldb_base_curr_id) then 
 		this.ic_unit_instance.f_get_base_cur_ex( ldb_base_curr_id,ls_currCode, ls_currName, it_transaction )
@@ -848,17 +850,17 @@ if ldb_doc_id > 0 then
 								payment_method = :ldb_payment_method, delivery_mode =:ldb_delivery_mode,
 								currency_id = :ldb_base_curr_id, exchange_rate = :ldb_exrate, request_ship_date = :ld_req_ship_date,
 								bill_to_addtext = :ls_addr, ship_to_addtext = :ls_ship_address, contact_person = :ls_contact_person, phone = :ls_phone,
-								note = :ls_note
+								note = :ls_note, SCRAP_PCT = :ldb_scrap, include_scrap_yn = :ls_include_scrap_yn
 		where id = :ldb_extend_id using it_transaction;
 	else
 		//-- insert--//
 		ldb_extend_id =  rpo_dw.getitemnumber(rpo_dw.getrow(), 'version_id') 
 		INSERT into orders (id, object_ref_id, object_ref_Table, company_id, branch_id, created_by, created_Date, last_mdf_by, last_mdf_date, doc_type,version_no,
 								  bill_to_object, object_id, payment_term, payment_method, delivery_mode, currency_id, exchange_rate, request_ship_date, bill_to_addtext,
-								  ship_to_addtext, contact_person, phone, note)
+								  ship_to_addtext, contact_person, phone, note, SCRAP_PCT, include_scrap_yn)
 		VALUES (:ldb_extend_id, :ldb_doc_id, 'DOCUMENT',:gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,'SO', 1,
 					:ldb_billto_id,:ldb_object_id,:ldb_payment_term, :ldb_payment_method, :ldb_delivery_mode,:ldb_base_curr_id, :ldb_exrate ,:ld_req_ship_date, :ls_addr,
-					:ls_ship_address, :ls_contact_person, :ls_phone, :ls_note)
+					:ls_ship_address, :ls_contact_person, :ls_phone, :ls_note, :ldb_scrap, :ls_include_scrap_yn)
 		using it_transaction;
 	end if
 
@@ -952,7 +954,7 @@ event e_window_e_precopy_to;call super::e_window_e_precopy_to;string				ls_statu
 t_dw_mpl		ldw_main
 
 
-if vs_objectname_to  = 'u_so_return' then
+if vs_objectname_to  = 'b_copyt_u_so_return' then
 	ldw_main = iw_display.f_get_dwmain( )
 	if ldw_main.getrow( ) > 0 then
 		ls_status = ldw_main.getitemstring( ldw_main.getrow( ) , 'status')
@@ -964,9 +966,24 @@ if vs_objectname_to  = 'u_so_return' then
 		end if
 	end if
 	return -1
-elseif vs_objectname_to  = 'u_so' then
+elseif vs_objectname_to  = 'b_copyt_u_so' then
 	
 end if
 
+end event
+
+event e_window_e_postcopy_to;call super::e_window_e_postcopy_to;
+//-- Nếu là SO bù hàng --//
+if vs_objectname_to = 'b_copyt_so' then
+	//-- cập nhật lại loại đơn: bù hàng --//
+	
+	//--Cập nhật lãi số lượng bù--//
+	
+elseif vs_objectname_to = 'b_copyt_self' then
+//--nếu là self copy--//
+
+end if
+
+return 0
 end event
 

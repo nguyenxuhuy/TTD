@@ -150,7 +150,7 @@ s_str_drilldown_data 	istr_drilldown
 
 w_xls_service_progress iw_progress
 
-boolean					ib_copying,ib_copy_tax, ib_querymode_on,ib_copy_line, ib_allocating, ib_amortizing, ib_collecting, ib_tax_error
+boolean					ib_copying,ib_copy_tax, ib_querymode_on,ib_copy_line, ib_allocating, ib_amortizing, ib_collecting, ib_tax_error, ib_detail_editing
 int							ii_idle_time, ii_tp_index
 string						is_object_title,is_exrate_type, is_dwmain_filter,is_copy_type, is_dwo_have_valueset, is_copy_stage
 string						is_win_grp, is_sheet_type, is_win_name, is_enable_buttons
@@ -1412,7 +1412,15 @@ return 0
 
 end event
 
-event type integer e_window_e_detail_start();return 0
+event type integer e_window_e_detail_start();t_dw_mpl			ldw_main
+
+ldw_main = iw_display.f_get_dwmain( )
+if isvalid(ldw_main) then
+	if ldw_main.f_get_ib_editing( ) then
+		this.ib_detail_editing = true
+	end if
+end if
+return 0
 end event
 
 event type integer e_window_e_saveas(ref t_dw_mpl rdw_forcus);

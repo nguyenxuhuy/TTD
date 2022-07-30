@@ -1354,6 +1354,8 @@ if not isvalid(this.ic_obj_handling.ipo_parm ) then
 else
 lc_obj_detail = this.ic_obj_handling.ipo_parm
 end if
+this.ic_obj_handling.ib_detail_editing = false
+ 
 this.f_openchildwithparm( 's_w_multi_n_max_rb', lc_obj_detail)
 //this.f_openchildwithparm('s_w_multi_n',ls_obj_name +';0')
 end event
@@ -1508,7 +1510,7 @@ else
 	ls_obj_name = 'u_' + ls_obj_name
 end if
 
-if ic_obj_handling.event e_window_e_precopy_to(ls_obj_name) = -1 then
+if ic_obj_handling.event e_window_e_precopy_to(vs_btn_name) = -1 then
 	disconnect using it_transaction;
 	return -1
 end if
@@ -1538,7 +1540,7 @@ if this.f_get_data_copied_ex( lads_copied[],lstr_related,'copyt',ls_obj_name) > 
 			ldb_rtn = lbo_ins.f_copy_to_inter( ldb_t_branch, ls_obj_name, lstr_data_related[], lads_copied[], it_transaction ,lpo_related.idwsetup_initial )		
 		end if
 		//-- gọi cho object --//
-		ic_obj_handling.event e_window_e_postcopy_to(ls_obj_name, ldb_rtn, lstr_data_related[])
+		ic_obj_handling.event e_window_e_postcopy_to(vs_btn_name, ldb_rtn, lstr_data_related[])
 		disconnect using it_transaction;
 		
 		if ldb_rtn > 0 and left(ic_obj_handling.classname( ), 9)<> 'u_detail_' then
@@ -6837,7 +6839,7 @@ int 		li_rtn
 t_ds_db	lds_matching
 t_dw_mpl	ldw_main
 
-if ic_obj_handling.dynamic f_is_changed_dwo_4edit()  then
+if ic_obj_handling.dynamic f_is_changed_dwo_4edit() and not ic_obj_handling.ib_detail_editing then
 	
 	return event e_saveclose( )
 	
