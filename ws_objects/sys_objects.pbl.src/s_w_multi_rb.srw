@@ -1537,6 +1537,10 @@ if this.f_get_data_copied_ex( lads_copied[],lstr_related,'copyt',ls_obj_name) > 
 		elseif ldb_t_branch > 0  and  ldb_t_branch <> gdb_branch then
 			ldb_rtn = lbo_ins.f_copy_to_inter( ldb_t_branch, ls_obj_name, lstr_data_related[], lads_copied[], it_transaction ,lpo_related.idwsetup_initial )		
 		end if
+		//-- gọi cho object --//
+		ic_obj_handling.event e_window_e_postcopy_to(ls_obj_name, ldb_rtn, lstr_data_related[])
+		disconnect using it_transaction;
+		
 		if ldb_rtn > 0 and left(ic_obj_handling.classname( ), 9)<> 'u_detail_' then
 			lpo_related.f_set_main_id(ldb_rtn )
 			lpo_related.f_set_data_related(lstr_data_related[])		
@@ -1554,9 +1558,7 @@ if this.f_get_data_copied_ex( lads_copied[],lstr_related,'copyt',ls_obj_name) > 
 			close(this)						
 			return 0
 		end if
-		//-- gọi cho object --//
-		ic_obj_handling.event e_window_e_postcopy_to(ls_obj_name, ldb_rtn, lstr_data_related[])
-		disconnect using it_transaction;
+
 
 	else /////////--- nhan ban--//////////////
 		if upper(ldw_main.describe("DataWindow.table.UpdateTable") ) = 'DOCUMENT'  then

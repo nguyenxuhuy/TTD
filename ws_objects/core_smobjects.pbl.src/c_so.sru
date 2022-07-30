@@ -6,7 +6,7 @@ end forward
 
 global type c_so from b_doc
 event type integer e_action_generate ( )
-event type integer e_action_completed ( )
+event type integer e_action_scrap_order ( )
 event type integer e_action_lose ( )
 end type
 global c_so c_so
@@ -208,7 +208,7 @@ disconnect using it_transaction;
 return 1
 end event
 
-event type integer e_action_completed();
+event type integer e_action_scrap_order();
 return 0
 end event
 
@@ -411,16 +411,16 @@ istr_dwo_related[1].s_match_t_column[2] = 'qty'
 istr_dwo_related[1].s_match_column[2] = 'qty'
 
 istr_dwo_related[1].s_main_obj_dwo_copy[3] = 'd_tax_line_grid' // datawindow copy từ
-istr_dwo_related[1].s_main_obj_column_copy[3] = 'tax_pct;'
+istr_dwo_related[1].s_main_obj_column_copy[3] = 'tax_pct;TAX_ID;TRANS_CURRENCY;EXCHANGE_RATE;'
 istr_dwo_related[1].s_related_obj_dwo_copy[3] = 'd_tax_line_grid' // datawindow copy đến
-istr_dwo_related[1].s_related_obj_column_copy[3] = 'tax_pct;'
+istr_dwo_related[1].s_related_obj_column_copy[3] = 'tax_pct;TAX_ID;TRANS_CURRENCY;EXCHANGE_RATE;'
 //istr_dwo_related[1].s_main_obj_column_chk[3] = 'item_id;item_code;item_name;'
 //istr_dwo_related[1].s_related_obj_column_chk[3] = 'item_id;object_code;line_text;'
 
 
-istr_dwo_related[1].s_main_obj_dwo_copy[4] = 'd_charge_line_grid' // datawindow copy từ
+istr_dwo_related[1].s_main_obj_dwo_copy[4] = 'd_lot_line_kd_grid' // datawindow copy từ
 istr_dwo_related[1].s_main_obj_column_copy[4] = 'object_code;object_name;charge_id;charge_amt;charge_pct;uom_code;exchange_rate;CHARGE_CURRENCY;beneficiary_name;beneficiary_id'
-istr_dwo_related[1].s_related_obj_dwo_copy[4] = 'd_charge_line_grid' // datawindow copy đến
+istr_dwo_related[1].s_related_obj_dwo_copy[4] = 'd_lot_line_kd_grid' // datawindow copy đến
 istr_dwo_related[1].s_related_obj_column_copy[4] = 'object_code;object_name;charge_id;charge_amt;charge_pct;uom_code;exchange_rate;CHARGE_CURRENCY;beneficiary_name;beneficiary_id'
 istr_dwo_related[1].s_main_obj_column_chk[4] = ''
 istr_dwo_related[1].s_related_obj_column_chk[4] = ''
@@ -964,6 +964,8 @@ if vs_objectname_to  = 'u_so_return' then
 		end if
 	end if
 	return -1
+elseif vs_objectname_to  = 'u_so' then
+	
 end if
 
 end event
