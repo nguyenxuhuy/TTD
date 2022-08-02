@@ -14,6 +14,7 @@ double	idb_obj_ref_id, idb_object_id, idb_curr_id, idb_exrate, idb_cust_id
 date		id_doc_date
 s_str_data	istr_currency
 end variables
+
 forward prototypes
 public subroutine f_set_dwo_window ()
 public function integer f_get_dw_retrieve_args (ref datawindow rdw_focus, ref any ra_args[])
@@ -168,6 +169,7 @@ if ldw_main.getrow( ) > 0 then
 	ldb_handled_by =  ldw_main.getitemnumber(ldw_main.getrow(),'handled_by')
 	idb_cust_id =  ldw_main.getitemnumber(ldw_main.getrow(),'object_id')
 	idb_object_id = lbo_ins.f_get_user_staff_id( ldb_handled_by, it_transaction )
+	is_doc_status = ldw_main.getitemstring(ldw_main.getrow(),'status')
 	
 	laa_value[1] = idb_obj_ref_id
 	ldw_main = iw_display.f_get_dwmain()
@@ -315,25 +317,27 @@ return 0
 end event
 
 event e_window_e_postopen;call super::e_window_e_postopen;t_dw_mpl			ldw_main
-window			lw_parent
+//window			lw_parent
+//
+//boolean			lb_editing
 
-boolean			lb_editing
-
-lw_parent = iw_display.dynamic f_getparentwindow()
-ldw_main = lw_parent.dynamic f_get_dwmain()
-lb_editing = ldw_main.f_get_ib_editing( )
-if lb_editing then
+//lw_parent = iw_display.dynamic f_getparentwindow()
+//ldw_main = lw_parent.dynamic f_get_dwmain()
+//lb_editing = ldw_main.f_get_ib_editing( )
+if this.ib_editing then
 	ldw_main = iw_display.f_get_dwmain( )
 	if ldw_main.rowcount( ) > 0 then 
+//		iw_display.u
 		iw_display.post event e_modify( )
 	else
 		iw_display.post event e_add( )
 	end if
 end if
+//iw_display.event e_filteron_new( )
 return 0
 end event
 
-event constructor;call super::constructor;istr_actionpane[1].s_button_name =  'b_insert;b_modify;b_filteron;b_refresh;b_delete;'
+event constructor;call super::constructor;istr_actionpane[1].s_button_name =  'e_add;e_insert;e_modify;e_filteron;e_refresh;e_delete;'
 //istr_actionpane[1].s_button_has_sub = 'b_view_multi;'
 ////istr_actionpane[1].sa_sub_button[1]='b_view_qt;'
 //if	gdb_branch = 24088840 then

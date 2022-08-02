@@ -153,8 +153,8 @@ w_xls_service_progress iw_progress
 boolean					ib_copying,ib_copy_tax, ib_querymode_on,ib_copy_line, ib_allocating, ib_amortizing, ib_collecting, ib_tax_error, ib_detail_editing
 int							ii_idle_time, ii_tp_index
 string						is_object_title,is_exrate_type, is_dwmain_filter,is_copy_type, is_dwo_have_valueset, is_copy_stage
-string						is_win_grp, is_sheet_type, is_win_name, is_enable_buttons
-
+string						is_win_grp, is_sheet_type, is_win_name, is_enable_buttons, is_doc_status
+	
 protected:
 string			is_m_popup, is_menu_id, is_menu_code, is_ruleobject_column
 string			is_dso_dw_properties, is_display_model
@@ -1412,15 +1412,20 @@ return 0
 
 end event
 
-event type integer e_window_e_detail_start();t_dw_mpl			ldw_main
+event type integer e_window_e_detail_start();
+t_dw_mpl 			ldw_main
 
 ldw_main = iw_display.f_get_dwmain( )
-if isvalid(ldw_main) then
-	if ldw_main.f_get_ib_editing( ) then
-		this.ib_detail_editing = true
-	end if
+if ldw_main.getrow() = 0 then return -1
+if ldw_main.f_get_ib_editing( ) then
+	if iw_display.event e_save( ) = -1 then return -1
+	t_w_mdi.rbb_1.f_change_action_button('e_save')
+//	ldw_main.f_set_ib_editing( true)
+	this.ib_detail_editing = true
+else
+	return 0
 end if
-return 0
+
 end event
 
 event type integer e_window_e_saveas(ref t_dw_mpl rdw_forcus);
@@ -6465,6 +6470,7 @@ else
 		ls_type = 'report'
 	elseif left(this.classname( ), 9)= 'u_detail_' then
 		ls_type = 'detail'
+		ls_status =  this.is_doc_status
 	else
 		if ls_updateTable = 'DOCUMENT'   then		
 			ls_type = 'document'

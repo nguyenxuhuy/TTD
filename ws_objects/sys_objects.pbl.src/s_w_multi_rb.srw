@@ -1354,6 +1354,7 @@ if not isvalid(this.ic_obj_handling.ipo_parm ) then
 else
 lc_obj_detail = this.ic_obj_handling.ipo_parm
 end if
+lc_obj_detail.f_set_ib_editing( this.ic_obj_handling.ib_detail_editing) 
 this.ic_obj_handling.ib_detail_editing = false
  
 this.f_openchildwithparm( 's_w_multi_n_max_rb', lc_obj_detail)
@@ -6839,7 +6840,7 @@ int 		li_rtn
 t_ds_db	lds_matching
 t_dw_mpl	ldw_main
 
-if ic_obj_handling.dynamic f_is_changed_dwo_4edit() and not ic_obj_handling.ib_detail_editing then
+if ic_obj_handling.dynamic f_is_changed_dwo_4edit()  then
 	
 	return event e_saveclose( )
 	

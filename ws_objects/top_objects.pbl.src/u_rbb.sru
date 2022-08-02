@@ -797,6 +797,73 @@ FOR li_idx = li_rc to 1 step -1
 				end choose				
 			end if
 		elseif vs_type = 'detail' then
+			if vb_detail then
+				if isnull(vs_doc_status) or vs_doc_status = ''  then
+					choose case l_rlbi.tag
+						case 'e_add','e_insert'
+							if pos(vs_enable_buttons, l_rlbi.tag+';') = 0 then
+								this.DeleteLargeButton (l_rlbi.ItemHandle)
+								continue 
+							else
+								l_rlbi.enabled =  vb_updatable and not vb_editing and pos(vs_enable_buttons, l_rlbi.tag+';')>0
+							end if
+						case 'e_modify' 
+							l_rlbi.enabled =  not vb_editing and vb_updatable
+						case 'e_save'
+							l_rlbi.enabled =  vb_editing and vb_updatable
+						case 'e_delete'
+							l_rlbi.enabled =  vb_updatable and vb_editing and pos(vs_enable_buttons, l_rlbi.tag+';')>0
+						case 'e_first','e_prior','e_prior','e_next','e_last','e_book','e_action_attach','e_user_trace','e_cancel'
+							l_rlbi.enabled =  true
+					end choose
+				else
+					choose case l_rlbi.tag
+						case 'e_add'
+							l_rlbi.enabled =  vb_updatable and not vb_editing and pos(vs_enable_buttons, l_rlbi.tag+';')>0 and pos('new;rejected;', vs_doc_status+';') > 0
+						case 'e_insert'
+							l_rlbi.enabled =  vb_updatable and not vb_editing and pos(vs_enable_buttons, l_rlbi.tag+';')>0 and pos('new;rejected;', vs_doc_status+';') > 0
+						case 'e_modify','e_delete'
+							l_rlbi.enabled =  vb_updatable and pos(vs_enable_buttons,  l_rlbi.tag+';')>0 and pos('new;rejected;', vs_doc_status+';') > 0
+						case 'e_save'
+							l_rlbi.enabled =  vb_updatable and vb_editing 
+						case 'e_first','e_prior','e_prior','e_next','e_last','e_book','e_action_attach','e_user_trace','e_cancel'
+							l_rlbi.enabled =  true
+					end choose	
+				end if				
+			else
+				if isnull(vs_doc_status) or vs_doc_status = ''  then
+					choose case l_rlbi.tag
+						case 'e_add','e_insert'
+							if pos(vs_enable_buttons, l_rlbi.tag+';') = 0 then
+								this.DeleteLargeButton (l_rlbi.ItemHandle)
+								continue 
+							else
+								l_rlbi.enabled =  vb_updatable and not vb_editing and pos(vs_enable_buttons, l_rlbi.tag+';')>0
+							end if
+						case 'e_modify' 
+							l_rlbi.enabled =  not vb_editing and vb_updatable
+						case 'e_save'
+							l_rlbi.enabled =  vb_editing and vb_updatable
+						case 'e_delete'
+							l_rlbi.enabled =  vb_updatable and vb_editing and pos(vs_enable_buttons, l_rlbi.tag+';')>0
+						case 'e_first','e_prior','e_prior','e_next','e_last','e_book','e_action_attach','e_user_trace','e_cancel'
+							l_rlbi.enabled =  true
+					end choose
+				else
+					choose case l_rlbi.tag
+						case 'e_add'
+							l_rlbi.enabled =  vb_updatable and not vb_editing and pos(vs_enable_buttons, l_rlbi.tag+';')>0 and pos('new;rejected;', vs_doc_status+';') > 0
+						case 'e_insert'
+							l_rlbi.enabled =  vb_updatable and not vb_editing and pos(vs_enable_buttons, l_rlbi.tag+';')>0 and pos('new;rejected;', vs_doc_status+';') > 0
+						case 'e_modify','e_delete'
+							l_rlbi.enabled =  vb_updatable and pos(vs_enable_buttons,  l_rlbi.tag+';')>0 and pos('new;rejected;', vs_doc_status+';') > 0
+						case 'e_save'
+							l_rlbi.enabled =  vb_updatable and vb_editing 
+						case 'e_first','e_prior','e_prior','e_next','e_last','e_book','e_action_attach','e_user_trace','e_cancel'
+							l_rlbi.enabled =  true
+					end choose	
+				end if								
+			end if
 		elseif vs_type = 'object' then
 			if vb_detail and vb_change_4_edit then
 				if isnull(vs_doc_status) or vs_doc_status = ''  then
@@ -1285,6 +1352,73 @@ FOR li_idx = li_rc to 1 step -1
 				end choose				
 			end if
 		elseif vs_type = 'detail' then
+			if vb_detail then
+				if isnull(vs_doc_status) or vs_doc_status = ''  then
+					choose case l_rlbi.tag
+						case 'e_add','e_insert'
+							if pos(vs_enable_buttons, l_rlbi.tag+';') = 0 then
+								this.DeleteLargeButton (l_rlbi.ItemHandle)
+								continue 
+							else
+								l_rlbi.enabled =  vb_updatable and not vb_editing and pos(vs_enable_buttons, l_rlbi.tag+';')>0
+							end if
+						case 'e_modify' 
+							l_rlbi.enabled =  not vb_editing and vb_updatable
+						case 'e_save'
+							l_rlbi.enabled =  vb_editing and vb_updatable
+						case 'e_delete'
+							l_rlbi.enabled =  vb_updatable and vb_editing and pos(vs_enable_buttons, l_rlbi.tag+';')>0
+						case 'e_first','e_prior','e_prior','e_next','e_last','e_book','e_action_attach','e_user_trace','e_cancel'
+							l_rlbi.enabled =  true
+					end choose
+				else
+					choose case l_rlbi.tag
+						case 'e_add'
+							l_rlbi.enabled =  vb_updatable and not vb_editing and pos(vs_enable_buttons, l_rlbi.tag+';')>0 and pos('new;rejected;', vs_doc_status+';') > 0
+						case 'e_insert'
+							l_rlbi.enabled =  vb_updatable and not vb_editing and pos(vs_enable_buttons, l_rlbi.tag+';')>0 and pos('new;rejected;', vs_doc_status+';') > 0
+						case 'e_modify','e_delete'
+							l_rlbi.enabled =  vb_updatable and pos(vs_enable_buttons,  l_rlbi.tag+';')>0 and pos('new;rejected;', vs_doc_status+';') > 0
+						case 'e_save'
+							l_rlbi.enabled =  vb_updatable and vb_editing 
+						case 'e_first','e_prior','e_prior','e_next','e_last','e_book','e_action_attach','e_user_trace','e_cancel'
+							l_rlbi.enabled =  true
+					end choose	
+				end if				
+			else
+				if isnull(vs_doc_status) or vs_doc_status = ''  then
+					choose case l_rlbi.tag
+						case 'e_add','e_insert'
+							if pos(vs_enable_buttons, l_rlbi.tag+';') = 0 then
+								this.DeleteLargeButton (l_rlbi.ItemHandle)
+								continue 
+							else
+								l_rlbi.enabled =  vb_updatable and not vb_editing and pos(vs_enable_buttons, l_rlbi.tag+';')>0
+							end if
+						case 'e_modify' 
+							l_rlbi.enabled =  not vb_editing and vb_updatable
+						case 'e_save'
+							l_rlbi.enabled =  vb_editing and vb_updatable
+						case 'e_delete'
+							l_rlbi.enabled =  vb_updatable and vb_editing and pos(vs_enable_buttons, l_rlbi.tag+';')>0
+						case 'e_first','e_prior','e_prior','e_next','e_last','e_book','e_action_attach','e_user_trace','e_cancel'
+							l_rlbi.enabled =  true
+					end choose
+				else
+					choose case l_rlbi.tag
+						case 'e_add'
+							l_rlbi.enabled =  vb_updatable and not vb_editing and pos(vs_enable_buttons, l_rlbi.tag+';')>0 and pos('new;rejected;', vs_doc_status+';') > 0
+						case 'e_insert'
+							l_rlbi.enabled =  vb_updatable and not vb_editing and pos(vs_enable_buttons, l_rlbi.tag+';')>0 and pos('new;rejected;', vs_doc_status+';') > 0
+						case 'e_modify','e_delete'
+							l_rlbi.enabled =  vb_updatable and pos(vs_enable_buttons,  l_rlbi.tag+';')>0 and pos('new;rejected;', vs_doc_status+';') > 0
+						case 'e_save'
+							l_rlbi.enabled =  vb_updatable and vb_editing 
+						case 'e_first','e_prior','e_prior','e_next','e_last','e_book','e_action_attach','e_user_trace','e_cancel'
+							l_rlbi.enabled =  true
+					end choose	
+				end if								
+			end if			
 		elseif vs_type = 'object' then
 			if vb_detail and vb_change_4_edit then
 				if isnull(vs_doc_status) or vs_doc_status = ''  then
@@ -1485,6 +1619,7 @@ FOR li_idx = 1 to li_rc
 				end if
 			end if
 		elseif vs_type = 'detail' then
+			
 		elseif vs_type = 'object' then
 			if vb_detail and vb_change_4_edit then
 				if isnull(vs_doc_status) or vs_doc_status = ''  then

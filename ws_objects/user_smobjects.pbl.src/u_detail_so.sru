@@ -188,10 +188,12 @@ if  ldw_main.getrow( ) > 0 then
 	ldb_handled_by =  ldw_main.getitemnumber(ldw_main.getrow(),'handled_by')
 	idb_cust_id =   ldw_main.getitemnumber(ldw_main.getrow(),'object_id')
 	idb_object_id = lbo_ins.f_get_user_staff_id( ldb_handled_by, it_transaction )
+	is_doc_status = ldw_main.getitemstring(ldw_main.getrow(),'status')
 	
 	laa_value[1] = idb_obj_ref_id
 	ldw_main = iw_display.f_get_dwmain()
 	ldw_main.f_add_where('object_ref_id;',laa_value[])
+	
 else
 	laa_value[1] = 0
 	ldw_main = iw_display.f_get_dwmain()
@@ -325,16 +327,17 @@ return 0
 end event
 
 event e_window_e_postopen;call super::e_window_e_postopen;t_dw_mpl			ldw_main
-window			lw_parent
+//window			lw_parent
+//
+//boolean			lb_editing
 
-boolean			lb_editing
-
-lw_parent = iw_display.dynamic f_getparentwindow()
-ldw_main = lw_parent.dynamic f_get_dwmain()
-lb_editing = ldw_main.f_get_ib_editing( )
-if lb_editing then
+//lw_parent = iw_display.dynamic f_getparentwindow()
+//ldw_main = lw_parent.dynamic f_get_dwmain()
+//lb_editing = ldw_main.f_get_ib_editing( )
+if this.ib_editing then
 	ldw_main = iw_display.f_get_dwmain( )
 	if ldw_main.rowcount( ) > 0 then 
+//		iw_display.u
 		iw_display.post event e_modify( )
 	else
 		iw_display.post event e_add( )
@@ -352,7 +355,7 @@ is_object_title = 'Xem chi tiết'
 
 istr_actionpane[1].s_description = is_object_title
 
-istr_actionpane[1].s_button_name =  'b_insert;b_modify;b_filteron;b_refresh;b_delete;'
+istr_actionpane[1].s_button_name =  'e_add;e_insert;e_modify;e_filteron;e_refresh;e_delete;'
 //istr_actionpane[1].s_button_has_sub = 'b_copyt_multi;'
 //istr_actionpane[1].sa_sub_button[1]='b_copyt_po;'
 //istr_actionpane[1].sa_enabled_subbutton[] = istr_actionpane[1].sa_sub_button[]

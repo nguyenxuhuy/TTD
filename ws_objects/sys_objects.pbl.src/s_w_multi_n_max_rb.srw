@@ -50,6 +50,9 @@ end event
 
 event open;call super::open;rbb_1.importfromxmlfile( "XmlFile2.xml")
 
+if ic_obj_handling.f_get_ib_editing( ) then
+	rbb_1.f_change_action_button( 'e_modify')
+end if
 end event
 
 event activate;// overrid--// /

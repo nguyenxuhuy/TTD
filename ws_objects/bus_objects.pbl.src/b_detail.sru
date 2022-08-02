@@ -8,6 +8,9 @@ global type b_detail from s_object_display
 end type
 global b_detail b_detail
 
+type variables
+
+end variables
 forward prototypes
 public function integer f_get_dw_retrieve_args (ref datawindow rdw_focus, ref any ra_args[])
 end prototypes

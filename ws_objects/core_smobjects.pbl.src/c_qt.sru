@@ -861,18 +861,6 @@ event e_dw_dwnkey;call super::e_dw_dwnkey;string					ls_colname
 return 0
 end event
 
-event e_window_e_detail_start;call super::e_window_e_detail_start;
-t_dw_mpl 			ldw_main
-ldw_main = iw_display.f_get_dwmain( )
-if ldw_main.getrow() = 0 then return -1
-if ldw_main.f_get_ib_editing( ) then
-	if iw_display.event e_save( ) = -1 then return -1
-	ldw_main.f_set_ib_editing( true)
-else
-	return 0
-end if
-end event
-
 event e_window_e_change_object;call super::e_window_e_change_object;long				ll_found
 t_dw_mpl		ldw_main
 
