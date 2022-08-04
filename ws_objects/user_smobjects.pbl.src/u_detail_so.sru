@@ -119,6 +119,52 @@ istr_dwo[2].s_detail_keycol = 'OBJECT_REF_ID;'
 istr_dwo[2].b_ref_table_yn  = false
 istr_dwo[2].s_ref_table_field = 'OBJECT_REF_TABLE;'
 istr_dwo[2].s_gb_name = 'gb_3'
+
+istr_dwo[3].s_dwo_default =  'd_lot_line_kd_grid'
+istr_dwo[3].s_dwo_form = ''
+istr_dwo[3].s_dwo_grid = 'd_lot_line_kd_grid'
+istr_dwo[3].b_insert = true
+istr_dwo[3].b_update = true
+istr_dwo[3].b_delete = true
+istr_dwo[3].b_query = true
+istr_dwo[3].b_print = true
+istr_dwo[3].b_excel = true
+istr_dwo[3].b_traceable = true
+istr_dwo[3].b_keyboardlocked = true
+istr_dwo[3].s_description = 'Chi tiết SIZE'
+istr_dwo[3].b_master = false
+istr_dwo[3].b_detail = true
+istr_dwo[3].b_cascade_del = true
+istr_dwo[3].s_dwo_master = 'd_so_line_grid;'
+istr_dwo[3].s_dwo_details = ''
+istr_dwo[3].s_master_keycol = 'ID;'
+istr_dwo[3].s_detail_keycol = 'OBJECT_REF_ID;'
+istr_dwo[3].b_ref_table_yn  = false
+istr_dwo[3].s_ref_table_field = 'OBJECT_REF_TABLE;'
+istr_dwo[3].s_gb_name = 'gb_3'
+
+istr_dwo[4].s_dwo_default =  'd_lot_line_kd_grid'
+istr_dwo[4].s_dwo_form = ''
+istr_dwo[4].s_dwo_grid = 'd_lot_line_kd_grid'
+istr_dwo[4].b_insert = true
+istr_dwo[4].b_update = true
+istr_dwo[4].b_delete = true
+istr_dwo[4].b_query = true
+istr_dwo[4].b_print = true
+istr_dwo[4].b_excel = true
+istr_dwo[4].b_traceable = true
+istr_dwo[4].b_keyboardlocked = true
+istr_dwo[4].s_description = 'Chi tiết SIZE'
+istr_dwo[4].b_master = false
+istr_dwo[4].b_detail = true
+istr_dwo[4].b_cascade_del = true
+istr_dwo[4].s_dwo_master = 'd_so_line_grid;'
+istr_dwo[4].s_dwo_details = ''
+istr_dwo[4].s_master_keycol = 'ID;'
+istr_dwo[4].s_detail_keycol = 'OBJECT_REF_ID;'
+istr_dwo[4].b_ref_table_yn  = false
+istr_dwo[4].s_ref_table_field = 'OBJECT_REF_TABLE;'
+istr_dwo[4].s_gb_name = 'gb_3'
 end subroutine
 
 public function integer f_get_dw_retrieve_args (ref datawindow rdw_focus, ref any ra_args[]);return 0
@@ -189,7 +235,10 @@ if  ldw_main.getrow( ) > 0 then
 	idb_cust_id =   ldw_main.getitemnumber(ldw_main.getrow(),'object_id')
 	idb_object_id = lbo_ins.f_get_user_staff_id( ldb_handled_by, it_transaction )
 	is_doc_status = ldw_main.getitemstring(ldw_main.getrow(),'status')
-	
+	is_included_scrap = ldw_main.getitemstring(ldw_main.getrow(),'include_scrap_yn')
+	if isnull(is_included_scrap) then is_included_scrap = 'N'
+	idb_scrap_pct = ldw_main.getitemnumber(ldw_main.getrow(),'scrap_pct')
+
 	laa_value[1] = idb_obj_ref_id
 	ldw_main = iw_display.f_get_dwmain()
 	ldw_main.f_add_where('object_ref_id;',laa_value[])
@@ -268,10 +317,10 @@ end event
 
 event e_dw_e_itemchanged;call super::e_dw_e_itemchanged;double			ldb_item_id, ldb_spec_id, ldb_so_line, ll_tax_line_id, ll_vat_id
 int					li_tax_line_cnt
-decimal			ldb_qty, ldc_tax_correction, ldc_tax_pct
+decimal			ldb_qty, ldc_tax_correction, ldc_tax_pct, ldc_origin_Qty, ldc_edit_Qty, ldb_scrap_qty
 string				ls_upd_colname, ls_sql, ls_dataStr
 b_obj_instantiate			lb_obj
-t_dw_mpl					ldw_handle
+t_dw_mpl					ldw_handle, ldw_master, ldw_scrap1, ldw_scrap2
 
 if rpo_dw.dataobject = 'd_so_line_grid' then
 	choose case vs_colname
@@ -322,6 +371,34 @@ if rpo_dw.dataobject = 'd_so_line_grid' then
 			ldw_handle = rpo_dw
 			if lb_obj.f_update_line_itemchanged_ex( vs_colname, vs_editdata , ls_upd_colname,vl_currentrow , ldw_handle, it_transaction , istr_currency) = -1 then return 1			
 	end choose
+elseif rpo_dw.dataobject = 'd_lot_line_kd_grid' and rpo_dw.classname() = 'dw_2' then
+	if not isnull(vs_editdata) then ldc_edit_Qty = dec(vs_editdata)
+	//-- update scrap qty --//
+	if is_included_scrap = 'Y' and vs_colname = 'qty' then
+		ldw_scrap1 = iw_display.dynamic f_get_dw( 3)
+		if ldw_scrap1.rowcount( ) > 0 then
+			ldw_scrap1.setitem( vl_currentrow , 'qty', round(ldc_edit_Qty*idb_scrap_pct/100, 0) )
+		end if
+		ldw_scrap2 = iw_display.dynamic f_get_dw(4)
+		if ldw_scrap2.rowcount( ) > 0 then
+			ldw_scrap2.setitem( vl_currentrow , 'qty', round(ldc_edit_Qty*idb_scrap_pct/100, 0) )
+		end if		
+	end if
+	//-- update so: qty , act_qty --//
+	ldc_origin_Qty = rpo_dw.getitemnumber(vl_currentrow, vs_colname)
+	if isnull(ldc_origin_Qty) then ldc_origin_Qty = 0	
+	ldb_qty = dec(rpo_dw.Describe("Evaluate('Sum(qty)', 0)")) + ldc_edit_Qty - ldc_origin_Qty
+	if is_included_scrap = 'Y' then
+		ldw_handle = iw_display.dynamic f_get_dw( 3)
+		ldb_scrap_qty = dec(ldw_handle.Describe("Evaluate('Sum(qty)', 0)"))
+	else
+		
+	end if
+	ldw_master = rpo_dw.dynamic f_get_idw_master()
+	ldw_master.setitem(ldw_master.getrow(),'qty', ldb_scrap_qty+ldb_qty)
+	ldw_master.setitem(ldw_master.getrow(),'act_qty', ldb_qty)
+elseif rpo_dw.dataobject = 'd_lot_line_kd_grid' and rpo_dw.classname() = 'dw_3' then
+elseif rpo_dw.dataobject = 'd_lot_line_kd_grid' and rpo_dw.classname() = 'dw_4' then	
 end if
 return 0
 end event
@@ -349,7 +426,7 @@ end event
 
 event constructor;call super::constructor;
 ib_changed_dwo_4edit = false
-is_display_model = '2d'
+is_display_model = '1d3d'
 ib_display_text = true
 is_object_title = 'Xem chi tiết'
 
@@ -468,44 +545,127 @@ return ancestorreturnvalue
 end event
 
 event e_dw_getfocus;call super::e_dw_getfocus;double				ldb_item_id, ldb_object_ref_id, ldb_size_id, ldb_bom_id, ldb_route_id, ldb_doc_version
-t_dw_mpl			ldw_master
+string					ls_lot_yn, ls_lot_no
+t_dw_mpl			ldw_master, ldw_handle
 
-if rdw_handling.dataobject  = 'd_lot_line_kd_grid' then
-	if rdw_handling.rowcount() = 0 then
-		ldw_master = rdw_handling.f_get_idw_master()
-		if ldw_master.accepttext( ) = -1 then return -1
-		connect using it_transaction;
-		ldw_master.event e_autosave( )
-		if ldw_master.getrow( ) > 0 then
-			ldb_object_ref_id = ldw_master.getitemnumber( ldw_master.getrow(), 'id')
-			ldb_doc_version = ldw_master.getitemnumber( ldw_master.getrow(), 'object_ref_id')
-			ldb_item_id = ldw_master.getitemnumber( ldw_master.getrow(), 'item_id')
-			if isnull(ldb_item_id) or ldb_item_id = 0 then
-				gf_messagebox('m.u_detail_so.e_dw_getfocus.01','Thông báo','Chưa nhập mã hàng !','exclamation','ok',1)
-				return 0
+if rdw_handling.dataobject  = 'd_lot_line_kd_grid'  then
+	ldw_master = rdw_handling.f_get_idw_master()
+	if ldw_master.accepttext( ) = -1 then return -1	
+	connect using it_transaction;
+	ldw_master.event e_autosave( )
+	if ldw_master.getrow( ) > 0 then
+		ldb_object_ref_id = ldw_master.getitemnumber( ldw_master.getrow(), 'id')
+		ldb_doc_version = ldw_master.getitemnumber( ldw_master.getrow(), 'object_ref_id')
+		ldb_item_id = ldw_master.getitemnumber( ldw_master.getrow(), 'item_id')
+		if isnull(ldb_item_id) or ldb_item_id = 0 then
+			gf_messagebox('m.u_detail_so.e_dw_getfocus.01','Thông báo','Chưa nhập mã hàng !','exclamation','ok',1)
+			return 0
+		end if
+		//-- lấy size của item --//		
+		select size_id into :ldb_size_id from item where object_ref_id = :ldb_item_id using it_transaction;
+		if ldb_size_id = 0 or isnull(ldb_size_id) then
+			gf_messagebox('m.u_detail_so.e_dw_getfocus.02','Thông báo','Chưa chọn loại size cho hình thể !','exclamation','ok',1)
+			return 0
+		end if	
+	else
+		disconnect using it_transaction;
+		return ancestorreturnvalue
+	end if		
+	if rdw_handling.rowcount() = 0 and rdw_handling.classname() = 'dw_2' then		
+		//-- insert size --//
+		INSERT into lot_line(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,DOC_VERSION,
+									lot_no,serial_no,line_no)
+		SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'SO_LINE',:ldb_doc_version,
+					null, vv.code,vv.line_no
+				from valueset_value vv where object_ref_id = :ldb_size_id using it_transaction;					
+		commit using it_transaction;
+
+		//-- insert hàng bù --//
+		if  is_included_scrap = 'Y' then
+			//-- quản lý trái/phải --//
+			select LOT_YN into :ls_lot_yn from item where object_ref_id = :ldb_item_id using  it_transaction;
+			if ls_lot_yn = 'Y' then
+				//-- insert size --//
+				INSERT into lot_line(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,DOC_VERSION,
+											lot_no,serial_no,line_no)
+				SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'SO_LINE',:ldb_doc_version,
+							'P', vv.code,vv.line_no
+						from valueset_value vv where object_ref_id = :ldb_size_id using it_transaction;	
+				INSERT into lot_line(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,DOC_VERSION,
+											lot_no,serial_no,line_no)
+				SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'SO_LINE',:ldb_doc_version,
+							'T', vv.code,vv.line_no
+						from valueset_value vv where object_ref_id = :ldb_size_id using it_transaction;															
+			else
+				INSERT into lot_line(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,DOC_VERSION,
+											lot_no,serial_no,line_no)
+				SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'SO_LINE',:ldb_doc_version,
+							'Bù', vv.code,vv.line_no
+						from valueset_value vv where object_ref_id = :ldb_size_id using it_transaction;					
 			end if
-			//-- lấy size của item --//
-			
-			select size_id into :ldb_size_id from item where object_ref_id = :ldb_item_id using it_transaction;
-			if ldb_size_id = 0 or isnull(ldb_size_id) then
-				gf_messagebox('m.u_detail_so.e_dw_getfocus.02','Thông báo','Chưa chọn loại size cho hình thể !','exclamation','ok',1)
-				return 0
-			end if
-			//-- insert size --//
-			INSERT into lot_line(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,DOC_VERSION,
-										lot_no,serial_no,line_no)
-			SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'SO_LINE',:ldb_doc_version,
-						null, vv.code,vv.line_no
-					from valueset_value vv where object_ref_id = :ldb_size_id using it_transaction;
-					
 			commit using it_transaction;
-			rdw_handling.event e_retrieve()
-			disconnect using it_transaction;
-		else
-			disconnect using it_transaction;
+		end if
+//		rdw_handling.event e_retrieve()
+		ldw_master.f_retrieve_detail( )
+	elseif  is_included_scrap = 'Y' then
+		//-- insert hàng bù --//
+		//-- quản lý trái/phải --//
+		select LOT_YN into :ls_lot_yn from item where object_ref_id = :ldb_item_id using  it_transaction;
+		if rdw_handling.rowcount() = 0 and rdw_handling.classname() = 'dw_3'  then			
+			if ls_lot_yn = 'Y' then
+				//-- insert size --//
+				INSERT into lot_line(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,DOC_VERSION,
+											lot_no,serial_no,line_no)
+				SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'SO_LINE',:ldb_doc_version,
+							'P', vv.code,vv.line_no
+						from valueset_value vv where object_ref_id = :ldb_size_id using it_transaction;	
+				INSERT into lot_line(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,DOC_VERSION,
+											lot_no,serial_no,line_no)
+				SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'SO_LINE',:ldb_doc_version,
+							'T', vv.code,vv.line_no
+						from valueset_value vv where object_ref_id = :ldb_size_id using it_transaction;															
+			else
+				INSERT into lot_line(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,DOC_VERSION,
+											lot_no,serial_no,line_no)
+				SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'SO_LINE',:ldb_doc_version,
+							'Bù', vv.code,vv.line_no
+						from valueset_value vv where object_ref_id = :ldb_size_id using it_transaction;					
+			end if
+			commit using it_transaction;	
+//			rdw_handling.event e_retrieve()		
+			ldw_master.f_retrieve_detail( )
+		elseif  rdw_handling.rowcount() = 0 and rdw_handling.classname() = 'dw_4'  then	
+			if ls_lot_yn = 'Y' then
+				INSERT into lot_line(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,DOC_VERSION,
+											lot_no,serial_no,line_no)
+				SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'SO_LINE',:ldb_doc_version,
+							'T', vv.code,vv.line_no
+						from valueset_value vv where object_ref_id = :ldb_size_id using it_transaction;						
+			end if
+			commit using it_transaction;	
+			ldw_master.f_retrieve_detail( )
 		end if
 	end if
+	disconnect using it_transaction;	
 end if
+return ancestorreturnvalue
+end event
+
+event e_window_open;call super::e_window_open;any			laa_val[]
+t_dw_mpl			ldw_lot
+
+ldw_lot = iw_display.dynamic f_get_dw(2)
+laa_val[1] = '()'
+ldw_lot.f_add_where( 'lot_no', laa_val[] )
+
+ldw_lot = iw_display.dynamic f_get_dw(3)
+laa_val[1] = '(Bù;P)'
+ldw_lot.f_add_where( 'lot_no', laa_val[] )
+
+ldw_lot = iw_display.dynamic f_get_dw(4)
+laa_val[1] = '=T'
+ldw_lot.f_add_where( 'lot_no', laa_val[] )
+
 return ancestorreturnvalue
 end event
 

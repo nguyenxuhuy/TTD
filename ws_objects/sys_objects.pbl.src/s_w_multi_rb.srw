@@ -224,6 +224,7 @@ public function integer f_ctrl_enable_button (t_dw_mpl vdw_focus)
 public function integer f_filter_dwmain_new ()
 public function integer f_filter_dwmain ()
 public function integer f_resize_up_1d_lo_1d_tb ()
+public function integer f_resize_1d3d ()
 end prototypes
 
 event e_copy_to(string vs_btn_name);s_str_dwo_related		lstr_related[], lstr_data_related[]
@@ -2382,6 +2383,12 @@ choose case vs_display_model
 		dw_1.show()
 		dw_2.show()
 		gb_1.show()
+	case '1d3d'
+		dw_1.show()
+		dw_2.show()
+		gb_1.show()		
+		dw_3.show()
+		dw_4.show()		
 	case '1dr_1tb_2gb_1ddlb_1dl'
 		dw_1.show( )
 		dw_2.show( )
@@ -6525,6 +6532,35 @@ gb_1.width = 24
 tab_1.move( gb_1.x +gb_1.width, gb_2.y + gb_2.height )
 tab_1.width =   ii_resize_width  - gb_1.x - gb_1.width  - this.ii_vscrollbar
 tab_1.height =  max(ii_resize_height - this.ii_hscrollbar - (gb_2.y + gb_2.height ), 0)		
+
+return 1
+end function
+
+public function integer f_resize_1d3d ();
+//-- resize dw_1 --//
+dw_1.move( tab_action.x, tab_action.y + tab_action.height + ii_text_spaceheight + ii_filter_space + ii_spare_space)
+dw_1.width = ii_resize_width - this.ii_vscrollbar
+dw_1.height =  ii_upperpart_height * ii_resize_height
+
+//-- resize horizontal line --//
+gb_2.move( tab_action.x, dw_1.y + dw_1.height )
+gb_2.width =  ii_resize_width - this.ii_vscrollbar
+gb_2.height = 50
+
+//-- resize dw_2 --//
+dw_2.move( tab_action.x , gb_2.y + gb_2.height )
+dw_2.width =  ii_resize_width - this.ii_vscrollbar
+dw_2.height =  dw_2.f_getheight( 1)
+
+//-- resize dw_2 --//
+dw_3.move( tab_action.x , dw_2.y + dw_2.height )
+dw_3.width =  ii_resize_width - this.ii_vscrollbar
+dw_3.height =   dw_3.f_getheight( 1)
+
+//-- resize dw_2 --//
+dw_4.move( tab_action.x , dw_3.y + dw_3.height )
+dw_4.width =  ii_resize_width - this.ii_vscrollbar
+dw_4.height =   dw_4.f_getheight( 1)
 
 return 1
 end function
