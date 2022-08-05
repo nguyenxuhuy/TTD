@@ -45,6 +45,7 @@ public function integer f_get_base_cur_ex (ref double rdb_id, ref string rs_code
 public function double f_get_round_id_ex (double vdb_unit_id, double vdb_item_id, string vs_type, ref t_transaction rt_transaction)
 public function double f_get_curr_id (string vs_code, t_transaction rt_transaction)
 public function decimal f_get_exchange_rate (double vdb_curr_id, date vd_trans_date, ref t_transaction rt_transaction)
+public function double f_round_ex (ref t_transaction rt_transaction, double vdb_round_id, double vdb_editdata)
 end prototypes
 
 public function double f_get_unit_class_id (string vs_unit_code);/*****************************************
@@ -1545,6 +1546,32 @@ if li_cnt = 1 then
 end if
 
 return ldc_exrate
+end function
+
+public function double f_round_ex (ref t_transaction rt_transaction, double vdb_round_id, double vdb_editdata);/************************
+Chức năng: làm tròn editdata 
+return 0: không làm tròn
+		 
+************************/
+double				ldb_data
+int						li_digit
+string					ls_type
+if vdb_round_id > 0 then
+	SELECT ROUNDING.TYPE, NVL(DECIMAL_DIGIT,0) 
+			into :ls_type, :li_digit
+             FROM ROUNDING
+            WHERE ROUNDING.ID = :vdb_round_id using rt_transaction;
+	if ls_type = 'standard' then
+		ldb_data = round(vdb_editdata, li_digit)
+	elseif ls_type = 'down' then
+	elseif ls_type = 'up' then
+	elseif ls_type = 'special' then
+	end if
+
+	return ldb_data
+end if
+setnull(ldb_data)
+return ldb_data
 end function
 
 on c_unit_instance.create

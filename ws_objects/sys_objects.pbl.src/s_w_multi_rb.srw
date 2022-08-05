@@ -2379,14 +2379,10 @@ choose case vs_display_model
 		dw_3.show()
 		gb_2.show()
 		gb_1.show()
-	case '2d'
-		dw_1.show()
-		dw_2.show()
-		gb_1.show()
 	case '1d3d'
 		dw_1.show()
 		dw_2.show()
-		gb_1.show()		
+		gb_2.show()		
 		dw_3.show()
 		dw_4.show()		
 	case '1dr_1tb_2gb_1ddlb_1dl'

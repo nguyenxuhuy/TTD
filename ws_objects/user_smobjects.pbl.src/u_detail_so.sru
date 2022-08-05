@@ -347,7 +347,7 @@ if rpo_dw.dataobject = 'd_so_line_grid' then
 			if lb_obj.f_update_line_itemchanged_ex( vs_colname, vs_editdata , ls_upd_colname,vl_currentrow , ldw_handle, it_transaction , istr_currency) = -1 then return 1	
 		case 'act_price'
 			//-- cập nhật các cột liện quan --//
-			ls_upd_colname = 'base_price;act_amount;base_amount;amount_ex_tax;base_amount_ex_tax;tax_correction;'
+			ls_upd_colname = 'base_price;tax_amt;tax_correction;act_amount;act_amount_ex_tax;act_base_amount_ex_tax;'
 			ldw_handle = rpo_dw
 			if lb_obj.f_update_line_itemchanged_ex( vs_colname, vs_editdata , ls_upd_colname,vl_currentrow , ldw_handle, it_transaction , istr_currency) = -1 then return 1			
 		case 'base_price'
@@ -374,7 +374,7 @@ if rpo_dw.dataobject = 'd_so_line_grid' then
 elseif rpo_dw.dataobject = 'd_lot_line_kd_grid' and rpo_dw.classname() = 'dw_2' then
 	if not isnull(vs_editdata) then ldc_edit_Qty = dec(vs_editdata)
 	//-- update scrap qty --//
-	if is_included_scrap = 'Y' and vs_colname = 'qty' then
+	if is_included_scrap = 'Y' and left(vs_colname,4) = 'qty_' then
 		ldw_scrap1 = iw_display.dynamic f_get_dw( 3)
 		if ldw_scrap1.rowcount( ) > 0 then
 			ldw_scrap1.setitem( vl_currentrow , 'qty', round(ldc_edit_Qty*idb_scrap_pct/100, 0) )
@@ -397,7 +397,22 @@ elseif rpo_dw.dataobject = 'd_lot_line_kd_grid' and rpo_dw.classname() = 'dw_2' 
 	ldw_master = rpo_dw.dynamic f_get_idw_master()
 	ldw_master.setitem(ldw_master.getrow(),'qty', ldb_scrap_qty+ldb_qty)
 	ldw_master.setitem(ldw_master.getrow(),'act_qty', ldb_qty)
+	ls_upd_colname = 'tax_amt;tax_correction;act_amount;act_amount_ex_tax;act_base_amount_ex_tax;'
+	if lb_obj.f_update_line_itemchanged_ex( 'act_qty', string(ldb_qty) , ls_upd_colname,ldw_master.getrow() , ldw_master, it_transaction , istr_currency) = -1 then return 1		
 elseif rpo_dw.dataobject = 'd_lot_line_kd_grid' and rpo_dw.classname() = 'dw_3' then
+	if not isnull(vs_editdata) then ldc_edit_Qty = dec(vs_editdata)
+	ldc_origin_Qty = rpo_dw.getitemnumber(vl_currentrow, vs_colname)
+	if isnull(ldc_origin_Qty) then ldc_origin_Qty = 0	
+	ldb_scrap_qty = dec(rpo_dw.Describe("Evaluate('Sum(qty)', 0)")) + ldc_edit_Qty - ldc_origin_Qty
+	ldw_handle = iw_display.dynamic f_get_dw( 3)
+	ldb_qty = dec(ldw_handle.Describe("Evaluate('Sum(qty)', 0)"))	
+	
+	ldw_master = rpo_dw.dynamic f_get_idw_master()
+	ldw_master.setitem(ldw_master.getrow(),'qty', ldb_scrap_qty+ldb_qty)
+	ldw_master.setitem(ldw_master.getrow(),'act_qty', ldb_qty)
+	ls_upd_colname = 'tax_amt;tax_correction;act_amount;act_amount_ex_tax;act_base_amount_ex_tax;'
+	if lb_obj.f_update_line_itemchanged_ex( 'act_qty', string(ldb_qty) , ls_upd_colname,ldw_master.getrow() , ldw_master, it_transaction , istr_currency) = -1 then return 1		
+	
 elseif rpo_dw.dataobject = 'd_lot_line_kd_grid' and rpo_dw.classname() = 'dw_4' then	
 end if
 return 0
