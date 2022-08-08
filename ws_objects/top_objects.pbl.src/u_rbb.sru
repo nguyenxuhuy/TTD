@@ -1567,7 +1567,11 @@ FOR li_idx = 1 to li_rc
 		if vb_editing then
 			l_rsbi.enabled =  false
 		else
-			l_rsbi.enabled =  true
+			if  l_rsbi.tag = 'e_filter' then
+				l_rsbi.enabled =  vdw_focus.f_isgrid()
+			else
+				l_rsbi.enabled =  true
+			end if						
 		end if
 	else
 		if vs_type = 'document' then

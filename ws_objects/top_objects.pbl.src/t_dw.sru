@@ -5648,7 +5648,7 @@ FOR li_idx = 1 to li_colCnt
 //		end if
 		if isnull(ls_data) or ls_data = '' or ls_data = "'" then continue
 		if len(ls_data) = 1 and (ls_data = '*' or ls_data = '=') then ls_data = '' 
-		if ls_filterString <> '' then ls_data += " and "
+		if ls_filterString <> '' then ls_filterString += " and "
 //		ls_data = f_convert_uni2unsign(ls_text)
 		ls_filterString += lc_string.f_get_expression( ls_data, ls_colType,ls_colname[li_idx], 'filter')
 		

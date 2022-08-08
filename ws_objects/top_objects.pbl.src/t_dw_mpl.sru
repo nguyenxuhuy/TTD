@@ -5498,7 +5498,7 @@ return 0
 end function
 
 public function integer f_change_2_grid ();s_object_display		lpo_handling
-window					lw_parent
+s_w_main					lw_parent
 t_transaction			lt_transaction
 c_sql						lc_sql
 int							li_idx
@@ -5509,7 +5509,7 @@ long						ll_currow, ll_rowcnt
 		
 if this.f_getparentwindow( lw_parent) = 1 then
 	lw_parent.dynamic f_get_transaction(lt_transaction)	
-	connect using lt_transaction;
+	
 	lpo_handling = lw_parent.dynamic f_get_obj_handling()
 	if isvalid(lpo_handling) then		
 		if this.getrow() > 0 then
@@ -5530,9 +5530,11 @@ if this.f_getparentwindow( lw_parent) = 1 then
 			this.f_reset_visible_in_user_tabsequence()
 			this.f_set_properties( )
 			//-- resize filter --//
-			if lw_parent.dynamic f_is_filter_on() then
-				lw_parent.dynamic event e_filter_resize()	
+			if lw_parent.f_is_filter_on() = false then
+				lw_parent.dynamic event e_filteron_rb( )
+//				lw_parent.dynamic event e_filter_resize()	
 			end if							
+			connect using lt_transaction;
 			this.settransobject( lt_transaction)		
 			this.f_create_navigate_bttn( )
 			this.f_set_editable_property( false)
@@ -5544,11 +5546,12 @@ if this.f_getparentwindow( lw_parent) = 1 then
 					this.setfilter(ls_detail_filterString)
 				end if
 			end if				
+			
 			ll_rowcnt = this.event e_retrieve( )	
 			disconnect using lt_transaction;
-			if lw_parent.dynamic f_is_filter_on() then
-				lw_parent.dynamic f_filter_dwmain()	
-			end if			
+//			if lw_parent.dynamic f_is_filter_on() then
+//				lw_parent.dynamic f_filter_dwmain()	
+//			end if			
 			if ll_rowcnt > 1 then
 				ll_currow = this.find( "ID = "+string(ldb_current_ID), 1, ll_rowcnt)
 				if ll_currow > 0 then
@@ -5565,7 +5568,7 @@ return 0
 end function
 
 public function integer f_change_2_form ();s_object_display		lpo_handling
-window					lw_parent
+s_w_main					lw_parent
 t_transaction			lt_transaction
 c_sql						lc_sql
 int							li_idx
@@ -5594,8 +5597,9 @@ if this.f_getparentwindow( lw_parent) = 1 then
 				ls_rtn =this.modify(ls_modify )	
 			end if	
 			//-- resize filter --//
-			if lw_parent.dynamic f_is_filter_on() then
-				lw_parent.dynamic event e_filter_resize_new()
+			if lw_parent.f_is_filter_on() then
+				lw_parent.event e_filteroff( )
+//				lw_parent.dynamic event e_filter_resize_new()
 			end if									
 //			this.f_set_properties( )
 			this.settransobject( lt_transaction)			
@@ -5610,9 +5614,9 @@ if this.f_getparentwindow( lw_parent) = 1 then
 			end if		
 			ll_rowcnt = this.event e_retrieve( )
 			disconnect using lt_transaction;
-			if lw_parent.dynamic f_is_filter_on() then
-				lw_parent.dynamic f_filter_dwmain_new()	
-			end if	
+//			if lw_parent.dynamic f_is_filter_on() then
+//				lw_parent.dynamic f_filter_dwmain_new()	
+//			end if	
 			
 			if ll_rowcnt > 1 then
 				ll_currow = this.find( "ID = "+string(ldb_current_ID), 1, ll_rowcnt)

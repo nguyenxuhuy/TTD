@@ -7733,6 +7733,14 @@ end if
 return 0
 end event
 
+event e_filteroff;call super::e_filteroff;
+
+if idw_focus.dynamic f_isgrid( ) = false then
+	ic_obj_handling.f_ctrl_enable_button( t_w_mdi.rbb_1, idw_focus)
+end if
+return ancestorreturnvalue
+end event
+
 type st_1 from s_w_main`st_1 within s_w_multi_rb
 integer x = 91
 integer y = 1104
