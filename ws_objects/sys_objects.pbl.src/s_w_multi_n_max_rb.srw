@@ -50,12 +50,55 @@ end event
 
 event open;call super::open;rbb_1.importfromxmlfile( "XmlFile2.xml")
 
-if ic_obj_handling.f_get_ib_editing( ) then
-	rbb_1.f_change_action_button( 'e_modify')
-end if
+//if ic_obj_handling.f_get_ib_editing( ) then
+//	rbb_1.f_change_action_button( 'e_modify')
+//end if
 end event
 
 event activate;// overrid--// /
+end event
+
+event e_postsave;
+/******************************************************
+chức năng: - setfocus cho control
+				 - Thông báo object
+				 - gọi điều khiển action button
+Override
+---------------------------------------------------------------------------------------*/
+
+int				li_rtn
+
+
+//li_rtn = ic_obj_handling.dynamic event e_window( 'e_postsave')
+li_rtn = ic_obj_handling.event e_window_e_postsave(vi_save_return )
+if li_rtn = -1 then 
+	return -1
+end if
+//--nếu đang copy thì sau khi save tắt chế độ copy--//
+if ic_obj_handling.f_get_ib_copying( ) then ic_obj_handling.f_set_ib_copying( false)
+
+rbb_1.f_change_action_button( 'e_save')
+this.f_ctrl_enable_button(  idw_focus)
+return idw_focus.setfocus( )
+
+end event
+
+event e_postmodify;//-- Set focus và goi object điều khiển action --//
+//-- OVerride --//
+
+int				li_rtn
+
+li_rtn = ic_obj_handling.dynamic event e_window( 'e_postmodify')
+if li_rtn = -1 then 
+	return -1
+end if
+//ic_obj_handling.f_ctrl_actionbuttons( idw_focus)
+//this.event e_display_actionbutton( )
+rbb_1.f_change_action_button( 'e_modify')
+this.f_ctrl_enable_button(idw_focus)
+return idw_focus.setfocus( )
+
+
 end event
 
 type st_1 from s_w_multi_rb`st_1 within s_w_multi_n_max_rb
@@ -176,16 +219,28 @@ boolean hidetabheader = true
 boolean #centralizedeventhandling = true
 end type
 
-event itemclicked;call super::itemclicked;int			li_rtn
+event itemclicked;call super::itemclicked;int					li_rtn
+t_dw_mpl		ldw_main
+
 choose case itemtag
-	case 'e_add','e_modify','e_delete','e_save','e_first','e_next','e_prior','e_last','e_refresh'
-			li_rtn = parent.triggerevent( itemtag)		
-			if li_rtn = 1 then
-				choose case itemtag
-					case 'e_modify','e_save','e_post','e_unpost','e_add','e_insert'
-						this.f_change_action_button( itemhandle, index, 0)
-				end choose
-			end if			
+	case 'e_modify'
+		li_rtn = parent.event e_modify()
+//		if li_rtn <> -1 then
+//			this.f_change_action_button( itemhandle, index, 0)
+//		end if					
+	case 'e_save'
+		li_rtn = parent.event e_save()
+//		if li_rtn <> -1 then
+//			this.f_change_action_button( itemhandle, index, 0)
+//		end if					
+	case 'e_add','e_insert'
+		ldw_main = parent.dynamic f_get_dwmain()
+//		if not ldw_main.f_get_ib_editing( ) then		
+//			this.f_change_action_button( itemhandle, index, 0)
+//		end if		
+		li_rtn = parent.triggerevent( itemtag)				
+	case 'e_delete','e_first','e_next','e_prior','e_last','e_refresh'
+		li_rtn = parent.triggerevent( itemtag)	
 	case 'e_filter'
 			if parent.ib_filter_on then
 				parent.triggerevent( 'e_filteroff')

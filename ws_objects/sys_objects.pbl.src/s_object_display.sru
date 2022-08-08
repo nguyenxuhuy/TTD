@@ -1419,7 +1419,7 @@ ldw_main = iw_display.f_get_dwmain( )
 if ldw_main.getrow() = 0 then return -1
 if ldw_main.f_get_ib_editing( ) then
 	if iw_display.event e_save( ) = -1 then return -1
-	t_w_mdi.rbb_1.f_change_action_button('e_save')
+//	t_w_mdi.rbb_1.f_change_action_button('e_save')
 //	ldw_main.f_set_ib_editing( true)
 	this.ib_detail_editing = true
 else

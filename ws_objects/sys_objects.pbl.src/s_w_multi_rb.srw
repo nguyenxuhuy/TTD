@@ -7218,9 +7218,9 @@ if ic_obj_handling.dynamic f_is_changed_dwo_4edit()  then
 	this.ib_saving =  false
 	idw_focus.setfocus( )	
 	//-- change button --//
-	ic_obj_handling.f_change_action_button(t_w_mdi.rbb_1, 'e_save')
+//	ic_obj_handling.f_change_action_button(t_w_mdi.rbb_1, 'e_save')
 	//-- enbale button--//
-	ic_obj_handling.f_ctrl_enable_button(t_w_mdi.rbb_1 , ldw_main)
+//	ic_obj_handling.f_ctrl_enable_button(t_w_mdi.rbb_1 , ldw_main)
 	return 1
 end if
 
@@ -7549,6 +7549,7 @@ if li_rtn = -1 then
 end if
 //ic_obj_handling.f_ctrl_actionbuttons( idw_focus)
 //this.event e_display_actionbutton( )
+t_w_mdi.rbb_1.f_change_action_button('e_modify')
 this.f_ctrl_enable_button(idw_focus)
 return idw_focus.setfocus( )
 
@@ -7574,6 +7575,7 @@ end if
 if ic_obj_handling.f_get_ib_copying( ) then ic_obj_handling.f_set_ib_copying( false)
 //ic_obj_handling.f_ctrl_actionbuttons( idw_focus)
 //this.event e_display_actionbutton( )
+t_w_mdi.rbb_1.f_change_action_button('e_save')
 this.f_ctrl_enable_button(  idw_focus)
 return idw_focus.setfocus( )
 

@@ -10474,35 +10474,39 @@ elseif vs_edit_colname = 'act_qty' then
 elseif vs_edit_colname = 'act_price' then
 	ldc_act_price = double(vs_editdata)
 	ldc_PRICE_EX_TAX = ldc_act_price
-	ldc_qty = rdw_line.getitemnumber(vl_line_row, 'qty')	
+	ldc_act_qty = rdw_line.getitemnumber(vl_line_row, 'act_qty')	
 	ldc_price = rdw_line.getitemnumber(vl_line_row, 'price')	
 		
 	//-- act_amount--//
-	ldc_act_amount = lc_unit.f_round_ex( rt_transaction, ldb_round_id_amt, ldc_act_price*ldc_qty)
+	ldc_act_amount = lc_unit.f_round_ex( rt_transaction, ldb_round_id_amt, ldc_act_price*ldc_act_qty)
+	ldc_ACT_AMOUNT_EX_TAX = ldc_act_amount
 	//-- base_amount--//
 	if vstr_currency.adb_data[1] = ldb_base_cur then
-		ldb_base_amount = ldc_act_amount	
+		ldc_ACT_BASE_AMOUNT_EX_TAX = ldc_ACT_AMOUNT_EX_TAX	
 	else
-		ldb_base_amount = ldc_act_amount * vstr_currency.adb_data[2]
-		ldb_base_amount = lc_unit.f_round_ex( rt_transaction, ldb_round_id_base_amt, ldb_base_amount)
+		ldc_ACT_BASE_AMOUNT_EX_TAX = ldc_ACT_AMOUNT_EX_TAX * vstr_currency.adb_data[2]
+		ldc_ACT_BASE_AMOUNT_EX_TAX = lc_unit.f_round_ex( rt_transaction, ldb_round_id_base_amt, ldc_ACT_BASE_AMOUNT_EX_TAX)
 	end if
 	//-- reset discount: nếu có--//	
-	if ldc_price > 0 then
-		if  ldc_act_amount > 0 then
-			ldc_disc_pct  = round(( ldc_qty *ldc_price -  ldc_act_amount ) / ldc_act_amount *100, 0)
-			ldc_disc_amt  =   (  ldc_qty *ldc_price   -  ldc_act_amount )
-		else 
-			ldc_disc_pct = 100
-			ldc_disc_amt  =   ldc_qty *ldc_price
-		end if		
-	else
-		ldc_disc_pct = 0
-		ldc_disc_amt = 0
-	end if
+//	if ldc_price > 0 then
+//		if  ldc_act_amount > 0 then
+//			ldc_disc_pct  = round(( ldc_qty *ldc_price -  ldc_act_amount ) / ldc_act_amount *100, 0)
+//			ldc_disc_amt  =   (  ldc_qty *ldc_price   -  ldc_act_amount )
+//		else 
+//			ldc_disc_pct = 100
+//			ldc_disc_amt  =   ldc_qty *ldc_price
+//		end if		
+//	else
+//		ldc_disc_pct = 0
+//		ldc_disc_amt = 0
+//	end if
 	//-- base_price --//
-	ldc_base_price = ldc_act_price* vstr_currency.adb_data[2]
-	ldc_base_price = lc_unit.f_round_ex( rt_transaction, ldb_round_id_base_price, ldc_base_price)
-	
+	if vstr_currency.adb_data[1] = ldb_base_cur then
+		ldc_base_price = ldc_act_price	
+	else
+		ldc_base_price = ldc_act_price* vstr_currency.adb_data[2]
+		ldc_base_price = lc_unit.f_round_ex( rt_transaction, ldb_round_id_base_price, ldc_base_price)
+	end if	
 	//--vat--//
 	if rdw_line.describe('vat.coltype') = 'number' then
 		ldc_vat_pct = rdw_line.getitemnumber(vl_line_row, 'vat')				
@@ -10510,17 +10514,8 @@ elseif vs_edit_colname = 'act_price' then
 		ldc_vat_pct = rdw_line.getitemnumber(vl_line_row, 'tax_pct')	
 	end if
 	if isnull(ldc_vat_pct) then ldc_vat_pct = 0
-	ldc_vat_amt = lc_unit.f_round_ex( rt_transaction, ldb_round_id_base_amt, ldb_base_amount*ldc_vat_pct/100) 
-	//--amount_ex_tax--//
-	ldc_AMOUNT_EX_TAX = ldc_act_amount
-	//--base_amount_ex_tax--//
-	ldc_BASE_AMOUNT_EX_TAX = ldb_base_amount
-	//-- act_qty--//
-	ldc_act_qty = ldc_qty	
-	//--act_amount_ex_tax--//
-	ldc_ACT_AMOUNT_EX_TAX = ldc_AMOUNT_EX_TAX
-	//--act_base_amount_ex_tax--//
-	ldc_ACT_BASE_AMOUNT_EX_TAX = ldc_BASE_AMOUNT_EX_TAX	
+	ldc_vat_amt = lc_unit.f_round_ex( rt_transaction, ldb_round_id_base_amt, ldc_ACT_BASE_AMOUNT_EX_TAX*ldc_vat_pct/100) 
+
 elseif vs_edit_colname = 'vat' then
 	ldb_amount =  rdw_line.getitemnumber(vl_line_row, 'amount')	
 	ldc_vat_pct = dec(vs_editdata )
