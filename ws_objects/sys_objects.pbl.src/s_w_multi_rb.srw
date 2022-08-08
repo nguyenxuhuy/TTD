@@ -1520,15 +1520,15 @@ ic_obj_handling.ib_copying = true
 ic_obj_handling.is_copy_type = 'copyt'
 //get data de build where related
 ic_obj_handling.f_get_data_related(ls_obj_name, lstr_data_related[]) 
-if ic_obj_handling.classname( )=ls_obj_name then
-	ll_find=ldw_main.find("gutter = 'Y'", 1, ldw_main.rowcount())
-	if ll_find=0 then 
-		gf_messagebox('m.s_w_multi.e_copy_to_new.01','Thông báo','Phải tích chọn phiếu cần nhân bản','exclamation','ok',1)
-		ic_obj_handling.ib_copying = false
-		disconnect using it_transaction;
-		return 0
-	end if
-end if
+//if ic_obj_handling.classname( )=ls_obj_name then
+//	ll_find=ldw_main.find("gutter = 'Y'", 1, ldw_main.rowcount())
+//	if ll_find=0 then 
+//		gf_messagebox('m.s_w_multi.e_copy_to_new.01','Thông báo','Phải tích chọn phiếu cần nhân bản','exclamation','ok',1)
+//		ic_obj_handling.ib_copying = false
+//		disconnect using it_transaction;
+//		return 0
+//	end if
+//end if
 //build where related
 this.f_build_data_related( lstr_data_related[])  //
 
