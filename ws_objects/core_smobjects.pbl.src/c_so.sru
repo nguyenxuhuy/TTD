@@ -593,7 +593,6 @@ istr_dwo_related[7].s_related_obj_column_copy[3] = 'tax_pct;TAX_ID;TRANS_CURRENC
 //istr_dwo_related[7].s_main_obj_column_chk[3] = 'item_id;item_code;item_name;'
 //istr_dwo_related[7].s_related_obj_column_chk[3] = 'item_id;object_code;line_text;'
 
-
 istr_dwo_related[7].s_main_obj_dwo_copy[4] = 'd_lot_line_kd_grid' // datawindow copy từ
 istr_dwo_related[7].s_main_obj_column_copy[4] = 'LINE_NO;QTY;LOT_NO;SERIAL_NO;'
 istr_dwo_related[7].s_related_obj_dwo_copy[4] = 'd_lot_line_kd_grid' // datawindow copy đến
@@ -964,6 +963,8 @@ if vs_objectname_to = 'b_copyt_so' then
 	//-- cập nhật lại loại đơn: bù hàng --//
 	
 	//--Cập nhật lãi số lượng bù--//
+	
+	//-- cập nhât ref_code --//
 	
 elseif vs_objectname_to = 'b_copyt_self' then
 //--nếu là self copy--//

@@ -1567,10 +1567,11 @@ if this.f_get_data_copied_ex( lads_copied[],lstr_related,'copyt',ls_obj_name) > 
 	else /////////--- nhan ban--//////////////
 		if upper(ldw_main.describe("DataWindow.table.UpdateTable") ) = 'DOCUMENT'  then
 			ldb_rtn = lbo_ins.f_copy_to( ic_obj_handling.classname( ),ls_obj_name, lstr_data_related[], lads_copied[], it_transaction ,ic_obj_handling.idwsetup_initial )	
-			
+			ic_obj_handling.event e_window_e_postcopy_to(vs_btn_name, ldb_rtn, lstr_data_related[])
 			ldw_main.event e_refresh( )
 			ll_find= ldw_main.find("id ="+string(ldb_rtn), 1, ldw_main.rowcount( ))
 			if ll_find > 0 then	ldw_main.scrolltorow(ll_find )
+			
 			disconnect using it_transaction;
 		else
 			disconnect using it_transaction;
