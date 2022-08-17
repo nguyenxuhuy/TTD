@@ -316,18 +316,29 @@ return vl_currentrow
 end event
 
 event e_dw_e_itemchanged;call super::e_dw_e_itemchanged;double			ldb_item_id, ldb_spec_id, ldb_so_line, ll_tax_line_id, ll_vat_id
-int					li_tax_line_cnt
+int					li_tax_line_cnt, li_cnt
 decimal			ldb_qty, ldc_tax_correction, ldc_tax_pct, ldc_origin_Qty, ldc_edit_Qty, ldb_scrap_qty
 string				ls_upd_colname, ls_sql, ls_dataStr
+
 b_obj_instantiate			lb_obj
 t_dw_mpl					ldw_handle, ldw_master, ldw_scrap1, ldw_scrap2
 
 if rpo_dw.dataobject = 'd_so_line_grid' then
 	choose case vs_colname
 		case 'object_code'
-			vs_colname = 'price'
-			vs_editdata = string(rpo_dw.getitemnumber(vl_currentrow, 'price'))
+			//-- check spec khách hàng --//
+			ldb_item_id = rpo_dw.getitemnumber( vl_currentrow, 'item_id' )
+			connect using it_transaction;
+			select count(id) into :li_cnt from item_spec where object_ref_id = :ldb_item_id and spec_group = :idb_cust_id using it_transaction;
+			disconnect using it_transaction;
+			if li_cnt = 0 then
+				if gf_messagebox('m.u_detail_so.e_dw_e_itemchanged.01','Thông báo','Hình thể chưa có làm phiếu mẫu với khách hàng, bạn tiếp tục hay không?','question','yesno',2) = 2 then
+					return 1
+				end if				
+			end if			
 			
+			vs_colname = 'price'
+			vs_editdata = string(rpo_dw.getitemnumber(vl_currentrow, 'price'))			
 			ls_upd_colname = 'base_price;amount;base_amount;amount_ex_tax;base_amount_ex_tax;tax_correction;'
 			ldw_handle = rpo_dw
 			if lb_obj.f_update_line_itemchanged_ex( vs_colname, vs_editdata , ls_upd_colname,vl_currentrow , ldw_handle, it_transaction , istr_currency) = -1 then return 1	

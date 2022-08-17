@@ -249,6 +249,7 @@ public function double f_copy_to_so (string vs_f_objname, s_str_dwo_related vstr
 public function double f_get_matched_value (string vs_matcol, double vdb_f_ref_id, string vs_f_ref_table)
 public function integer f_upd_doc_status_ex (string vs_type, string vs_t_doc_type, string vs_t_upd_status, string vs_t_ref_table, string vs_f_doc_type, double vdb_related_doc_id, ref t_transaction rt_transaction)
 public function integer f_upd_related_status_ex (string vs_type, string vs_t_upd_status, string vs_t_ref_table, double vdb_t_doc_id, double vdb_t_ref_id, ref t_transaction rt_transaction)
+public function long f_get_ids (string vs_table, double vdb_object_ref_id, ref double rdba_ids[], ref t_transaction rt_transaction)
 end prototypes
 
 event e_send_2_approve(datawindow vdw_focus, s_object_display vc_obj_handling, s_w_multi vw_multi);
@@ -16006,6 +16007,7 @@ else
 end if
 //-- tính toán lại giá trị các cột liên quan--//	
 if vs_edit_colname = 'qty' then
+	
 elseif vs_edit_colname = 'price' then
 	
 	ldc_price =  dec(vs_editdata)
@@ -16068,7 +16070,56 @@ elseif vs_edit_colname = 'act_amount' then
 elseif vs_edit_colname = 'base_price' then	
 	
 elseif vs_edit_colname = 'act_qty' then	
+	
 elseif vs_edit_colname = 'act_price' then
+	
+	ldc_act_price =  dec(vs_editdata)
+	ldc_act_price_ex_tax = ldc_act_price
+	
+	//-- ldc_qty --//
+	if lower(vs_line_table) = 'po_line' then
+		select qty into :ldc_qty from po_line where id = :vdb_line_id using rt_transaction;
+	elseif lower(vs_line_table) = 'so_line' then
+		select act_qty into :ldc_act_qty from so_line where id = :vdb_line_id using rt_transaction;
+	end if
+	
+	//-- reset disc--//
+	ldc_disc_pct = 0
+	ldc_disc_amt = 0
+	
+	//-- base_price--//
+	if vstr_currency.adb_data[1] = ldb_base_cur then
+		ldc_base_price = ldc_act_price
+	else
+		ldc_base_price = ldc_act_price * vstr_currency.adb_data[2]
+		ldc_base_price = lc_unit.f_round( rt_transaction, ldb_round_id_base_price, ldc_base_price)
+	end if
+	//--act_amount --//
+	ldc_act_amount =  lc_unit.f_round( rt_transaction, ldb_round_id_amt, ldc_act_price*ldc_act_qty)
+	if ldc_disc_pct = 0 and ldc_disc_amt = 0 then
+		ldc_act_amount = lc_unit.f_round( rt_transaction, ldb_round_id_amt, ldc_act_price*ldc_act_qty)
+	else
+		ldc_act_amount= lc_unit.f_round( rt_transaction, ldb_round_id_amt, ldc_act_price*ldc_act_qty /(1 + ldc_disc_pct/100))
+	end if	
+	ldc_ACT_AMOUNT_EX_TAX = ldc_act_amount
+	
+	//-- base_act_amount--//
+	if vstr_currency.adb_data[1] = ldb_base_cur then
+		ldc_ACT_BASE_AMOUNT_EX_TAX = ldc_act_amount	
+	else
+		ldc_ACT_BASE_AMOUNT_EX_TAX = ldc_act_amount * vstr_currency.adb_data[2]
+		ldc_ACT_BASE_AMOUNT_EX_TAX = lc_unit.f_round( rt_transaction, ldb_round_id_base_amt, ldb_base_amount)
+	end if
+	//--vat--//
+	if vs_line_table = 'po_line' then
+		select vat into :ldc_vat_pct from po_line where id = :vdb_line_id using rt_transaction;				
+	elseif vs_line_table = 'so_line' then
+		select TAX_PCT into :ldc_vat_pct from tax_line where object_ref_id = :vdb_line_id and rownum = 1 using rt_transaction;			
+	end if	
+	
+	if isnull(ldc_vat_pct) then ldc_vat_pct = 0
+	ldc_vat_amt = lc_unit.f_round( rt_transaction, ldb_round_id_base_amt, ldc_ACT_BASE_AMOUNT_EX_TAX*ldc_vat_pct/100) 
+
 
 elseif vs_edit_colname = 'vat' then
 elseif vs_edit_colname = 'tax_pct' then
@@ -16112,7 +16163,17 @@ FOR li_idx = 1 to li_colCnt
 	elseif lsa_colname[li_idx] = 'vat_amount' then	
 		ls_sql += lsa_colname[li_idx] +  ' = ' + string(ldc_vat_amt)+ ','
 	elseif lsa_colname[li_idx] = 'tax_correction' then	
-		ls_sql += lsa_colname[li_idx] +  ' = ' + string(ldc_vat_amt)+ ','
+		if vs_line_table = 'so_line' then
+			Update tax_line t
+			set t.tax_correction = :ldc_vat_amt
+			Where t.object_ref_id = :vdb_line_id and rownum = 1 using rt_transaction;	
+		end if	
+	elseif lsa_colname[li_idx] = 'tax_amt' then	
+		if vs_line_table = 'so_line' then
+			Update tax_line t
+			set t.tax_amt = :ldc_vat_amt
+			Where t.object_ref_id = :vdb_line_id and rownum = 1 using rt_transaction;	
+		end if			
 	elseif  lsa_colname[li_idx] = 'disc_pct' then	
 		ls_sql += lsa_colname[li_idx] +  ' = ' + string(ldc_disc_pct)+ ','
 	elseif  lsa_colname[li_idx] = 'disc_amt' then	
@@ -20908,6 +20969,32 @@ destroy lds_relaled_doc
 destroy lds_relaled_doc1
 destroy lds_relaled_doc2
 return 1
+end function
+
+public function long f_get_ids (string vs_table, double vdb_object_ref_id, ref double rdba_ids[], ref t_transaction rt_transaction);int				li_cnt
+string			ls_sql, lsa_cols[]
+double		ldb_id
+c_string					lc_string
+DynamicStagingArea	ldsa_stage
+
+//------------------//
+
+ls_sql = "SELECT ID  FROM " + vs_table 	+ " where object_ref_ID = "+ string(vdb_object_ref_id)
+connect using sqlca;											
+DECLARE l_cur DYNAMIC CURSOR FOR SQLSA ;
+PREPARE SQLSA FROM :ls_sql ;
+OPEN DYNAMIC l_cur ;
+
+FETCH l_cur INTO :ldb_id;
+Do while sqlca.sqlcode = 0
+	rdba_ids[upperbound(rdba_ids[])+1] = ldb_id
+	FETCH l_cur INTO :ldb_id;
+LOOP
+CLOSE l_cur ;
+
+disconnect using sqlca;		
+
+return upperbound(rdba_ids[])
 end function
 
 on b_obj_instantiate.create
