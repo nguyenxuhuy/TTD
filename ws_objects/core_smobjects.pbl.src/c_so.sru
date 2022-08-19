@@ -558,10 +558,10 @@ istr_dwo_related[7].s_relatedtext_column = 'code'
 istr_dwo_related[7].s_text = 'SO bù hàng: '
 
 istr_dwo_related[7].s_main_obj_dwo_copy[1] = 'd_document_so_grid'  // datawindow copy từ
-istr_dwo_related[7].s_main_obj_column_copy[1] = 'object_id;ship_to_addtext;bill_to_object;bill_to_addtext;'
+istr_dwo_related[7].s_main_obj_column_copy[1] = 'object_id;ship_to_addtext;bill_to_object;bill_to_addtext;SCRAP_PCT;'
 istr_dwo_related[7].s_main_obj_column_copy[1] += 'currency_id;exchange_rate;include_tax_yn;note;payment_term;payment_method;delivery_mode;'
 istr_dwo_related[7].s_related_obj_dwo_copy[1] = 'd_document_so_grid' // datawindow copy đến
-istr_dwo_related[7].s_related_obj_column_copy[1]= 'object_id;ship_to_addtext;bill_to_object;bill_to_addtext;'
+istr_dwo_related[7].s_related_obj_column_copy[1]= 'object_id;ship_to_addtext;bill_to_object;bill_to_addtext;SCRAP_PCT;'
 istr_dwo_related[7].s_related_obj_column_copy[1] += 'currency_id;exchange_rate;include_tax_yn;note;payment_term;payment_method;delivery_mode;'
 
 

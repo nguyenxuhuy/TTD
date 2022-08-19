@@ -1422,7 +1422,7 @@ choose case itemtag
 			end choose				
 			
 		end if
-	case 'e_self_copy'
+	case 'b_self_copy'
 		lw_handle = parent.getactivesheet( )
 		if isvalid(lw_handle) then
 			lw_handle.dynamic event e_copy_to_new('b_copyt_self')
