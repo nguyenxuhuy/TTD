@@ -608,6 +608,56 @@ istr_dwo_related[7].s_t_obj_column_chk[4] = ''
 istr_dwo_related[7].b_f_sum[4] = false
 istr_dwo_related[7].b_copy_line[4] = false
 
+istr_dwo_related[8].s_related_obj_name = 'u_prod_orders'					// đối tượng copy đến
+istr_dwo_related[8].s_main_obj_dwo = istr_dwo[1].s_dwo_default	//datawindow quan hệ main
+istr_dwo_related[8].s_main_obj_column = 'id'			// cột quan hệ của main
+istr_dwo_related[8].s_related_obj_dwo = 'd_document_prod_grid'	// datawindow quan hệ đến
+istr_dwo_related[8].s_related_obj_column = 'id'			// cột quan hệ đến
+istr_dwo_related[8].b_f_matching = true
+istr_dwo_related[8].b_chk_matched_qty = true
+//istr_dwo_related[8].b_return = true //la doi duong tra hang
+istr_dwo_related[8].s_relatedtext_column = 'code'					
+istr_dwo_related[8].s_text = 'Lệnh SX từ:'
+
+istr_dwo_related[8].s_main_obj_dwo_copy[1] = 'd_document_so_grid'  // datawindow copy từ
+istr_dwo_related[8].s_main_obj_column_copy[1] = 'object_id;ship_to_addtext;bill_to_object;bill_to_addtext;'
+istr_dwo_related[8].s_main_obj_column_copy[1] += 'currency_id;exchange_rate;note;payment_term;payment_method;delivery_mode;'
+istr_dwo_related[8].s_related_obj_dwo_copy[1] = 'd_document_prod_grid' // datawindow copy đến
+istr_dwo_related[8].s_related_obj_column_copy[1]= 'DR_CR_OBJECT;TRANS_ADDRESS;INVOICE_OBJECT;INVOICE_ADDRESS;'
+istr_dwo_related[8].s_related_obj_column_copy[1] += 'currency_id;exchange_rate;note;payment_term;payment_method;delivery_mode;'
+
+
+istr_dwo_related[8].s_main_obj_dwo_copy[2] = 'd_so_line_grid'// datawindow copy từ
+istr_dwo_related[8].s_main_obj_column_copy[2] =  'line_no;ITEM_ID;qty;' // cột copy từ
+istr_dwo_related[8].s_related_obj_dwo_copy[2] = 'd_prod_line_kd_grid' // datawindow copy đến
+istr_dwo_related[8].s_related_obj_column_copy[2] = 'line_no;OBJECT_ID;plan_qty;' // cột copy đến
+istr_dwo_related[8].s_main_obj_column_chk[2] = ''
+istr_dwo_related[8].s_related_obj_column_chk[2] = ''
+istr_dwo_related[8].s_f_obj_column_chk[2] = ''
+istr_dwo_related[8].s_t_obj_column_chk[2] = ''
+istr_dwo_related[8].b_copy_line[2] = true
+// khai báo cập nhật bản matching
+istr_dwo_related[8].s_match_f_dwo[2] = 'd_so_line_grid'
+istr_dwo_related[8].s_match_f_col_obj[2] = 'item_id' //--cho phép hàng hóa dịch vụ
+istr_dwo_related[8].s_match_t_dwo[2] = 'd_prod_line_kd_grid'
+istr_dwo_related[8].s_match_f_column[2] = 'qty'
+istr_dwo_related[8].s_match_t_column[2] = 'plan_qty'
+istr_dwo_related[8].s_match_column[2] = 'qty'
+
+istr_dwo_related[8].s_main_obj_dwo_copy[3] = 'd_lot_line_kd_grid' // datawindow copy từ
+istr_dwo_related[8].s_main_obj_column_copy[3] = 'LINE_NO;QTY;LOT_NO;SERIAL_NO;'
+istr_dwo_related[8].s_related_obj_dwo_copy[3] = 'd_lot_line_kd_grid' // datawindow copy đến
+istr_dwo_related[8].s_related_obj_column_copy[3] = 'LINE_NO;QTY;LOT_NO;SERIAL_NO;'
+istr_dwo_related[8].s_main_obj_column_chk[3] = ''
+istr_dwo_related[8].s_related_obj_column_chk[3] = ''
+istr_dwo_related[8].s_match_f_dwo[3] = ''
+istr_dwo_related[8].s_match_t_dwo[3] = ''
+istr_dwo_related[8].s_main_obj_column_sum[3] = ''
+istr_dwo_related[8].s_related_obj_column_sum[3] = ''
+istr_dwo_related[8].s_f_obj_column_chk[3] = ''
+istr_dwo_related[8].s_t_obj_column_chk[3] = ''
+istr_dwo_related[8].b_f_sum[3] = false
+istr_dwo_related[8].b_copy_line[3] = false
 
 istr_dwo_related[9].s_related_obj_name = 'u_po'					// đối tượng copy đến
 istr_dwo_related[9].s_main_obj_dwo = 'd_document_so_grid'	//datawindow quan hệ main

@@ -324,13 +324,17 @@ b_obj_instantiate			lb_obj
 t_dw_mpl					ldw_handle, ldw_master, ldw_scrap1, ldw_scrap2
 
 if rpo_dw.dataobject = 'd_so_line_grid' then
+	if rpo_dw.dynamic f_get_ib_saving() = false then
+		connect using it_transaction;
+	end if
 	choose case vs_colname
 		case 'object_code'
 			//-- check spec khách hàng --//
 			ldb_item_id = rpo_dw.getitemnumber( vl_currentrow, 'item_id' )
-			connect using it_transaction;
+			
+//			connect using it_transaction;
 			select count(id) into :li_cnt from item_spec where object_ref_id = :ldb_item_id and spec_group = :idb_cust_id using it_transaction;
-			disconnect using it_transaction;
+//			disconnect using it_transaction;
 			if li_cnt = 0 then
 				if gf_messagebox('m.u_detail_so.e_dw_e_itemchanged.01','Thông báo','Hình thể chưa có làm phiếu mẫu với khách hàng, bạn tiếp tục hay không?','question','yesno',2) = 2 then
 					return 1
@@ -382,6 +386,9 @@ if rpo_dw.dataobject = 'd_so_line_grid' then
 			ldw_handle = rpo_dw
 			if lb_obj.f_update_line_itemchanged_ex( vs_colname, vs_editdata , ls_upd_colname,vl_currentrow , ldw_handle, it_transaction , istr_currency) = -1 then return 1			
 	end choose
+	if rpo_dw.dynamic f_get_ib_saving() = false then
+		disconnect using it_transaction;
+	end if	
 elseif rpo_dw.dataobject = 'd_lot_line_kd_grid' and rpo_dw.classname() = 'dw_2' then
 	if not isnull(vs_editdata) then ldc_edit_Qty = dec(vs_editdata)
 	//-- update scrap qty --//
@@ -409,7 +416,13 @@ elseif rpo_dw.dataobject = 'd_lot_line_kd_grid' and rpo_dw.classname() = 'dw_2' 
 	ldw_master.setitem(ldw_master.getrow(),'qty', ldb_scrap_qty+ldb_qty)
 	ldw_master.setitem(ldw_master.getrow(),'act_qty', ldb_qty)
 	ls_upd_colname = 'tax_amt;tax_correction;act_amount;act_amount_ex_tax;act_base_amount_ex_tax;'
+	if rpo_dw.dynamic f_get_ib_saving() = false then
+		connect using it_transaction;
+	end if
 	if lb_obj.f_update_line_itemchanged_ex( 'act_qty', string(ldb_qty) , ls_upd_colname,ldw_master.getrow() , ldw_master, it_transaction , istr_currency) = -1 then return 1		
+	if rpo_dw.dynamic f_get_ib_saving() = false then
+		disconnect using it_transaction;
+	end if	
 elseif rpo_dw.dataobject = 'd_lot_line_kd_grid' and rpo_dw.classname() = 'dw_3' then
 	if not isnull(vs_editdata) then ldc_edit_Qty = dec(vs_editdata)
 	ldc_origin_Qty = rpo_dw.getitemnumber(vl_currentrow, vs_colname)
@@ -422,8 +435,13 @@ elseif rpo_dw.dataobject = 'd_lot_line_kd_grid' and rpo_dw.classname() = 'dw_3' 
 	ldw_master.setitem(ldw_master.getrow(),'qty', ldb_scrap_qty+ldb_qty)
 	ldw_master.setitem(ldw_master.getrow(),'act_qty', ldb_qty)
 	ls_upd_colname = 'tax_amt;tax_correction;act_amount;act_amount_ex_tax;act_base_amount_ex_tax;'
+	if rpo_dw.dynamic f_get_ib_saving() = false then
+		connect using it_transaction;
+	end if	
 	if lb_obj.f_update_line_itemchanged_ex( 'act_qty', string(ldb_qty) , ls_upd_colname,ldw_master.getrow() , ldw_master, it_transaction , istr_currency) = -1 then return 1		
-	
+	if rpo_dw.dynamic f_get_ib_saving() = false then
+		disconnect using it_transaction;
+	end if	
 elseif rpo_dw.dataobject = 'd_lot_line_kd_grid' and rpo_dw.classname() = 'dw_4' then	
 end if
 return 0
@@ -693,5 +711,28 @@ laa_val[1] = '=T'
 ldw_lot.f_add_where( 'lot_no', laa_val[] )
 
 return ancestorreturnvalue
+end event
+
+event e_dw_rowfocuschanging;call super::e_dw_rowfocuschanging;double		ldb_item_id
+t_dw_mpl	ldw_3, ldw_4
+
+if rpo_dw.dataobject = 'd_so_line_grid' then	
+	if is_included_scrap <> 'Y' then
+		ldw_3= iw_display.dynamic f_get_dw( 3)
+		ldw_4= iw_display.dynamic f_get_dw(4)
+		ldw_3.hide( )
+		ldw_4.hide( )
+//		ldb_item_id = rpo_dw.getitemnumber(vl_newrow, 'item_id')
+//		if ldb_item_id > 0 then
+//			
+//		end if		
+	else
+		ldw_3= iw_display.dynamic f_get_dw( 3)
+		ldw_4= iw_display.dynamic f_get_dw(4)
+		ldw_3.show()
+		ldw_4.hide( )		
+	end if
+end if
+return 0
 end event
 

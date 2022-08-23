@@ -250,6 +250,7 @@ public function double f_get_matched_value (string vs_matcol, double vdb_f_ref_i
 public function integer f_upd_doc_status_ex (string vs_type, string vs_t_doc_type, string vs_t_upd_status, string vs_t_ref_table, string vs_f_doc_type, double vdb_related_doc_id, ref t_transaction rt_transaction)
 public function integer f_upd_related_status_ex (string vs_type, string vs_t_upd_status, string vs_t_ref_table, double vdb_t_doc_id, double vdb_t_ref_id, ref t_transaction rt_transaction)
 public function long f_get_ids (string vs_table, double vdb_object_ref_id, ref double rdba_ids[], ref t_transaction rt_transaction)
+public function double f_copy_to_prod_orders (string vs_f_objname, s_str_dwo_related vstr_dwo_related[], t_ds_db vads_copied[], ref t_transaction rt_transaction, ref c_dwsetup_initial rdwsetup_initial)
 end prototypes
 
 event e_send_2_approve(datawindow vdw_focus, s_object_display vc_obj_handling, s_w_multi vw_multi);
@@ -10098,9 +10099,9 @@ int						li_colCnt, li_idx
 c_string				lc_string
 c_unit_instance		lc_unit
 
-if not rdw_line.ib_excel_copying then
-	connect using rt_transaction;
-end if
+//if not rdw_line.ib_excel_copying and rdw_line.f_get_ib_saving() = false then
+//	connect using rt_transaction;
+//end if
  //-- chuẩn bị cho làm tròn  --//
 lc_unit.f_get_base_cur_ex(ldb_base_cur,  ls_base_curcode,ls_base_curname, rt_transaction)
 if ldb_base_cur > 0 then 
@@ -10694,9 +10695,9 @@ FOR li_idx = 1 to li_colCnt
 	end if						
 NEXT
 
-if not rdw_line.ib_excel_copying then
-	disconnect using rt_transaction;
-end if
+//if not rdw_line.ib_excel_copying then
+//	disconnect using rt_transaction;
+//end if
 return 1
 end function
 
@@ -16212,6 +16213,8 @@ elseif pos(vs_t_objname, 'u_bank_voucher')>0 then
 	return this.f_copy_to_bank_voucher(vs_f_objname , vstr_dwo_related[], vads_copied[], rt_transaction, rdwsetup_initial)	
 elseif  pos(vs_t_objname, 'u_so')>0 then
 	return this.f_copy_to_so(vs_f_objname , vstr_dwo_related[], vads_copied[], rt_transaction, rdwsetup_initial)
+elseif vs_t_objname = 'u_prod_orders' then
+	return this.f_copy_to_prod_orders(vs_f_objname , vstr_dwo_related[], vads_copied[], rt_transaction, rdwsetup_initial)
 end if
 
 return 0
@@ -20995,6 +20998,483 @@ CLOSE l_cur ;
 disconnect using sqlca;		
 
 return upperbound(rdba_ids[])
+end function
+
+public function double f_copy_to_prod_orders (string vs_f_objname, s_str_dwo_related vstr_dwo_related[], t_ds_db vads_copied[], ref t_transaction rt_transaction, ref c_dwsetup_initial rdwsetup_initial);string				ls_sql, ls_code, ls_currCode, ls_currName, ls_sql_cols, ls_update_table, ls_related_data, las_related_data[], ls_f_ref_table
+string				ls_main_chk_cols, las_main_chk_cols[], ls_related_chk_cols, las_related_chk_cols[], ls_data_tmp
+string				las_from_cols[], ls_from_cols, ls_sql_values, ls_coltype, ls_sql_exec, ls_from_match_cols, las_from_match_cols[], ls_mat_cols, las_mat_cols[]
+string				ls_sql_detail, ls_from_cols_detail, las_from_cols_detail[]  //, ls_sql_detail2,  ls_from_cols_detail2, las_from_cols_detail2[]
+double			ldb_id,ldb_f_doc_id, ldb_t_doc_id, ldb_version_id, ldb_trans_id, ldb_base_currID, ldb_mat_val, ldb_matched_val, ldb_f_ref_id, ldb_f_branch_id
+double			ldb_f_version_id, ldb_branch, ldb_id_detail, ldb_manage_group
+int					li_idx, li_idx1, li_idx2, li_row, li_colnbr, li_colCnt, li_pos, li_cnt, li_colCnt_detail, li_row_detail //, li_colCnt_detail2
+boolean			lb_found, lb_copied, lb_update_orders
+any				laa_value[], laa_chk_data[]
+t_ds_db				lds_handle, lds_handle_detail  //, lds_handle_detail2
+c_string				lc_string
+c_unit_instance 	lc_unit_ins
+
+
+//--------------------------//
+// lấy giao dịch của PROD //
+//-------------------------//
+li_pos =  pos( vstr_dwo_related[1].s_data[1] , "(" )
+if li_pos > 0 then
+	ls_related_data = mid(vstr_dwo_related[1].s_data[1], li_pos +1, pos(vstr_dwo_related[1].s_data[1] , ')') - (li_pos +1) )
+	li_cnt = lc_string.f_Stringtoarray( ls_related_data, ',', las_related_data[])
+else
+	las_related_data[1] = vstr_dwo_related[1].s_data[1]
+end if
+ldb_id = double(las_related_data[1] )
+
+
+lds_handle = create t_ds_db
+lds_handle.dataobject = vstr_dwo_related[1].s_main_obj_dwo
+ls_update_table = lds_handle.describe( "datawindow.table.update")
+if lower(vs_f_objname) = 'u_prod_orders' then
+	select t.trans_hdr_id, t.version_id, t.branch_id , t.manage_group  into :ldb_trans_id, :ldb_f_version_id, :ldb_branch, :ldb_manage_group
+			from document t	
+			where t.id =  :ldb_id
+			using rt_transaction;
+else
+	if lower(ls_update_table) = 'document' then
+		//-- copy header --//
+		ldb_f_doc_id = ldb_id
+		select count(t2.id) into :li_cnt
+		from document t
+		join trans_setup_hdr t1 on t1.id = t.trans_hdr_id
+		join trans_setup_hdr t2 on t2.TRANS_GROUP = t1.TRANS_GROUP and t2.company_id= t1.company_id and t2.branch_id= t1.branch_id and t2.doc_type = 'PROD_ORDERS'
+		where t.company_id = :gi_user_comp_id
+	//	and t.branch_id = :gdb_branch
+		and t.id =  :ldb_id
+		using rt_transaction;
+		if li_cnt = 1 then  //-- lấy trans_hdr_id theo group --//
+			select t2.id, t.version_id, t.branch_id , t.manage_group  into :ldb_trans_id, :ldb_f_version_id, :ldb_branch, :ldb_manage_group
+			from document t
+			join trans_setup_hdr t1 on t1.id = t.trans_hdr_id
+			join trans_setup_hdr t2 on t2.TRANS_GROUP = t1.TRANS_GROUP and t2.company_id= t1.company_id and t2.branch_id= t1.branch_id and t2.doc_type = 'PROD_ORDERS'
+			where t.company_id = :gi_user_comp_id
+	//		and t.branch_id = :gdb_branch
+			and t.id =  :ldb_id
+			using rt_transaction;
+			if isnull(ldb_manage_group) then ldb_manage_group = 0
+		else
+			//-- lấy trans_hdr_id theo mặc định --//
+			select count(t.id) into :li_cnt
+					from trans_setup_hdr t
+					where t.company_id = :gi_user_comp_id
+					and t.branch_id = :gdb_branch
+					and t.doc_type = 'PROD_ORDERS'
+					and t.DEFAULT_YN = 'Y'
+					using rt_transaction;
+			if li_cnt = 1 then
+				select t.id  into :ldb_trans_id
+				from trans_setup_hdr t
+					where t.company_id = :gi_user_comp_id
+					and t.branch_id = :gdb_branch
+					and t.doc_type = 'PROD_ORDERS'
+					and t.DEFAULT_YN = 'Y'
+					using rt_transaction;
+					
+				select t.version_id, t.branch_id , t.manage_group  into :ldb_f_version_id, :ldb_branch, :ldb_manage_group
+				from document t
+					where t.company_id = :gi_user_comp_id
+					and t.id =  :ldb_id
+					using rt_transaction;
+			else
+				gf_messagebox('m.b_obj_instantiate.f_copy_to_prod_orders.01','Thông báo','Chưa cài đặt giao dịch mặc định cho lệnh SX','stop','ok',1)
+				return -1
+			end if
+		end if
+	else
+		//-- Copy line --//
+	end if
+end if
+
+//---------------------//
+// insert document  //
+//--------------------//
+ldb_t_doc_id = this.f_create_id_ex( rt_transaction)
+ldb_version_id =  this.f_create_id_ex( rt_transaction)
+ls_code = rdwsetup_initial.f_get_autonumber_ex('code','d_document_prod_grid', rt_transaction)
+ls_sql = "INSERT into DOCUMENT(id,company_id, branch_id,object_ref_table, created_by, created_date,last_mdf_by, last_mdf_date,"+&
+									" doc_type, version_id, SOB, handled_by, CODE, document_date, TRANS_HDR_ID,status, manage_group)" +&
+			" VALUES("+string(ldb_t_doc_id)+ "," + string( gi_user_comp_id ) + "," + string( ldb_branch ) + ",'BOOKED_SLIP' ," + string( gi_userid ) + ", sysdate, "+ string( gi_userid ) + ", sysdate, " +&
+						"'PROD_ORDERS',"+string(ldb_version_id) +",'"+ gs_sob +"',"+string(gi_userid) + ",'"+ls_code +"', trunc(sysdate)"+ ","+string(ldb_trans_id) +", 'new',"+ string(ldb_manage_group)+ ")"
+
+EXECUTE immediate :ls_sql using rt_transaction;
+
+
+
+//--------------------//
+// insert table  //
+//--------------------//
+
+FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) - 1
+
+	lds_handle.dataobject = vstr_dwo_related[1].s_related_obj_dwo_copy[li_idx]
+	ls_update_table = lds_handle.describe( "datawindow.table.update")		
+	if lower(ls_update_table) = 'document' then ls_update_table = 'BOOKED_SLIP'
+	
+	ls_sql = "INSERT into "+ls_update_table +"(company_id, branch_id, created_by, created_date,last_mdf_by, last_mdf_date,"				
+	ls_sql_cols = vstr_dwo_related[1].s_related_obj_column_copy[li_idx]
+	ls_sql_cols= trim(lc_string.f_globalreplace(ls_sql_cols , ';', ','))
+	if right(ls_sql_cols,1) = ',' then 
+		if upper(ls_update_table) = 'BOOKED_SLIP' then
+			ls_sql += ls_sql_cols + "version_no,doc_type,object_ref_table, object_ref_id,ID)"
+		elseif upper(ls_update_table) = 'PRODUCTION_LINE' then
+			ls_sql += ls_sql_cols + "object_ref_table, object_ref_id,ID)"
+			if upperbound( vstr_dwo_related[1].s_related_obj_column_copy[]) > li_idx then
+
+				ls_sql_detail = "INSERT into LOT_LINE (company_id, branch_id, created_by, created_date,last_mdf_by, last_mdf_date,"	
+				ls_sql_cols = vstr_dwo_related[1].s_related_obj_column_copy[li_idx + 1]
+				ls_sql_cols= trim(lc_string.f_globalreplace(ls_sql_cols , ';', ','))			
+				if right(ls_sql_cols,1) = ',' then 
+					ls_sql_detail += ls_sql_cols + "object_ref_table, object_ref_id,ID, doc_version)"
+				else
+					ls_sql_detail += ls_sql_cols + ",object_ref_table, object_ref_id,ID, doc_version)"
+				end if
+				ls_sql_detail += " VALUES("+string( gi_user_comp_id ) + "," + string( ldb_branch ) + "," + string( gi_userid ) + ", sysdate, "+ string( gi_userid ) + ", sysdate " 
+				ls_from_cols_detail = vstr_dwo_related[1].s_main_obj_column_copy[li_idx+1] ///--- detail lot line --//
+				li_colCnt_detail = lc_string.f_stringtoarray( ls_from_cols_detail, ';', las_from_cols_detail[])							
+
+			end if
+		end if		
+	else
+		if upper(ls_update_table) = 'BOOKED_SLIP' then
+			ls_sql += ls_sql_cols + ",version_no,doc_type,object_ref_table, object_ref_id,ID)"
+		elseif upper(ls_update_table) = 'PRODUCTION_LINE' then
+			ls_sql += ls_sql_cols + ",object_ref_table, object_ref_id,ID)"
+			if upperbound( vstr_dwo_related[1].s_related_obj_column_copy[]) > li_idx then
+
+					ls_sql_detail = "INSERT into LOT_LINE (company_id, branch_id, created_by, created_date,last_mdf_by, last_mdf_date,"	
+					ls_sql_cols = vstr_dwo_related[1].s_related_obj_column_copy[li_idx + 1]
+					ls_sql_cols= trim(lc_string.f_globalreplace(ls_sql_cols , ';', ','))			
+					if right(ls_sql_cols,1) = ',' then 
+						ls_sql_detail += ls_sql_cols + "object_ref_table, object_ref_id,ID, doc_version)"
+					else
+						ls_sql_detail += ls_sql_cols + ",object_ref_table, object_ref_id,ID, doc_version)"
+					end if
+					ls_sql_detail += " VALUES("+string( gi_user_comp_id ) + "," + string( ldb_branch ) + "," + string( gi_userid ) + ", sysdate, "+ string( gi_userid ) + ", sysdate " 
+					ls_from_cols_detail = vstr_dwo_related[1].s_main_obj_column_copy[li_idx+1] ///--- detail lot  line --//
+					li_colCnt_detail = lc_string.f_stringtoarray( ls_from_cols_detail, ';', las_from_cols_detail[])								
+
+			end if
+		end if				
+	end if
+	ls_sql += " VALUES("+string( gi_user_comp_id ) + "," + string( ldb_branch ) + "," + string( gi_userid ) + ", sysdate, "+ string( gi_userid ) + ", sysdate " 
+	ls_from_cols = vstr_dwo_related[1].s_main_obj_column_copy[li_idx]
+	li_colCnt = lc_string.f_stringtoarray( ls_from_cols, ';', las_from_cols[])
+	//-- lấy mat cols--//
+	if vstr_dwo_related[1].s_match_f_dwo[li_idx] = vstr_dwo_related[1].s_main_obj_dwo_copy[li_idx] then
+		ls_from_match_cols = vstr_dwo_related[1].s_match_f_column[li_idx]
+		if pos(ls_from_match_cols, ';') > 0 then
+			lc_string.f_stringtoarray(ls_from_match_cols , ';', las_from_match_cols[])
+			ls_from_match_cols = las_from_match_cols[1]
+		end if
+		ls_mat_cols = vstr_dwo_related[1].s_match_column[li_idx]
+		if pos(ls_mat_cols, ';') > 0 then
+			lc_string.f_stringtoarray(ls_mat_cols , ';', las_mat_cols[])
+			ls_mat_cols = las_mat_cols[1]
+		end if			
+	end if
+	//-- lấy chk cols for update destination--//
+	if  vstr_dwo_related[1].s_related_obj_column_chk[li_idx] <> '' then
+		ls_related_chk_cols = vstr_dwo_related[1].s_related_obj_column_chk[li_idx]
+		lc_string.f_stringtoarray( ls_related_chk_cols, ';', las_related_chk_cols[])
+	end if
+	//-- lấy chk cols source--//
+	if  vstr_dwo_related[1].s_main_obj_column_chk[li_idx] <> '' then
+		ls_main_chk_cols = vstr_dwo_related[1].s_main_obj_column_chk[li_idx]
+		lc_string.f_stringtoarray( ls_main_chk_cols, ';', las_main_chk_cols[] )
+	end if
+	
+	FOR li_idx1 = 1 to upperbound(vads_copied[])
+		lb_found = false
+		if vads_copied[li_idx1].dataobject = vstr_dwo_related[1].s_main_obj_dwo_copy[li_idx] then
+			lb_found = true
+			lb_update_orders = false
+			FOR li_row = 1 to vads_copied[li_idx1].rowcount()
+				//-- check match full--//
+				if vads_copied[li_idx1].dataobject = vstr_dwo_related[1].s_match_f_dwo[li_idx]  and vstr_dwo_related[1].b_chk_matched_qty then
+					ldb_mat_val = vads_copied[li_idx1].getitemnumber(li_row, ls_from_match_cols)
+					if isnull(ldb_mat_val) then ldb_mat_val = 0
+					ldb_f_ref_id = vads_copied[li_idx1].getitemnumber(li_row, 'id')
+					//////////////////////////////////////////////////////////////////////////////////
+					ldb_matched_val = this.f_get_matched_value(ls_mat_cols, ldb_f_ref_id, ls_update_table)
+					//////////////////////////////////////////////////////////////////////////////////					
+//					ldb_matched_val = rt_transaction.f_get_matched_value(ls_mat_cols, ldb_f_ref_id, ls_update_table)
+					if isnull(ldb_matched_val) then ldb_matched_val = 0
+					if ldb_matched_val >= ldb_mat_val then continue //-- đã copy hết--//
+					if vstr_dwo_related[1].s_match_f_col_obj[li_idx] <> '' then
+						 if isnull(vads_copied[li_idx1].getitemnumber(li_row, vstr_dwo_related[1].s_match_f_col_obj[li_idx])) then continue //-- chưa có mã hàng: bỏ qua ko copy --//
+					end if								
+				end if //-- kết thúc: check match full--//
+				//-- check common values --//
+				if  vstr_dwo_related[1].s_main_obj_column_chk[li_idx] <> '' then
+					lb_update_orders = true
+					for li_idx2 = 1 to upperbound(las_main_chk_cols[])
+						if li_row = 1 then
+							laa_chk_data[li_idx2] = vads_copied[li_idx1].f_getitemany(li_row, las_main_chk_cols[li_idx2])
+						end if
+					next					
+				end if
+				//-- insert--//
+				ldb_id = this.f_create_id_ex( rt_transaction)
+				FOR li_colnbr= 1 to li_colCnt
+					ls_coltype = vads_copied[li_idx1].describe(las_from_cols[li_colnbr]+".coltype")
+					if left(ls_coltype, 5) = 'numbe' then
+						if las_from_cols[li_colnbr] = ls_from_match_cols then
+							ls_sql_values += "," + string(ldb_mat_val - ldb_matched_val)
+						else
+							if isnull(vads_copied[li_idx1].getitemnumber(li_row ,las_from_cols[li_colnbr])) then
+								ls_sql_values +=",NULL"
+							else	
+								ls_sql_values += "," + string(vads_copied[li_idx1].getitemnumber(li_row ,las_from_cols[li_colnbr]))
+							end if
+						end if
+					elseif left(ls_coltype, 5) = 'char(' then
+						if isnull(vads_copied[li_idx1].getitemstring(li_row ,las_from_cols[li_colnbr])) then
+							ls_sql_values +=",NULL"
+						else						
+							ls_sql_values += ",'" + string(vads_copied[li_idx1].getitemstring(li_row ,las_from_cols[li_colnbr]))+"'"
+						end if
+					elseif  left(ls_coltype, 5) = 'datet' then
+						if isnull(vads_copied[li_idx1].getitemdatetime(li_row ,las_from_cols[li_colnbr])) then
+							ls_sql_values +=",NULL"
+						else	
+							ls_sql_values += ",to_date('" + string(vads_copied[li_idx1].getitemdatetime(li_row ,las_from_cols[li_colnbr]),gs_w_date_format )+"','"+gs_w_date_format+"')"
+						end if
+					else
+						rollback using rt_transaction;
+						gf_messagebox('m.b_obj_instantiate.f_copy_to_so.02','Thông báo','Không tìm thấy cột khai báo:@'+las_from_cols[li_colnbr],'stop','ok',1)
+						return -1						
+					end if
+				NEXT
+				if upper(ls_update_table) = 'BOOKED_SLIP' then					
+					ls_sql_values += ",1,'PROD_ORDERS','DOCUMENT',"+string(ldb_t_doc_id) + "," +string(ldb_version_id) + ")"
+				elseif upper(ls_update_table) = 'PRODUCTION_LINE' then
+					ls_sql_values += ",'BOOKED_SLIP',"+string(ldb_version_id) + "," +string(ldb_id) + ")"
+				end if				
+				ls_sql_exec = ls_sql + ls_sql_values
+				EXECUTE immediate :ls_sql_exec using rt_transaction;				
+				ls_sql_values =''
+				//-- update matching --//
+				if vads_copied[li_idx1].dataobject = vstr_dwo_related[1].s_match_f_dwo[li_idx] then
+					ldb_f_branch_id =vads_copied[li_idx1].getitemnumber(li_row, 'branch_id')
+					ls_f_ref_table = upper(vads_copied[li_idx1].describe( "datawindow.table.update"))
+					ls_sql_exec = "INSERT into MATCHING(id, company_id, branch_id,created_by, created_date,last_mdf_by, last_mdf_date," +&
+										"F_REF_ID,T_REF_ID,MATCHING_DATE,F_DOC_ID,T_DOC_ID,F_BRANCH_ID,T_BRANCH_ID,"+&
+										"F_REF_TABLE,MATCH_TYPE,T_REF_TABLE,"+ls_mat_cols+")" +&
+							" VALUES( seq_table_id.nextval," +string(gi_user_comp_id) +","+string(ldb_branch )+","+string(gi_userid )+",sysdate"+","+string(gi_userid )+",sysdate" +&
+							","+string(ldb_f_ref_id )+","+string(ldb_id)+",sysdate,"+string(ldb_f_doc_id) +","+string(ldb_t_doc_id)+","+string(ldb_f_branch_id)+","+string(ldb_branch)+&
+							",'"+upper(ls_f_ref_table)+"','COPY','"+ upper(ls_update_table) +"'," +string(ldb_mat_val - ldb_matched_val)+ ")"
+										
+					EXECUTE immediate :ls_sql_exec using rt_transaction;
+					lb_copied = true
+				end if
+			NEXT
+			if lb_update_orders then
+				ls_sql_exec = "UPDATE orders set "
+				for li_idx2 = 1 to upperbound(las_related_chk_cols[])
+					
+					ls_data_tmp = string(laa_chk_data[li_idx2])
+					if pos(ls_data_tmp,';') > 0 then
+						ls_data_tmp = left(ls_data_tmp,pos(ls_data_tmp,';') -1)
+					end if
+					if li_idx2 = 1 then
+						ls_sql_exec += las_related_chk_cols[li_idx2] + "=" + ls_data_tmp
+					else
+						ls_sql_exec += ","+ las_related_chk_cols[li_idx2] + "=" + ls_data_tmp
+					end if
+				next
+				ls_sql_exec += ' where id = '+string(ldb_version_id)
+				EXECUTE immediate :ls_sql_exec using rt_transaction;
+			end if
+			exit //-- chỉ có 1 dw source -> 1 dw dest --//
+		end if		
+	NEXT
+	//-- ko có datastore dữ iệu copy--//		
+	if not lb_found then 
+		
+		lb_update_orders = false
+		lds_handle.dataobject = vstr_dwo_related[1].s_main_obj_dwo_copy[li_idx] 
+		ls_f_ref_table = upper(lds_handle.describe( "datawindow.table.update"))
+
+		laa_value[1] = ldb_f_version_id
+		if lower(ls_f_ref_table) = 'document' then
+			lds_handle.f_add_where( "version_id", laa_value[])
+		elseif upper(ls_f_ref_table) = 'BOOKED_SLIP' then
+			lds_handle.f_add_where( "id", laa_value[])
+		else
+			lds_handle.f_add_where( "object_ref_id", laa_value[])		
+			if upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) > li_idx then
+				lds_handle_detail = create t_ds_db
+				lds_handle_detail.dataobject =vstr_dwo_related[1].s_related_obj_dwo_copy[li_idx+1]
+				lds_handle_detail.f_add_where( "doc_version", laa_value[])	
+				lds_handle_detail.settransobject( rt_transaction)
+				lds_handle_detail.retrieve( )
+			end if
+		end if
+		lds_handle.settransobject( rt_transaction)
+		lds_handle.retrieve( )
+		FOR li_row = 1 to lds_handle.rowcount()
+			ldb_f_ref_id = lds_handle.getitemnumber(li_row, 'id')
+			//-- check match full--//
+			if lds_handle.dataobject = vstr_dwo_related[1].s_match_f_dwo[li_idx]  and vstr_dwo_related[1].b_chk_matched_qty then
+				ldb_mat_val = lds_handle.getitemnumber(li_row, ls_from_match_cols)
+				if isnull(ldb_mat_val) then ldb_mat_val = 0			
+				//////////////////////////////////////////////////////////////////////////////////
+				ldb_matched_val = this.f_get_matched_value(ls_mat_cols, ldb_f_ref_id, ls_update_table)
+				//////////////////////////////////////////////////////////////////////////////////				
+//				ldb_matched_val = rt_transaction.f_get_matched_value(ls_mat_cols, ldb_f_ref_id, ls_update_table)
+				if isnull(ldb_matched_val) then ldb_matched_val = 0
+				if ldb_matched_val >= ldb_mat_val then continue //-- đã copy hết --//
+				if vstr_dwo_related[1].s_match_f_col_obj[li_idx] <> '' then
+					 if isnull(lds_handle.getitemnumber(li_row, vstr_dwo_related[1].s_match_f_col_obj[li_idx])) then continue //-- chưa có mã hàng: bỏ qua ko copy --//
+				end if				
+			end if //-- kết thúc: check match full--//			
+			//-- check common values --//
+			if  vstr_dwo_related[1].s_main_obj_column_chk[li_idx] <> '' then
+				lb_update_orders = true
+				for li_idx2 = 1 to upperbound(las_main_chk_cols[])
+					if li_row = 1 then
+						laa_chk_data[li_idx2] = lds_handle.f_getitemany(li_row, las_main_chk_cols[li_idx2])
+					end if
+				next					
+			end if			
+			//-- insert--//
+			ldb_id = this.f_create_id_ex( rt_transaction)			
+			FOR li_colnbr= 1 to li_colCnt
+				ls_coltype = lds_handle.describe(las_from_cols[li_colnbr]+".coltype")
+				if left(ls_coltype, 5) = 'numbe' then
+					if las_from_cols[li_colnbr] = ls_from_match_cols then
+						ls_sql_values += "," + string(ldb_mat_val - ldb_matched_val)
+					else
+						if isnull(lds_handle.getitemnumber(li_row ,las_from_cols[li_colnbr])) then
+							ls_sql_values +=",NULL"
+						else
+							ls_sql_values += "," + string(lds_handle.getitemnumber(li_row ,las_from_cols[li_colnbr]))
+						end if
+					end if
+				elseif left(ls_coltype, 5) = 'char(' then
+					if isnull(lds_handle.getitemstring(li_row ,las_from_cols[li_colnbr])) then
+						ls_sql_values +=",NULL"
+					else
+						ls_sql_values += ",'" + string(lds_handle.getitemstring(li_row ,las_from_cols[li_colnbr]))+"'"
+					end if
+				elseif  left(ls_coltype, 5) = 'datet' then
+					if isnull(lds_handle.getitemdatetime(li_row ,las_from_cols[li_colnbr])) then
+						ls_sql_values +=",NULL"
+					else
+						ls_sql_values += ",to_date('" + string(lds_handle.getitemdatetime(li_row ,las_from_cols[li_colnbr]),gs_w_date_format )+"','"+gs_w_date_format+"')"
+					end if
+				else
+					rollback using rt_transaction;
+					gf_messagebox('m.b_obj_instantiate.f_copy_to_so.02','Thông báo','Không tìm thấy cột khai báo:@'+las_from_cols[li_colnbr],'stop','ok',1)
+					return -1							
+				end if				
+			NEXT
+			if upper(ls_update_table) = 'BOOKED_SLIP' then
+				ls_sql_values += ",1,'PROD_ORDERS','DOCUMENT',"+string(ldb_t_doc_id) + "," +string(ldb_version_id) + ")"
+			else
+				ls_sql_values += ",'BOOKED_SLIP',"+string(ldb_version_id) + "," +string(ldb_id) + ")"
+			end if				
+			ls_sql_exec = ls_sql + ls_sql_values
+			EXECUTE immediate :ls_sql_exec using rt_transaction;			
+			ls_sql_values =''			
+			//-- update matching --//
+			if lds_handle.dataobject = vstr_dwo_related[1].s_match_f_dwo[li_idx] then
+				ldb_f_branch_id =lds_handle.getitemnumber(li_row, 'branch_id')
+				ls_f_ref_table = upper(lds_handle.describe( "datawindow.table.update"))
+				ls_sql_exec = "INSERT into MATCHING(id, company_id, branch_id,created_by, created_date,last_mdf_by, last_mdf_date," +&
+									"F_REF_ID,T_REF_ID,MATCHING_DATE,F_DOC_ID,T_DOC_ID,F_BRANCH_ID,T_BRANCH_ID,"+&
+									"F_REF_TABLE,MATCH_TYPE,T_REF_TABLE ,"+ls_mat_cols+")" +&
+						" VALUES( seq_table_id.nextval," +string(gi_user_comp_id) +","+string(ldb_branch )+","+string(gi_userid )+",sysdate"+","+string(gi_userid )+",sysdate" +&
+						","+string(ldb_f_ref_id )+","+string(ldb_id)+",sysdate,"+string(ldb_f_doc_id) +","+string(ldb_t_doc_id)+","+string(ldb_f_branch_id)+","+string(ldb_branch)+&
+						",'"+upper(ls_f_ref_table)+"','COPY','"+ upper(ls_update_table)+"'," +string(ldb_mat_val - ldb_matched_val)+ ")"
+									
+				EXECUTE immediate :ls_sql_exec using rt_transaction;			
+				lb_copied = true
+			end if
+			//-- insert LOT Line --//
+			if upper(ls_update_table) = 'PRODUCTION_LINE' then
+				
+				if isvalid(lds_handle_detail) then
+					lds_handle_detail.setfilter( "object_ref_id="+string(ldb_f_ref_id))
+					lds_handle_detail.filter( )
+					FOR li_row_detail = 1 to lds_handle_detail.rowcount( )
+						ldb_id_detail = this.f_create_id_ex( rt_transaction)			
+						FOR li_colnbr= 1 to li_colCnt_detail
+							ls_coltype = lds_handle_detail.describe(las_from_cols_detail[li_colnbr]+".coltype")
+							if left(ls_coltype, 5) = 'numbe' then
+				
+								if isnull(lds_handle_detail.getitemnumber(li_row_detail ,las_from_cols_detail[li_colnbr])) then
+									ls_sql_values +=",NULL"
+								else
+									ls_sql_values += "," + string(lds_handle_detail.getitemnumber(li_row_detail ,las_from_cols_detail[li_colnbr]))
+								end if
+	
+							elseif left(ls_coltype, 5) = 'char(' then
+								if isnull(lds_handle_detail.getitemstring(li_row_detail ,las_from_cols_detail[li_colnbr])) then
+									ls_sql_values +=",NULL"
+								else
+									ls_sql_values += ",'" + string(lds_handle_detail.getitemstring(li_row_detail ,las_from_cols_detail[li_colnbr]))+"'"
+								end if
+							elseif  left(ls_coltype, 5) = 'datet' then
+								if isnull(lds_handle_detail.getitemdatetime(li_row_detail ,las_from_cols_detail[li_colnbr])) then
+									ls_sql_values +=",NULL"
+								else
+									ls_sql_values += ",to_date('" + string(lds_handle_detail.getitemdatetime(li_row_detail ,las_from_cols_detail[li_colnbr]),gs_w_date_format )+"','"+gs_w_date_format+"')"
+								end if
+							else
+								rollback using rt_transaction;
+								gf_messagebox('m.b_obj_instantiate.f_copy_to_so.02','Thông báo','Không tìm thấy cột khai báo:@'+las_from_cols_detail[li_colnbr],'stop','ok',1)
+								return -1									
+							end if				
+						NEXT
+	
+						ls_sql_values += ",'PRODUCTION_LINE',"+string(ldb_id) + "," +string(ldb_id_detail) + "," + string(ldb_version_id) +")"
+			
+						ls_sql_exec = ls_sql_detail + ls_sql_values
+						EXECUTE immediate :ls_sql_exec using rt_transaction;		
+						ls_sql_values = ''
+					NEXT
+					
+				end if //-- kết thúc inser LOT LINE --//
+				
+
+			end if
+						
+		NEXT				
+		if lb_update_orders then
+			ls_sql_exec = "UPDATE orders set "
+			for li_idx2 = 1 to upperbound(las_related_chk_cols[])
+				
+				ls_data_tmp = string(laa_chk_data[li_idx2])
+				if pos(ls_data_tmp,';') > 0 then
+					ls_data_tmp = left(ls_data_tmp,pos(ls_data_tmp,';') -1)
+				end if
+				if li_idx2 = 1 then
+					ls_sql_exec += las_related_chk_cols[li_idx2] + "=" + ls_data_tmp
+				else
+					ls_sql_exec += ","+ las_related_chk_cols[li_idx2] + "=" + ls_data_tmp
+				end if
+			next
+			ls_sql_exec += ' where id = '+string(ldb_version_id)
+			EXECUTE immediate :ls_sql_exec using rt_transaction;
+		end if		
+	end if //--kết thúc: ko có datastore dữ iệu copy--//	
+NEXT
+destroy lds_handle
+if lb_copied then
+	commit using rt_transaction;
+else
+	rollback using rt_transaction;
+	gf_messagebox('m.b_obj_instantiate.f_copy_to_so.03','Thông báo','Phiếu đã kết hết','stop','ok',1)
+	return 0
+end if
+
+return ldb_t_doc_id
 end function
 
 on b_obj_instantiate.create
