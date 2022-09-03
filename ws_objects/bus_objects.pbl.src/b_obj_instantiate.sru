@@ -21333,6 +21333,7 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) - 1
 					 if isnull(lds_handle.getitemnumber(li_row, vstr_dwo_related[1].s_match_f_col_obj[li_idx])) then continue //-- chưa có mã hàng: bỏ qua ko copy --//
 				end if				
 			end if //-- kết thúc: check match full--//			
+						
 			//-- check common values --//
 			if  vstr_dwo_related[1].s_main_obj_column_chk[li_idx] <> '' then
 				lb_update_orders = true
@@ -21342,9 +21343,12 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) - 1
 					end if
 				next					
 			end if			
+			
 			//-- insert--//
 			ldb_id = this.f_create_id_ex( rt_transaction)			
 			FOR li_colnbr= 1 to li_colCnt
+				//-- check sum cols --//
+				
 				ls_coltype = lds_handle.describe(las_from_cols[li_colnbr]+".coltype")
 				if left(ls_coltype, 5) = 'numbe' then
 					if las_from_cols[li_colnbr] = ls_from_match_cols then
@@ -21374,6 +21378,9 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) - 1
 					return -1							
 				end if				
 			NEXT
+			
+			//-- check sum data --//
+			
 			if upper(ls_update_table) = 'BOOKED_SLIP' then
 				ls_sql_values += ",1,'PROD_ORDERS','DOCUMENT',"+string(ldb_t_doc_id) + "," +string(ldb_version_id) + ")"
 			else
@@ -21397,8 +21404,7 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) - 1
 				lb_copied = true
 			end if
 			//-- insert LOT Line --//
-			if upper(ls_update_table) = 'PRODUCTION_LINE' then
-				
+			if upper(ls_update_table) = 'PRODUCTION_LINE' then				
 				if isvalid(lds_handle_detail) then
 					lds_handle_detail.setfilter( "object_ref_id="+string(ldb_f_ref_id))
 					lds_handle_detail.filter( )
@@ -21440,12 +21446,11 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) - 1
 						ls_sql_values = ''
 					NEXT
 					
-				end if //-- kết thúc inser LOT LINE --//
-				
-
-			end if
-						
+				end if //-- kết thúc inser LOT LINE --//				
+			end if						
 		NEXT				
+		if isvalid(lds_handle_detail) then destroy lds_handle_detail
+		
 		if lb_update_orders then
 			ls_sql_exec = "UPDATE orders set "
 			for li_idx2 = 1 to upperbound(las_related_chk_cols[])
