@@ -1520,15 +1520,15 @@ ic_obj_handling.ib_copying = true
 ic_obj_handling.is_copy_type = 'copyt'
 //get data de build where related
 ic_obj_handling.f_get_data_related(ls_obj_name, lstr_data_related[]) 
-if ic_obj_handling.classname( )=ls_obj_name then
-	ll_find=ldw_main.find("gutter = 'Y'", 1, ldw_main.rowcount())
-	if ll_find=0 then 
-		gf_messagebox('m.s_w_multi.e_copy_to_new.01','Thông báo','Phải tích chọn phiếu cần nhân bản','exclamation','ok',1)
-		ic_obj_handling.ib_copying = false
-		disconnect using it_transaction;
-		return 0
-	end if
-end if
+//if ic_obj_handling.classname( )=ls_obj_name then
+//	ll_find=ldw_main.find("gutter = 'Y'", 1, ldw_main.rowcount())
+//	if ll_find=0 then 
+//		gf_messagebox('m.s_w_multi.e_copy_to_new.01','Thông báo','Phải tích chọn phiếu cần nhân bản','exclamation','ok',1)
+//		ic_obj_handling.ib_copying = false
+//		disconnect using it_transaction;
+//		return 0
+//	end if
+//end if
 //build where related
 this.f_build_data_related( lstr_data_related[])  //
 
@@ -1567,10 +1567,11 @@ if this.f_get_data_copied_ex( lads_copied[],lstr_related,'copyt',ls_obj_name) > 
 	else /////////--- nhan ban--//////////////
 		if upper(ldw_main.describe("DataWindow.table.UpdateTable") ) = 'DOCUMENT'  then
 			ldb_rtn = lbo_ins.f_copy_to( ic_obj_handling.classname( ),ls_obj_name, lstr_data_related[], lads_copied[], it_transaction ,ic_obj_handling.idwsetup_initial )	
-			
+			ic_obj_handling.event e_window_e_postcopy_to(vs_btn_name, ldb_rtn, lstr_data_related[])
 			ldw_main.event e_refresh( )
 			ll_find= ldw_main.find("id ="+string(ldb_rtn), 1, ldw_main.rowcount( ))
 			if ll_find > 0 then	ldw_main.scrolltorow(ll_find )
+			
 			disconnect using it_transaction;
 		else
 			disconnect using it_transaction;
@@ -7218,9 +7219,9 @@ if ic_obj_handling.dynamic f_is_changed_dwo_4edit()  then
 	this.ib_saving =  false
 	idw_focus.setfocus( )	
 	//-- change button --//
-	ic_obj_handling.f_change_action_button(t_w_mdi.rbb_1, 'e_save')
+//	ic_obj_handling.f_change_action_button(t_w_mdi.rbb_1, 'e_save')
 	//-- enbale button--//
-	ic_obj_handling.f_ctrl_enable_button(t_w_mdi.rbb_1 , ldw_main)
+//	ic_obj_handling.f_ctrl_enable_button(t_w_mdi.rbb_1 , ldw_main)
 	return 1
 end if
 
@@ -7549,6 +7550,7 @@ if li_rtn = -1 then
 end if
 //ic_obj_handling.f_ctrl_actionbuttons( idw_focus)
 //this.event e_display_actionbutton( )
+t_w_mdi.rbb_1.f_change_action_button('e_modify')
 this.f_ctrl_enable_button(idw_focus)
 return idw_focus.setfocus( )
 
@@ -7574,6 +7576,7 @@ end if
 if ic_obj_handling.f_get_ib_copying( ) then ic_obj_handling.f_set_ib_copying( false)
 //ic_obj_handling.f_ctrl_actionbuttons( idw_focus)
 //this.event e_display_actionbutton( )
+t_w_mdi.rbb_1.f_change_action_button('e_save')
 this.f_ctrl_enable_button(  idw_focus)
 return idw_focus.setfocus( )
 
@@ -7729,6 +7732,14 @@ else
 	t_w_mdi.is_active_win_name = this.is_win_name		
 end if
 return 0
+end event
+
+event e_filteroff;call super::e_filteroff;
+
+if idw_focus.dynamic f_isgrid( ) = false then
+	ic_obj_handling.f_ctrl_enable_button( t_w_mdi.rbb_1, idw_focus)
+end if
+return ancestorreturnvalue
 end event
 
 type st_1 from s_w_main`st_1 within s_w_multi_rb

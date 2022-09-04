@@ -1390,14 +1390,14 @@ choose case itemtag
 			choose case itemtag
 				case 'e_modify'
 					li_rtn = lw_handle. dynamic event e_modify()
-					if li_rtn <> -1 then
-						this.f_change_action_button( itemhandle, index, 0)
-					end if					
+//					if li_rtn <> -1 then
+//						this.f_change_action_button( itemhandle, index, 0)
+//					end if					
 				case 'e_save'
 					li_rtn = lw_handle. dynamic event e_save()
-					if li_rtn <> -1 then
-						this.f_change_action_button( itemhandle, index, 0)
-					end if					
+//					if li_rtn <> -1 then
+//						this.f_change_action_button( itemhandle, index, 0)
+//					end if					
 				case 'e_post'
 					li_rtn = lw_handle. dynamic event e_post()
 					if li_rtn <> -1 then
@@ -1422,7 +1422,7 @@ choose case itemtag
 			end choose				
 			
 		end if
-	case 'e_self_copy'
+	case 'b_self_copy'
 		lw_handle = parent.getactivesheet( )
 		if isvalid(lw_handle) then
 			lw_handle.dynamic event e_copy_to_new('b_copyt_self')

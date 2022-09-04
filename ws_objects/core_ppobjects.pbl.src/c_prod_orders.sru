@@ -238,10 +238,10 @@ istr_dwo[2].b_detail = true
 istr_dwo[2].b_cascade_del = true
 istr_dwo[2].s_dwo_master = 'd_document_prod_grid;'
 istr_dwo[2].s_dwo_details = 'd_lot_line_kd_grid;d_prod_material_grid;d_prod_resource_grid'
-istr_dwo[2].s_master_keycol = 'version_id;'
-istr_dwo[2].s_detail_keycol = 'OBJECT_REF_ID;'
+istr_dwo[2].s_master_keycol = 'version_id;OBJECT_REF_TABLE;'
+istr_dwo[2].s_detail_keycol = 'OBJECT_REF_ID;OBJECT_REF_TABLE;'
 istr_dwo[2].b_ref_table_yn  = false
-istr_dwo[2].s_ref_table_field = 'OBJECT_REF_TABLE;'
+istr_dwo[2].s_ref_table_field = ''
 istr_dwo[2].b_relation_1_1 = false
 istr_dwo[2].b_insert = true
 istr_dwo[2].b_update = true
@@ -1768,7 +1768,7 @@ b_obj_instantiate	lbo_ins
 ldw_main = iw_display.f_get_dwmain( )
 
 ls_status = ldw_main.getitemstring(ldw_main.getrow(), 'status')
-if ls_status = 'planned' then
+if ls_status = 'planned' or  ls_status = 'new' then
 	ldb_doc_id =  ldw_main.getitemnumber(ldw_main.getrow(), 'id')
 	ldb_version_id = ldw_main.getitemnumber(ldw_main.getrow(), 'version_id')
 	select count(id) into :li_cnt from matching where f_doc_id = :ldb_doc_id using it_transaction;
@@ -1809,7 +1809,7 @@ if ls_status = 'planned' then
 		delete production_resource where doc_version = :ldb_version_id using it_transaction;
 	end if
 else
-	gf_messagebox('m.c_prod_orders.e_dw_e_predelete.01','Thông báo','Chỉ xoá được lệnh có trạng thái là "Kế hoạch" !','information','ok',1)
+	gf_messagebox('m.c_prod_orders.e_dw_e_predelete.01','Thông báo','Chỉ xoá được lệnh có trạng thái là "Kế hoạch" hoặc "Mới" !','information','ok',1)
 	return -1
 end if
 
