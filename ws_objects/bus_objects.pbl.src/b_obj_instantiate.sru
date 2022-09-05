@@ -16462,7 +16462,18 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) - 1 
 						if isnull(vads_copied[li_idx1].getitemstring(li_row ,las_from_cols[li_colnbr])) then
 							ls_sql_values +=",NULL"
 						else						
-							ls_sql_values += ",'" + vads_copied[li_idx1].getitemstring(li_row ,las_from_cols[li_colnbr]) +"'"
+							ls_data_tmp = vads_copied[li_idx1].getitemstring(li_row ,las_from_cols[li_colnbr])
+							if pos(ls_data_tmp, "'") > 0 and pos(ls_data_tmp, "''") > 0 then
+								ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"'", "?")
+								ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"''", "''''")
+								ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"?", "''")
+							elseif  pos(ls_data_tmp, "'") > 0 then
+								ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"'", "''")
+							elseif  pos(ls_data_tmp, "''") > 0 then
+								ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"''", "''''")
+							end if												
+							ls_sql_values += ",'" + ls_data_tmp +"'"							
+//							ls_sql_values += ",'" + vads_copied[li_idx1].getitemstring(li_row ,las_from_cols[li_colnbr]) +"'"
 						end if
 					elseif  left(ls_coltype, 5) = 'datet' then
 						if isnull(vads_copied[li_idx1].getitemdatetime(li_row ,las_from_cols[li_colnbr])) then
@@ -16491,7 +16502,7 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) - 1 
 								elseif left(ls_coltype, 5) = 'char(' then
 									if isnull(lsa_values[li_colnbr])  then
 										ls_sql_values +=",NULL"
-									else	
+									else											
 										ls_sql_values += ",'" +  lsa_values[li_colnbr] + "'"
 									end if											
 								end if
@@ -16618,7 +16629,18 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) - 1 
 					if isnull(lds_handle.getitemstring(li_row ,las_from_cols[li_colnbr])) then
 						ls_sql_values +=",NULL"
 					else
-						ls_sql_values += ",'" + string(lds_handle.getitemstring(li_row ,las_from_cols[li_colnbr]))+"'"
+						ls_data_tmp = lds_handle.getitemstring(li_row ,las_from_cols[li_colnbr])
+						if pos(ls_data_tmp, "'") > 0 and pos(ls_data_tmp, "''") > 0 then
+							ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"'", "?")
+							ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"''", "''''")
+							ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"?", "''")
+						elseif  pos(ls_data_tmp, "'") > 0 then
+							ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"'", "''")
+						elseif  pos(ls_data_tmp, "''") > 0 then
+							ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"''", "''''")
+						end if												
+						ls_sql_values += ",'" + ls_data_tmp +"'"						
+//						ls_sql_values += ",'" + string(lds_handle.getitemstring(li_row ,las_from_cols[li_colnbr]))+"'"
 					end if
 				elseif  left(ls_coltype, 5) = 'datet' then
 					if isnull(lds_handle.getitemdatetime(li_row ,las_from_cols[li_colnbr])) then
@@ -16681,7 +16703,18 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) - 1 
 							if isnull(lds_handle_detail.getitemstring(li_row_detail ,las_from_cols_detail[li_colnbr])) then
 								ls_sql_values +=",NULL"
 							else
-								ls_sql_values += ",'" + string(lds_handle_detail.getitemstring(li_row_detail ,las_from_cols_detail[li_colnbr]))+"'"
+								ls_data_tmp = lds_handle_detail.getitemstring(li_row_detail ,las_from_cols_detail[li_colnbr])
+								if pos(ls_data_tmp, "'") > 0 and pos(ls_data_tmp, "''") > 0 then
+									ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"'", "?")
+									ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"''", "''''")
+									ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"?", "''")
+								elseif  pos(ls_data_tmp, "'") > 0 then
+									ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"'", "''")
+								elseif  pos(ls_data_tmp, "''") > 0 then
+									ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"''", "''''")
+								end if												
+								ls_sql_values += ",'" + ls_data_tmp +"'"								
+//								ls_sql_values += ",'" + string(lds_handle_detail.getitemstring(li_row_detail ,las_from_cols_detail[li_colnbr]))+"'"
 							end if
 						elseif  left(ls_coltype, 5) = 'datet' then
 							if isnull(lds_handle_detail.getitemdatetime(li_row_detail ,las_from_cols_detail[li_colnbr])) then
@@ -20430,7 +20463,18 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) - 1
 						if isnull(vads_copied[li_idx1].getitemstring(li_row ,las_from_cols[li_colnbr])) then
 							ls_sql_values +=",NULL"
 						else						
-							ls_sql_values += ",'" + string(vads_copied[li_idx1].getitemstring(li_row ,las_from_cols[li_colnbr]))+"'"
+							ls_data_tmp = vads_copied[li_idx1].getitemstring(li_row ,las_from_cols[li_colnbr])
+							if pos(ls_data_tmp, "'") > 0 and pos(ls_data_tmp, "''") > 0 then
+								ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"'", "?")
+								ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"''", "''''")
+								ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"?", "''")
+							elseif  pos(ls_data_tmp, "'") > 0 then
+								ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"'", "''")
+							elseif  pos(ls_data_tmp, "''") > 0 then
+								ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"''", "''''")
+							end if												
+							ls_sql_values += ",'" + ls_data_tmp +"'"							
+//							ls_sql_values += ",'" + string(vads_copied[li_idx1].getitemstring(li_row ,las_from_cols[li_colnbr]))+"'"
 						end if
 					elseif  left(ls_coltype, 5) = 'datet' then
 						if isnull(vads_copied[li_idx1].getitemdatetime(li_row ,las_from_cols[li_colnbr])) then
@@ -20561,7 +20605,18 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) - 1
 					if isnull(lds_handle.getitemstring(li_row ,las_from_cols[li_colnbr])) then
 						ls_sql_values +=",NULL"
 					else
-						ls_sql_values += ",'" + string(lds_handle.getitemstring(li_row ,las_from_cols[li_colnbr]))+"'"
+						ls_data_tmp = lds_handle.getitemstring(li_row ,las_from_cols[li_colnbr])
+						if pos(ls_data_tmp, "'") > 0 and pos(ls_data_tmp, "''") > 0 then
+							ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"'", "?")
+							ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"''", "''''")
+							ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"?", "''")
+						elseif  pos(ls_data_tmp, "'") > 0 then
+							ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"'", "''")
+						elseif  pos(ls_data_tmp, "''") > 0 then
+							ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"''", "''''")
+						end if												
+						ls_sql_values += ",'" + ls_data_tmp +"'"						
+//						ls_sql_values += ",'" + string(lds_handle.getitemstring(li_row ,las_from_cols[li_colnbr]))+"'"
 					end if
 				elseif  left(ls_coltype, 5) = 'datet' then
 					if isnull(lds_handle.getitemdatetime(li_row ,las_from_cols[li_colnbr])) then
@@ -20619,7 +20674,18 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) - 1
 								if isnull(lds_handle_detail.getitemstring(li_row_detail ,las_from_cols_detail[li_colnbr])) then
 									ls_sql_values +=",NULL"
 								else
-									ls_sql_values += ",'" + string(lds_handle_detail.getitemstring(li_row_detail ,las_from_cols_detail[li_colnbr]))+"'"
+									ls_data_tmp = lds_handle_detail.getitemstring(li_row_detail ,las_from_cols_detail[li_colnbr])
+									if pos(ls_data_tmp, "'") > 0 and pos(ls_data_tmp, "''") > 0 then
+										ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"'", "?")
+										ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"''", "''''")
+										ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"?", "''")
+									elseif  pos(ls_data_tmp, "'") > 0 then
+										ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"'", "''")
+									elseif  pos(ls_data_tmp, "''") > 0 then
+										ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"''", "''''")
+									end if												
+									ls_sql_values += ",'" + ls_data_tmp +"'"									
+//									ls_sql_values += ",'" + string(lds_handle_detail.getitemstring(li_row_detail ,las_from_cols_detail[li_colnbr]))+"'"
 								end if
 							elseif  left(ls_coltype, 5) = 'datet' then
 								if isnull(lds_handle_detail.getitemdatetime(li_row_detail ,las_from_cols_detail[li_colnbr])) then
@@ -20662,7 +20728,18 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) - 1
 								if isnull(lds_handle_detail2.getitemstring(li_row_detail ,las_from_cols_detail2[li_colnbr])) then
 									ls_sql_values +=",NULL"
 								else
-									ls_sql_values += ",'" + string(lds_handle_detail2.getitemstring(li_row_detail ,las_from_cols_detail2[li_colnbr]))+"'"
+									ls_data_tmp = lds_handle_detail2.getitemstring(li_row_detail ,las_from_cols_detail2[li_colnbr])
+									if pos(ls_data_tmp, "'") > 0 and pos(ls_data_tmp, "''") > 0 then
+										ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"'", "?")
+										ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"''", "''''")
+										ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"?", "''")
+									elseif  pos(ls_data_tmp, "'") > 0 then
+										ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"'", "''")
+									elseif  pos(ls_data_tmp, "''") > 0 then
+										ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"''", "''''")
+									end if												
+									ls_sql_values += ",'" + ls_data_tmp +"'"											
+//									ls_sql_values += ",'" + string(lds_handle_detail2.getitemstring(li_row_detail ,las_from_cols_detail2[li_colnbr]))+"'"
 								end if
 							elseif  left(ls_coltype, 5) = 'datet' then
 								if isnull(lds_handle_detail2.getitemdatetime(li_row_detail ,las_from_cols_detail2[li_colnbr])) then
@@ -21236,7 +21313,18 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) - 1
 						if isnull(vads_copied[li_idx1].getitemstring(li_row ,las_from_cols[li_colnbr])) then
 							ls_sql_values +=",NULL"
 						else						
-							ls_sql_values += ",'" + string(vads_copied[li_idx1].getitemstring(li_row ,las_from_cols[li_colnbr]))+"'"
+							ls_data_tmp = vads_copied[li_idx1].getitemstring(li_row ,las_from_cols[li_colnbr])
+							if pos(ls_data_tmp, "'") > 0 and pos(ls_data_tmp, "''") > 0 then
+								ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"'", "?")
+								ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"''", "''''")
+								ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"?", "''")
+							elseif  pos(ls_data_tmp, "'") > 0 then
+								ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"'", "''")
+							elseif  pos(ls_data_tmp, "''") > 0 then
+								ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"''", "''''")
+							end if												
+							ls_sql_values += ",'" + ls_data_tmp +"'"							
+//							ls_sql_values += ",'" + string(vads_copied[li_idx1].getitemstring(li_row ,las_from_cols[li_colnbr]))+"'"
 						end if
 					elseif  left(ls_coltype, 5) = 'datet' then
 						if isnull(vads_copied[li_idx1].getitemdatetime(li_row ,las_from_cols[li_colnbr])) then
@@ -21364,7 +21452,18 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) - 1
 					if isnull(lds_handle.getitemstring(li_row ,las_from_cols[li_colnbr])) then
 						ls_sql_values +=",NULL"
 					else
-						ls_sql_values += ",'" + string(lds_handle.getitemstring(li_row ,las_from_cols[li_colnbr]))+"'"
+						ls_data_tmp = lds_handle.getitemstring(li_row ,las_from_cols[li_colnbr])
+						if pos(ls_data_tmp, "'") > 0 and pos(ls_data_tmp, "''") > 0 then
+							ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"'", "?")
+							ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"''", "''''")
+							ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"?", "''")
+						elseif  pos(ls_data_tmp, "'") > 0 then
+							ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"'", "''")
+						elseif  pos(ls_data_tmp, "''") > 0 then
+							ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"''", "''''")
+						end if												
+						ls_sql_values += ",'" + ls_data_tmp +"'"						
+//						ls_sql_values += ",'" + string(lds_handle.getitemstring(li_row ,las_from_cols[li_colnbr]))+"'"
 					end if
 				elseif  left(ls_coltype, 5) = 'datet' then
 					if isnull(lds_handle.getitemdatetime(li_row ,las_from_cols[li_colnbr])) then
@@ -21424,7 +21523,18 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) - 1
 								if isnull(lds_handle_detail.getitemstring(li_row_detail ,las_from_cols_detail[li_colnbr])) then
 									ls_sql_values +=",NULL"
 								else
-									ls_sql_values += ",'" + string(lds_handle_detail.getitemstring(li_row_detail ,las_from_cols_detail[li_colnbr]))+"'"
+									ls_data_tmp = lds_handle_detail.getitemstring(li_row_detail ,las_from_cols_detail[li_colnbr])
+									if pos(ls_data_tmp, "'") > 0 and pos(ls_data_tmp, "''") > 0 then
+										ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"'", "?")
+										ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"''", "''''")
+										ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"?", "''")
+									elseif  pos(ls_data_tmp, "'") > 0 then
+										ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"'", "''")
+									elseif  pos(ls_data_tmp, "''") > 0 then
+										ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"''", "''''")
+									end if												
+									ls_sql_values += ",'" + ls_data_tmp +"'"									
+//									ls_sql_values += ",'" + string(lds_handle_detail.getitemstring(li_row_detail ,las_from_cols_detail[li_colnbr]))+"'"
 								end if
 							elseif  left(ls_coltype, 5) = 'datet' then
 								if isnull(lds_handle_detail.getitemdatetime(li_row_detail ,las_from_cols_detail[li_colnbr])) then

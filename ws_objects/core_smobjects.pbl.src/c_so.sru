@@ -635,8 +635,8 @@ istr_dwo_related[8].s_main_obj_column_chk[2] = ''
 istr_dwo_related[8].s_related_obj_column_chk[2] = ''
 istr_dwo_related[8].s_main_obj_column_sum[2] = 'qty;'
 istr_dwo_related[8].s_related_obj_column_sum[2] = 'plan_qty;'
-istr_dwo_related[8].s_f_obj_column_chk[2] = 'ITEM_ID;'
-istr_dwo_related[8].s_t_obj_column_chk[2] = 'OBJECT_ID;'
+istr_dwo_related[8].s_f_obj_column_chk[2] = 'ITEM_ID;spec_id;TRANS_UOM;'
+istr_dwo_related[8].s_t_obj_column_chk[2] = 'OBJECT_ID;SPEC_ID;TRANS_UOM;'
 istr_dwo_related[8].b_copy_line[2] = true
 // khai báo cập nhật bản matching
 istr_dwo_related[8].s_match_f_dwo[2] = 'd_so_line_grid'
