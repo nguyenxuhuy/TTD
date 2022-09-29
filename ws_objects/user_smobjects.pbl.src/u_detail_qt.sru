@@ -253,19 +253,26 @@ string				ls_upd_colname, ls_sql, ls_dataStr
 b_obj_instantiate			lb_obj
 t_dw_mpl					ldw_handle
 
+
+if rpo_dw.dynamic f_get_ib_saving() = false then
+	connect using it_transaction;
+end if				
 choose case vs_colname
+
 	case 'item_code'
 		//-- check spec khách hàng --//
 		ldb_item_id = rpo_dw.getitemnumber( vl_currentrow, 'item_id' )
-		connect using it_transaction;
+//		connect using it_transaction;
 		select count(id) into :li_cnt from item_spec where object_ref_id = :ldb_item_id and spec_group = :idb_cust_id using it_transaction;
-		disconnect using it_transaction;
+//		disconnect using it_transaction;
 		if li_cnt = 0 then
 			if gf_messagebox('m.u_detail_qt.e_dw_e_itemchanged.01','Thông báo','Hình thể chưa có làm phiếu mẫu với khách hàng, bạn tiếp tục hay không?','question','yesno',2) = 2 then
 				return 1
 			end if				
 		end if
 		//---------------------------------//
+
+		
 		vs_colname = 'price'
 		vs_editdata = string(rpo_dw.getitemnumber(vl_currentrow, 'price'))
 		
@@ -312,7 +319,9 @@ choose case vs_colname
 		ldw_handle = rpo_dw
 		if lb_obj.f_update_line_itemchanged_ex( vs_colname, vs_editdata , ls_upd_colname,vl_currentrow , ldw_handle, it_transaction , istr_currency) = -1 then return 1			
 end choose
-
+if rpo_dw.dynamic f_get_ib_saving() = false then
+	disconnect using it_transaction;
+end if	
 return 0
 end event
 

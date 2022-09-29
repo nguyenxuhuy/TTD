@@ -10099,7 +10099,7 @@ int						li_colCnt, li_idx
 c_string				lc_string
 c_unit_instance		lc_unit
 
-//if not rdw_line.ib_excel_copying and rdw_line.f_get_ib_saving() = false then
+//if not rdw_line.ib_excel_copying and not rdw_line.f_get_ib_saving() and rdw_line.f_get_ib_editing() then
 //	connect using rt_transaction;
 //end if
  //-- chuẩn bị cho làm tròn  --//
@@ -10695,7 +10695,7 @@ FOR li_idx = 1 to li_colCnt
 	end if						
 NEXT
 
-//if not rdw_line.ib_excel_copying then
+//if not rdw_line.ib_excel_copying and not rdw_line.f_get_ib_saving() and rdw_line.f_get_ib_editing() then
 //	disconnect using rt_transaction;
 //end if
 return 1
