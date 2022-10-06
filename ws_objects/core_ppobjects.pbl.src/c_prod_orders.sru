@@ -1505,8 +1505,12 @@ if isvalid(ldw_main) then
 end if
 end event
 
-event e_dw_e_itemchanged;call super::e_dw_e_itemchanged;
+event e_dw_e_itemchanged;call super::e_dw_e_itemchanged;double		ldb_item_id, ldb_spec_id, ldb_customer_id
+long			ll_row
+int				li_cnt
 date 			ld_doc_Date
+t_dw_mpl	ldw_handle
+
 if ancestorreturnvalue = 1 then return 1
 
 if pos(rpo_dw.dataobject, 'd_document_prod_') > 0  then
@@ -1514,6 +1518,23 @@ if pos(rpo_dw.dataobject, 'd_document_prod_') > 0  then
 	if vs_colname = 'document_date' then
 		rpo_dw.setitem(vl_currentrow, 'trans_date',date( vs_editdata))
 		
+	end if
+	if vs_colname = 'cust_code' then
+		//-- check and update SPEC --//
+		ldb_customer_id = rpo_dw.getitemnumber(vl_currentrow, 'dr_cr_object')
+		ldw_handle = iw_display.f_get_dw( 'd_prod_line_kd_grid')
+		FOR ll_row = 1 to ldw_handle.rowcount()
+			ldb_item_id = ldw_handle.getitemnumber(ll_row, 'object_id') 
+			ldb_spec_id = ldw_handle.getitemnumber(ll_row, 'spec_id') 
+			if isnull(ldb_spec_id) then continue
+			
+			select count(id) into :li_cnt
+			from item_spec where id = :ldb_spec_id and object_ref_id = :ldb_item_id and spec_group = :ldb_customer_id using it_transaction;		
+			if li_cnt = 0 then 
+				setnull(ldb_spec_id)
+				ldw_handle.setitem(ll_row, 'spec_id', ldb_spec_id) 
+			end if
+		NEXT		
 	end if
 end if
 
@@ -1530,13 +1551,13 @@ event e_cbx_clicked;call super::e_cbx_clicked;//if rcbx_handling.checked then
 return 0
 end event
 
-event e_dw_e_postsave;call super::e_dw_e_postsave;double		ldb_customer_id, ldb_doc_id, ldb_extend_id, ldb_base_curr_id, ldb_item_id, ldb_spec_id, ldb_line_id, ldb_lot_id
+event e_dw_e_postsave;call super::e_dw_e_postsave;double		ldb_customer_id, ldb_doc_id, ldb_extend_id, ldb_base_curr_id, ldb_item_id, ldb_spec_id, ldb_line_id, ldb_lot_id, ldb_spec_grp
 long			ll_scrap_pct, ll_row
 int				li_cnt, li_idx
 string			ls_alloc_yn, ls_currCode, ls_currName, ls_qty_yn, ls_val_yn, ls_ref_no
 date			ld_trans_date
 b_obj_instantiate		lbo_ins
-t_dw_mpl				ldw_main
+t_dw_mpl				ldw_main, ldw_handle
 
 if rpo_dw.dataobject = 'd_document_prod_grid' then
 	ldb_doc_id =  rpo_dw.getitemnumber(rpo_dw.getrow(), 'id') 
@@ -1565,11 +1586,12 @@ if rpo_dw.dataobject = 'd_document_prod_grid' then
 		using it_transaction;		
 		rpo_dw.setitem(rpo_dw.getrow(), 'extend_id', ldb_extend_id) 
 	end if
+
 elseif rpo_dw.dataobject= 'd_prod_line_kd_grid'  then
 	ldw_main = rpo_dw.dynamic f_get_idw_master()
 	ldb_customer_id = ldw_main.getitemnumber(ldw_main.getrow(), 'dr_cr_object') 
 	if isnull(ldb_customer_id) then
-		gf_messagebox('m.c_rpod_orders.e_dw_e_postsave.01','Thông báo','Chưa chọn khách hàng !','exclamation','ok',1)
+		gf_messagebox('m.c_prod_orders.e_dw_e_postsave.01','Thông báo','Chưa chọn khách hàng !','exclamation','ok',1)
 		return -1
 	end if
 
@@ -1594,11 +1616,12 @@ elseif rpo_dw.dataobject= 'd_prod_line_kd_grid'  then
 			end if
 			UPDATE production_line set spec_id = :ldb_spec_id where id = :ldb_line_id using it_transaction;
 		else
-			select count(id) into :li_cnt
-			from item_spec where id = :ldb_spec_id and spec_group = :ldb_customer_id using it_transaction;
-			if li_cnt = 0 then
-				UPDATE item_spec set spec_group = :ldb_customer_id where id = :ldb_spec_id using it_transaction;
-			end if
+//			select count(id) into :li_cnt
+//			from item_spec where id = :ldb_spec_id and spec_group = :ldb_customer_id using it_transaction;
+//			if li_cnt = 0 then
+//				
+//				UPDATE item_spec set spec_group = :ldb_customer_id where id = :ldb_spec_id using it_transaction;
+//			end if
 		end if
 		//-- check and update ITEM LOT --//
 		if trim(ls_ref_no) <> '' then
