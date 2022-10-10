@@ -9962,7 +9962,7 @@ elseif key=keyV! and keyflags = 2 then
 		end if
 //		if this.f_get_ib_editing( ) = false and this.f_get_ib_keyboardlocked( )  then
 //			this.f_set_editable_property( false)
-//		end if
+//		end if 
 		
 	end if
 elseif key=keyZ! and keyflags = 2 then

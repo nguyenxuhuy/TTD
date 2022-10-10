@@ -590,7 +590,7 @@ c_string 				lc_string
 c_dwservice			lc_dwservice
 
 if key= keyEnter! then
-
+ 
 	//-- Nếu là valueset : gọi auto complete --//
 	this.f_getparentwindow( lw_display)
 	lod_handle = lw_display.f_get_obj_handling( )	
@@ -5453,6 +5453,7 @@ if upperbound(lstr_data_related[]) > 0 and  ldwc.rowcount() > 0  then
 //		lod_handling.idwsetup_initial.ids_setup_dw.filter( )
 		ldwc.setfilter( "")
 		ldwc.filter( )
+		lc_dwservice.f_set_gutter_rowcount(ldwc)
 		return ldwc.rowcount() 
 	end if
 end if
