@@ -1025,10 +1025,12 @@ elseif vs_objectname_to  = 'b_copyt_so' then
 			gf_messagebox('m.c_so.e_window_e_precopy.04','Thông báo','Tỷ lệ bù = 0, không được tạo đơn bù','exclamation','ok',1)
 			return -1			
 		end if				
-		if ls_roster_yn = 'Y' then
-			gf_messagebox('m.c_so.e_window_e_precopy.05','Thông báo','Đơn hàng đã tạo đơn bù, không được tạo thêm','exclamation','ok',1)
-			return -1			
-		end if				
+		
+//		if ls_roster_yn = 'Y' then
+//			gf_messagebox('m.c_so.e_window_e_precopy.05','Thông báo','Đơn hàng đã tạo đơn bù, không được tạo thêm','exclamation','ok',1)
+//			return -1			
+//		end if				
+
 	end if
 end if
 
@@ -1050,12 +1052,13 @@ if vs_objectname_to = 'b_copyt_so' then
 		where d.id = :ldb_f_doc_id
 		using it_transaction;
 		if isnull(ldc_scrap_pct) then ldc_scrap_pct = 0
-		//--Cập nhật lãi số lượng bù--//
+		//--Cập nhật số lượng bù--//
 		select  d.version_id, o.CURRENCY_ID, o.EXCHANGE_RATE
 		into :ldb_doc_verison, :lstr_currency.adb_data[1] , :lstr_currency.adb_data[2]
 		from orders o join document d on d.version_id = o.id
 		where d.id = :vdb_t_doc_id
 		using it_transaction;		
+		
 		//-- update lot_line bu hang --//
 		UPDATE lot_line l
 		SET l.qty = round(l.qty * :ldc_scrap_pct/100, 0)
