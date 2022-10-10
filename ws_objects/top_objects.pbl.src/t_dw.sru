@@ -5451,6 +5451,8 @@ if upperbound(lstr_data_related[]) > 0 and  ldwc.rowcount() > 0  then
 	if lstr_data_related[1].s_criteria_type = 'fixed' then
 //		lod_handling.idwsetup_initial.ids_setup_dw.setfilter( "")
 //		lod_handling.idwsetup_initial.ids_setup_dw.filter( )
+		ldwc.setfilter( "")
+		ldwc.filter( )
 		return ldwc.rowcount() 
 	end if
 end if
