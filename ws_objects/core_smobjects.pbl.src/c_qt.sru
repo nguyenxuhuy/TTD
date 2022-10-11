@@ -427,9 +427,9 @@ istr_dwo_related[1].s_relatedtext_column = 'code'
 istr_dwo_related[1].s_text = 'Đơn bán hàng từ: '
 
 istr_dwo_related[1].s_main_obj_dwo_copy[1] = 'd_document_qt_form' // datawindow copy từ
-istr_dwo_related[1].s_main_obj_column_copy[1] = 'object_id;bill_to_object;PAYMENT_TERM;PAYMENT_METHOD;DELIVERY_MODE;REQUEST_SHIP_DATE;BILL_TO_ADDTEXT;CURRENCY_ID;EXCHANGE_RATE;'
+istr_dwo_related[1].s_main_obj_column_copy[1] = 'object_id;bill_to_object;PAYMENT_TERM;PAYMENT_METHOD;DELIVERY_MODE;REQUEST_SHIP_DATE;BILL_TO_ADDTEXT;CURRENCY_ID;EXCHANGE_RATE;include_scrap_yn;scrap_pct;'
 istr_dwo_related[1].s_related_obj_dwo_copy[1] = 'd_document_so_form' // datawindow copy đến
-istr_dwo_related[1].s_related_obj_column_copy[1]= 'object_id;bill_to_object;PAYMENT_TERM;PAYMENT_METHOD;DELIVERY_MODE;REQUEST_SHIP_DATE;BILL_TO_ADDTEXT;CURRENCY_ID;EXCHANGE_RATE;'
+istr_dwo_related[1].s_related_obj_column_copy[1]= 'object_id;bill_to_object;PAYMENT_TERM;PAYMENT_METHOD;DELIVERY_MODE;REQUEST_SHIP_DATE;BILL_TO_ADDTEXT;CURRENCY_ID;EXCHANGE_RATE;include_scrap_yn;scrap_pct;'
 
 istr_dwo_related[1].s_main_obj_dwo_copy[2] = 'd_qt_line_grid' // datawindow copy từ
 istr_dwo_related[1].s_main_obj_column_copy[2] =  'line_no;ITEM_ID;LINE_TEXT;NOTE;other_note;QTY;act_qty;price;act_price;amount;act_amount;not_invoice;foc_yn;'+&

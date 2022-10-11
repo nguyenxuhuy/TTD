@@ -11,6 +11,11 @@ event type integer e_action_lose ( )
 end type
 global c_so c_so
 
+type variables
+double			idb_f_doc_id, idb_f_doc_version
+dec				idc_scrap_pct
+string				is_ref_doc
+end variables
 forward prototypes
 public subroutine f_set_dwo_window ()
 public subroutine f_set_dwo_related ()
@@ -988,10 +993,9 @@ return 0
 end event
 
 event e_window_e_precopy_to;call super::e_window_e_precopy_to;string				ls_status, ls_scrap_included, ls_roster_yn
-dec				ldc_scrap_pct
 double			ldb_manage_group
-t_dw_mpl		ldw_main
-
+t_dw_mpl				ldw_main
+b_obj_instantiate		lbo_ins
 
 if vs_objectname_to  = 'b_copyt_so_return' then
 	ldw_main = iw_display.f_get_dwmain( )
@@ -1009,10 +1013,12 @@ elseif vs_objectname_to  = 'b_copyt_so' then
 	ldw_main = iw_display.f_get_dwmain( )
 	if ldw_main.getrow( ) > 0 then
 		ls_scrap_included = ldw_main.getitemstring(  ldw_main.getrow( ), 'include_scrap_yn')
-		ls_roster_yn =  ldw_main.getitemstring(  ldw_main.getrow( ), 'roster_yn')
+		is_ref_doc =  ldw_main.getitemstring(  ldw_main.getrow( ), 'code')
 		ldb_manage_group = ldw_main.getitemnumber(  ldw_main.getrow( ), 'manage_group')
-		ldc_scrap_pct = ldw_main.getitemnumber(  ldw_main.getrow( ), 'scrap_pct')
-		if isnull(ldc_scrap_pct) then ldc_scrap_pct = 0
+		idc_scrap_pct = ldw_main.getitemnumber(  ldw_main.getrow( ), 'scrap_pct')
+		idb_f_doc_id = ldw_main.getitemnumber(  ldw_main.getrow( ), 'id')
+		idb_f_doc_version = ldw_main.getitemnumber(  ldw_main.getrow( ), 'version_id')
+		if isnull(idc_scrap_pct) then idc_scrap_pct = 0
 		if ldb_manage_group <> 26900729 then
 			gf_messagebox('m.c_so.e_window_e_precopy.02','Thông báo','Loại đơn hàng không được làm đơn bù','exclamation','ok',1)
 			return -1			
@@ -1021,37 +1027,30 @@ elseif vs_objectname_to  = 'b_copyt_so' then
 			gf_messagebox('m.c_so.e_window_e_precopy.03','Thông báo','Đơn hàng thuộc loại bù trước, không được tạo đơn bù','exclamation','ok',1)
 			return -1			
 		end if		
-		if ldc_scrap_pct = 0 then
+		if idc_scrap_pct = 0 then
 			gf_messagebox('m.c_so.e_window_e_precopy.04','Thông báo','Tỷ lệ bù = 0, không được tạo đơn bù','exclamation','ok',1)
 			return -1			
 		end if				
-		
-//		if ls_roster_yn = 'Y' then
-//			gf_messagebox('m.c_so.e_window_e_precopy.05','Thông báo','Đơn hàng đã tạo đơn bù, không được tạo thêm','exclamation','ok',1)
-//			return -1			
-//		end if				
+		if lbo_ins.f_is_scrap_remain( idb_f_doc_id, idb_f_doc_version, 'SO_LINE', idc_scrap_pct, it_transaction ) = false then
+			gf_messagebox('m.c_so.e_window_e_precopy.05','Thông báo','Đơn hàng đã bù đủ hàng, không được tạo thêm','exclamation','ok',1)
+			return -1				
+		end if			
 
 	end if
 end if
 
 end event
 
-event e_window_e_postcopy_to;call super::e_window_e_postcopy_to;double		ldb_f_doc_id, ldb_doc_verison, ldba_line_id[]
+event e_window_e_postcopy_to;call super::e_window_e_postcopy_to;double		ldb_doc_verison, ldba_line_id[]
 long			ll_row_cnt, ll_row
 dec			ldc_scrap_pct
-string			ls_upd_cols, ls_ref_code
+string			ls_upd_cols
+int				li_cnt
 s_str_data	lstr_currency
 b_obj_instantiate		lbo_ins
 //-- Nếu là SO bù hàng --//
 if vs_objectname_to = 'b_copyt_so' then
-	ldb_f_doc_id = double(vastr_dwo_related[1].s_data[1])
-	if ldb_f_doc_id > 0 then
-		select o.SCRAP_PCT, d.code
-		into :ldc_scrap_pct, :ls_ref_code
-		from orders o join document d on d.version_id = o.id
-		where d.id = :ldb_f_doc_id
-		using it_transaction;
-		if isnull(ldc_scrap_pct) then ldc_scrap_pct = 0
+	if idb_f_doc_id > 0 then
 		//--Cập nhật số lượng bù--//
 		select  d.version_id, o.CURRENCY_ID, o.EXCHANGE_RATE
 		into :ldb_doc_verison, :lstr_currency.adb_data[1] , :lstr_currency.adb_data[2]
@@ -1059,35 +1058,65 @@ if vs_objectname_to = 'b_copyt_so' then
 		where d.id = :vdb_t_doc_id
 		using it_transaction;		
 		
-		//-- update lot_line bu hang --//
-		UPDATE lot_line l
-		SET l.qty = round(l.qty * :ldc_scrap_pct/100, 0)
-		WHERE l.doc_version = :ldb_doc_verison
-		using  it_transaction;
-		//-- update SO_LINE --//
-		UPDATE so_line l
-		SET l.qty = (select sum(u.qty) from lot_line u where u.object_ref_id = l.id),
-			  l.act_qty = (select sum(u.qty) from lot_line u where u.object_ref_id = l.id)
-		WHERE l.object_ref_id = :ldb_doc_verison
-		using  it_transaction;		
+		select count(id) into :li_cnt from matching where f_doc_id = :idb_f_doc_id and t_ref_table = 'SO_LINE' using it_transaction;
+		
+		if li_cnt = 0 then //-- Bù lần đầu --//
+			
+			//-- update lot_line bu hang --//
+			UPDATE lot_line l
+			SET l.qty = round(l.qty * :idc_scrap_pct/100, 0)
+			WHERE l.doc_version = :ldb_doc_verison
+			using  it_transaction;
+						
+			//-- update SO_LINE --//
+			UPDATE so_line l
+			SET l.qty = (select sum(u.qty) from lot_line u where u.object_ref_id = l.id),
+				  l.act_qty = (select sum(u.qty) from lot_line u where u.object_ref_id = l.id)
+			WHERE l.object_ref_id = :ldb_doc_verison
+			using  it_transaction;		
+			
+		else //-- Bù nhiều lần --//
+			//-- update lot_line bu hang --//
+			UPDATE lot_line l
+			SET l.qty = 0
+			WHERE l.doc_version = :ldb_doc_verison
+			using  it_transaction;
+			//-- update SO_LINE --//
+			UPDATE so_line l
+			SET l.qty =   (select  round(t.qty* :idc_scrap_pct/100,1) - u.qty
+								from so_line t
+								left join ( select sum(m.qty) qty, m.f_ref_id, m.f_doc_id  from matching m group by m.f_doc_id, m.f_ref_id ) u on u.f_ref_id = t.id and u.f_doc_id = :idb_f_doc_id
+								where t.object_ref_id = :idb_f_doc_version),
+				  l.act_qty =  (select  round(t.qty* :idc_scrap_pct/100,1) - u.qty
+								from so_line t
+								left join ( select sum(m.qty) qty, m.f_ref_id, m.f_doc_id  from matching m group by m.f_doc_id, m.f_ref_id ) u on u.f_ref_id = t.id and u.f_doc_id = :idb_f_doc_id
+								where t.object_ref_id = :idb_f_doc_version)
+			WHERE l.object_ref_id = :ldb_doc_verison
+			using  it_transaction;		
+	
+		end if
 		
 		ll_row_cnt = lbo_ins.f_get_ids('so_line', ldb_doc_verison,  ldba_line_id[], it_transaction)
 		ls_upd_cols = 'act_price;act_price_ex_tax;act_amount;act_amount_ex_tax;act_base_amount_ex_tax;tax_amt;tax_correction;'
 		FOR ll_row = 1 to ll_row_cnt
 			lbo_ins.f_update_line_itemchanged_ex( 'act_price', '0', ls_upd_cols, 'SO_line',  ldba_line_id[ll_row], it_transaction , lstr_currency)
-		NEXT 
+			
+			//-- quản lý trái/phải --//
+			
+		NEXT 		
 		//-- cập nhật lại loại đơn: bù hàng --//
 		//-- cập nhât ref_code --//
 		Update document d
-		set d.ref_code = :ls_ref_code, d.MANAGE_GROUP = 26901331			
+		set d.ref_code = :is_ref_doc, d.MANAGE_GROUP = 26901331			
 		where d.id = :vdb_t_doc_id
-		using  it_transaction;		
-		//-- update origin doc --//
-		Update document d
-		set d.ROSTER_YN = 'Y'	
-		where d.id = :ldb_f_doc_id
-		using  it_transaction;			
+		using  it_transaction;				
+		
 		commit using it_transaction;	
+		idb_f_doc_id = 0
+		idb_f_doc_version = 0
+		idc_scrap_pct = 0
+		is_ref_doc = ''
+		
 	end if
 	
 elseif vs_objectname_to = 'b_copyt_self' then

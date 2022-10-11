@@ -11,11 +11,10 @@ global u_detail_so u_detail_so
 
 type variables
 double	idb_obj_ref_id, idb_object_id, idb_curr_id, idb_exrate, idb_scrap_pct, idb_cust_id
-string		is_included_scrap
+string		is_included_scrap, is_scrap_order_yn
 date		id_doc_date
 s_str_data	istr_currency
 end variables
-
 forward prototypes
 public subroutine f_set_dwo_window ()
 public function integer f_get_dw_retrieve_args (ref datawindow rdw_focus, ref any ra_args[])
@@ -238,7 +237,9 @@ if  ldw_main.getrow( ) > 0 then
 	is_included_scrap = ldw_main.getitemstring(ldw_main.getrow(),'include_scrap_yn')
 	if isnull(is_included_scrap) then is_included_scrap = 'N'
 	idb_scrap_pct = ldw_main.getitemnumber(ldw_main.getrow(),'scrap_pct')
-
+	if ldw_main.getitemnumber(ldw_main.getrow(),'manage_group') = 26901331 then
+		is_scrap_order_yn = 'Y'
+	end if
 	laa_value[1] = idb_obj_ref_id
 	ldw_main = iw_display.f_get_dwmain()
 	ldw_main.f_add_where('object_ref_id;',laa_value[])
@@ -611,6 +612,8 @@ if rdw_handling.dataobject  = 'd_lot_line_kd_grid'  then
 			gf_messagebox('m.u_detail_so.e_dw_getfocus.02','Thông báo','Chưa chọn loại size cho hình thể !','exclamation','ok',1)
 			return 0
 		end if	
+		//-- quản lý trái/phải --//
+		select LOT_YN into :ls_lot_yn from item where object_ref_id = :ldb_item_id using  it_transaction;
 	else
 		disconnect using it_transaction;
 		return ancestorreturnvalue
@@ -625,36 +628,32 @@ if rdw_handling.dataobject  = 'd_lot_line_kd_grid'  then
 		commit using it_transaction;
 
 		//-- insert hàng bù --//
-		if  is_included_scrap = 'Y' then
-			//-- quản lý trái/phải --//
-			select LOT_YN into :ls_lot_yn from item where object_ref_id = :ldb_item_id using  it_transaction;
-			if ls_lot_yn = 'Y' then
-				//-- insert size --//
-				INSERT into lot_line(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,DOC_VERSION,
-											lot_no,serial_no,line_no)
-				SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'SO_LINE',:ldb_doc_version,
-							'P', vv.code,vv.line_no
-						from valueset_value vv where object_ref_id = :ldb_size_id using it_transaction;	
-				INSERT into lot_line(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,DOC_VERSION,
-											lot_no,serial_no,line_no)
-				SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'SO_LINE',:ldb_doc_version,
-							'T', vv.code,vv.line_no
-						from valueset_value vv where object_ref_id = :ldb_size_id using it_transaction;															
-			else
-				INSERT into lot_line(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,DOC_VERSION,
-											lot_no,serial_no,line_no)
-				SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'SO_LINE',:ldb_doc_version,
-							'Bù', vv.code,vv.line_no
-						from valueset_value vv where object_ref_id = :ldb_size_id using it_transaction;					
-			end if
-			commit using it_transaction;
-		end if
-//		rdw_handling.event e_retrieve()
-		ldw_master.f_retrieve_detail( )
-	elseif  is_included_scrap = 'Y' then
-		//-- insert hàng bù --//
+
 		//-- quản lý trái/phải --//
-		select LOT_YN into :ls_lot_yn from item where object_ref_id = :ldb_item_id using  it_transaction;
+		
+		if ls_lot_yn = 'Y' then
+			//-- insert size --//
+			INSERT into lot_line(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,DOC_VERSION,
+										lot_no,serial_no,line_no)
+			SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'SO_LINE',:ldb_doc_version,
+						'P', vv.code,vv.line_no
+					from valueset_value vv where object_ref_id = :ldb_size_id using it_transaction;	
+			INSERT into lot_line(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,DOC_VERSION,
+										lot_no,serial_no,line_no)
+			SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'SO_LINE',:ldb_doc_version,
+						'T', vv.code,vv.line_no
+					from valueset_value vv where object_ref_id = :ldb_size_id using it_transaction;															
+		elseif is_included_scrap = 'Y' then
+			INSERT into lot_line(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,DOC_VERSION,
+										lot_no,serial_no,line_no)
+			SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'SO_LINE',:ldb_doc_version,
+						'Bù', vv.code,vv.line_no
+					from valueset_value vv where object_ref_id = :ldb_size_id using it_transaction;					
+		end if
+		commit using it_transaction;
+
+		ldw_master.f_retrieve_detail( )
+	else
 		if rdw_handling.rowcount() = 0 and rdw_handling.classname() = 'dw_3'  then			
 			if ls_lot_yn = 'Y' then
 				//-- insert size --//
@@ -676,7 +675,7 @@ if rdw_handling.dataobject  = 'd_lot_line_kd_grid'  then
 						from valueset_value vv where object_ref_id = :ldb_size_id using it_transaction;					
 			end if
 			commit using it_transaction;	
-//			rdw_handling.event e_retrieve()		
+	
 			ldw_master.f_retrieve_detail( )
 		elseif  rdw_handling.rowcount() = 0 and rdw_handling.classname() = 'dw_4'  then	
 			if ls_lot_yn = 'Y' then
@@ -714,23 +713,27 @@ return ancestorreturnvalue
 end event
 
 event e_dw_rowfocuschanging;call super::e_dw_rowfocuschanging;double		ldb_item_id
+string			ls_lot_yn
 t_dw_mpl	ldw_3, ldw_4
 
 if rpo_dw.dataobject = 'd_so_line_grid' then	
-	if is_included_scrap <> 'Y' then
-		ldw_3= iw_display.dynamic f_get_dw( 3)
-		ldw_4= iw_display.dynamic f_get_dw(4)
-		ldw_3.hide( )
-		ldw_4.hide( )
-//		ldb_item_id = rpo_dw.getitemnumber(vl_newrow, 'item_id')
-//		if ldb_item_id > 0 then
-//			
-//		end if		
-	else
-		ldw_3= iw_display.dynamic f_get_dw( 3)
-		ldw_4= iw_display.dynamic f_get_dw(4)
+	ldb_item_id = rpo_dw.getitemnumber(vl_newrow, 'item_id')
+	if ldb_item_id > 0 then
+		select LOT_YN into :ls_lot_yn from item where object_ref_id = :ldb_item_id using  it_transaction;
+	end if			
+	ldw_3= iw_display.dynamic f_get_dw( 3)
+	ldw_4= iw_display.dynamic f_get_dw(4)	
+	if ls_lot_yn = 'Y' then
 		ldw_3.show()
-		ldw_4.hide( )		
+		ldw_4.show( )			
+	else
+		if is_included_scrap = 'Y' then
+			ldw_3.show( )
+			ldw_4.hide( )	
+		else
+			ldw_3.hide()
+			ldw_4.hide( )		
+		end if
 	end if
 end if
 return 0
