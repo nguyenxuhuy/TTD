@@ -252,7 +252,7 @@ public function integer f_upd_related_status_ex (string vs_type, string vs_t_upd
 public function long f_get_ids (string vs_table, double vdb_object_ref_id, ref double rdba_ids[], ref t_transaction rt_transaction)
 public function double f_copy_to_prod_orders (string vs_f_objname, s_str_dwo_related vstr_dwo_related[], t_ds_db vads_copied[], ref t_transaction rt_transaction, ref c_dwsetup_initial rdwsetup_initial)
 public function boolean f_is_scrap_remain (double vdb_f_doc_id, double vdb_f_doc_version, string vs_t_ref_table, decimal vdc_scrap_pct, ref t_transaction rt_transaction)
-public function decimal f_get_scrap_remain (double vdb_f_doc_id, double vdb_f_doc_version, string vs_t_ref_table, decimal vdc_scrap_pct, ref t_transaction rt_transaction)
+public function decimal f_get_scrap_remain (double vdb_t_ref_id, decimal vdc_scrap_pct, ref t_transaction rt_transaction)
 end prototypes
 
 event e_send_2_approve(datawindow vdw_focus, s_object_display vc_obj_handling, s_w_multi vw_multi);
@@ -21622,31 +21622,27 @@ return false
 
 end function
 
-public function decimal f_get_scrap_remain (double vdb_f_doc_id, double vdb_f_doc_version, string vs_t_ref_table, decimal vdc_scrap_pct, ref t_transaction rt_transaction);
-dec			ldc_matched_qty, ldc_doc_qty
+public function decimal f_get_scrap_remain (double vdb_t_ref_id, decimal vdc_scrap_pct, ref t_transaction rt_transaction);double		ldb_f_ref_id
+dec			ldc_remain_qty
 
 
-if vdb_f_doc_id > 0 then
-	select sum(qty) into :ldc_doc_qty  
-	from lot_line 
-	where doc_version = :vdb_f_doc_version 
-	using rt_transaction;
-	if isnull(ldc_doc_qty) then ldc_doc_qty = 0
+if vdb_t_ref_id > 0 then
 	
-	select sum(qty) into :ldc_matched_qty  
+	select f_ref_id into :ldb_f_ref_id  
 	from matching 
-	where f_doc_id = :vdb_f_doc_id 
-	and	t_ref_table = :vs_t_ref_table
+	where t_ref_id = :vdb_t_ref_id 
+	and	upper(f_ref_table) = 'SO_LINE'
 	using rt_transaction;
-	if isnull(ldc_matched_qty) then ldc_matched_qty = 0
 	
-	if round(ldc_doc_qty*vdc_scrap_pct/100, 0) > ldc_matched_qty then
-		return ldc_matched_qty
-	end if
-	
+	select  round(t.qty * :vdc_scrap_pct/100,1) - coalesce(u.qty,0) into :ldc_remain_qty
+	from so_line t
+	left join ( select sum(m.qty) qty, m.f_ref_id from matching m where m.t_ref_id <> :vdb_t_ref_id group by  m.f_ref_id ) u on u.f_ref_id = t.id
+	where t.id = :ldb_f_ref_id using rt_transaction;
+else 
+	setnull(ldc_remain_qty)
 end if
 
-return ldc_matched_qty
+return ldc_remain_qty
 
 end function
 

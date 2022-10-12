@@ -16,6 +16,7 @@ double			idb_f_doc_id, idb_f_doc_version
 dec				idc_scrap_pct
 string				is_ref_doc
 end variables
+
 forward prototypes
 public subroutine f_set_dwo_window ()
 public subroutine f_set_dwo_related ()
@@ -1071,7 +1072,7 @@ if vs_objectname_to = 'b_copyt_so' then
 			//-- update SO_LINE --//
 			UPDATE so_line l
 			SET l.qty = (select sum(u.qty) from lot_line u where u.object_ref_id = l.id),
-				  l.act_qty = (select sum(u.qty) from lot_line u where u.object_ref_id = l.id)
+				  l.act_qty = 0
 			WHERE l.object_ref_id = :ldb_doc_verison
 			using  it_transaction;		
 			
@@ -1087,10 +1088,7 @@ if vs_objectname_to = 'b_copyt_so' then
 								from so_line t
 								left join ( select sum(m.qty) qty, m.f_ref_id, m.f_doc_id  from matching m group by m.f_doc_id, m.f_ref_id ) u on u.f_ref_id = t.id and u.f_doc_id = :idb_f_doc_id
 								where t.object_ref_id = :idb_f_doc_version),
-				  l.act_qty =  (select  round(t.qty* :idc_scrap_pct/100,1) - u.qty
-								from so_line t
-								left join ( select sum(m.qty) qty, m.f_ref_id, m.f_doc_id  from matching m group by m.f_doc_id, m.f_ref_id ) u on u.f_ref_id = t.id and u.f_doc_id = :idb_f_doc_id
-								where t.object_ref_id = :idb_f_doc_version)
+				  l.act_qty =  0
 			WHERE l.object_ref_id = :ldb_doc_verison
 			using  it_transaction;		
 	
@@ -1125,5 +1123,10 @@ elseif vs_objectname_to = 'b_copyt_self' then
 end if
 
 return 0
+end event
+
+event e_dw_e_itemchanged;call super::e_dw_e_itemchanged;//-- check included scrap yn --//
+
+return ancestorreturnvalue
 end event
 

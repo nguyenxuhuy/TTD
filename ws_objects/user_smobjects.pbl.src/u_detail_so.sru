@@ -15,6 +15,7 @@ string		is_included_scrap, is_scrap_order_yn
 date		id_doc_date
 s_str_data	istr_currency
 end variables
+
 forward prototypes
 public subroutine f_set_dwo_window ()
 public function integer f_get_dw_retrieve_args (ref datawindow rdw_focus, ref any ra_args[])
@@ -318,8 +319,8 @@ end event
 
 event e_dw_e_itemchanged;call super::e_dw_e_itemchanged;double			ldb_item_id, ldb_spec_id, ldb_so_line, ll_tax_line_id, ll_vat_id
 int					li_tax_line_cnt, li_cnt
-decimal			ldb_qty, ldc_tax_correction, ldc_tax_pct, ldc_origin_Qty, ldc_edit_Qty, ldb_scrap_qty
-string				ls_upd_colname, ls_sql, ls_dataStr
+decimal			ldb_qty, ldc_tax_correction, ldc_tax_pct, ldc_origin_Qty, ldc_edit_Qty, ldb_scrap_qty, ldb_act_qty, ldc_remain_scrap
+string				ls_upd_colname, ls_sql, ls_dataStr, ls_lot_yn
 
 b_obj_instantiate			lb_obj
 t_dw_mpl					ldw_handle, ldw_master, ldw_scrap1, ldw_scrap2
@@ -391,59 +392,198 @@ if rpo_dw.dataobject = 'd_so_line_grid' then
 		disconnect using it_transaction;
 	end if	
 elseif rpo_dw.dataobject = 'd_lot_line_kd_grid' and rpo_dw.classname() = 'dw_2' then
+	ldw_master = rpo_dw.dynamic f_get_idw_master()
+	ldb_item_id = ldw_master.getitemnumber( ldw_master.getrow(), 'item_id' )
+	ldb_so_line = ldw_master.getitemnumber( ldw_master.getrow(), 'id' )
+	connect using it_transaction;
+	select lot_yn into :ls_lot_yn from item where object_Ref_id = :ldb_item_id using it_transaction;
+	disconnect using it_transaction;
+	
 	if not isnull(vs_editdata) then ldc_edit_Qty = dec(vs_editdata)
 	//-- update scrap qty --//
 	if is_included_scrap = 'Y' and left(vs_colname,4) = 'qty_' then
 		ldw_scrap1 = iw_display.dynamic f_get_dw( 3)
 		if ldw_scrap1.rowcount( ) > 0 then
-			ldw_scrap1.setitem( vl_currentrow , 'qty', round(ldc_edit_Qty*idb_scrap_pct/100, 0) )
+			if ls_lot_yn = 'Y' then
+				ldw_scrap1.setitem( vl_currentrow , 'qty', round(ldc_edit_Qty*idb_scrap_pct/100, 0) / 2  )
+			else
+				ldw_scrap1.setitem( vl_currentrow , 'qty', round(ldc_edit_Qty*idb_scrap_pct/100, 0) )
+			end if
 		end if
 		ldw_scrap2 = iw_display.dynamic f_get_dw(4)
 		if ldw_scrap2.rowcount( ) > 0 then
-			ldw_scrap2.setitem( vl_currentrow , 'qty', round(ldc_edit_Qty*idb_scrap_pct/100, 0) )
+			ldw_scrap2.setitem( vl_currentrow , 'qty', round(ldc_edit_Qty*idb_scrap_pct/100, 0) /2 )
 		end if		
 	end if
 	//-- update so: qty , act_qty --//
 	ldc_origin_Qty = rpo_dw.getitemnumber(vl_currentrow, vs_colname)
 	if isnull(ldc_origin_Qty) then ldc_origin_Qty = 0	
 	ldb_qty = dec(rpo_dw.Describe("Evaluate('Sum(qty)', 0)")) + ldc_edit_Qty - ldc_origin_Qty
-	if is_included_scrap = 'Y' then
-		ldw_handle = iw_display.dynamic f_get_dw( 3)
-		ldb_scrap_qty = dec(ldw_handle.Describe("Evaluate('Sum(qty)', 0)"))
+	
+	if is_scrap_order_yn = 'Y' then
+		if ls_lot_yn = 'Y' then
+			ldw_handle = iw_display.dynamic f_get_dw( 3)
+			ldb_scrap_qty = dec(ldw_handle.Describe("Evaluate('Sum(qty)', 0)"))
+			if isnull(ldb_scrap_qty) then ldb_scrap_qty = 0
+			ldw_handle = iw_display.dynamic f_get_dw( 4)
+			ldb_scrap_qty = ldb_scrap_qty + dec(ldw_handle.Describe("Evaluate('Sum(qty)', 0)"))		
+			//-- check bù hàng --//
+			ldb_qty = ldb_qty + ldb_scrap_qty / 2
+		end if
+		//-- check bù hàng --//
+		ldc_remain_scrap = lb_obj.f_get_scrap_remain( ldb_so_line, idb_scrap_pct, it_transaction)
+		if isnull(ldc_remain_scrap) then ldc_remain_scrap = 0
+		if ldc_remain_scrap < ldb_qty then
+			gf_messagebox('m.u_detail_so.e_dw_e_itemchanged.01','Thông báo','Số lượng bù hàng vượt quá quy định','exclamation','ok',1)
+			return -1
+		end if
+		ldw_master.setitem(ldw_master.getrow(),'qty', ldb_qty)
+		ldb_act_qty = 0
 	else
-		
+		if ls_lot_yn = 'Y' then
+			ldw_handle = iw_display.dynamic f_get_dw( 3)
+			ldb_scrap_qty = dec(ldw_handle.Describe("Evaluate('Sum(qty)', 0)"))
+			if isnull(ldb_scrap_qty) then ldb_scrap_qty = 0
+			ldw_handle = iw_display.dynamic f_get_dw( 4)
+			ldb_scrap_qty = ldb_scrap_qty + dec(ldw_handle.Describe("Evaluate('Sum(qty)', 0)"))			
+			ldb_scrap_qty = ldb_scrap_qty / 2
+		end if		
+		if is_included_scrap = 'Y' then
+			if ls_lot_yn <> 'Y' then
+				ldw_handle = iw_display.dynamic f_get_dw( 3)
+				ldb_scrap_qty = dec(ldw_handle.Describe("Evaluate('Sum(qty)', 0)"))
+			end if
+			ldw_master.setitem(ldw_master.getrow(),'qty', ldb_qty + ldb_scrap_qty)
+			ldw_master.setitem(ldw_master.getrow(),'act_qty', ldb_qty)			
+			ldb_act_qty = ldb_qty
+		else
+			ldw_master.setitem(ldw_master.getrow(),'qty', ldb_qty + ldb_scrap_qty)
+			ldw_master.setitem(ldw_master.getrow(),'act_qty', ldb_qty + ldb_scrap_qty)
+			ldb_act_qty = ldb_qty+ ldb_scrap_qty
+		end if
 	end if
-	ldw_master = rpo_dw.dynamic f_get_idw_master()
-	ldw_master.setitem(ldw_master.getrow(),'qty', ldb_scrap_qty+ldb_qty)
-	ldw_master.setitem(ldw_master.getrow(),'act_qty', ldb_qty)
+
 	ls_upd_colname = 'tax_amt;tax_correction;act_amount;act_amount_ex_tax;act_base_amount_ex_tax;'
 	if rpo_dw.dynamic f_get_ib_saving() = false then
 		connect using it_transaction;
 	end if
-	if lb_obj.f_update_line_itemchanged_ex( 'act_qty', string(ldb_qty) , ls_upd_colname,ldw_master.getrow() , ldw_master, it_transaction , istr_currency) = -1 then return 1		
+	if lb_obj.f_update_line_itemchanged_ex( 'act_qty', string(ldb_act_qty) , ls_upd_colname,ldw_master.getrow() , ldw_master, it_transaction , istr_currency) = -1 then return 1		
 	if rpo_dw.dynamic f_get_ib_saving() = false then
 		disconnect using it_transaction;
 	end if	
 elseif rpo_dw.dataobject = 'd_lot_line_kd_grid' and rpo_dw.classname() = 'dw_3' then
+	ldw_master = rpo_dw.dynamic f_get_idw_master()
+	ldb_item_id = ldw_master.getitemnumber( ldw_master.getrow(), 'item_id' )
+	ldb_so_line = ldw_master.getitemnumber( ldw_master.getrow(), 'id' )
+	connect using it_transaction;
+	select lot_yn into :ls_lot_yn from item where object_Ref_id = :ldb_item_id using it_transaction;
+	disconnect using it_transaction;
+	
 	if not isnull(vs_editdata) then ldc_edit_Qty = dec(vs_editdata)
 	ldc_origin_Qty = rpo_dw.getitemnumber(vl_currentrow, vs_colname)
 	if isnull(ldc_origin_Qty) then ldc_origin_Qty = 0	
 	ldb_scrap_qty = dec(rpo_dw.Describe("Evaluate('Sum(qty)', 0)")) + ldc_edit_Qty - ldc_origin_Qty
-	ldw_handle = iw_display.dynamic f_get_dw( 3)
+	ldw_handle = iw_display.dynamic f_get_dw( 2)
 	ldb_qty = dec(ldw_handle.Describe("Evaluate('Sum(qty)', 0)"))	
 	
-	ldw_master = rpo_dw.dynamic f_get_idw_master()
-	ldw_master.setitem(ldw_master.getrow(),'qty', ldb_scrap_qty+ldb_qty)
-	ldw_master.setitem(ldw_master.getrow(),'act_qty', ldb_qty)
+	if is_scrap_order_yn = 'Y' then
+		if ls_lot_yn = 'Y' then
+			ldw_handle = iw_display.dynamic f_get_dw( 4)
+			ldb_scrap_qty = ldb_scrap_qty + dec(ldw_handle.Describe("Evaluate('Sum(qty)', 0)"))			
+			
+			ldb_qty = ldb_qty + ldb_scrap_qty / 2
+		end if
+		//-- check bù hàng --//
+		ldc_remain_scrap = lb_obj.f_get_scrap_remain( ldb_so_line, idb_scrap_pct, it_transaction)
+		if isnull(ldc_remain_scrap) then ldc_remain_scrap = 0
+		if ldc_remain_scrap < ldb_qty then
+			gf_messagebox('m.u_detail_so.e_dw_e_itemchanged.01','Thông báo','Số lượng bù hàng vượt quá quy định','exclamation','ok',1)
+			return -1
+		end if		
+		ldw_master.setitem(ldw_master.getrow(),'qty', ldb_qty)
+		ldb_act_qty = 0
+	else
+		if ls_lot_yn = 'Y' then
+			ldw_handle = iw_display.dynamic f_get_dw( 4)
+			ldb_scrap_qty = ldb_scrap_qty + dec(ldw_handle.Describe("Evaluate('Sum(qty)', 0)"))			
+			ldb_scrap_qty = ldb_scrap_qty / 2
+		end if		
+		if is_included_scrap = 'Y' then
+			ldw_master.setitem(ldw_master.getrow(),'qty', ldb_qty + ldb_scrap_qty)
+			ldw_master.setitem(ldw_master.getrow(),'act_qty', ldb_qty)			
+			ldb_act_qty = ldb_qty
+		else
+			ldw_master.setitem(ldw_master.getrow(),'qty', ldb_qty + ldb_scrap_qty)
+			ldw_master.setitem(ldw_master.getrow(),'act_qty', ldb_qty + ldb_scrap_qty)
+			ldb_act_qty = ldb_qty+ ldb_scrap_qty
+		end if
+	end if
+	
 	ls_upd_colname = 'tax_amt;tax_correction;act_amount;act_amount_ex_tax;act_base_amount_ex_tax;'
 	if rpo_dw.dynamic f_get_ib_saving() = false then
 		connect using it_transaction;
 	end if	
-	if lb_obj.f_update_line_itemchanged_ex( 'act_qty', string(ldb_qty) , ls_upd_colname,ldw_master.getrow() , ldw_master, it_transaction , istr_currency) = -1 then return 1		
+	if lb_obj.f_update_line_itemchanged_ex( 'act_qty', string(ldb_act_qty) , ls_upd_colname,ldw_master.getrow() , ldw_master, it_transaction , istr_currency) = -1 then return 1		
 	if rpo_dw.dynamic f_get_ib_saving() = false then
 		disconnect using it_transaction;
 	end if	
 elseif rpo_dw.dataobject = 'd_lot_line_kd_grid' and rpo_dw.classname() = 'dw_4' then	
+	ldw_master = rpo_dw.dynamic f_get_idw_master()
+	ldb_item_id = ldw_master.getitemnumber( ldw_master.getrow(), 'item_id' )
+	ldb_so_line = ldw_master.getitemnumber( ldw_master.getrow(), 'id' )
+	connect using it_transaction;
+	select lot_yn into :ls_lot_yn from item where object_Ref_id = :ldb_item_id using it_transaction;
+	disconnect using it_transaction;
+	
+	if not isnull(vs_editdata) then ldc_edit_Qty = dec(vs_editdata)
+	ldc_origin_Qty = rpo_dw.getitemnumber(vl_currentrow, vs_colname)
+	if isnull(ldc_origin_Qty) then ldc_origin_Qty = 0	
+	ldb_scrap_qty = dec(rpo_dw.Describe("Evaluate('Sum(qty)', 0)")) + ldc_edit_Qty - ldc_origin_Qty
+	ldw_handle = iw_display.dynamic f_get_dw( 2)
+	ldb_qty = dec(ldw_handle.Describe("Evaluate('Sum(qty)', 0)"))	
+	
+	if is_scrap_order_yn = 'Y' then
+		if ls_lot_yn = 'Y' then
+			ldw_handle = iw_display.dynamic f_get_dw( 3)
+			ldb_scrap_qty = ldb_scrap_qty + dec(ldw_handle.Describe("Evaluate('Sum(qty)', 0)"))		
+			
+			ldb_qty = ldb_qty + ldb_scrap_qty / 2
+
+		end if
+		//-- check bù hàng --//
+		ldc_remain_scrap = lb_obj.f_get_scrap_remain( ldb_so_line, idb_scrap_pct, it_transaction)
+		if isnull(ldc_remain_scrap) then ldc_remain_scrap = 0
+		if ldc_remain_scrap < ldb_qty then
+			gf_messagebox('m.u_detail_so.e_dw_e_itemchanged.01','Thông báo','Số lượng bù hàng vượt quá quy định','exclamation','ok',1)
+			return -1
+		end if				
+		ldw_master.setitem(ldw_master.getrow(),'qty', ldb_qty)
+		ldb_act_qty = 0
+	else
+		if ls_lot_yn = 'Y' then
+			ldw_handle = iw_display.dynamic f_get_dw( 3)
+			ldb_scrap_qty = ldb_scrap_qty + dec(ldw_handle.Describe("Evaluate('Sum(qty)', 0)"))			
+			ldb_scrap_qty = ldb_scrap_qty / 2
+		end if		
+		if is_included_scrap = 'Y' then
+			ldw_master.setitem(ldw_master.getrow(),'qty', ldb_qty + ldb_scrap_qty)
+			ldw_master.setitem(ldw_master.getrow(),'act_qty', ldb_qty)			
+			ldb_act_qty = ldb_qty
+		else
+			ldw_master.setitem(ldw_master.getrow(),'qty', ldb_qty + ldb_scrap_qty)
+			ldw_master.setitem(ldw_master.getrow(),'act_qty', ldb_qty + ldb_scrap_qty)
+			ldb_act_qty = ldb_qty+ ldb_scrap_qty
+		end if
+	end if
+	
+	ls_upd_colname = 'tax_amt;tax_correction;act_amount;act_amount_ex_tax;act_base_amount_ex_tax;'
+	if rpo_dw.dynamic f_get_ib_saving() = false then
+		connect using it_transaction;
+	end if	
+	if lb_obj.f_update_line_itemchanged_ex( 'act_qty', string(ldb_act_qty) , ls_upd_colname,ldw_master.getrow() , ldw_master, it_transaction , istr_currency) = -1 then return 1		
+	if rpo_dw.dynamic f_get_ib_saving() = false then
+		disconnect using it_transaction;
+	end if		
 end if
 return 0
 end event
@@ -579,6 +719,10 @@ if rpo_dw.dataobject = 'd_so_line_grid' then
 				return -1
 			end if
 		end if
+		//-- UPdate MATCH : đơn hàng bù --//
+		select count(id) into :li_cnt from MATCHING where t_ref_id = :ldb_so_line and upper(f_ref_table) =  'SO_LINE' using it_transaction;
+		
+		
 	NEXT
 end if
 return 0
@@ -655,6 +799,17 @@ if rdw_handling.dataobject  = 'd_lot_line_kd_grid'  then
 		ldw_master.f_retrieve_detail( )
 	else
 		if rdw_handling.rowcount() = 0 and rdw_handling.classname() = 'dw_3'  then			
+			//-- ktra dw_2 rowcount() --//
+			ldw_handle = iw_display.dynamic f_get_dwo(2)
+			if ldw_handle.rowcount( ) = 0 and ldw_master.getrow( ) > 0 then
+				//-- insert size --//
+				INSERT into lot_line(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,DOC_VERSION,
+											lot_no,serial_no,line_no)
+				SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'SO_LINE',:ldb_doc_version,
+							null, vv.code,vv.line_no
+						from valueset_value vv where object_ref_id = :ldb_size_id using it_transaction;					
+				commit using it_transaction;				
+			end if
 			if ls_lot_yn = 'Y' then
 				//-- insert size --//
 				INSERT into lot_line(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,DOC_VERSION,
@@ -662,12 +817,16 @@ if rdw_handling.dataobject  = 'd_lot_line_kd_grid'  then
 				SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'SO_LINE',:ldb_doc_version,
 							'P', vv.code,vv.line_no
 						from valueset_value vv where object_ref_id = :ldb_size_id using it_transaction;	
-				INSERT into lot_line(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,DOC_VERSION,
-											lot_no,serial_no,line_no)
-				SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'SO_LINE',:ldb_doc_version,
-							'T', vv.code,vv.line_no
-						from valueset_value vv where object_ref_id = :ldb_size_id using it_transaction;															
-			else
+				//-- ktra dw_4 rowcount() --//
+				ldw_handle = iw_display.dynamic f_get_dwo(4)
+				if ldw_handle.rowcount( ) = 0 then				
+					INSERT into lot_line(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,DOC_VERSION,
+												lot_no,serial_no,line_no)
+					SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'SO_LINE',:ldb_doc_version,
+								'T', vv.code,vv.line_no
+							from valueset_value vv where object_ref_id = :ldb_size_id using it_transaction;		
+				end if
+			elseif is_included_scrap = 'Y' then
 				INSERT into lot_line(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,DOC_VERSION,
 											lot_no,serial_no,line_no)
 				SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'SO_LINE',:ldb_doc_version,
@@ -678,7 +837,27 @@ if rdw_handling.dataobject  = 'd_lot_line_kd_grid'  then
 	
 			ldw_master.f_retrieve_detail( )
 		elseif  rdw_handling.rowcount() = 0 and rdw_handling.classname() = 'dw_4'  then	
+			//-- ktra dw_2 rowcount() --//
+			ldw_handle = iw_display.dynamic f_get_dwo(2)
+			if ldw_handle.rowcount( ) = 0 and ldw_master.getrow( ) > 0  then
+				//-- insert size --//
+				INSERT into lot_line(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,DOC_VERSION,
+											lot_no,serial_no,line_no)
+				SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'SO_LINE',:ldb_doc_version,
+							null, vv.code,vv.line_no
+						from valueset_value vv where object_ref_id = :ldb_size_id using it_transaction;					
+				commit using it_transaction;				
+			end if			
 			if ls_lot_yn = 'Y' then
+				ldw_handle = iw_display.dynamic f_get_dwo(3)
+				if ldw_handle.rowcount( ) = 0 and ldw_master.getrow( ) > 0  then
+					//-- insert size --//
+					INSERT into lot_line(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,DOC_VERSION,
+												lot_no,serial_no,line_no)
+					SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'SO_LINE',:ldb_doc_version,
+								'P', vv.code,vv.line_no
+							from valueset_value vv where object_ref_id = :ldb_size_id using it_transaction;						
+				end if
 				INSERT into lot_line(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,DOC_VERSION,
 											lot_no,serial_no,line_no)
 				SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'SO_LINE',:ldb_doc_version,
