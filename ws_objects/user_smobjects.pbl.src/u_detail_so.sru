@@ -652,15 +652,18 @@ if rpo_dw.dataobject = 'd_so_line_grid' then
 	end if
 	//-- delete matching--//
 	select count(id) into :li_cnt
-	from matching where t_ref_id = :ldb_ref_id using it_transaction;	
+	from matching where t_ref_id = :ldb_ref_id and  upper(f_ref_table) =  'QT_LINE'  using it_transaction;	
 	if li_cnt > 0 then
 		gf_messagebox('m.c_qt.e_dw_e_predelete.02','Thông báo','SO kết từ chào giá không được xoá sửa trong chi tiết','stop','ok',1)
 		return -1		
 //		delete from matching where t_ref_id = :ldb_ref_id using it_transaction;	
 	end if
-	
 	//-- Xoá tax_line --//
 	DELETE  tax_line where object_ref_id = :ldb_ref_id  using it_transaction;
+	//-- Xoá MATCH : đơn hàng bù --//
+	if is_scrap_order_yn = 'Y' then
+		DELETE  matching where t_ref_id = :ldb_ref_id and  upper(f_ref_table) =  'SO_LINE'   using it_transaction;
+	end if		
 end if
 return 1
 
@@ -720,9 +723,12 @@ if rpo_dw.dataobject = 'd_so_line_grid' then
 			end if
 		end if
 		//-- UPdate MATCH : đơn hàng bù --//
-		select count(id) into :li_cnt from MATCHING where t_ref_id = :ldb_so_line and upper(f_ref_table) =  'SO_LINE' using it_transaction;
-		
-		
+		if is_scrap_order_yn = 'Y' then
+			ldc_qty  = rpo_dw.getitemnumber( li_row, 'qty' )
+			update matching set qty = :ldc_qty 
+			where t_ref_id = :ldb_so_line and  upper(f_ref_table) =  'SO_LINE' 
+			using it_transaction;
+		end if
 	NEXT
 end if
 return 0

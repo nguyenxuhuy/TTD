@@ -1125,8 +1125,21 @@ end if
 return 0
 end event
 
-event e_dw_e_itemchanged;call super::e_dw_e_itemchanged;//-- check included scrap yn --//
+event e_dw_e_itemchanged;call super::e_dw_e_itemchanged;
+string			ls_null
+//-- check included scrap yn --//
 
+if vs_colname = 'include_scrap_yn' then
+	if rpo_dw.getitemnumber(vl_currentrow, 'manage_group') = 26901331 then
+		gf_messagebox('m.c_so.e_dw_e_itemchanged.01','Thông báo','Đơn bù hàng không được chọn "Bù trước"','exclamation','ok',1)
+		return -1
+	end if
+elseif vs_colname = 'order_type' then
+	if rpo_dw.getitemnumber(vl_currentrow, 'manage_group') = 26901331 then
+		setnull(ls_null)
+		rpo_dw.setitem(vl_currentrow, 'include_scrap_yn', ls_null)
+	end if
+end if
 return ancestorreturnvalue
 end event
 
