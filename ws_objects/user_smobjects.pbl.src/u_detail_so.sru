@@ -395,10 +395,13 @@ elseif rpo_dw.dataobject = 'd_lot_line_kd_grid' and rpo_dw.classname() = 'dw_2' 
 	ldw_master = rpo_dw.dynamic f_get_idw_master()
 	ldb_item_id = ldw_master.getitemnumber( ldw_master.getrow(), 'item_id' )
 	ldb_so_line = ldw_master.getitemnumber( ldw_master.getrow(), 'id' )
-	connect using it_transaction;
+	if rpo_dw.dynamic f_get_ib_saving() = false then
+		connect using it_transaction;
+	end if
 	select lot_yn into :ls_lot_yn from item where object_Ref_id = :ldb_item_id using it_transaction;
-	disconnect using it_transaction;
-	
+	if rpo_dw.dynamic f_get_ib_saving() = false then
+		disconnect using it_transaction;
+	end if
 	if not isnull(vs_editdata) then ldc_edit_Qty = dec(vs_editdata)
 	//-- update scrap qty --//
 	if is_included_scrap = 'Y' and left(vs_colname,4) = 'qty_' then
@@ -428,14 +431,20 @@ elseif rpo_dw.dataobject = 'd_lot_line_kd_grid' and rpo_dw.classname() = 'dw_2' 
 			ldw_handle = iw_display.dynamic f_get_dw( 4)
 			ldb_scrap_qty = ldb_scrap_qty + dec(ldw_handle.Describe("Evaluate('Sum(qty)', 0)"))		
 			//-- check bù hàng --//
-			ldb_qty = ldb_qty + ldb_scrap_qty / 2
+			ldb_qty = ldb_qty + ldb_scrap_qty 
 		end if
 		//-- check bù hàng --//
+		if rpo_dw.dynamic f_get_ib_saving() = false then
+			connect using it_transaction;
+		end if		
 		ldc_remain_scrap = lb_obj.f_get_scrap_remain( ldb_so_line, idb_scrap_pct, it_transaction)
+		if rpo_dw.dynamic f_get_ib_saving() = false then
+			disconnect using it_transaction;
+		end if		
 		if isnull(ldc_remain_scrap) then ldc_remain_scrap = 0
 		if ldc_remain_scrap < ldb_qty then
 			gf_messagebox('m.u_detail_so.e_dw_e_itemchanged.01','Thông báo','Số lượng bù hàng vượt quá quy định','exclamation','ok',1)
-			return -1
+			return 1
 		end if
 		ldw_master.setitem(ldw_master.getrow(),'qty', ldb_qty)
 		ldb_act_qty = 0
@@ -446,7 +455,7 @@ elseif rpo_dw.dataobject = 'd_lot_line_kd_grid' and rpo_dw.classname() = 'dw_2' 
 			if isnull(ldb_scrap_qty) then ldb_scrap_qty = 0
 			ldw_handle = iw_display.dynamic f_get_dw( 4)
 			ldb_scrap_qty = ldb_scrap_qty + dec(ldw_handle.Describe("Evaluate('Sum(qty)', 0)"))			
-			ldb_scrap_qty = ldb_scrap_qty / 2
+			ldb_scrap_qty = ldb_scrap_qty 
 		end if		
 		if is_included_scrap = 'Y' then
 			if ls_lot_yn <> 'Y' then
@@ -475,9 +484,13 @@ elseif rpo_dw.dataobject = 'd_lot_line_kd_grid' and rpo_dw.classname() = 'dw_3' 
 	ldw_master = rpo_dw.dynamic f_get_idw_master()
 	ldb_item_id = ldw_master.getitemnumber( ldw_master.getrow(), 'item_id' )
 	ldb_so_line = ldw_master.getitemnumber( ldw_master.getrow(), 'id' )
-	connect using it_transaction;
+	if rpo_dw.dynamic f_get_ib_saving() = false then
+		connect using it_transaction;
+	end if
 	select lot_yn into :ls_lot_yn from item where object_Ref_id = :ldb_item_id using it_transaction;
-	disconnect using it_transaction;
+	if rpo_dw.dynamic f_get_ib_saving() = false then
+		disconnect using it_transaction;
+	end if
 	
 	if not isnull(vs_editdata) then ldc_edit_Qty = dec(vs_editdata)
 	ldc_origin_Qty = rpo_dw.getitemnumber(vl_currentrow, vs_colname)
@@ -491,7 +504,7 @@ elseif rpo_dw.dataobject = 'd_lot_line_kd_grid' and rpo_dw.classname() = 'dw_3' 
 			ldw_handle = iw_display.dynamic f_get_dw( 4)
 			ldb_scrap_qty = ldb_scrap_qty + dec(ldw_handle.Describe("Evaluate('Sum(qty)', 0)"))			
 			
-			ldb_qty = ldb_qty + ldb_scrap_qty / 2
+			ldb_qty = ldb_qty + ldb_scrap_qty
 		end if
 		//-- check bù hàng --//
 		ldc_remain_scrap = lb_obj.f_get_scrap_remain( ldb_so_line, idb_scrap_pct, it_transaction)
@@ -506,7 +519,7 @@ elseif rpo_dw.dataobject = 'd_lot_line_kd_grid' and rpo_dw.classname() = 'dw_3' 
 		if ls_lot_yn = 'Y' then
 			ldw_handle = iw_display.dynamic f_get_dw( 4)
 			ldb_scrap_qty = ldb_scrap_qty + dec(ldw_handle.Describe("Evaluate('Sum(qty)', 0)"))			
-			ldb_scrap_qty = ldb_scrap_qty / 2
+			ldb_scrap_qty = ldb_scrap_qty
 		end if		
 		if is_included_scrap = 'Y' then
 			ldw_master.setitem(ldw_master.getrow(),'qty', ldb_qty + ldb_scrap_qty)
@@ -531,9 +544,13 @@ elseif rpo_dw.dataobject = 'd_lot_line_kd_grid' and rpo_dw.classname() = 'dw_4' 
 	ldw_master = rpo_dw.dynamic f_get_idw_master()
 	ldb_item_id = ldw_master.getitemnumber( ldw_master.getrow(), 'item_id' )
 	ldb_so_line = ldw_master.getitemnumber( ldw_master.getrow(), 'id' )
-	connect using it_transaction;
+	if rpo_dw.dynamic f_get_ib_saving() = false then
+		connect using it_transaction;
+	end if
 	select lot_yn into :ls_lot_yn from item where object_Ref_id = :ldb_item_id using it_transaction;
-	disconnect using it_transaction;
+	if rpo_dw.dynamic f_get_ib_saving() = false then
+		disconnect using it_transaction;
+	end if
 	
 	if not isnull(vs_editdata) then ldc_edit_Qty = dec(vs_editdata)
 	ldc_origin_Qty = rpo_dw.getitemnumber(vl_currentrow, vs_colname)
@@ -547,7 +564,7 @@ elseif rpo_dw.dataobject = 'd_lot_line_kd_grid' and rpo_dw.classname() = 'dw_4' 
 			ldw_handle = iw_display.dynamic f_get_dw( 3)
 			ldb_scrap_qty = ldb_scrap_qty + dec(ldw_handle.Describe("Evaluate('Sum(qty)', 0)"))		
 			
-			ldb_qty = ldb_qty + ldb_scrap_qty / 2
+			ldb_qty = ldb_qty + ldb_scrap_qty 
 
 		end if
 		//-- check bù hàng --//
@@ -563,7 +580,7 @@ elseif rpo_dw.dataobject = 'd_lot_line_kd_grid' and rpo_dw.classname() = 'dw_4' 
 		if ls_lot_yn = 'Y' then
 			ldw_handle = iw_display.dynamic f_get_dw( 3)
 			ldb_scrap_qty = ldb_scrap_qty + dec(ldw_handle.Describe("Evaluate('Sum(qty)', 0)"))			
-			ldb_scrap_qty = ldb_scrap_qty / 2
+			ldb_scrap_qty = ldb_scrap_qty 
 		end if		
 		if is_included_scrap = 'Y' then
 			ldw_master.setitem(ldw_master.getrow(),'qty', ldb_qty + ldb_scrap_qty)
