@@ -399,6 +399,7 @@ elseif rpo_dw.dataobject = 'd_lot_line_kd_grid' and rpo_dw.classname() = 'dw_2' 
 		connect using it_transaction;
 	end if
 	select lot_yn into :ls_lot_yn from item where object_Ref_id = :ldb_item_id using it_transaction;
+	if isnull(ls_lot_yn) then ls_lot_yn = 'N'
 	if rpo_dw.dynamic f_get_ib_saving() = false then
 		disconnect using it_transaction;
 	end if
@@ -458,7 +459,7 @@ elseif rpo_dw.dataobject = 'd_lot_line_kd_grid' and rpo_dw.classname() = 'dw_2' 
 			ldb_scrap_qty = ldb_scrap_qty 
 		end if		
 		if is_included_scrap = 'Y' then
-			if ls_lot_yn <> 'Y' then
+			if ls_lot_yn = 'N' then
 				ldw_handle = iw_display.dynamic f_get_dw( 3)
 				ldb_scrap_qty = dec(ldw_handle.Describe("Evaluate('Sum(qty)', 0)"))
 			end if
