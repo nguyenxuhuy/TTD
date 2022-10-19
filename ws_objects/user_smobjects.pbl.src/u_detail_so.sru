@@ -804,12 +804,12 @@ if rdw_handling.dataobject  = 'd_lot_line_kd_grid'  then
 			INSERT into lot_line(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,DOC_VERSION,
 										lot_no,serial_no,line_no)
 			SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'SO_LINE',:ldb_doc_version,
-						'P', vv.code,vv.line_no
+						'T', vv.code,vv.line_no
 					from valueset_value vv where object_ref_id = :ldb_size_id using it_transaction;	
 			INSERT into lot_line(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,DOC_VERSION,
 										lot_no,serial_no,line_no)
 			SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'SO_LINE',:ldb_doc_version,
-						'T', vv.code,vv.line_no
+						'P', vv.code,vv.line_no
 					from valueset_value vv where object_ref_id = :ldb_size_id using it_transaction;															
 		elseif is_included_scrap = 'Y' then
 			INSERT into lot_line(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,DOC_VERSION,
@@ -839,7 +839,7 @@ if rdw_handling.dataobject  = 'd_lot_line_kd_grid'  then
 				INSERT into lot_line(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,DOC_VERSION,
 											lot_no,serial_no,line_no)
 				SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'SO_LINE',:ldb_doc_version,
-							'P', vv.code,vv.line_no
+							'T', vv.code,vv.line_no
 						from valueset_value vv where object_ref_id = :ldb_size_id using it_transaction;	
 				//-- ktra dw_4 rowcount() --//
 				ldw_handle = iw_display.dynamic f_get_dwo(4)
@@ -847,7 +847,7 @@ if rdw_handling.dataobject  = 'd_lot_line_kd_grid'  then
 					INSERT into lot_line(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,DOC_VERSION,
 												lot_no,serial_no,line_no)
 					SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'SO_LINE',:ldb_doc_version,
-								'T', vv.code,vv.line_no
+								'P', vv.code,vv.line_no
 							from valueset_value vv where object_ref_id = :ldb_size_id using it_transaction;		
 				end if
 			elseif is_included_scrap = 'Y' then
@@ -879,13 +879,13 @@ if rdw_handling.dataobject  = 'd_lot_line_kd_grid'  then
 					INSERT into lot_line(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,DOC_VERSION,
 												lot_no,serial_no,line_no)
 					SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'SO_LINE',:ldb_doc_version,
-								'P', vv.code,vv.line_no
+								'T', vv.code,vv.line_no
 							from valueset_value vv where object_ref_id = :ldb_size_id using it_transaction;						
 				end if
 				INSERT into lot_line(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,DOC_VERSION,
 											lot_no,serial_no,line_no)
 				SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'SO_LINE',:ldb_doc_version,
-							'T', vv.code,vv.line_no
+							'P', vv.code,vv.line_no
 						from valueset_value vv where object_ref_id = :ldb_size_id using it_transaction;						
 			end if
 			commit using it_transaction;	
@@ -905,11 +905,11 @@ laa_val[1] = '()'
 ldw_lot.f_add_where( 'lot_no', laa_val[] )
 
 ldw_lot = iw_display.dynamic f_get_dw(3)
-laa_val[1] = '(Bù;P)'
+laa_val[1] = '(Bù;T)'
 ldw_lot.f_add_where( 'lot_no', laa_val[] )
 
 ldw_lot = iw_display.dynamic f_get_dw(4)
-laa_val[1] = '=T'
+laa_val[1] = '=P'
 ldw_lot.f_add_where( 'lot_no', laa_val[] )
 
 return ancestorreturnvalue

@@ -253,6 +253,7 @@ public function long f_get_ids (string vs_table, double vdb_object_ref_id, ref d
 public function double f_copy_to_prod_orders (string vs_f_objname, s_str_dwo_related vstr_dwo_related[], t_ds_db vads_copied[], ref t_transaction rt_transaction, ref c_dwsetup_initial rdwsetup_initial)
 public function boolean f_is_scrap_remain (double vdb_f_doc_id, double vdb_f_doc_version, string vs_t_ref_table, decimal vdc_scrap_pct, ref t_transaction rt_transaction)
 public function decimal f_get_scrap_remain (double vdb_t_ref_id, decimal vdc_scrap_pct, ref t_transaction rt_transaction)
+public function string f_get_chksum_val (t_ds_db vds_handle, long vl_row, string vs_chksum_cols)
 end prototypes
 
 event e_send_2_approve(datawindow vdw_focus, s_object_display vc_obj_handling, s_w_multi vw_multi);
@@ -21080,14 +21081,15 @@ return upperbound(rdba_ids[])
 end function
 
 public function double f_copy_to_prod_orders (string vs_f_objname, s_str_dwo_related vstr_dwo_related[], t_ds_db vads_copied[], ref t_transaction rt_transaction, ref c_dwsetup_initial rdwsetup_initial);string				ls_sql, ls_code, ls_currCode, ls_currName, ls_sql_cols, ls_update_table, ls_related_data, las_related_data[], ls_f_ref_table
-string				ls_main_chk_cols, las_main_chk_cols[], ls_related_chk_cols, las_related_chk_cols[], ls_data_tmp
+string				ls_main_chk_cols, las_main_chk_cols[], ls_related_chk_cols, las_related_chk_cols[], ls_data_tmp, ls_sortStr
 string				las_from_cols[], ls_from_cols, ls_sql_values, ls_coltype, ls_sql_exec, ls_from_match_cols, las_from_match_cols[], ls_mat_cols, las_mat_cols[]
-string				ls_sql_detail, ls_from_cols_detail, las_from_cols_detail[]  //, ls_sql_detail2,  ls_from_cols_detail2, las_from_cols_detail2[]
+string				ls_sql_detail, ls_from_cols_detail, las_from_cols_detail[]  , ls_f_obj_column_chk, ls_main_obj_column_sum, ls_chkSum_val, ls_chkSum_valNext
 double			ldb_id,ldb_f_doc_id, ldb_t_doc_id, ldb_version_id, ldb_trans_id, ldb_base_currID, ldb_mat_val, ldb_matched_val, ldb_f_ref_id, ldb_f_branch_id
 double			ldb_f_version_id, ldb_branch, ldb_id_detail, ldb_manage_group
-int					li_idx, li_idx1, li_idx2, li_row, li_colnbr, li_colCnt, li_pos, li_cnt, li_colCnt_detail, li_row_detail //, li_colCnt_detail2
-boolean			lb_found, lb_copied, lb_update_orders
+int					li_idx, li_idx1, li_idx2, li_row, li_colnbr, li_colCnt, li_pos, li_cnt, li_colCnt_detail, li_row_detail , li_idx_sum
+boolean			lb_found, lb_copied, lb_update_orders, lb_lastrow_sum
 any				laa_value[], laa_chk_data[]
+dec				ldc_sumVal[], ldc_tmp_val, ldc_sumEmpty[]
 t_ds_db				lds_handle, lds_handle_detail  //, lds_handle_detail2
 c_string				lc_string
 c_unit_instance 	lc_unit_ins
@@ -21256,15 +21258,14 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) - 1
 			ls_mat_cols = las_mat_cols[1]
 		end if			
 	end if
-	//-- lấy chk cols for update destination--//
-	if  vstr_dwo_related[1].s_related_obj_column_chk[li_idx] <> '' then
-		ls_related_chk_cols = vstr_dwo_related[1].s_related_obj_column_chk[li_idx]
-		lc_string.f_stringtoarray( ls_related_chk_cols, ';', las_related_chk_cols[])
+
+	//-- lấy cols check sum --//
+	if upperbound(vstr_dwo_related[1].s_f_obj_column_chk[]) >= li_idx then
+		ls_f_obj_column_chk = vstr_dwo_related[1].s_f_obj_column_chk[li_idx]
 	end if
-	//-- lấy chk cols source--//
-	if  vstr_dwo_related[1].s_main_obj_column_chk[li_idx] <> '' then
-		ls_main_chk_cols = vstr_dwo_related[1].s_main_obj_column_chk[li_idx]
-		lc_string.f_stringtoarray( ls_main_chk_cols, ';', las_main_chk_cols[] )
+	//-- Lấy cols sum --//
+	if upperbound(vstr_dwo_related[1].s_main_obj_column_sum[]) >= li_idx then
+		ls_main_obj_column_sum = vstr_dwo_related[1].s_main_obj_column_sum[li_idx]
 	end if
 	
 	FOR li_idx1 = 1 to upperbound(vads_copied[])
@@ -21272,7 +21273,28 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) - 1
 		if vads_copied[li_idx1].dataobject = vstr_dwo_related[1].s_main_obj_dwo_copy[li_idx] then
 			lb_found = true
 			lb_update_orders = false
+			//-- sort check sum --//
+			if ls_f_obj_column_chk <> '' and ls_f_obj_column_chk <> ';' then
+				ls_sortStr = lc_string.f_globalreplace(ls_f_obj_column_chk, ';', ' A, ') 
+				ls_sortStr = left (ls_sortStr, len(ls_sortStr) - 4)
+				vads_copied[li_idx1].setsort(ls_sortStr)
+				vads_copied[li_idx1].sort()
+			end if
 			FOR li_row = 1 to vads_copied[li_idx1].rowcount()
+				//-- check sum - last row --//
+				if ls_f_obj_column_chk <> '' and ls_f_obj_column_chk <> ';' then
+					ls_chkSum_val = this.f_get_chksum_val( vads_copied[li_idx1], li_row, ls_f_obj_column_chk)
+					ls_chkSum_valNext= this.f_get_chksum_val( vads_copied[li_idx1], li_row + 1, ls_f_obj_column_chk)
+					if ls_chkSum_val <> ls_chkSum_valNext then
+						lb_lastrow_sum = true
+						ldb_id = this.f_create_id_ex( rt_transaction)	
+					elseif li_row = 1 then
+						ldb_id = this.f_create_id_ex( rt_transaction)	
+					end if
+				else
+					//-- insert--//
+					ldb_id = this.f_create_id_ex( rt_transaction)		
+				end if
 				//-- check match full--//
 				if vads_copied[li_idx1].dataobject = vstr_dwo_related[1].s_match_f_dwo[li_idx]  and vstr_dwo_related[1].b_chk_matched_qty then
 					ldb_mat_val = vads_copied[li_idx1].getitemnumber(li_row, ls_from_match_cols)
@@ -21289,6 +21311,7 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) - 1
 					end if								
 				end if //-- kết thúc: check match full--//
 				//-- check common values --//
+				/* tạm khoá 
 				if  vstr_dwo_related[1].s_main_obj_column_chk[li_idx] <> '' then
 					lb_update_orders = true
 					for li_idx2 = 1 to upperbound(las_main_chk_cols[])
@@ -21297,57 +21320,131 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) - 1
 						end if
 					next					
 				end if
-				//-- insert--//
-				ldb_id = this.f_create_id_ex( rt_transaction)
-				FOR li_colnbr= 1 to li_colCnt
-					ls_coltype = vads_copied[li_idx1].describe(las_from_cols[li_colnbr]+".coltype")
-					if left(ls_coltype, 5) = 'numbe' then
-						if las_from_cols[li_colnbr] = ls_from_match_cols then
-							ls_sql_values += "," + string(ldb_mat_val - ldb_matched_val)
-						else
-							if isnull(vads_copied[li_idx1].getitemnumber(li_row ,las_from_cols[li_colnbr])) then
+				*/
+				
+
+				//-- build values insert --//
+				if ls_f_obj_column_chk = '' then //-- không có sum --//					
+					FOR li_colnbr= 1 to li_colCnt
+						ls_coltype = vads_copied[li_idx1].describe(las_from_cols[li_colnbr]+".coltype")
+						if left(ls_coltype, 5) = 'numbe' then
+							if las_from_cols[li_colnbr] = ls_from_match_cols then
+								ls_sql_values += "," + string(ldb_mat_val - ldb_matched_val)
+							else
+								if isnull(vads_copied[li_idx1].getitemnumber(li_row ,las_from_cols[li_colnbr])) then
+									ls_sql_values +=",NULL"
+								else	
+									ls_sql_values += "," + string(vads_copied[li_idx1].getitemnumber(li_row ,las_from_cols[li_colnbr]))
+								end if
+							end if
+						elseif left(ls_coltype, 5) = 'char(' then
+							if isnull(vads_copied[li_idx1].getitemstring(li_row ,las_from_cols[li_colnbr])) then
+								ls_sql_values +=",NULL"
+							else						
+								ls_data_tmp = vads_copied[li_idx1].getitemstring(li_row ,las_from_cols[li_colnbr])
+								if pos(ls_data_tmp, "'") > 0 and pos(ls_data_tmp, "''") > 0 then
+									ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"'", "?")
+									ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"''", "''''")
+									ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"?", "''")
+								elseif  pos(ls_data_tmp, "'") > 0 then
+									ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"'", "''")
+								elseif  pos(ls_data_tmp, "''") > 0 then
+									ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"''", "''''")
+								end if												
+								ls_sql_values += ",'" + ls_data_tmp +"'"							
+	//							ls_sql_values += ",'" + string(vads_copied[li_idx1].getitemstring(li_row ,las_from_cols[li_colnbr]))+"'"
+							end if
+						elseif  left(ls_coltype, 5) = 'datet' then
+							if isnull(vads_copied[li_idx1].getitemdatetime(li_row ,las_from_cols[li_colnbr])) then
 								ls_sql_values +=",NULL"
 							else	
-								ls_sql_values += "," + string(vads_copied[li_idx1].getitemnumber(li_row ,las_from_cols[li_colnbr]))
+								ls_sql_values += ",to_date('" + string(vads_copied[li_idx1].getitemdatetime(li_row ,las_from_cols[li_colnbr]),gs_w_date_format )+"','"+gs_w_date_format+"')"
 							end if
+						else
+							rollback using rt_transaction;
+							gf_messagebox('m.b_obj_instantiate.f_copy_to_so.02','Thông báo','Không tìm thấy cột khai báo:@'+las_from_cols[li_colnbr],'stop','ok',1)
+							return -1						
 						end if
-					elseif left(ls_coltype, 5) = 'char(' then
-						if isnull(vads_copied[li_idx1].getitemstring(li_row ,las_from_cols[li_colnbr])) then
-							ls_sql_values +=",NULL"
-						else						
-							ls_data_tmp = vads_copied[li_idx1].getitemstring(li_row ,las_from_cols[li_colnbr])
-							if pos(ls_data_tmp, "'") > 0 and pos(ls_data_tmp, "''") > 0 then
-								ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"'", "?")
-								ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"''", "''''")
-								ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"?", "''")
-							elseif  pos(ls_data_tmp, "'") > 0 then
-								ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"'", "''")
-							elseif  pos(ls_data_tmp, "''") > 0 then
-								ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"''", "''''")
-							end if												
-							ls_sql_values += ",'" + ls_data_tmp +"'"							
-//							ls_sql_values += ",'" + string(vads_copied[li_idx1].getitemstring(li_row ,las_from_cols[li_colnbr]))+"'"
-						end if
-					elseif  left(ls_coltype, 5) = 'datet' then
-						if isnull(vads_copied[li_idx1].getitemdatetime(li_row ,las_from_cols[li_colnbr])) then
-							ls_sql_values +=",NULL"
-						else	
-							ls_sql_values += ",to_date('" + string(vads_copied[li_idx1].getitemdatetime(li_row ,las_from_cols[li_colnbr]),gs_w_date_format )+"','"+gs_w_date_format+"')"
-						end if
-					else
-						rollback using rt_transaction;
-						gf_messagebox('m.b_obj_instantiate.f_copy_to_so.02','Thông báo','Không tìm thấy cột khai báo:@'+las_from_cols[li_colnbr],'stop','ok',1)
-						return -1						
-					end if
-				NEXT
-				if upper(ls_update_table) = 'BOOKED_SLIP' then					
-					ls_sql_values += ",1,'PROD_ORDERS','DOCUMENT',"+string(ldb_t_doc_id) + "," +string(ldb_version_id) + ")"
-				elseif upper(ls_update_table) = 'PRODUCTION_LINE' then
-					ls_sql_values += ",'BOOKED_SLIP',"+string(ldb_version_id) + "," +string(ldb_id) + ")"
-				end if				
-				ls_sql_exec = ls_sql + ls_sql_values
-				EXECUTE immediate :ls_sql_exec using rt_transaction;				
-				ls_sql_values =''
+					NEXT
+				else //-- có check sum --//					
+						FOR li_colnbr= 1 to li_colCnt 
+							ls_coltype = vads_copied[li_idx1].describe(las_from_cols[li_colnbr]+".coltype")
+							if not lb_lastrow_sum then
+								if pos(ls_main_obj_column_sum, las_from_cols[li_colnbr]+';') > 0 then
+									li_idx_sum ++									
+									ldc_tmp_val = vads_copied[li_idx1].getitemnumber(li_row ,las_from_cols[li_colnbr])
+									if isnull(ldc_tmp_val)  then ldc_tmp_val = 0
+									if las_from_cols[li_colnbr] = ls_from_match_cols then
+										ldc_sumVal[li_idx_sum] += ldc_tmp_val - ldb_matched_val
+									else
+										ldc_sumVal[li_idx_sum] += ldc_tmp_val
+									end if
+								end if
+
+							else  //-- last row check sum --//
+								if left(ls_coltype, 5) = 'numbe' then
+									if pos(ls_main_obj_column_sum, las_from_cols[li_colnbr]+';') > 0 then
+										li_idx_sum ++
+										ldc_tmp_val = vads_copied[li_idx1].getitemnumber(li_row ,las_from_cols[li_colnbr])
+										if isnull(ldc_tmp_val)  then ldc_tmp_val = 0
+										if las_from_cols[li_colnbr] = ls_from_match_cols then
+											ldc_tmp_val = ldc_tmp_val - ldb_matched_val
+										end if
+										ls_sql_values += "," + string(ldc_sumVal[li_idx_sum] + ldc_tmp_val)
+									else
+										if las_from_cols[li_colnbr] = ls_from_match_cols then
+											ls_sql_values += "," + string(ldb_mat_val - ldb_matched_val)
+										else
+											if isnull(vads_copied[li_idx1].getitemnumber(li_row ,las_from_cols[li_colnbr])) then
+												ls_sql_values +=",NULL"
+											else	
+												ls_sql_values += "," + string(vads_copied[li_idx1].getitemnumber(li_row ,las_from_cols[li_colnbr]))
+											end if
+										end if
+									end if
+								elseif left(ls_coltype, 5) = 'char(' then
+									if isnull(vads_copied[li_idx1].getitemstring(li_row ,las_from_cols[li_colnbr])) then
+										ls_sql_values +=",NULL"
+									else						
+										ls_data_tmp = vads_copied[li_idx1].getitemstring(li_row ,las_from_cols[li_colnbr])
+										if pos(ls_data_tmp, "'") > 0 and pos(ls_data_tmp, "''") > 0 then
+											ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"'", "?")
+											ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"''", "''''")
+											ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"?", "''")
+										elseif  pos(ls_data_tmp, "'") > 0 then
+											ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"'", "''")
+										elseif  pos(ls_data_tmp, "''") > 0 then
+											ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"''", "''''")
+										end if												
+										ls_sql_values += ",'" + ls_data_tmp +"'"							
+									end if
+								elseif  left(ls_coltype, 5) = 'datet' then
+									if isnull(vads_copied[li_idx1].getitemdatetime(li_row ,las_from_cols[li_colnbr])) then
+										ls_sql_values +=",NULL"
+									else	
+										ls_sql_values += ",to_date('" + string(vads_copied[li_idx1].getitemdatetime(li_row ,las_from_cols[li_colnbr]),gs_w_date_format )+"','"+gs_w_date_format+"')"
+									end if
+								else
+									rollback using rt_transaction;
+									gf_messagebox('m.b_obj_instantiate.f_copy_to_so.02','Thông báo','Không tìm thấy cột khai báo:@'+las_from_cols[li_colnbr],'stop','ok',1)
+									return -1						
+								end if							
+							end if
+						NEXT					
+				end if
+				
+				//-- check last row of sum --//
+				if ls_f_obj_column_chk = '' or lb_lastrow_sum then
+					
+					if upper(ls_update_table) = 'BOOKED_SLIP' then					
+						ls_sql_values += ",1,'PROD_ORDERS','DOCUMENT',"+string(ldb_t_doc_id) + "," +string(ldb_version_id) + ")"
+					elseif upper(ls_update_table) = 'PRODUCTION_LINE' then
+						ls_sql_values += ",'BOOKED_SLIP',"+string(ldb_version_id) + "," +string(ldb_id) + ")"
+					end if				
+					ls_sql_exec = ls_sql + ls_sql_values
+					EXECUTE immediate :ls_sql_exec using rt_transaction;				
+					ls_sql_values =''
+				end if
 				//-- update matching --//
 				if vads_copied[li_idx1].dataobject = vstr_dwo_related[1].s_match_f_dwo[li_idx] then
 					ldb_f_branch_id =vads_copied[li_idx1].getitemnumber(li_row, 'branch_id')
@@ -21362,6 +21459,7 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) - 1
 					EXECUTE immediate :ls_sql_exec using rt_transaction;
 					lb_copied = true
 				end if
+				
 			NEXT
 			if lb_update_orders then
 				ls_sql_exec = "UPDATE orders set "
@@ -21407,6 +21505,30 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) - 1
 		end if
 		lds_handle.settransobject( rt_transaction)
 		lds_handle.retrieve( )
+		li_row = 1
+		DO
+			
+			ldb_f_ref_id = lds_handle.getitemnumber(li_row, 'id')
+			//-- check match full--//
+			if lds_handle.dataobject = vstr_dwo_related[1].s_match_f_dwo[li_idx]  and vstr_dwo_related[1].b_chk_matched_qty then
+				ldb_mat_val = lds_handle.getitemnumber(li_row, ls_from_match_cols)
+				if isnull(ldb_mat_val) then ldb_mat_val = 0			
+				//////////////////////////////////////////////////////////////////////////////////
+				ldb_matched_val = this.f_get_matched_value(ls_mat_cols, ldb_f_ref_id, ls_update_table)
+				//////////////////////////////////////////////////////////////////////////////////				
+//				ldb_matched_val = rt_transaction.f_get_matched_value(ls_mat_cols, ldb_f_ref_id, ls_update_table)
+				if isnull(ldb_matched_val) then ldb_matched_val = 0
+				if ldb_matched_val >= ldb_mat_val then continue //-- đã copy hết --//
+				if vstr_dwo_related[1].s_match_f_col_obj[li_idx] <> '' then
+					 if isnull(lds_handle.getitemnumber(li_row, vstr_dwo_related[1].s_match_f_col_obj[li_idx])) then continue //-- chưa có mã hàng: bỏ qua ko copy --//
+				end if				
+			end if //-- kết thúc: check match full--//	
+			
+			li_row ++
+			//-- check sum or last row --//
+			
+		LOOP UNTIL li_row > lds_handle.rowcount()
+
 		FOR li_row = 1 to lds_handle.rowcount()
 			ldb_f_ref_id = lds_handle.getitemnumber(li_row, 'id')
 			//-- check match full--//
@@ -21644,6 +21766,40 @@ end if
 
 return ldc_remain_qty
 
+end function
+
+public function string f_get_chksum_val (t_ds_db vds_handle, long vl_row, string vs_chksum_cols);string			ls_val, ls_coltype, lsa_chksum_cols[]
+int				li_colCnt, li_colnbr
+c_string		lc_String
+
+if vl_row >0 and vds_handle.rowcount() >= vl_row then
+	li_colCnt = lc_String.f_stringtoarray( vs_chksum_cols, ';', lsa_chksum_cols[])
+	FOR li_colnbr= 1 to li_colCnt
+		ls_coltype = vds_handle.describe(lsa_chksum_cols[li_colnbr]+".coltype")
+		if left(ls_coltype, 5) = 'numbe' then
+
+			if isnull(vds_handle.getitemnumber(vl_row ,lsa_chksum_cols[li_colnbr])) then
+				ls_val +=";"
+			else	
+				ls_val += string(vds_handle.getitemnumber(vl_row ,lsa_chksum_cols[li_colnbr]))+';'
+			end if
+		elseif left(ls_coltype, 5) = 'char(' then
+			if isnull(vds_handle.getitemstring(vl_row ,lsa_chksum_cols[li_colnbr])) then
+				ls_val +=";"
+			else						
+				ls_val += vds_handle.getitemstring(vl_row ,lsa_chksum_cols[li_colnbr])+';'
+			end if
+		elseif  left(ls_coltype, 5) = 'datet' then
+			if isnull(vds_handle.getitemdatetime(vl_row ,lsa_chksum_cols[li_colnbr])) then
+				ls_val +=";"
+			else	
+				ls_val += string(vds_handle.getitemdatetime(vl_row ,lsa_chksum_cols[li_colnbr]),gs_w_date_format )+"','"+gs_w_date_format+"')"+';'
+			end if				
+		end if
+	NEXT	
+end if
+
+return ls_val
 end function
 
 on b_obj_instantiate.create

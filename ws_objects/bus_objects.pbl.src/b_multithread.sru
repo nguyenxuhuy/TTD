@@ -1594,7 +1594,7 @@ Return: 1 thành công, -1 lỗi
 ==============================================================*/
 double				ldb_qty, ldb_qty_sku, ldba_convert_data[], ldb_round_diff
 int						li_rtn
-string					lsa_item_column[]
+string					lsa_item_column[], ls_sql, ls_table
 c_unit_instance_ex	lc_unit
 
 
@@ -1625,6 +1625,7 @@ if isnull(vdb_trans_uom) or vdb_trans_uom = 0 then
 	return -1		
 end if
 
+ls_table = rpo_item.dynamic describe("datawindow.table.UpdateTable")
 ldb_qty = rpo_item.dynamic getitemnumber(vdb_row,vs_qty_column)
 if isnull(ldb_qty) then  ldb_qty = 0 
 
@@ -1634,6 +1635,8 @@ li_rtn = lc_unit.f_get_data_4_conversion_unit_ex( vdb_trans_uom, vdb_item_id, ld
 
 //-- cập nhật chênh lệch quy đổi --//
 if li_rtn = 0 then
+	ls_sql = "Update "+ls_table+ " Set "+vs_qty_column+'_sku ='+string(ldb_qty) +" where id ="+string(rpo_item.dynamic getitemnumber(vdb_row,'ID'))
+	Execute immediate :ls_sql using rt_transaction;	
 	rpo_item.dynamic setitem(vdb_row,vs_qty_column+'_sku', ldb_qty)
 	rdb_qty_sku = ldb_qty
 elseif li_rtn = 1 then
@@ -1648,6 +1651,9 @@ elseif li_rtn = 1 then
 	rdb_qty_sku = lc_unit.f_round( rt_transaction,  ldba_convert_data[4], ldb_qty_sku)
 	
 	if isnull(rdb_qty_sku) then rdb_qty_sku = 0
+	
+	ls_sql = "Update "+ls_table+ " Set "+vs_qty_column+'_sku ='+string(ldb_qty) +" where id ="+string(rpo_item.dynamic getitemnumber(vdb_row,'ID'))
+	Execute immediate :ls_sql using rt_transaction;	
 	rpo_item.dynamic setitem(vdb_row, vs_qty_column+'_sku', rdb_qty_sku)
 
 	ldb_round_diff = ldb_qty_sku - rdb_qty_sku
@@ -3219,198 +3225,15 @@ FOR li_idx = 1 to upperbound(vstr_streamvalue[])
 					
 				end if
 			NEXT			
-/*			
-		else	//-- trường hợp sản lệnh sản xuất: chiết tiết vật liệu của thành phẩm--//		
-			//-- xả filter nếu có --//
 
-				FOR ll_row = 1 to ldw_item.rowcount( )			
-					ldb_item_id =  ldw_item.getitemnumber(ll_row,las_col_item[1])
-					ldb_dwitem_ID = ldw_item.getitemnumber( ll_row,'ID')
-					ldb_trans_uom = ldw_item.getitemnumber(ll_row,las_col_item[4])
-					if upper(this.f_get_object_type(ldb_item_id)) <> 'ITEM' then continue
-					if lobj_ins.f_get_item_managed_qty_value(ldb_item_id ,ls_manage_qty_yn, ls_manage_value_yn) = -1 then return -1
-					if vs_value_yn = 'Y' and ls_manage_value_yn ='Y' then
-						ls_sv_value_yn ='Y' 
-					else
-						ls_sv_value_yn ='N' 
-					end if
-					if vs_qty_yn = 'Y'  and ls_manage_qty_yn ='Y' then
-						ls_sv_qty_yn ='Y'
-					else 
-						ls_sv_qty_yn ='N'
-					end if						
-					//-- update item balance theo ngày --//
-					ldb_qty = ldw_item.getitemnumber( ll_row,las_col_item[3])
-					if isnull(ldb_qty) or ldb_qty = 0 then continue 	
-					
-					if ls_sv_value_yn = 'Y'  then
-						ldb_value =  ldw_item.getitemnumber(ll_row,las_col_item_value[2]) //--trans value --//
-						if isnull(ldb_value) then ldb_value =0			
-						ldb_base_value =  ldw_item.getitemnumber(ll_row,las_col_item_value[3]) //--base value --//
-						if isnull(ldb_base_value) then ldb_base_value =0			
-						//-- Đảo dấu form kiểm kê, khi điều chỉnh chênh lệch thiếu --//
-						if ldw_item.dataobject = 'd_inventory_line_counting_grid' and ldb_value < 0 then
-							ldb_value = - ldb_value
-						end if				
-						//-- Đảo dấu form kiểm kê, khi điều chỉnh chênh lệch thiếu --//
-						if ldw_item.dataobject = 'd_inventory_line_counting_grid' and ldb_base_value < 0 then
-							ldb_base_value = - ldb_base_value
-						end if							
-						//-- Công thêm thuế nhập khẩu và phí mua hàng nếu có --//
-						if this.classname( ) = 'u_pur_invoice' then
-							SELECT sum(TRANS_AMT), sum(BASE_AMT) INTO :ldb_trans_charge_amt, :ldb_base_charge_amt
-							FROM POST_LINE 
-							WHERE DOC_ID = :vdb_doc_id AND DR_OBJECT_ID = :ldb_item_id AND SOB = :gs_sob AND OBJECT_REF_TABLE <> :ls_item_ref_table  USING rt_transaction;
-							if isnull(ldb_trans_charge_amt) then ldb_trans_charge_amt = 0
-							if isnull(ldb_base_charge_amt) then ldb_base_charge_amt = 0
-							ldb_value += ldb_trans_charge_amt
-							ldb_base_value += ldb_base_charge_amt
-	
-							//-- cập nhật giá mua sau cùng --//
-							UPDATE item set last_pur_price = round(:ldb_base_value/:ldb_qty,0) where object_ref_id = :ldb_item_id using rt_transaction;
-							
-						end if					
-					end if
-			
-					//-- set các biến cho update item balance --//
-					laa_data[1] = ldb_item_id														//-- Item_ID--//
-					laa_data[2] = ldw_item.getitemnumber(ll_row,'COMPANY_ID')			//--Company_ID--//
-					laa_data[3] = ldw_item.getitemnumber(ll_row,las_col_item[2])		//--Spec_ID--//
-					//-- loc_id của ldw_item nhập kho hoặc xuất tùy vào khai báo stream_value struct--//
-					if pos(vstr_streamvalue[li_idx].s_f_obj_column, 'loc_id' )> 0 and vstr_streamvalue[li_idx].s_f_obj_dwo = ldw_item.dataobject then
-						lstr_data_from_to.aa_data_from[3] = ldw_item.getitemnumber(ll_row,las_col_f_object[4]) 
-					elseif pos(vstr_streamvalue[li_idx].s_t_obj_column, 'loc_id' )> 0 and vstr_streamvalue[li_idx].s_t_obj_dwo = ldw_item.dataobject then
-						lstr_data_from_to.aa_data_to[3] = ldw_item.getitemnumber(ll_row,las_col_t_object[4]) 
-					end if							
-//					laa_data[4] = ldw_item.getitemnumber(ll_row,las_col_item[5]) 		//--Loc_ID--//
-					laa_data[5] = datetime(vd_trans_date)										//--Trans_date--//
-					laa_data[9] = gs_sob
-					///-- kiểm tra item có quản lý số seri hoặc số lô không --//
-					if lobj_ins.f_get_lot_or_serial_yn( laa_data[1], ls_lot_yn,ls_serial_yn) = -1 then
-						gf_messagebox('m.b_doc.f_booking_item.01','Thông báo','Mã hàng không hợp lệ:@'+ lobj_ins.f_get_object_code( laa_data[1]),'stop','ok',1)		
-						rollback using rt_transaction;
-						destroy lds_stream
-						return -1
-					end if
-					
-					//-- ghi sổ giá trị hoặc ghi sổ số lượng với mã hàng ko quản lý số  seri --//
-					if (ls_serial_yn = 'N' and ls_lot_yn = 'N' and (ls_sv_qty_yn ='Y' or ls_sv_value_yn ='Y' ) ) then  //-- (vs_value_yn = 'Y' and lb_managed_qty) OR and vs_qty_yn = 'Y' 
-			
-//						laa_data[7] = '@'			//--Lot_no--//
-//						laa_data[8] = '@'			//--Serial_no--//
-						lstr_data_from_to.aa_data_from[1] ='@'
-						lstr_data_from_to.aa_data_from[2] ='@'							
-
-						if this.f_insert_item_balance_row_multi_ex( rt_transaction, ldw_item, ll_row, ldw_f_object, ldw_t_object, vd_trans_date, vs_post_type, las_col_item[], las_col_item_value[], las_col_f_object[], las_col_t_object[], laa_data[], ls_sv_qty_yn, ls_sv_value_yn, ldb_trans_uom, las_col_item[3], ldb_base_value, rstr_ds_4_posting,vs_qty_yn, vs_value_yn, lstr_data_from_to, vdb_doc_id, ls_related_doc_qty_yn) = -1 then 
-							destroy lds_stream
-							rollback using rt_transaction;
-							return -1
-						end if
-						
-						//-- update streamvalue theo chứng từ --//
-						if  upper(vs_post_type) = 'POST' then		
-							
-							if  ls_sv_qty_yn = 'Y' and  ls_sv_value_yn = 'Y'  then //-- cập nhật stream_value GT --//
-								ll_insertrow_sv = lds_stream.event e_addrow( )
-								if ll_insertrow_sv < 1 then 
-									gf_messagebox('m.b_doc.f_booking_item.09','Thông báo','Không insert được stream','stop','ok',1)
-									destroy lds_stream
-									rollback using rt_transaction;
-									return -1
-								end if								
-								li_rtn = this.f_update_streamvalue_multi_ex( ldw_item, lds_stream, las_col_item_value[], las_col_item_value_sv[], '', ll_row, ll_insertrow_sv,ldw_f_object, las_col_f_object[], las_col_f_object_sv[],ldw_t_object, las_col_t_object[], las_col_t_object_sv[], ldw_currency,las_col_currency[], las_col_currency_sv[], ldb_value, ldb_base_value, rstr_ds_4_posting, lstr_data_from_to)
-								if li_rtn = -1 then 
-									destroy lds_stream
-									rollback using rt_transaction;
-									return -1
-								end if
-								
-								li_rtn = this.f_postinsert_streamvalue(lds_stream , ll_insertrow_sv, ls_sv_value_yn,ls_sv_qty_yn, ls_item_ref_table, ldb_dwitem_ID, vs_doctype, vdb_doc_id, vd_trans_date)
-								if li_rtn = -1 or li_rtn = 0 then 
-									gf_messagebox('m.b_doc.f_booking_item.09','Thông báo','Không insert được stream','stop','ok',1)
-									destroy lds_stream
-									rollback using rt_transaction;
-									return -1
-								end if						
-								
-							elseif  ls_sv_qty_yn = 'Y' and  ls_sv_value_yn = 'N' and ( vs_value_yn = 'N' or ls_related_doc_qty_yn = 'N')  then //-- cập nhật stream_value SL --//
-								ll_insertrow_sv = lds_stream.event e_addrow( )
-								if ll_insertrow_sv < 1 then 
-									gf_messagebox('m.b_doc.f_booking_item.09','Thông báo','Không insert được stream','stop','ok',1)
-									destroy lds_stream
-									rollback using rt_transaction;
-									return -1
-								end if								
-								li_rtn = this.f_update_streamvalue_multi_ex( ldw_item, lds_stream, las_col_item[], las_col_item_sv[], '', ll_row,ll_insertrow_sv, ldw_f_object, las_col_f_object[], las_col_f_object_sv[],ldw_t_object, las_col_t_object[], las_col_t_object_sv[], rstr_ds_4_posting, lstr_data_from_to)								
-								if li_rtn = -1 then 
-									destroy lds_stream
-									rollback using rt_transaction;
-									return -1
-								end if					
-									
-								li_rtn = this.f_postinsert_streamvalue(lds_stream , ll_insertrow_sv, ls_sv_value_yn,ls_sv_qty_yn, ls_item_ref_table, ldb_dwitem_ID, vs_doctype, vdb_doc_id, vd_trans_date)
-								if li_rtn = -1 or li_rtn = 0 then 
-									gf_messagebox('m.b_doc.f_booking_item.09','Thông báo','Không insert được stream','stop','ok',1)
-									destroy lds_stream
-									rollback using rt_transaction;
-									return -1
-								end if						
-								
-							end if		
-						end if			
-						
-					elseif (ls_serial_yn = 'Y'  or ls_lot_yn = 'Y') and  (ls_sv_qty_yn ='Y' or ls_sv_value_yn ='Y' ) then //-- mặt hàng có quản lý seri/lot --//
-						if not isvalid(ldw_item_lot) then
-							if ls_sv_qty_yn = 'Y'   then
-								gf_messagebox('m.b_doc.f_booking_item.03','Thông báo','DW item_lot trong streamvalue structure không hợp lệ','stop','ok',1)		
-								destroy lds_stream
-								rollback using rt_transaction;
-								return -1
-							elseif ls_sv_value_yn = 'Y'  then
-								lds_item_lot = create t_ds_db
-								lds_item_lot.dataobject = 'ds_lot_line_4booking'
-								ls_where = " matching.t_doc_id = "+string(vdb_doc_id)
-								lds_item_lot.f_add_where( ls_where, 'AND')
-								lds_item_lot.f_settransobject(rt_transaction )
-								lds_item_lot.retrieve( )
-			
-								lds_item_lot.setfilter( "t_ref_id = "+string(ldb_dwitem_ID ))
-								lds_item_lot.filter( )			
-								//-- tính tổng số lượng các lot/seri --//
-								if  lds_item_lot.rowcount( )	 > 0 then ldb_qty = double(lds_item_lot.describe("Evaluate('Sum("+las_col_item_lot[1]+")', 0)"))	
-								
-								li_rtn = this.f_booking_item_lot_multi_ex( rt_transaction,lds_stream ,ldw_item, ll_row, lds_item_lot, laa_data[], vd_trans_date, ls_lot_yn, ls_serial_yn, vs_qty_yn, vs_value_yn, &
-															vs_post_type, ldb_value,ldb_base_value, ldb_qty, ldw_f_object, ldw_t_object, las_col_item[], las_col_item_lot[], las_col_item_value[], las_col_f_object[], las_col_t_object[],&								
-															ldb_trans_uom,las_col_f_object_sv[], las_col_t_object_sv[],las_col_item_sv[], las_col_item_lot_sv[],las_col_item_value_sv[], ls_item_ref_table, &
-															ls_samecol_string, vs_doctype, ldb_dwitem_id, vdb_doc_id, ldw_currency,las_col_currency[], las_col_currency_sv[], rstr_ds_4_posting)	
-								if li_rtn = -1 then return -1
-								
-							end if
-						else
-							ldw_item_lot.setfilter( "object_ref_id = "+string(ldb_dwitem_ID ))
-							ldw_item_lot.filter( )					
-							//-- tính tổng số lượng các lot/seri --//
-							if  ldw_item_lot.rowcount( )	 > 0 then ldb_qty = double(ldw_item_lot.describe("Evaluate('Sum("+las_col_item_lot[1]+")', 0)"))		
-
-							li_rtn = this.f_booking_item_lot_multi_ex( rt_transaction,lds_stream ,ldw_item, ll_row, ldw_item_lot, laa_data[], vd_trans_date, ls_lot_yn, ls_serial_yn, vs_qty_yn, vs_value_yn, &
-														vs_post_type, ldb_value,ldb_base_value, ldb_qty, ldw_f_object, ldw_t_object, las_col_item[], las_col_item_lot[], las_col_item_value[], las_col_f_object[], las_col_t_object[],&								
-														ldb_trans_uom,las_col_f_object_sv[], las_col_t_object_sv[],las_col_item_sv[], las_col_item_lot_sv[],las_col_item_value_sv[], ls_item_ref_table, &
-														ls_samecol_string, vs_doctype, ldb_dwitem_id, vdb_doc_id, ldw_currency,las_col_currency[], las_col_currency_sv[], rstr_ds_4_posting)	
-							if li_rtn = -1 then return -1
-						end if														
-					end if
-				NEXT									
-													
-		end if
-*/		
 	//-- update cot sku ,cogs--//
-	if ldw_item.update() = -1 then
-		this.f_log_post(vdb_doc_id  ,'Không cập nhật được số lượng theo đơn vị tồn kho:@' +rt_transaction.sqlerrtext )
-		rollback using rt_transaction;
-		destroy lds_stream
-		return -1
-	end if	
-	ldw_item.resetupdate()
+//	if ldw_item.update() = -1 then
+//		this.f_log_post(vdb_doc_id  ,'Không cập nhật được số lượng theo đơn vị tồn kho:@' +rt_transaction.sqlerrtext )
+//		rollback using rt_transaction;
+//		destroy lds_stream
+//		return -1
+//	end if	
+//	ldw_item.resetupdate()
 	
 	if lds_stream.update(true,false ) = -1 then
 		this.f_log_post(vdb_doc_id  ,'Không cập nhật được số lượng theo đơn vị tồn kho:@' +rt_transaction.sqlerrtext )
