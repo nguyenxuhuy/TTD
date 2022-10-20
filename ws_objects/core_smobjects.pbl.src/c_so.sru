@@ -631,7 +631,8 @@ istr_dwo_related[8].s_main_obj_column_copy[1] += 'currency_id;exchange_rate;note
 istr_dwo_related[8].s_related_obj_dwo_copy[1] = 'd_document_prod_grid' // datawindow copy đến
 istr_dwo_related[8].s_related_obj_column_copy[1]= 'DR_CR_OBJECT;TRANS_ADDRESS;INVOICE_OBJECT;INVOICE_ADDRESS;'
 istr_dwo_related[8].s_related_obj_column_copy[1] += 'currency_id;exchange_rate;note;payment_term;payment_method;delivery_mode;'
-
+istr_dwo_related[8].s_main_obj_column_chk[1] = 'object_id;'
+istr_dwo_related[8].s_related_obj_column_chk[1] = 'DR_CR_OBJECT;'
 
 istr_dwo_related[8].s_main_obj_dwo_copy[2] = 'd_so_line_grid'// datawindow copy từ
 istr_dwo_related[8].s_main_obj_column_copy[2] =  'line_no;ITEM_ID;qty;' // cột copy từ

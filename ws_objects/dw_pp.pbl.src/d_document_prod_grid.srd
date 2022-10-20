@@ -44,6 +44,7 @@ table(column=(type=char(0) updatewhereclause=yes name=gutter dbname="gutter" val
  column=(type=char(100) updatewhereclause=yes name=cust_code dbname="object.code" dbalias="o_cust.code" )
  column=(type=char(500) updatewhereclause=yes name=cust_name dbname="object.name" dbalias="o_cust.name" )
  column=(type=char(300) updatewhereclause=yes name=order_type dbname="valueset_value.code" dbalias="v.code" )
+ column=(type=char(4000) updatewhereclause=yes name=doc_search dbname="dwh_search.doc_search" dbalias=".doc_search" )
  retrieve="  SELECT '' as gutter,
         DOCUMENT.ID,   
          DOCUMENT.CODE,   
@@ -82,12 +83,14 @@ table(column=(type=char(0) updatewhereclause=yes name=gutter dbname="gutter" val
 		booked_slip.value_yn,
          o_cust.code,
          o_cust.name,
-         v.code
+         v.code,
+		dwh_search.doc_search 
     FROM DOCUMENT   
         JOIN booked_slip on booked_slip.object_ref_id = DOCUMENT.ID
 	    left join object o_cust on o_cust.id = booked_slip.dr_cr_object and o_cust.object_ref_table = 'CUSTOMER'
 		left join valueset_value v on v.id = DOCUMENT.MANAGE_GROUP
         left join TRANS_SETUP_HDR on TRANS_SETUP_HDR.id = DOCUMENT.TRANS_HDR_ID
+		left join dwh_search on dwh_search.doc_id = DOCUMENT.id
         LEFT JOIN ROLE_USER
              ON ROLE_USER.ID = DOCUMENT.HANDLED_BY
                 AND ROLE_USER.TYPE = 'user'
