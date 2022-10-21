@@ -21617,7 +21617,11 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) - 1
 									if las_from_cols[li_colnbr] = ls_from_match_cols then
 										ldc_tmp_val = ldc_tmp_val - ldb_matched_val
 									end if
-									ls_sql_values += "," + string(ldc_sumVal[li_idx_sum] + ldc_tmp_val)
+									if upperbound(ldc_sumVal[])>0 then
+										ls_sql_values += "," + string(ldc_sumVal[li_idx_sum] + ldc_tmp_val)
+									else
+										ls_sql_values += "," + string( ldc_tmp_val)
+									end if
 								else
 									if las_from_cols[li_colnbr] = ls_from_match_cols then
 										ls_sql_values += "," + string(ldb_mat_val - ldb_matched_val)
@@ -21772,47 +21776,60 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) - 1
 								NEXT
 							else //-- có check sum --//
 								FOR li_colnbr= 1 to li_colCnt_detail
-									ls_coltype = lds_handle_detail.describe(las_from_cols_detail[li_colnbr]+".coltype")							
-									if left(ls_coltype, 5) = 'numbe' then
+									ls_coltype = lds_handle_detail.describe(las_from_cols_detail[li_colnbr]+".coltype")	
+									if not lb_lastrow_sum then
 										if pos(ls_main_obj_col_sum_detail, las_from_cols_detail[li_colnbr]+';') > 0 then
-											li_idx_sum ++
+											li_idx_sum ++									
 											ldc_tmp_val = lds_handle_detail.getitemnumber(li_row_detail ,las_from_cols_detail[li_colnbr])
 											if isnull(ldc_tmp_val)  then ldc_tmp_val = 0
-											ls_sql_values += "," + string(ldc_sumVal[li_idx_sum] + ldc_tmp_val)
-										else
-											if isnull(lds_handle_detail.getitemnumber(li_row_detail ,las_from_cols_detail[li_colnbr])) then
+											ldc_sumVal[li_idx_sum] += ldc_tmp_val
+										end if			
+									else  //-- last row check sum --//							
+										if left(ls_coltype, 5) = 'numbe' then
+											if pos(ls_main_obj_col_sum_detail, las_from_cols_detail[li_colnbr]+';') > 0 then
+												li_idx_sum ++
+												ldc_tmp_val = lds_handle_detail.getitemnumber(li_row_detail ,las_from_cols_detail[li_colnbr])
+												if isnull(ldc_tmp_val)  then ldc_tmp_val = 0
+												if upperbound(ldc_sumVal[])>0 then
+													ls_sql_values += "," + string(ldc_sumVal[li_idx_sum] + ldc_tmp_val)
+												else
+													ls_sql_values += "," + string(ldc_tmp_val)
+												end if
+											else
+												if isnull(lds_handle_detail.getitemnumber(li_row_detail ,las_from_cols_detail[li_colnbr])) then
+													ls_sql_values +=",NULL"
+												else	
+													ls_sql_values += "," + string(lds_handle_detail.getitemnumber(li_row_detail ,las_from_cols_detail[li_colnbr]))
+												end if
+											end if
+										elseif left(ls_coltype, 5) = 'char(' then
+											if isnull(lds_handle_detail.getitemstring(li_row_detail ,las_from_cols_detail[li_colnbr])) then
+												ls_sql_values +=",NULL"
+											else						
+												ls_data_tmp = lds_handle_detail.getitemstring(li_row_detail ,las_from_cols_detail[li_colnbr])
+												if pos(ls_data_tmp, "'") > 0 and pos(ls_data_tmp, "''") > 0 then
+													ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"'", "?")
+													ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"''", "''''")
+													ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"?", "''")
+												elseif  pos(ls_data_tmp, "'") > 0 then
+													ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"'", "''")
+												elseif  pos(ls_data_tmp, "''") > 0 then
+													ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"''", "''''")
+												end if												
+												ls_sql_values += ",'" + ls_data_tmp +"'"							
+											end if
+										elseif  left(ls_coltype, 5) = 'datet' then
+											if isnull(lds_handle_detail.getitemdatetime(li_row_detail ,las_from_cols_detail[li_colnbr])) then
 												ls_sql_values +=",NULL"
 											else	
-												ls_sql_values += "," + string(lds_handle_detail.getitemnumber(li_row_detail ,las_from_cols_detail[li_colnbr]))
+												ls_sql_values += ",to_date('" + string(lds_handle_detail.getitemdatetime(li_row_detail ,las_from_cols_detail[li_colnbr]),gs_w_date_format )+"','"+gs_w_date_format+"')"
 											end if
-										end if
-									elseif left(ls_coltype, 5) = 'char(' then
-										if isnull(lds_handle_detail.getitemstring(li_row_detail ,las_from_cols_detail[li_colnbr])) then
-											ls_sql_values +=",NULL"
-										else						
-											ls_data_tmp = lds_handle_detail.getitemstring(li_row_detail ,las_from_cols_detail[li_colnbr])
-											if pos(ls_data_tmp, "'") > 0 and pos(ls_data_tmp, "''") > 0 then
-												ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"'", "?")
-												ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"''", "''''")
-												ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"?", "''")
-											elseif  pos(ls_data_tmp, "'") > 0 then
-												ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"'", "''")
-											elseif  pos(ls_data_tmp, "''") > 0 then
-												ls_data_tmp = lc_string.f_globalreplace(ls_data_tmp ,"''", "''''")
-											end if												
-											ls_sql_values += ",'" + ls_data_tmp +"'"							
-										end if
-									elseif  left(ls_coltype, 5) = 'datet' then
-										if isnull(lds_handle_detail.getitemdatetime(li_row_detail ,las_from_cols_detail[li_colnbr])) then
-											ls_sql_values +=",NULL"
-										else	
-											ls_sql_values += ",to_date('" + string(lds_handle_detail.getitemdatetime(li_row_detail ,las_from_cols_detail[li_colnbr]),gs_w_date_format )+"','"+gs_w_date_format+"')"
-										end if
-									else
-										rollback using rt_transaction;
-										gf_messagebox('m.b_obj_instantiate.f_copy_to_so.02','Thông báo','Không tìm thấy cột khai báo:@'+las_from_cols_detail[li_colnbr],'stop','ok',1)
-										return -1						
-									end if													
+										else
+											rollback using rt_transaction;
+											gf_messagebox('m.b_obj_instantiate.f_copy_to_so.02','Thông báo','Không tìm thấy cột khai báo:@'+las_from_cols_detail[li_colnbr],'stop','ok',1)
+											return -1						
+										end if						
+									end if
 								NEXT
 								//-- reset var --//
 								li_idx_sum = 0							
