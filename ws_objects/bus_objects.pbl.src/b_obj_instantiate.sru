@@ -21086,7 +21086,7 @@ string				las_from_cols[], ls_from_cols, ls_sql_values, ls_coltype, ls_sql_exec,
 string				ls_sql_detail, ls_from_cols_detail, las_from_cols_detail[]  , ls_f_obj_column_chk, ls_main_obj_column_sum, ls_chkSum_val, ls_chkSum_valNext
 string				ls_f_obj_column_chk_detail, ls_ref_id_filter, ls_main_obj_col_sum_detail
 double			ldb_id,ldb_f_doc_id, ldb_t_doc_id, ldb_version_id, ldb_trans_id, ldb_base_currID, ldb_mat_val, ldb_matched_val, ldb_f_ref_id, ldb_f_branch_id
-double			ldb_f_version_id, ldb_branch, ldb_id_detail, ldb_manage_group, ldba_version_id[]
+double			ldb_f_version_id, ldb_branch, ldb_id_detail, ldb_manage_group, ldba_version_id[], ldb_line_ref_id
 int					li_idx, li_idx1, li_idx2, li_row, li_colnbr, li_colCnt, li_pos, li_cnt, li_colCnt_detail, li_row_detail , li_idx_sum
 boolean			lb_found, lb_copied, lb_update_orders, lb_lastrow_sum
 any				laa_value[], laa_chk_data[]
@@ -21185,7 +21185,6 @@ ls_sql = "INSERT into DOCUMENT(id,company_id, branch_id,object_ref_table, create
 						"'PROD_ORDERS',"+string(ldb_version_id) +",'"+ gs_sob +"',"+string(gi_userid) + ",'"+ls_code +"', trunc(sysdate)"+ ","+string(ldb_trans_id) +", 'new',"+ string(ldb_manage_group)+ ")"
 
 EXECUTE immediate :ls_sql using rt_transaction;
-
 
 
 //--------------------//
@@ -21316,7 +21315,6 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) - 1
 						 if isnull(vads_copied[li_idx1].getitemnumber(li_row, vstr_dwo_related[1].s_match_f_col_obj[li_idx])) then continue //-- chưa có mã hàng: bỏ qua ko copy --//
 					end if								
 				end if //-- kết thúc: check match full--//
-
 				
 				//-- build values insert --//
 				if ls_f_obj_column_chk = '' then //-- không có sum --//					
@@ -21671,8 +21669,8 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) - 1
 				ldb_f_branch_id =lds_handle.getitemnumber(li_row, 'branch_id')
 				ls_f_ref_table = upper(lds_handle.describe( "datawindow.table.update"))
 				//-- get f_doc_id --//
-				ldb_version_id = lds_handle.getitemnumber(li_row, 'object_ref_id')
-				select id into :ldb_f_doc_id from document where version_id = :ldb_version_id using  rt_transaction;		
+				ldb_f_version_id = lds_handle.getitemnumber(li_row, 'object_ref_id')
+				select id into :ldb_f_doc_id from document where version_id = :ldb_f_version_id using  rt_transaction;		
 				
 				ls_sql_exec = "INSERT into MATCHING(id, company_id, branch_id,created_by, created_date,last_mdf_by, last_mdf_date," +&
 									"F_REF_ID,T_REF_ID,MATCHING_DATE,F_DOC_ID,T_DOC_ID,F_BRANCH_ID,T_BRANCH_ID,"+&
@@ -21697,6 +21695,7 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) - 1
 				EXECUTE immediate :ls_sql_exec using rt_transaction;				
 				ls_sql_values =''
 				ldc_sumVal[] =  ldc_sumEmpty[]
+				ldb_line_ref_id = ldb_id
 				ldb_id = this.f_create_id_ex( rt_transaction)
 			end if				
 			
@@ -21837,7 +21836,7 @@ FOR li_idx = 1 to upperbound(vstr_dwo_related[1].s_related_obj_dwo_copy[] ) - 1
 							//-- check last row of sum --//
 							if ls_f_obj_column_chk_detail = '' or lb_lastrow_sum then
 								
-								ls_sql_values += ",'PRODUCTION_LINE',"+string(ldb_id) + "," +string(ldb_id_detail) + "," + string(ldb_version_id) +")"
+								ls_sql_values += ",'PRODUCTION_LINE',"+string(ldb_line_ref_id) + "," +string(ldb_id_detail) + "," + string(ldb_version_id) +")"
 					
 								ls_sql_exec = ls_sql_detail + ls_sql_values
 								EXECUTE immediate :ls_sql_exec using rt_transaction;
