@@ -14,12 +14,10 @@ global c_prod_orders c_prod_orders
 
 type variables
 int		ii_err_pick, ii_err_weight, ii_err_mixed
-
 any	ias_retrieve_arg[]
-
 double	idb_bomline_id
+string 	is_ordertype
 end variables
-
 forward prototypes
 public subroutine f_set_dwo_window ()
 public subroutine f_set_str_unit ()
@@ -1640,9 +1638,10 @@ end if
 return 0
 end event
 
-event e_dw_getfocus;call super::e_dw_getfocus;double				ldb_item_id, ldb_object_ref_id, ldb_size_id, ldb_bom_id, ldb_route_id, ldb_doc_version
+event e_dw_getfocus;call super::e_dw_getfocus;double				ldb_item_id, ldb_object_ref_id, ldb_size_id, ldb_bom_id, ldb_route_id, ldb_doc_version, ldb_cust_id, ldb_production_line
+int						li_cnt
 string					ls_lot_yn
-t_dw_mpl			ldw_master
+t_dw_mpl			ldw_master, ldw_main
 
 if rdw_handling.dataobject  = 'd_lot_line_kd_grid' then
 	if rdw_handling.rowcount() = 0 then
@@ -1680,7 +1679,7 @@ if rdw_handling.dataobject  = 'd_lot_line_kd_grid' then
 				INSERT into lot_line(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,DOC_VERSION,
 											lot_no,serial_no,line_no)
 				SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'PRODUCTION_LINE',:ldb_doc_version,
-							'Đôi', vv.code,vv.line_no
+							null, vv.code,vv.line_no
 						from valueset_value vv where object_ref_id = :ldb_size_id using it_transaction;
 			end if
 			commit using it_transaction;
@@ -1708,15 +1707,56 @@ elseif rdw_handling.dataobject  = 'd_prod_material_grid' then
 				gf_messagebox('m.c_prod_orders.e_dw_getfocus.03','Thông báo','Chưa chọn Công thức NVL cho sản phẩm !','exclamation','ok',1)
 				return 0
 			end if
-			//-- insert size --//
-			INSERT into PRODUCTION_DETAIL(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,doc_version,
-										LINE_NO,BOM_REF_ID,BOM_REF_TABLE, INPUT_OUTPUT)
-			SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'PRODUCTION_LINE',:ldb_doc_version,
-						bio.line_no,bio.item_id,'OBJECT', 'I'
-					from BOM_INOUT_PUT bio join bom_line bl on bl.id = bio.object_ref_id
-                                                     join item i on i.id = bl.object_ref_id
-                                                     join object o on o.id = i.object_ref_id  and o.object_ref_table = 'BOM'
-                                                     where o.id = :ldb_bom_id using it_transaction;
+			if is_ordertype = 'Làm mẫu' then
+				//-- insert size --//
+				INSERT into PRODUCTION_DETAIL(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,doc_version,
+											LINE_NO,BOM_REF_ID,BOM_REF_TABLE, INPUT_OUTPUT)
+				SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'PRODUCTION_LINE',:ldb_doc_version,
+							bio.line_no,bio.item_id,'OBJECT', 'I'
+						from BOM_INOUT_PUT bio join bom_line bl on bl.id = bio.object_ref_id
+																		  join item i on i.id = bl.object_ref_id
+																		  join object o on o.id = i.object_ref_id  and o.object_ref_table = 'BOM'
+																		  where o.id = :ldb_bom_id using it_transaction;
+			else
+				ldw_main = iw_display.f_get_dwmain( )
+				if ldw_main.getrow( ) > 0 then 
+					ldb_cust_id = ldw_main.getitemnumber( ldw_main.getrow( ) , 'object_id')
+					select count(d.id) into :li_cnt from document d join orders o on o.id = d.version_id
+																  join production_line pl on pl.object_ref_id = o.id
+																  join valueset_value vv on vv.id = d.manage_group
+																  where vv.code = 'Làm mẫu'
+																  and pl.object_id = :ldb_item_id
+																  and o.object_id = :ldb_cust_id using it_transaction;
+					if li_cnt > 0 then
+						select pl.id into :ldb_production_line from document d join orders o on o.id = d.version_id
+																  join production_line pl on pl.object_ref_id = o.id
+																  join valueset_value vv on vv.id = d.manage_group
+																  where vv.code = 'Làm mẫu'
+																  and pl.object_id = :ldb_item_id
+																  and o.object_id = :ldb_cust_id 
+																  and rownum = 1
+																  order by d.document_Date desc
+																  using it_transaction;
+						
+						//-- insert size --//
+						INSERT into PRODUCTION_DETAIL(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,doc_version,
+													LINE_NO,BOM_REF_ID,BOM_REF_TABLE, INPUT_OUTPUT, ITEM_NAME)
+						SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'PRODUCTION_LINE',:ldb_doc_version,
+									pd.line_no,pd.BOM_REF_ID,'OBJECT', 'I', pd.ITEM_NAME
+								from PRODUCTION_DETAIL pd where pd.object_ref_id = :ldb_production_line using it_transaction;										
+					else
+						//-- insert size --//
+						INSERT into PRODUCTION_DETAIL(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,doc_version,
+													LINE_NO,BOM_REF_ID,BOM_REF_TABLE, INPUT_OUTPUT)
+						SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'PRODUCTION_LINE',:ldb_doc_version,
+									bio.line_no,bio.item_id,'OBJECT', 'I'
+								from BOM_INOUT_PUT bio join bom_line bl on bl.id = bio.object_ref_id
+																				  join item i on i.id = bl.object_ref_id
+																				  join object o on o.id = i.object_ref_id  and o.object_ref_table = 'BOM'
+																				  where o.id = :ldb_bom_id using it_transaction;						
+					end if
+				end if
+			end if
 			commit using it_transaction;
 			rdw_handling.event e_retrieve()
 			disconnect using it_transaction;			
@@ -1745,17 +1785,60 @@ elseif rdw_handling.dataobject  = 'd_prod_resource_grid' then
                                                      join item i on i.id = bl.object_ref_id
                                                      join object o on o.id = i.object_ref_id  and o.object_ref_table = 'BOM'
                                                      where o.id = :ldb_bom_id using it_transaction;			
-			//-- insert resource line --//
-			INSERT into PRODUCTION_RESOURCE(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,doc_version,
-										LINE_NO,ITEM_TYPE,OBJECT_ID, NOTE)
-			SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'PRODUCTION_LINE',:ldb_doc_version,
-						bl.line_no, bl.LINE_TYPE, bl.route_id, coalesce(vv.name, o_subRoute.name)
-									from bom_line bl 
-                                                     join bom_hdr bh on bh.id = bl.object_ref_id
-                                                     join object o on o.id = bh.object_ref_id  and o.object_ref_table = 'ROUTE'
-                                                     left join valueset_value vv on vv.id = bl.route_id and bl.line_type = 'OPERATION'
-                                                     left join object o_subRoute on o_subRoute.id = bl.route_id  and o_subRoute.object_ref_table = bl.line_type
-                                                     where o.id = :ldb_route_id using it_transaction;
+																	  														  
+			if is_ordertype = 'Làm mẫu' then														  
+				//-- insert resource line --//
+				INSERT into PRODUCTION_RESOURCE(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,doc_version,
+											LINE_NO,ITEM_TYPE,OBJECT_ID, NOTE)
+				SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'PRODUCTION_LINE',:ldb_doc_version,
+							bl.line_no, bl.LINE_TYPE, bl.route_id, coalesce(vv.name, o_subRoute.name)
+										from bom_line bl 
+																		  join bom_hdr bh on bh.id = bl.object_ref_id
+																		  join object o on o.id = bh.object_ref_id  and o.object_ref_table = 'ROUTE'
+																		  left join valueset_value vv on vv.id = bl.route_id and bl.line_type = 'OPERATION'
+																		  left join object o_subRoute on o_subRoute.id = bl.route_id  and o_subRoute.object_ref_table = bl.line_type
+																		  where o.id = :ldb_route_id using it_transaction;
+			else
+				ldw_main = iw_display.f_get_dwmain( )
+				if ldw_main.getrow( ) > 0 then 
+					ldb_cust_id = ldw_main.getitemnumber( ldw_main.getrow( ) , 'object_id')
+					select count(d.id) into :li_cnt from document d join orders o on o.id = d.version_id
+																  join production_line pl on pl.object_ref_id = o.id
+																  join valueset_value vv on vv.id = d.manage_group
+																  where vv.code = 'Làm mẫu'
+																  and pl.object_id = :ldb_item_id
+																  and o.object_id = :ldb_cust_id using it_transaction;			
+					if li_cnt > 0 then
+							select pl.id into :ldb_production_line from document d join orders o on o.id = d.version_id
+																	  join production_line pl on pl.object_ref_id = o.id
+																	  join valueset_value vv on vv.id = d.manage_group
+																	  where vv.code = 'Làm mẫu'
+																	  and pl.object_id = :ldb_item_id
+																	  and o.object_id = :ldb_cust_id 
+																	  and rownum = 1
+																	  order by d.document_Date desc
+																	  using it_transaction;		
+						//-- insert resource line --//
+						INSERT into PRODUCTION_RESOURCE(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,doc_version,
+													LINE_NO,ITEM_TYPE,OBJECT_ID, NOTE)
+						SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'PRODUCTION_LINE',:ldb_doc_version,
+									pr.line_no, pr.ITEM_TYPE, pr.OBJECT_ID, pr.NOTE
+												from PRODUCTION_RESOURCE pr where pr.object_ref_id = :ldb_production_line using it_transaction;																  
+					else
+						//-- insert resource line --//
+						INSERT into PRODUCTION_RESOURCE(id,company_id,branch_id,created_by, created_date, last_mdf_by, last_mdf_date, object_ref_id, object_ref_table,doc_version,
+													LINE_NO,ITEM_TYPE,OBJECT_ID, NOTE)
+						SELECT ttd.SEQ_TABLE_ID.nextval, :gi_user_comp_id, :gdb_branch, :gi_userid, sysdate, :gi_userid, sysdate,:ldb_object_ref_id, 'PRODUCTION_LINE',:ldb_doc_version,
+									bl.line_no, bl.LINE_TYPE, bl.route_id, coalesce(vv.name, o_subRoute.name)
+												from bom_line bl 
+																				  join bom_hdr bh on bh.id = bl.object_ref_id
+																				  join object o on o.id = bh.object_ref_id  and o.object_ref_table = 'ROUTE'
+																				  left join valueset_value vv on vv.id = bl.route_id and bl.line_type = 'OPERATION'
+																				  left join object o_subRoute on o_subRoute.id = bl.route_id  and o_subRoute.object_ref_table = bl.line_type
+																				  where o.id = :ldb_route_id using it_transaction;					
+					end if
+				end if
+			end if
 			commit using it_transaction;
 			rdw_handling.event e_retrieve()
 			disconnect using it_transaction;			
