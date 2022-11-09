@@ -6547,12 +6547,12 @@ gb_2.height = 50
 //-- resize dw_2 --//
 dw_2.move( tab_action.x , gb_2.y + gb_2.height )
 dw_2.width =  ii_resize_width - this.ii_vscrollbar
-dw_2.height =  dw_2.f_getheight( 1)
+dw_2.height =  dw_2.f_getheight( 2)
 
 //-- resize dw_2 --//
 dw_3.move( tab_action.x , dw_2.y + dw_2.height )
 dw_3.width =  ii_resize_width - this.ii_vscrollbar
-dw_3.height =   dw_3.f_getheight( 1)
+dw_3.height =   dw_3.f_getheight( 2)
 
 //-- resize dw_2 --//
 dw_4.move( tab_action.x , dw_3.y + dw_3.height )
