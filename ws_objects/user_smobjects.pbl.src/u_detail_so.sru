@@ -806,28 +806,41 @@ return ancestorreturnvalue
 end event
 
 event e_window_open;call super::e_window_open;any			laa_val[]
-t_dw_mpl			ldw_lot
+double		ldb_item_id
+string			ls_lot_yn
+t_dw_mpl			ldw_lot, ldw_so_line
 
-ldw_lot = iw_display.dynamic f_get_dw(2)
-laa_val[1] = '()'
-ldw_lot.f_add_where( 'lot_no', laa_val[] )
 
-ldw_lot = iw_display.dynamic f_get_dw(3)
-laa_val[1] = '(Bù;T)'
-ldw_lot.f_add_where( 'lot_no', laa_val[] )
+ldw_so_line = iw_display.f_get_dw('d_so_line_grid')
+if ldw_so_line.getrow( ) > 0 then
+	ldb_item_id = ldw_so_line.getitemnumber(ldw_so_line.getrow(), 'item_id')
+	if ldb_item_id > 0 then
+		select LOT_YN into :ls_lot_yn from item where object_ref_id = :ldb_item_id using  it_transaction;
+	end if		
+	if ls_lot_yn = 'Y' then
+		ldw_lot = iw_display.dynamic f_get_dw(2)
+		laa_val[1] = 'T'
+		ldw_lot.f_add_where_to_origin( 'lot_no', laa_val[] )		
+		ldw_lot = iw_display.dynamic f_get_dw(3)
+		laa_val[1] = 'P'
+		ldw_lot.f_add_where_to_origin( 'lot_no', laa_val[] )		
+	else
+		ldw_lot = iw_display.dynamic f_get_dw(2)
+		laa_val[1] = '()'
+		ldw_lot.f_add_where_to_origin( 'lot_no', laa_val[] )
+	end if
 
-ldw_lot = iw_display.dynamic f_get_dw(4)
-laa_val[1] = '=P'
-ldw_lot.f_add_where( 'lot_no', laa_val[] )
+end if
 
 return ancestorreturnvalue
 end event
 
 event e_dw_rowfocuschanging;call super::e_dw_rowfocuschanging;double		ldb_item_id
 string			ls_lot_yn
-t_dw_mpl	ldw_3, ldw_4
+any			laa_val[]
+t_dw_mpl	ldw_3, ldw_lot
 
-if rpo_dw.dataobject = 'd_so_line_grid' then	
+if rpo_dw.dataobject = 'd_so_line_grid'  and vl_newrow > 0 then	
 	ldb_item_id = rpo_dw.getitemnumber(vl_newrow, 'item_id')
 	if ldb_item_id > 0 then
 		select LOT_YN into :ls_lot_yn from item where object_ref_id = :ldb_item_id using  it_transaction;
@@ -835,12 +848,19 @@ if rpo_dw.dataobject = 'd_so_line_grid' then
 	ldw_3= iw_display.dynamic f_get_dw( 3)
 	if ls_lot_yn = 'Y' then
 		ldw_3.show()	
+		//-- add where --//
+		ldw_lot = iw_display.dynamic f_get_dw( 2)
+		laa_val[1] = 'T'
+		ldw_lot.f_add_where_to_origin( 'lot_no', laa_val[] )		
+		ldw_lot = iw_display.dynamic f_get_dw(3)
+		laa_val[1] = 'P'
+		ldw_lot.f_add_where_to_origin( 'lot_no', laa_val[] )				
 	else
-		if is_included_scrap = 'Y' then
-			ldw_3.show( )
-		else
-			ldw_3.hide()
-		end if
+		ldw_3.hide()
+		//-- add where --//
+		ldw_lot = iw_display.dynamic f_get_dw( 2)
+		laa_val[1] = '()'
+		ldw_lot.f_add_where_to_origin( 'lot_no', laa_val[] )				
 	end if
 end if
 return 0

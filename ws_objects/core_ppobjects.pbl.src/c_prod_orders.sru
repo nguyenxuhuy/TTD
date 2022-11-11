@@ -18,6 +18,7 @@ any	ias_retrieve_arg[]
 double	idb_bomline_id
 string 	is_ordertype
 end variables
+
 forward prototypes
 public subroutine f_set_dwo_window ()
 public subroutine f_set_str_unit ()
@@ -389,7 +390,7 @@ istr_actionpane[3].s_description = 'Menu quản lý'
 end subroutine
 
 public subroutine f_set_dwo_tabpage ();iastr_dwo_tabpage[1].s_tp_name = 's_tp_multi'
-iastr_dwo_tabpage[1].s_display_model = '1d'
+iastr_dwo_tabpage[1].s_display_model = '2d'
 iastr_dwo_tabpage[1].i_index = 1
 iastr_dwo_tabpage[1].str_dwo[1].s_dwo_default =  'd_lot_line_kd_grid'
 iastr_dwo_tabpage[1].str_dwo[1].s_dwo_form = ''
@@ -414,6 +415,33 @@ iastr_dwo_tabpage[1].str_dwo[1].b_excel = true
 iastr_dwo_tabpage[1].str_dwo[1].b_keyboardlocked = true
 iastr_dwo_tabpage[1].str_dwo[1].b_traceable = true
 iastr_dwo_tabpage[1].str_dwo[1].s_description ='Chi tiết SIZE'
+
+iastr_dwo_tabpage[1].s_tp_name = 's_tp_multi'
+iastr_dwo_tabpage[1].s_display_model = '2d'
+iastr_dwo_tabpage[1].i_index = 1
+iastr_dwo_tabpage[1].str_dwo[2].s_dwo_default =  'd_lot_line_kd_grid'
+iastr_dwo_tabpage[1].str_dwo[2].s_dwo_form = ''
+iastr_dwo_tabpage[1].str_dwo[2].s_dwo_grid = 'd_lot_line_kd_grid'
+iastr_dwo_tabpage[1].str_dwo[2].s_popmenu_items = ''
+iastr_dwo_tabpage[1].str_dwo[2].b_master = false
+iastr_dwo_tabpage[1].str_dwo[2].b_detail = true
+iastr_dwo_tabpage[1].str_dwo[2].b_cascade_del = true
+iastr_dwo_tabpage[1].str_dwo[2].s_dwo_master = 'd_prod_line_kd_grid;'
+iastr_dwo_tabpage[1].str_dwo[2].s_dwo_details = ''
+iastr_dwo_tabpage[1].str_dwo[2].s_dwo_shared = ''
+iastr_dwo_tabpage[1].str_dwo[2].s_master_keycol = 'ID;'
+iastr_dwo_tabpage[1].str_dwo[2].s_detail_keycol = 'OBJECT_REF_ID;'
+iastr_dwo_tabpage[1].str_dwo[2].b_ref_table_yn  = false
+iastr_dwo_tabpage[1].str_dwo[2].s_ref_table_field = 'OBJECT_REF_TABLE;'
+iastr_dwo_tabpage[1].str_dwo[2].b_insert = false
+iastr_dwo_tabpage[1].str_dwo[2].b_update = true
+iastr_dwo_tabpage[1].str_dwo[2].b_delete = false
+iastr_dwo_tabpage[1].str_dwo[2].b_query = true
+iastr_dwo_tabpage[1].str_dwo[2].b_print = true
+iastr_dwo_tabpage[1].str_dwo[2].b_excel = true
+iastr_dwo_tabpage[1].str_dwo[2].b_keyboardlocked = true
+iastr_dwo_tabpage[1].str_dwo[2].b_traceable = true
+iastr_dwo_tabpage[1].str_dwo[2].s_description ='Chi tiết SIZE'
 
 iastr_dwo_tabpage[2].s_tp_name = 's_tp_multi'
 iastr_dwo_tabpage[2].s_display_model = '1d'
@@ -1928,6 +1956,74 @@ if vs_objectname_to = 'u_qt' then
 	
 elseif vs_objectname_to = 'u_goods_delivery_misc' then
 elseif vs_objectname_to = 'u_goods_receipt_misc' then
+end if
+return 0
+end event
+
+event e_window_open;call super::e_window_open;any			laa_val[]
+double		ldb_item_id
+string			ls_lot_yn
+t_dw_mpl			ldw_lot, ldw_prod_line
+
+
+ldw_prod_line = iw_display.f_get_dw('d_prod_line_kd_grid')
+if ldw_prod_line.getrow( ) > 0 then
+	ldb_item_id = ldw_prod_line.getitemnumber(ldw_prod_line.getrow(), 'object_id')
+	if ldb_item_id > 0 then
+		select LOT_YN into :ls_lot_yn from item where object_ref_id = :ldb_item_id using  it_transaction;
+	end if		
+	if ls_lot_yn = 'Y' then
+		ldw_lot = iw_display.dynamic f_get_dw(1,1)
+		laa_val[1] = 'T'
+		ldw_lot.f_add_where_to_origin( 'lot_no', laa_val[] )		
+		ldw_lot = iw_display.dynamic f_get_dw(1,2)
+		laa_val[1] = 'P'
+		ldw_lot.f_add_where_to_origin( 'lot_no', laa_val[] )		
+	else
+		ldw_lot = iw_display.dynamic f_get_dw(1,1)
+		laa_val[1] = '()'
+		ldw_lot.f_add_where_to_origin( 'lot_no', laa_val[] )
+	end if
+
+end if
+
+return ancestorreturnvalue
+end event
+
+event e_dw_rowfocuschanging;call super::e_dw_rowfocuschanging;double		ldb_item_id
+string			ls_lot_yn
+any			laa_val[]
+t_dw_mpl	ldw_3, ldw_lot
+
+if rpo_dw.dataobject = 'd_prod_line_kd_grid' and vl_newrow > 0 then	
+	
+	ldb_item_id = rpo_dw.getitemnumber(vl_newrow, 'object_id')
+	if ldb_item_id > 0 then
+		if not iw_display.f_get_ib_opening( ) then
+			connect using  it_transaction;
+		end if
+		select LOT_YN into :ls_lot_yn from item where object_ref_id = :ldb_item_id using  it_transaction;
+		if not iw_display.f_get_ib_opening( ) then
+			disconnect using  it_transaction;
+		end if		
+	end if			
+	ldw_3= iw_display.dynamic f_get_dw( 1,2)
+	if ls_lot_yn = 'Y' then
+		ldw_3.show()	
+		//-- add where --//
+		ldw_lot = iw_display.dynamic f_get_dw(1,1)
+		laa_val[1] = 'T'
+		ldw_lot.f_add_where_to_origin( 'lot_no', laa_val[] )		
+		ldw_lot = iw_display.dynamic f_get_dw(1,2)
+		laa_val[1] = 'P'
+		ldw_lot.f_add_where_to_origin( 'lot_no', laa_val[] )				
+	else
+		ldw_3.hide()
+		//-- add where --//
+		ldw_lot = iw_display.dynamic f_get_dw( 1,1)
+		laa_val[1] = '()'
+		ldw_lot.f_add_where_to_origin( 'lot_no', laa_val[] )				
+	end if
 end if
 return 0
 end event
